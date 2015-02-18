@@ -1,7 +1,9 @@
 *~
 bin
 build
-cmake
+*cmake
+CMakeCache*
+CMakeFiles
 *kdev*
 # Compiled Object files
 *.slo
