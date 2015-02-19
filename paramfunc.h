@@ -239,9 +239,7 @@ public:
 				}
 				double cur=P[i-2];
 				if(cur < (last+m_res)){
-					P.Change(i-0,i-3);
-					P.Change(i-1,i-4);
-					P.Change(i-2,i-5);
+					return false;
 				}else{
 					last=cur;
 				}
@@ -272,9 +270,7 @@ public:
 				}
 				double cur=P[i-2];
 				if(cur < (last+m_res)){
-					P.Change(i-0,i-3);
-					P.Change(i-1,i-4);
-					P.Change(i-2,i-5);
+					return false;
 				}else{
 					last=cur;
 				}
