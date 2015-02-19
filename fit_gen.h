@@ -55,7 +55,7 @@ public:
 	virtual ~_gen();
 	void SetFilter(std::shared_ptr<IParamCheck> filter);
 	void Init(int N,std::shared_ptr<IGenerator> generator);
-	void Iterate();
+	void Iterate(unsigned char threads=1);
 
 	int N();
 	unsigned int iteration_count();
@@ -71,8 +71,6 @@ public:
 protected:
 	ParamSet &Point(int point_index);
 	virtual ParamSet born(ParamSet&)=0;
-	void BornElement(int i);
-	int m_thrcount;
 	std::mutex m_mutex;
 private:
 	std::shared_ptr<IParamFunc> m_function;

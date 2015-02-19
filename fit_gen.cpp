@@ -1,3 +1,5 @@
+#include <thread>
+#include <atomic>
 #include "fit_gen.h"
 #include "fitexception.h"
 #include "math_h/interpolate.h"
@@ -15,8 +17,7 @@ public:
 _gen::_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S){
 	m_function=function;
 	m_S=S;
-	//before initialization
-	m_itercount=0;m_thrcount=0;
+	m_itercount=0;
 	m_filter=std::make_shared<EmptyFilter>();
 }
 void _gen::Init(int N, std::shared_ptr<IGenerator> generator){
@@ -29,10 +30,9 @@ void _gen::Init(int N, std::shared_ptr<IGenerator> generator){
 			bool oncemore=true;
 			while(oncemore){
 				ParamSet tmp=generator->Generate();
-				if(m_function->CorrectParams(tmp)
-						&&m_filter->CorrectParams(tmp)){
+				if(m_function->CorrectParams(tmp)&&m_filter->CorrectParams(tmp)){
 					m_data.push_back(tmp);
-					S_cache.push_back(m_S->operator ()(tmp,*m_function));
+					S_cache.push_back((*m_S)(tmp,*m_function));
 					oncemore=false;
 				}
 			}
@@ -91,40 +91,42 @@ double _gen::operator ()(ParamSet &X){
 	Lock lock(m_mutex);
 	return (*m_function)(X,m_data[0]);
 }
-void _gen::BornElement(int i){
-	double old_s;
-	ParamSet oldC;
-	{Lock lock(m_mutex);
-		oldC=m_data[i];
-		old_s=S_cache[i];
-	}
-	ParamSet newC=born(oldC);
-	double new_s=+INFINITY;
-	if(m_function->CorrectParams(newC)
-			&& m_filter->CorrectParams(newC))
-		new_s=m_S->operator ()(newC,*m_function);
-	{Lock lock(m_mutex);
-		int ind = WhereToInsert(0,S_tmp_cache.size()-1,S_tmp_cache,old_s);
-		S_tmp_cache.insert(S_tmp_cache.begin()+ind,old_s);m_tmp_data.insert(m_tmp_data.begin()+ind,oldC);
-		ind = WhereToInsert(0,S_tmp_cache.size()-1,S_tmp_cache,new_s);
-		S_tmp_cache.insert(S_tmp_cache.begin()+ind,new_s);m_tmp_data.insert(m_tmp_data.begin()+ind,newC);
-	}
-}
-void _gen::Iterate(){
+void _gen::Iterate(unsigned char threads){
+	if(0==threads)
+		throw new FitException("Cannot run fitting on zero threads");
 	if(m_data.size()==0)
 		throw new FitException("Fitting algorithm cannot work with zero size of population");
-	S_tmp_cache.clear();m_tmp_data.clear();
-	{Lock lock(m_mutex);
-		m_thrcount=0;
+	S_tmp_cache.clear();m_tmp_data.clear();int n=N();
+	auto func=[this](int a, int b){
+		for(int i=a; i<=b; i++){
+			double old_s;ParamSet oldC;
+			{Lock lock(m_mutex);
+				oldC=m_data[i];
+				old_s=S_cache[i];
+			}
+			ParamSet newC=born(oldC);
+			double new_s=+INFINITY;
+			if(m_function->CorrectParams(newC)&& m_filter->CorrectParams(newC))
+				new_s=m_S->operator ()(newC,*m_function);
+			{Lock lock(m_mutex);
+				int ind = WhereToInsert(0,S_tmp_cache.size()-1,S_tmp_cache,old_s);
+				S_tmp_cache.insert(S_tmp_cache.begin()+ind,old_s);m_tmp_data.insert(m_tmp_data.begin()+ind,oldC);
+				ind = WhereToInsert(0,S_tmp_cache.size()-1,S_tmp_cache,new_s);
+				S_tmp_cache.insert(S_tmp_cache.begin()+ind,new_s);m_tmp_data.insert(m_tmp_data.begin()+ind,newC);
+			}
+		}
+	};
+	list<thread> pool;
+	int partsize=n/threads;{
+		int tf=threads-1;
+		for(int t=0; t<tf;t++){
+			int index=t*partsize;
+			pool.push_back(thread(func,index,index+partsize-1));
+		}
 	}
-	for(int i=0;i<N();i++)
-		BornElement(i);
-	{bool wait=false;
-		do{Lock lock(m_mutex);
-			wait=m_thrcount>0;
-		}while(wait);
-	}
-	int n=N();
+	func((threads-1)*partsize,n-1);
+	for(auto& thr:pool)
+		thr.join();
 	{
 		Lock locker(m_mutex);
 		m_data.clear();S_cache.clear();
