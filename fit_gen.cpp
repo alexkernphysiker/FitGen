@@ -1,5 +1,4 @@
 #include <thread>
-#include <atomic>
 #include "fit_gen.h"
 #include "fitexception.h"
 #include "math_h/interpolate.h"
@@ -20,7 +19,7 @@ _gen::_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunc
 	m_itercount=0;
 	m_filter=std::make_shared<EmptyFilter>();
 }
-void _gen::Init(int N, std::shared_ptr<IGenerator> generator){
+void _gen::Init(int N, std::shared_ptr<IInitialConditions> initial_conditions){
 	if(m_data.size()>0)throw new FitException("Fitting algorithm cannot be inited twice");
 	if(N<=0)throw new FitException("Fitting algorithm got incorrect parameters");
 	m_itercount=0;
@@ -29,7 +28,7 @@ void _gen::Init(int N, std::shared_ptr<IGenerator> generator){
 			Lock lock(m_mutex);
 			bool oncemore=true;
 			while(oncemore){
-				ParamSet tmp=generator->Generate();
+				ParamSet tmp=initial_conditions->Generate();
 				if(m_function->CorrectParams(tmp)&&m_filter->CorrectParams(tmp)){
 					m_data.push_back(tmp);
 					S_cache.push_back((*m_S)(tmp,*m_function));

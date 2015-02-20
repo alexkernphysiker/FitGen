@@ -2,7 +2,6 @@
 #define FitGen_H
 #include <memory>
 #include <mutex>
-#include <thread>
 #include <vector>
 namespace Fit{
 class ParamSet{
@@ -27,9 +26,9 @@ ParamSet CreateParamSet(int n,indexer x){
 		res<<(x[i]);
 	return res;
 }
-class IGenerator{
+class IInitialConditions{
 public:
-	virtual ~IGenerator(){}
+	virtual ~IInitialConditions(){}
 	virtual ParamSet Generate()=0;
 };
 class IParamCheck{
@@ -54,7 +53,7 @@ protected:
 public:
 	virtual ~_gen();
 	void SetFilter(std::shared_ptr<IParamCheck> filter);
-	void Init(int N,std::shared_ptr<IGenerator> generator);
+	void Init(int N,std::shared_ptr<IInitialConditions> initial_conditions);
 	void Iterate(unsigned char threads=1);
 
 	int N();

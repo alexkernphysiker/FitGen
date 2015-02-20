@@ -30,7 +30,7 @@ Three classes below inherit it.
 \\
 Abstract class \textbf{IParamFunc} is an interface that provides methods for getting the parametric function values and control the correctness of the varied parameters for it.
 \\
-Abstract class \textbf{IGenerator} is an interface for generating \textbf{ParamSet}'s for initial parameters distribution.
+Abstract class \textbf{IInitialConditions} is an interface for generating \textbf{ParamSet}'s for initial parameters distribution.
 \\
 Abstract class \textbf{IOptimalityFunction} is an interface for obtaining the optimality criterium.
 Operator \textit{()} method must provide this algorithm. 
@@ -42,17 +42,15 @@ It's protected constructor requires \textit{IParamFunc} (approximating function)
 \textit{SetFilter} method may set control of varied parameter values. Accepts any \textbf{IParamCheck} instance. 
 It's recommended to call it before \textit{Init} method.
 \\
-The \textit{Init} method initializes the algorithm by set of N points in the space of varied parameters, which are created using given \textbf{IGenerator} object.
-This \textbf{IGenerator} object will also be used as one of parameter filters during the fitting due to it's inheriting \textbf{IParamCheck}.
-The signal \textit{Initing(double)} is sent after every point generated which allows to provide process indicating when it takes long time.
+The \textit{Init} method initializes the algorithm by set of N points in the space of varied parameters, which are created using given \textbf{IInitialConditions} object.
 \\
-Public slot \textit{Iterate} provides one algorithm's iteration.
+Method \textit{Iterate} provides one algorithm's iteration.
 From every element in the population, the new one is born due to algorithm implemented in the derived class.
 So the population becomes two times larger.
 Then the best half is selected due to \textit{IOptimalityFunction} object used.
 Other points are disposed.
 User has to manage the whole algorithm's work on his own. And call this method as many times as it's needed.
-Signal \textit{changed} is sent after each iteration for indicating the progress.
+The parameter given to this method means the number of threads using for the calculation.
 \\
 There are also public methods and operators that can be used for obtaining calculated results: optimality criterium, parameter values and their dispersions and also calculate optimal function values.\\
 \textit{count()} gets the count of parameters that are fitted.\\
@@ -61,7 +59,7 @@ There are also public methods and operators that can be used for obtaining calcu
 \textit{()} that requires measured parameters obtains the values of best-fit function.\\
 \textit{GetParametersDispersion()}returns the \textbf{ParamSet} with the dispersions of fitted parameters.
 \\
-Every derivative class must implement the abstract virtual method \textit{born} for providing the algorithm of creating derivative (child) points in the population.
+Every derivative class must implement the abstract virtual method \textit{born} for providing the algorithm of creating child points in the population.
 \\
 Class \textbf{FitGenVeg} is derivative from \textbf{$\_$gen} and contains the default implementation of \textit{born} method. Child's parameters are obtained by the formula:
 \begin{equation}
@@ -123,20 +121,28 @@ The constructor requires the range of added values (min. and max.) and the numbe
 So for fitting one will have as many points as many bins there are.
 The $x$-value of each point is the center of bin and the $y$-value is the number of added values that are inside this bin.
 \\
-\textit{\Large File paramrange.h}\\
-contains classes implementing different algorithms of generating initial parameters for genetic algorithm and controlling their values. \\
-All these classes have \textit{Add} for adding information about how to process each parameter from generated or controlled \textbf{ParamSet}.
+\textit{\Large File filter.h}\\
+contains classes implementing different conditions for fitted parameters 
+(different classes inheriting \textbf{IParamCheck}). \\
+All these classes have \textit{Add} for adding information about how to process each parameter of controlled \textbf{ParamSet}.
 \\
-Abstract class \textbf{FilterRange} inherits \textbf{IParamCheck} and allows to store one range per parameter for controlling the values. 
-It's inherited by two classes: \textbf{ParamRangeIn} returns \textit{true} if all parameters are inside respective ranges; \textbf{ParamRangeOut} returns \textit{true} if all parameters are outside respective ranges.
+Abstract class \textbf{FilterRange} allows to store one range per parameter for controlling the values. 
+It's inherited by two classes: \\
+\textbf{ParamRangeIn} returns \textit{true} if all parameters are inside respective ranges; \\
+\textbf{ParamRangeOut} returns \textit{true} if all parameters are outside respective ranges.
 \\
 Abstract class \textbf{FilterMulti} allows to process several Filters as one. It's inherited by two classes: \textbf{FilterAnd} and \textbf{FilterOr}, that provide respective boolean operations to set of filters.
 \\
-Class \textbf{GenerateUniform} takes minimum and maximum value for each parameter.
-It's \textit{CorrectParams} controls that all parameters are in specified ranges.
-The \textit{Generate} method generates parameters uniformly distributed in these ranges.
+\textit{\Large File initialconditions.h}\\
+contains classes implementing different algorithms providing the initial conditions of fitting algorithm
+(different classes inheriting \textbf{IInitialConditions}). \\
+All these classes have \textit{Add} for adding information about how to process each parameter or generated \textbf{ParamSet}.
 \\
-Class \textbf{GenerateByGauss} takes mean value and dispersion for each parameter. It does not control values (returns \textit{true}) and generates parameters distributed by gauss.
+Class \textbf{GenerateUniform} provides generating of \textbf{ParamSet}s with uniformly distributed parameters
+(the range for each parameter is given via \textit{Add} method).
+\\
+Class \textbf{GenerateByGauss} provides generating of \textbf{ParamSet}s with parameters distributed by Gauss 
+(the mean value and sigma for each parameter are given via \textit{Add} method).
 \\
 \textit{\Large File paramfunc.h}\\
 provides template classes for building more complicated functions from simpler ones.

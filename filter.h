@@ -1,5 +1,5 @@
-#ifndef PARAMRANGE_H
-#define PARAMRANGE_H
+#ifndef ___FILTER_H_____
+#define ___FILTER_H_____
 #include "fit_gen.h"
 namespace Fit{
 class FilterRange:public IParamCheck{
@@ -54,33 +54,5 @@ public:
 	virtual ~FilterOr(){}
 	virtual bool CorrectParams(ParamSet &params)override;
 };
-
-class GenerateUniform:public IGenerator{
-public:
-	GenerateUniform();
-	virtual ~GenerateUniform();
-	int Count();
-	double Min(int i);
-	double Max(int i);
-	GenerateUniform &Add(double min,double max);
-	virtual ParamSet Generate()override;
-private:
-	std::vector<double> m_min;
-	std::vector<double> m_max;
-};
-
-class GenerateByGauss:public IGenerator{
-public:
-	GenerateByGauss();
-	virtual ~GenerateByGauss();
-	int Count();
-	double Mean(int i);
-	double Sigma(int i);
-	GenerateByGauss &Add(double mean,double sig);
-	virtual ParamSet Generate()override;
-private:
-	std::vector<double> m_mean;
-	std::vector<double> m_sig;
-};
 }
-#endif // PARAMRANGE_H
+#endif
