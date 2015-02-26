@@ -62,7 +62,7 @@ public:
 	FitPoints(int from, int to, indexerx X, indexery Y):fitpoints(){
 		if(to<from)throw;
 		for(int i=from; i<=to;i++)
-			Add(ParamSet()<<X[i],Y[i]);
+			this->Add(ParamSet()<<X[i],Y[i]);
 	}
 };
 template <class fitpoints, class indexerx, class indexery = indexerx, class indexererr = indexery>
@@ -71,7 +71,7 @@ public:
 	FitPointsWithErrors(int from, int to, indexerx X, indexery Y,indexererr W):fitpoints(){
 		if(to<from)throw;
 		for(int i=from; i<=to;i++)
-			Add(ParamSet()<<X[i],Y[i],W[i]);
+			this->Add(ParamSet()<<X[i],Y[i],W[i]);
 	}
 };
 template <class fitpoints, class indexerx, class indexerx_err=indexerx, class indexery = indexerx, class indexererr = indexery>
@@ -80,7 +80,7 @@ public:
 	FitPointsWithXErrors(int from, int to, indexerx X, indexerx_err X_w, indexery Y,indexererr W):fitpoints(){
 		if(to<from)throw;
 		for(int i=from; i<=to;i++)
-			Add(ParamSet()<<X[i],ParamSet()<<X_w[i],Y[i],W[i]);
+			this->Add(ParamSet()<<X[i],ParamSet()<<X_w[i],Y[i],W[i]);
 	}
 };
 template <class fitpoints>
