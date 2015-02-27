@@ -8,6 +8,9 @@ class ParamSet{
 public:
 	ParamSet();
 	ParamSet(const ParamSet &source);
+	ParamSet(double x);
+	ParamSet(double x,double y);
+	ParamSet(double x,double y,double z);
 	~ParamSet();
 	void operator=(const ParamSet &source);
 	double operator[](int i);
@@ -80,6 +83,7 @@ private:
 	std::vector<ParamSet> m_tmp_data;
 	std::vector<double> S_cache;
 	std::vector<double> S_tmp_cache;
+	ParamSet m_disp;
 	unsigned int m_itercount;
 };
 class FitGenVeg: public _gen{

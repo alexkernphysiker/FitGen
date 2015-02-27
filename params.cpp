@@ -4,6 +4,9 @@ using namespace std;
 typedef lock_guard<mutex> Lock;
 namespace Fit{
 ParamSet::ParamSet(){}
+ParamSet::ParamSet(double x):ParamSet(){operator<<(x);}
+ParamSet::ParamSet(double x,double y):ParamSet(){operator<<(x)<<y;}
+ParamSet::ParamSet(double x,double y,double z):ParamSet(){operator<<(x)<<y<<z;}
 ParamSet::ParamSet(const ParamSet &source){
 	Lock lock(m_mutex);
 	m_values.clear();

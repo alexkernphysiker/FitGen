@@ -75,15 +75,7 @@ double _gen::operator [](int i){
 	Lock lock(m_mutex);
 	return m_data[0][i];
 }
-ParamSet _gen::GetParametersDispersion(){
-	Sigma<double> Parameters[count()];
-	for(int i=0;i<N();i++)
-		for(int j=0;j<count();j++)
-			Parameters[j].AddValue(Point(i)[j]);
-	ParamSet res;
-	for(int j=0;j<count();j++)res<<Parameters[j].getSigma();
-	return res;
-}
+ParamSet _gen::GetParametersDispersion(){return m_disp;}
 double _gen::operator ()(ParamSet &X){
 	if(m_data.size()==0)
 		throw new FitException("Attempt to obtain unexisting results");
@@ -129,10 +121,17 @@ void _gen::Iterate(unsigned char threads){
 	{
 		Lock locker(m_mutex);
 		m_data.clear();S_cache.clear();
+		int cnt=m_tmp_data[0].Count();
+		Sigma<double> disp[cnt];
 		for(int i=0; i<n;i++){
 			m_data.push_back(m_tmp_data[i]);
 			S_cache.push_back(S_tmp_cache[i]);
+			for(int j=0;j<cnt;j++)
+				disp[j].AddValue(m_tmp_data[i][j]);
 		}
+		m_disp=ParamSet();
+		for(int j=0;j<cnt;j++)
+			m_disp<<disp[j].getSigma();
 		m_tmp_data.clear();S_tmp_cache.clear();
 		m_itercount++;
 	}

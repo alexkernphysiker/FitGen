@@ -48,7 +48,7 @@ double SquareDiff::operator ()(ParamSet &params, IParamFunc &func){
 		res+=::pow(Y(i)-func(X(i),params),2)*W(i);
 	return res;
 }
-double xi_2::operator ()(ParamSet &params, IParamFunc &func){
+double chi_2::operator ()(ParamSet &params, IParamFunc &func){
 	double z=Count()-params.Count();
 	if(z<=0)throw new FitException("wrong conditions for calculating xi^2");
 	double res=0;
@@ -56,7 +56,7 @@ double xi_2::operator ()(ParamSet &params, IParamFunc &func){
 		res+=::pow((Y(i)-func(X(i),params))/W(i),2);
 	return res/z;
 }
-double xi_2_wx::operator ()(ParamSet &params, IParamFunc &func){
+double chi_2_wx::operator ()(ParamSet &params, IParamFunc &func){
 	double z=Count()-params.Count();
 	if(z<=0)throw new FitException("wrong conditions for calculating xi^2");
 	double res=0;

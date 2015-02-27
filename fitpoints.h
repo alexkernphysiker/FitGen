@@ -26,16 +26,16 @@ public:
 	virtual ~SquareDiff(){}
 	virtual double operator()(ParamSet &params, IParamFunc &func)override;
 };
-class xi_2:public FitPointsAbstract{
+class chi_2:public FitPointsAbstract{
 public:
-	xi_2(){}
-	virtual ~xi_2(){}
+	chi_2(){}
+	virtual ~chi_2(){}
 	virtual double operator()(ParamSet &params, IParamFunc &func)override;
 };
-class xi_2_wx:public FitPointsAbstract{
+class chi_2_wx:public FitPointsAbstract{
 public:
-	xi_2_wx(){}
-	virtual ~xi_2_wx(){}
+	chi_2_wx(){}
+	virtual ~chi_2_wx(){}
 	virtual double operator()(ParamSet &params, IParamFunc &func)override;
 };
 template<class fitpoints,class fitpoints2=fitpoints>
