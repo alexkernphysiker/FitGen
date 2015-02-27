@@ -44,19 +44,26 @@ public:
 };
 
 
+template<int value>
+class Const:public virtual IParamFunc{
+public:
+	Const(){}virtual ~Const(){}
+	virtual double operator()(ParamSet &, ParamSet &) override{return double(value);}
+	virtual bool CorrectParams(ParamSet &) override{return true;}
+};
 template<int x_index>
 class Arg:public virtual IParamFunc{
 public:
 	Arg(){}virtual ~Arg(){}
 	virtual double operator()(ParamSet &X, ParamSet &) override{return X[x_index];}
-	virtual bool CorrectParams(ParamSet &) override{	return true;}
+	virtual bool CorrectParams(ParamSet &) override{return true;}
 };
 template<int p_index>
 class Par:public virtual IParamFunc{
 public:
 	Par(){}virtual ~Par(){}
 	virtual double operator()(ParamSet &, ParamSet &P) override{return P[p_index];}
-	virtual bool CorrectParams(ParamSet &) override{	return true;}
+	virtual bool CorrectParams(ParamSet &) override{return true;}
 };
 template<int x_index,int p_index>
 class PowPar:public virtual IParamFunc{
