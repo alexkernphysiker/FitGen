@@ -89,14 +89,14 @@ S = \sum_{i=0}^{n-1} w_i (f(x_i, p)-y_i)^2
 \end{equation}
 where $x_i$ is the set of measured parameters from $i$-th point, $y_i$ and $w_i$ are the function value and the weight from $i$-th point. $f(x,p)$ is the fitting function that requires set of measured parameters $x$ that is obtained from the points added and the set of varied parameters $p$ that is obtained by genetic algorithm.
 \\
-Class \textbf{xi$\_$2} calculates optimality criteria another way (this is $\chi^2$)
+Class \textbf{chi$\_$2} calculates optimality criteria another way (this is $\chi^2$)
 \begin{equation}\Large
 S = \frac{\sum_{i=0}^{n-1}(\frac{y_i-f(x_i,p)}{w_i})^2}{n - size(p)}
 \label{chi_2}
 \end{equation}
 where $w$ is considered to contain error values as is was mentioned above. $size(p)$ is the number of parameters in $p$ (fitted parameters).
 \\
-\textbf{xi$\_$2$\_$wx} is also used for calculating $\chi^2$ but handles the errors of measured parameters:
+\textbf{chi$\_$2$\_$wx} is also used for calculating $\chi^2$ but handles the errors of measured parameters:
 \begin{equation}\Large
 S = \frac{\sum_{i=0}^{n-1}\frac{(y_i-f(x_i,p))^2}{w_i^2+\sum_j{(\frac{\delta f(x_i,p)}{\delta x_{*,j}}\Delta x_{i,j})^2}}}{n - size(p)},
 \label{chi_2_ex}
