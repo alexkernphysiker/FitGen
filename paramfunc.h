@@ -10,7 +10,7 @@ namespace Fit{
 #undef use_num_type
 #undef use_indexer_type
 template<class FUNC>
-class PARAMFUNC:public IParamFunc{
+class PARAMFUNC:public virtual IParamFunc{
 private:
 	FUNC Func;
 public:
@@ -20,7 +20,7 @@ public:
 	virtual bool CorrectParams(ParamSet&)override{return true;}
 };
 template<class FUNC,class FILTER>
-class PARAM_FUNC:public PARAMFUNC<FUNC>{
+class PARAM_FUNC:public virtual PARAMFUNC<FUNC>{
 private:
 	FILTER Filter;
 public:
@@ -35,7 +35,7 @@ public:
 	virtual double operator()(ParamSet &X, ParamSet &P) override{return func(X,P);}
 	virtual bool CorrectParams(ParamSet &) override{return true;}
 };
-template<double (func)(ParamSet&,ParamSet&),double (filter)(ParamSet&)>
+template<double (func)(ParamSet&,ParamSet&),bool (filter)(ParamSet&)>
 class Param_Func:public virtual IParamFunc{
 public:
 	Param_Func(){}virtual ~Param_Func(){}
@@ -63,20 +63,6 @@ class Par:public virtual IParamFunc{
 public:
 	Par(){}virtual ~Par(){}
 	virtual double operator()(ParamSet &, ParamSet &P) override{return P[p_index];}
-	virtual bool CorrectParams(ParamSet &) override{return true;}
-};
-template<int x_index,int p_index>
-class PowPar:public virtual IParamFunc{
-public:
-	PowPar(){}virtual ~PowPar(){}
-	virtual double operator()(ParamSet &X, ParamSet &P) override{return pow(X[x_index],P[p_index]);}
-	virtual bool CorrectParams(ParamSet &) override{return true;}
-};
-template<int x_index,int x_index_pow>
-class PowArg:public virtual IParamFunc{
-public:
-	PowArg(){}virtual ~PowArg(){}
-	virtual double operator()(ParamSet &X, ParamSet &) override{return pow(X[x_index],X[x_index_pow]);}
 	virtual bool CorrectParams(ParamSet &) override{return true;}
 };
 template<int x_index,int p_index,unsigned int power>
