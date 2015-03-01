@@ -76,9 +76,27 @@ double _gen::operator [](int i){
 	return m_data[0][i];
 }
 ParamSet _gen::ParamDispersion(){return m_disp;}
-ParamSet _gen::ParamError(){
-	ParamSet res=ParamDispersion();
-	//ToDo: calc error
+ParamSet _gen::ParamParabolicError(ParamSet delta){
+	if(m_data.size()==0)
+		throw new FitException("Attempt to calculate parabolic error with no results");
+	if(delta.Count()!=m_data[0].Count())
+		throw new FitException("Error in parabolic error calculation: incorrect delta size");
+	ParamSet res;
+	for(int i=0;i<delta.Count();i++){
+		if(delta[i]<=0)
+			throw new FitException("Error in parabolic error calculation: delta cannot be zero or negative");
+		double s=S();
+		ParamSet ab=m_data[0];ab.Set(i,ab[i]+delta[i]);
+		ParamSet be=m_data[0];be.Set(i,be[i]-delta[i]);
+		double sa=m_S->operator()(ab,*m_function);double sb=m_S->operator()(be,*m_function);
+		double da=(sa-s)/delta[i];double db=(s-sb)/delta[i];
+		double dd=(da-db)/delta[i];
+		if(dd<0){
+			res<<INFINITY;
+		}else{
+			res<<sqrt(2.0/dd);
+		}
+	}
 	return res;
 }
 
