@@ -75,7 +75,13 @@ double _gen::operator [](int i){
 	Lock lock(m_mutex);
 	return m_data[0][i];
 }
-ParamSet _gen::GetParametersDispersion(){return m_disp;}
+ParamSet _gen::ParamDispersion(){return m_disp;}
+ParamSet _gen::ParamError(){
+	ParamSet res=ParamDispersion();
+	//ToDo: calc error
+	return res;
+}
+
 double _gen::operator ()(ParamSet &X){
 	if(m_data.size()==0)
 		throw new FitException("Attempt to obtain unexisting results");

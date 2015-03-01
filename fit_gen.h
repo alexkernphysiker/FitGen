@@ -66,7 +66,8 @@ public:
 	int count();// gets the number of varied parameters for use with []
 	double operator[](int i);// Gets optimal parameter by number
 	double operator()(ParamSet &X);// gets optimal function
-	ParamSet GetParametersDispersion();
+	ParamSet ParamDispersion();
+	ParamSet ParamError();
 
 	std::shared_ptr<IParamFunc> GetFunction();
 	std::shared_ptr<IOptimalityFunction> GetOptimalityCalculator();
