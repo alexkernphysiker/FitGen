@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.6)
+project(fitapp)
+include_directories(..)
+set(CMAKE_CXX_FLAGS "-pthread -std=gnu++11")
+add_executable(fitapp fit.cpp ../fit_gen.cpp ../params.cpp ../fitexception.cpp ../fitpoints.cpp ../filter.cpp ../initialconditions.cpp)
