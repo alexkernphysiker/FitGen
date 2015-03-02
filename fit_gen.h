@@ -85,7 +85,7 @@ private:
 	ParamSet m_disp;
 	unsigned int m_itercount;
 };
-enum MutationType{mutDifferential,mutRatio,mutAbsolute};
+enum MutationType{mutDifferential=0,mutRatio=1,mutAbsolute=2};
 class FitGenVeg: public _gen{
 public:
 	FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S);

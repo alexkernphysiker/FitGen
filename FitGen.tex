@@ -70,7 +70,10 @@ RandomGauss(M_{2,i},0)
 \label{born_veg}
 \end{equation}
 where $C$ is the parent, $C^*$ is the child, $A$ and $B$ are two randomly selected members of population, $RandomGauss(\sigma, mean)$ is a random value distributed by Gauss, $M_{k,i}$ are the mutation coefficients stored as \textit{ParamSet}s.
-Methods \textit{Mutation($k$)} and \textit{SetMutation($M_k$,$k$)} can be used for obtaining and setting value of mutation parameters used in the algorithm. They can be changed between iterations.
+Methods \textit{Mutation($k$)} and \textit{SetMutation($k$,$M_k$)} can be used for obtaining and setting value of mutation parameters used in the algorithm. They can be changed between iterations.
+There are no default values for these coefficients.
+Index $k$ is of the following type:\\
+$enum MutationType\{mutDifferential=0,mutRatio=1,mutAbsolute=2\};$
 \\
 Class \textbf{FitGen} is derivative from \textbf{FitGenVeg} and uses more complicated algorithm of creating new points in population. After calculating the parameters of $C^*$ from the formula \ref{born_veg} it takes Random point $X$ from the population and randomly replaces some of values in $C^*$ with values from $X$. The probability of each replacement is independent and equal to $\frac{1}{2}$.
 \\
