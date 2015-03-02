@@ -22,18 +22,18 @@ _gen::_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunc
 void _gen::Init(int N, std::shared_ptr<IInitialConditions> initial_conditions){
 	if(m_data.size()>0)throw new FitException("Fitting algorithm cannot be inited twice");
 	if(N<=0)throw new FitException("Fitting algorithm got incorrect parameters");
+	Lock lock(m_mutex);
 	m_itercount=0;
 	for(int i=0;i<N;i++){
-		{
-			Lock lock(m_mutex);
-			bool oncemore=true;
-			while(oncemore){
-				ParamSet tmp=initial_conditions->Generate();
-				if(m_function->CorrectParams(tmp)&&m_filter->CorrectParams(tmp)){
-					m_data.push_back(tmp);
-					S_cache.push_back((*m_S)(tmp,*m_function));
-					oncemore=false;
-				}
+		bool oncemore=true;
+		while(oncemore){
+			ParamSet tmp=initial_conditions->Generate();
+			if(m_function->CorrectParams(tmp)&&
+				m_filter->CorrectParams(tmp)
+			){
+				m_data.push_back(tmp);
+				S_cache.push_back((*m_S)(tmp,*m_function));
+				oncemore=false;
 			}
 		}
 	}
@@ -111,23 +111,27 @@ void _gen::Iterate(unsigned char threads){
 		throw new FitException("Cannot run fitting on zero threads");
 	if(m_data.size()==0)
 		throw new FitException("Fitting algorithm cannot work with zero size of population");
-	S_tmp_cache.clear();m_tmp_data.clear();int n=N();
-	auto func=[this](int a, int b){
+	int n=count();
+	vector<ParamSet> tmp_data;
+	vector<double> tmp_S;
+	auto func=[this,&tmp_data,&tmp_S](int a, int b){
 		for(int i=a; i<=b; i++){
-			double old_s;ParamSet oldC;
-			{Lock lock(m_mutex);
-				oldC=m_data[i];
-				old_s=S_cache[i];
-			}
+			ParamSet oldC=m_data[i];
+			double old_s=S_cache[i];
 			ParamSet newC=born(oldC);
 			double new_s=+INFINITY;
-			if(m_function->CorrectParams(newC)&& m_filter->CorrectParams(newC))
+			if(
+				m_function->CorrectParams(newC)&& 
+				m_filter->CorrectParams(newC)
+			)
 				new_s=m_S->operator ()(newC,*m_function);
 			{Lock lock(m_mutex);
-				int ind = WhereToInsert(0,S_tmp_cache.size()-1,S_tmp_cache,old_s);
-				S_tmp_cache.insert(S_tmp_cache.begin()+ind,old_s);m_tmp_data.insert(m_tmp_data.begin()+ind,oldC);
-				ind = WhereToInsert(0,S_tmp_cache.size()-1,S_tmp_cache,new_s);
-				S_tmp_cache.insert(S_tmp_cache.begin()+ind,new_s);m_tmp_data.insert(m_tmp_data.begin()+ind,newC);
+				int ind = WhereToInsert(0,tmp_S.size()-1,tmp_S,old_s);
+				tmp_S.insert(tmp_S.begin()+ind,old_s);
+				tmp_data.insert(tmp_data.begin()+ind,oldC);
+				ind = WhereToInsert(0,tmp_S.size()-1,tmp_S,new_s);
+				tmp_S.insert(tmp_S.begin()+ind,new_s);
+				tmp_data.insert(tmp_data.begin()+ind,newC);
 			}
 		}
 	};
@@ -142,21 +146,20 @@ void _gen::Iterate(unsigned char threads){
 	func((threads-1)*partsize,n-1);
 	for(auto& thr:pool)
 		thr.join();
-	{
-		Lock locker(m_mutex);
-		m_data.clear();S_cache.clear();
-		int cnt=m_tmp_data[0].Count();
+	{Lock locker(m_mutex);
+		m_data.clear();
+		S_cache.clear();
+		int cnt=tmp_data[0].Count();
 		Sigma<double> disp[cnt];
 		for(int i=0; i<n;i++){
-			m_data.push_back(m_tmp_data[i]);
-			S_cache.push_back(S_tmp_cache[i]);
+			m_data.push_back(tmp_data[i]);
+			S_cache.push_back(tmp_S[i]);
 			for(int j=0;j<cnt;j++)
-				disp[j].AddValue(m_tmp_data[i][j]);
+				disp[j].AddValue(tmp_data[i][j]);
 		}
 		m_disp=ParamSet();
 		for(int j=0;j<cnt;j++)
 			m_disp<<disp[j].getSigma();
-		m_tmp_data.clear();S_tmp_cache.clear();
 		m_itercount++;
 	}
 }
@@ -165,48 +168,59 @@ std::shared_ptr<IOptimalityFunction> _gen::GetOptimalityCalculator(){return m_S;
 FitGenVeg::FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S):
 	_gen(function,S){}
 FitGenVeg::~FitGenVeg(){}
-ParamSet FitGenVeg::Mutation(int index){
-	if(index==0)
-		return m_f;
-	if(index==1)
-		return m_f_2;
-	if(index==2)
-		return m_f_3;
-	throw new FitException("Index out of range");
+ParamSet FitGenVeg::Mutation(MutationType index){
+	switch(index){
+		case mutDifferential:
+			return m_Mut_Differential;
+		case mutRatio:
+			return m_Mut_Ratio;
+		case mutAbsolute:
+			return m_Mut_Absolute;
+		default:
+			throw new FitException("Mutation: Index out of range");
+	};
 }
-void FitGenVeg::SetMutation(ParamSet val, int index){
-	if(index==0){
-		Lock locker(m_mutex);
-		m_f=ParamSet();
-		for(int i=0;i<val.Count();i++)
-			if((val[i]<0)|(val[i]>1))
-				throw new FitException("Attempt to set invalid M_0: should be in the range [0:1]");
-			else
-				m_f<<val[i];
-	}
-	if(index==1){
-		Lock locker(m_mutex);
-		for(int i=0;i<val.Count();i++)
-			if(val[i]<0)
-				throw new FitException("Attempt to set invalid M_1: should be a positive value");
-			else
-				m_f_2<<val[i];
-	}
-	if(index==2){
-		Lock locker(m_mutex);
-		for(int i=0;i<val.Count();i++)
-			if(val[i]<0)
-				throw new FitException("Attempt to set invalid M_2: should be a positive value");
-			else
-				m_f_3<<val[i];
-	}
+void FitGenVeg::SetMutation(MutationType index,ParamSet val){
+	switch(index){
+		case mutDifferential:{
+			Lock locker(m_mutex);
+			m_Mut_Differential=ParamSet();
+			for(int i=0;i<val.Count();i++)
+				if((val[i]<0)|(val[i]>1))
+					throw new FitException("Attempt to set invalid M_0: should be in the range [0:1]");
+				else
+					m_Mut_Differential<<val[i];
+		}break;
+		case mutRatio:{
+			Lock locker(m_mutex);
+			m_Mut_Ratio=ParamSet();
+			for(int i=0;i<val.Count();i++)
+				if(val[i]<0)
+					throw new FitException("Attempt to set invalid M_1: should be a positive value");
+				else
+					m_Mut_Ratio<<val[i];
+		}break;
+		case mutAbsolute:{
+			Lock locker(m_mutex);
+			m_Mut_Absolute=ParamSet();
+			for(int i=0;i<val.Count();i++)
+				if(val[i]<0)
+					throw new FitException("Attempt to set invalid M_2: should be a positive value");
+				else
+					m_Mut_Absolute<<val[i];
+		}break;
+		default:
+			throw new FitException("Mutation: Index out of range");
+	};
 }
 ParamSet FitGenVeg::born(ParamSet &C){
 	ParamSet res;
 	int a=rand()%N();int b=rand()%N();
 	ParamSet A=Point(a), B=Point(b);
 	for(int j=0; j<count();j++)
-		res<<(C[j]+m_f[j]*(A[j]-B[j])+RandomGauss(m_f_2[j]*C[j])+RandomGauss(m_f_3[j]));
+		res<<(C[j]+m_Mut_Differential[j]*(A[j]-B[j])
+			+RandomGauss(m_Mut_Ratio[j]*C[j])
+			+RandomGauss(m_Mut_Absolute[j]));
 	return res;
 }
 FitGen::FitGen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S):
