@@ -22,6 +22,7 @@ _gen::_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunc
 	m_itercount=0;
 	m_filter=std::make_shared<EmptyFilter>();
 }
+_gen::~_gen(){}
 void _gen::Init(int population_size, std::shared_ptr<IInitialConditions> initial_conditions){
 	if(m_population.size()>0)throw new FitException("Fitting algorithm cannot be inited twice");
 	if(population_size<=0)throw new FitException("Fitting algorithm got incorrect parameters");
@@ -40,15 +41,60 @@ void _gen::Init(int population_size, std::shared_ptr<IInitialConditions> initial
 		}
 	}
 }
-_gen::~_gen(){}
+void _gen::Iterate(){
+	int n=m_population.size();
+	if(n==0)
+		throw new FitException("Fitting algorithm cannot work with zero size of population");
+	vector<Point> tmp_population;
+	for(auto point:m_population){
+		bool once_more=true;
+		while(once_more){
+			ParamSet new_member=born(point.first);
+			if(
+				m_function->CorrectParams(new_member)&& 
+				m_filter->CorrectParams(new_member)
+			){
+				once_more=false;
+				auto new_point=make_pair(new_member,m_optimality->operator()(new_member,*m_function));
+				{Lock lock(m_mutex);
+					tmp_population.insert(tmp_population.begin()+WhereToInsert(0,tmp_population.size()-1,tmp_population,point),point);
+					tmp_population.insert(tmp_population.begin()+WhereToInsert(0,tmp_population.size()-1,tmp_population,new_point),new_point);
+				}
+			}
+		}
+	}
+	int par_cnt=ParamCount();
+	{Lock locker(m_mutex);
+		Sigma<double> disp[par_cnt];
+		m_population.clear();
+		for(int i=0; i<n;i++){
+			m_population.push_back(tmp_population[i]);
+			for(int j=0;j<par_cnt;j++)
+				disp[j].AddValue(tmp_population[i].first[j]);
+		}
+		m_disp=ParamSet();
+		for(int j=0;j<par_cnt;j++)
+			m_disp<<disp[j].getSigma();
+		m_itercount++;
+	}
+}
+std::shared_ptr<IParamFunc> _gen::GetFunction(){return m_function;}
+std::shared_ptr<IOptimalityFunction> _gen::GetOptimalityCalculator(){return m_optimality;}
 void _gen::SetFilter(std::shared_ptr<IParamCheck> filter){
+	Lock lock(m_mutex);
 	m_filter=filter;
 }
 int _gen::PopulationSize(){
 	Lock lock(m_mutex);
 	return m_population.size();
 }
-uint _gen::iteration_count(){
+int _gen::ParamCount(){
+	if(m_population.size()==0)
+		throw new FitException("Attempt to obtain unexisting results");
+	Lock lock(m_mutex);
+	return m_population[0].first.Count();
+}
+unsigned int _gen::iteration_count(){
 	Lock lock(m_mutex);
 	return m_itercount;
 }
@@ -64,11 +110,9 @@ ParamSet _gen::GetParameters(int point_index){
 	Lock lock(m_mutex);
 	return m_population[point_index].first;
 }
-int _gen::ParamCount(){
-	if(m_population.size()==0)
-		throw new FitException("Attempt to obtain unexisting results");
-	Lock lock(m_mutex);
-	return m_population[0].first.Count();
+double _gen::operator ()(ParamSet &X){
+	ParamSet P=GetParameters();
+	return m_function->operator()(X,P);
 }
 double _gen::operator [](int i){
 	if((i<0)|(i>=ParamCount()))
@@ -104,49 +148,7 @@ ParamSet _gen::ParamParabolicError(ParamSet delta){
 	return res;
 }
 
-double _gen::operator ()(ParamSet &X){
-	ParamSet P=GetParameters();
-	return m_function->operator()(X,P);
-}
-void _gen::Iterate(){
-	int n=m_population.size();
-	if(n==0)
-		throw new FitException("Fitting algorithm cannot work with zero size of population");
-	vector<pair<ParamSet,double>> tmp_population;
-	for(auto point:m_population){
-		bool once_more=true;
-		while(once_more){
-			ParamSet new_member=born(point.first);
-			if(
-				m_function->CorrectParams(new_member)&& 
-				m_filter->CorrectParams(new_member)
-			){
-				once_more=false;
-				auto new_point=make_pair(new_member,m_optimality->operator()(new_member,*m_function));
-				{Lock lock(m_mutex);
-					tmp_population.insert(tmp_population.begin()+WhereToInsert(0,tmp_population.size()-1,tmp_population,point),point);
-					tmp_population.insert(tmp_population.begin()+WhereToInsert(0,tmp_population.size()-1,tmp_population,new_point),new_point);
-				}
-			}
-		}
-	}
-	int par_cnt=ParamCount();
-	{Lock locker(m_mutex);
-		Sigma<double> disp[par_cnt];
-		m_population.clear();
-		for(int i=0; i<n;i++){
-			m_population.push_back(tmp_population[i]);
-			for(int j=0;j<par_cnt;j++)
-				disp[j].AddValue(tmp_population[i].first[j]);
-		}
-		m_disp=ParamSet();
-		for(int j=0;j<par_cnt;j++)
-			m_disp<<disp[j].getSigma();
-		m_itercount++;
-	}
-}
-std::shared_ptr<IParamFunc> _gen::GetFunction(){return m_function;}
-std::shared_ptr<IOptimalityFunction> _gen::GetOptimalityCalculator(){return m_optimality;}
+
 FitGenVeg::FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality):
 	_gen(function,optimality){}
 FitGenVeg::~FitGenVeg(){}
@@ -212,10 +214,10 @@ FitGen::~FitGen(){}
 ParamSet FitGen::born(ParamSet &C){
 	ParamSet res;
 	ParamSet veg=FitGenVeg::born(C);
-	int gen=rand()%PopulationSize();
+	auto gen=GetParameters(rand()%PopulationSize());
 	for(int j=0; j<ParamCount();j++){
 		if(rand()%2==0)
-			res<<GetParameters(gen)[j];
+			res<<gen[j];
 		else
 			res<<veg[j];
 	}
