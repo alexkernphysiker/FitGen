@@ -112,7 +112,7 @@ void _gen::Iterate(unsigned char threads){
 		throw new FitException("Cannot run fitting on zero threads");
 	if(m_data.size()==0)
 		throw new FitException("Fitting algorithm cannot work with zero size of population");
-	int n=ParamCount();
+	int n=PopulationSize();
 	vector<ParamSet> tmp_data;
 	vector<double> tmp_S;
 	auto func=[this,&tmp_data,&tmp_S](int a, int b){
