@@ -11,6 +11,7 @@ using namespace Fit;
 const unsigned char threads=1;
 typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
 typedef PolynomFunc<0,3,4> Background;
+
 int main(int argcnt, char **arg){
 	auto points_to_fit=make_shared<chi_2_wx>();
 	points_to_fit->
@@ -37,14 +38,15 @@ int main(int argcnt, char **arg){
 	FitGen fit(make_shared<Add<Foreground,Background>>(),points_to_fit);
 
 	auto initial_cond=make_shared<GenerateByGauss>();
-	initial_cond->Add(1,20).Add(20,20).Add(-20,0).Add(300,300).Add(4,4).Add(0,0.01).Add(0,0.01).Add(0,0.01);
+	initial_cond->Add(1,20).Add(20,20).Add(-8,0).Add(300,300).Add(4,4).Add(0,0.01).Add(0,0.01).Add(0,0.01);
 	fit.Init(1000,initial_cond);
 
 	auto filter=make_shared<FilterRangeIn>();
 	filter->Add(0,30).Add(5,50).Add(-100,0).Add(0,1000).Add(0,10).Add(-1,1).Add(-0.1,0.1).Add(-0.1,0.1);
 	fit.SetFilter(filter);
-	fit.SetMutation(Fit::mutDifferential,ParamSet(0.9,0.9,0.9,0.9,0.9,0.9)<<0.9<<1);
-	fit.SetMutation(Fit::mutRatio,ParamSet(0.01,0,0,0.05,0.05,0.05)<<0.1<<0.2);
+	fit.SetMutation(Fit::mutDifferential,parEq(7,0.9)<<1);
+	fit.SetMutation(Fit::mutRatio,ParamSet(0.01,0,0,0.1)<<parEq(2,0.05)<<0.1<<0.2);
+	fit.SetMutation(Fit::mutAbsolute,parZeros(8));
 
 	do{
 		fit.Iterate(threads);

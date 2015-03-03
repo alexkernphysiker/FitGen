@@ -18,6 +18,7 @@ public:
 	void operator=(const ParamSet &source);
 	double operator[](int i);
 	ParamSet &operator<<(double val);
+	ParamSet &operator<<(ParamSet val);
 	int Count();
 	void Set(int i,double v);
 protected:
@@ -32,6 +33,9 @@ ParamSet CreateParamSet(int n,indexer x){
 		res<<(x[i]);
 	return res;
 }
+ParamSet parEq(unsigned int cnt,double val);
+inline ParamSet parZeros(unsigned int cnt){return parEq(cnt,0);}
+inline ParamSet parOnes(unsigned int cnt){return parEq(cnt,1);}
 class IInitialConditions{
 public:
 	virtual ~IInitialConditions(){}

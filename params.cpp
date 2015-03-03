@@ -44,4 +44,16 @@ ParamSet &ParamSet::operator <<(double val){
 	m_values.push_back(val);
 	return *this;
 }
+ParamSet &ParamSet::operator <<(ParamSet val){
+	Lock lock(m_mutex);
+	for(auto v:val.m_values)
+		m_values.push_back(v);
+	return *this;
+}
+ParamSet parEq(unsigned int cnt,double val){
+	ParamSet res;
+	for(int i=0;i<cnt;i++)
+		res<<val;
+	return res;
+}
 }
