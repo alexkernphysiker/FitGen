@@ -3,6 +3,7 @@
 #include <memory>
 #include <mutex>
 #include <vector>
+#include <utility>
 namespace Fit{
 class ParamSet{
 public:
@@ -64,7 +65,7 @@ public:
 	virtual ~_gen();
 	void SetFilter(std::shared_ptr<IParamCheck> filter);
 	void Init(int population_size,std::shared_ptr<IInitialConditions> initial_conditions);
-	void Iterate(unsigned char threads=1);
+	void Iterate();
 	int PopulationSize();
 	ParamSet GetParameters(int point_index=0);
 	double GetOptimality(int point_index=0);
@@ -77,15 +78,13 @@ public:
 	std::shared_ptr<IParamFunc> GetFunction();
 	std::shared_ptr<IOptimalityFunction> GetOptimalityCalculator();
 protected:
-	ParamSet &Point(int point_index);
 	virtual ParamSet born(ParamSet&)=0;
 	std::mutex m_mutex;
 private:
 	std::shared_ptr<IParamFunc> m_function;
 	std::shared_ptr<IOptimalityFunction> m_optimality;
 	std::shared_ptr<IParamCheck> m_filter;
-	std::vector<ParamSet> m_data;
-	std::vector<double> S_cache;
+	std::vector<std::pair<ParamSet,double>> m_population;
 	ParamSet m_disp;
 	unsigned int m_itercount;
 };

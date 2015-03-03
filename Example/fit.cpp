@@ -49,9 +49,9 @@ int main(int argcnt, char **arg){
 	fit.SetMutation(Fit::mutAbsolute,parZeros(8));
 
 	do{
-		fit.Iterate(threads);
+		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.GetOptimality(),fit.GetOptimality(fit.PopulationSize()-1));
-	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.0001));
+	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.01));
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.GetOptimality());
 
 	ParamSet delta;
