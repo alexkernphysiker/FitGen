@@ -8,7 +8,7 @@
 #include <initialconditions.h>
 using namespace std;
 using namespace Fit;
-const unsigned char threads=1;
+
 typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
 typedef PolynomFunc<0,3,4> Background;
 
