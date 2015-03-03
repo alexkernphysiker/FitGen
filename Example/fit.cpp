@@ -51,7 +51,7 @@ int main(int argcnt, char **arg){
 	do{
 		fit.Iterate(threads);
 		printf("%f <= chi^2 <= %f     \r",fit.GetOptimality(),fit.GetOptimality(fit.PopulationSize()-1));
-	}while (fit.GetOptimality(fit.PopulationSize()-1)>fit.GetOptimality());
+	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.0001));
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.GetOptimality());
 
 	ParamSet delta;
