@@ -59,19 +59,19 @@ public:
 };
 class _gen{
 protected:
-	_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S);
+	_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
 public:
 	virtual ~_gen();
 	void SetFilter(std::shared_ptr<IParamCheck> filter);
-	void Init(int N,std::shared_ptr<IInitialConditions> initial_conditions);
+	void Init(int population_size,std::shared_ptr<IInitialConditions> initial_conditions);
 	void Iterate(unsigned char threads=1);
-	int N();
-	unsigned int iteration_count();
-	double S(int point_index=0);
+	int PopulationSize();
 	ParamSet GetParameters(int point_index=0);
-	int count();
+	double GetOptimality(int point_index=0);
+	int ParamCount();
 	double operator[](int i);
 	double operator()(ParamSet &X);
+	unsigned int iteration_count();
 	ParamSet ParamDispersion();
 	ParamSet ParamParabolicError(ParamSet delta);
 	std::shared_ptr<IParamFunc> GetFunction();
@@ -82,7 +82,7 @@ protected:
 	std::mutex m_mutex;
 private:
 	std::shared_ptr<IParamFunc> m_function;
-	std::shared_ptr<IOptimalityFunction> m_S;
+	std::shared_ptr<IOptimalityFunction> m_optimality;
 	std::shared_ptr<IParamCheck> m_filter;
 	std::vector<ParamSet> m_data;
 	std::vector<double> S_cache;
@@ -92,7 +92,7 @@ private:
 enum MutationType{mutDifferential=0,mutRatio=1,mutAbsolute=2};
 class FitGenVeg: public _gen{
 public:
-	FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S);
+	FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
 	virtual ~FitGenVeg();
 	ParamSet Mutation(MutationType index);
 	void SetMutation(MutationType index,ParamSet val);
@@ -105,7 +105,7 @@ private:
 };
 class FitGen: public FitGenVeg{
 public:
-	FitGen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S);
+	FitGen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
 	virtual ~FitGen();
 protected:
 	virtual ParamSet born(ParamSet &C)override;

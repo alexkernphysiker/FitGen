@@ -13,18 +13,18 @@ public:
 	virtual ~EmptyFilter(){}
 	virtual bool CorrectParams(ParamSet &)override{return true;}
 };
-_gen::_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S){
+_gen::_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality){
 	m_function=function;
-	m_S=S;
+	m_optimality=optimality;
 	m_itercount=0;
 	m_filter=std::make_shared<EmptyFilter>();
 }
-void _gen::Init(int N, std::shared_ptr<IInitialConditions> initial_conditions){
+void _gen::Init(int population_size, std::shared_ptr<IInitialConditions> initial_conditions){
 	if(m_data.size()>0)throw new FitException("Fitting algorithm cannot be inited twice");
-	if(N<=0)throw new FitException("Fitting algorithm got incorrect parameters");
+	if(population_size<=0)throw new FitException("Fitting algorithm got incorrect parameters");
 	Lock lock(m_mutex);
 	m_itercount=0;
-	for(int i=0;i<N;i++){
+	for(int i=0;i<population_size;i++){
 		bool oncemore=true;
 		while(oncemore){
 			ParamSet tmp=initial_conditions->Generate();
@@ -32,7 +32,7 @@ void _gen::Init(int N, std::shared_ptr<IInitialConditions> initial_conditions){
 				m_filter->CorrectParams(tmp)
 			){
 				m_data.push_back(tmp);
-				S_cache.push_back((*m_S)(tmp,*m_function));
+				S_cache.push_back((*m_optimality)(tmp,*m_function));
 				oncemore=false;
 			}
 		}
@@ -42,7 +42,7 @@ _gen::~_gen(){}
 void _gen::SetFilter(std::shared_ptr<IParamCheck> filter){
 	m_filter=filter;
 }
-int _gen::N(){
+int _gen::PopulationSize(){
 	Lock lock(m_mutex);
 	return m_data.size();
 }
@@ -50,7 +50,7 @@ uint _gen::iteration_count(){
 	Lock lock(m_mutex);
 	return m_itercount;
 }
-double _gen::S(int point_index){
+double _gen::GetOptimality(int point_index){
 	if((point_index<0)|(point_index>=S_cache.size()))
 		throw new FitException("Point index out of range or no results were calculated");
 	Lock lock(m_mutex);
@@ -63,14 +63,14 @@ ParamSet &_gen::Point(int point_index){
 	return m_data[point_index];
 }
 ParamSet _gen::GetParameters(int point_index){return Point(point_index);}
-int _gen::count(){
+int _gen::ParamCount(){
 	if(m_data.size()==0)
 		throw new FitException("Attempt to obtain unexisting results");
 	Lock lock(m_mutex);
 	return m_data[0].Count();
 }
 double _gen::operator [](int i){
-	if((i<0)|(i>=count()))
+	if((i<0)|(i>=ParamCount()))
 		throw new FitException("Parameter index out of range");
 	Lock lock(m_mutex);
 	return m_data[0][i];
@@ -85,10 +85,11 @@ ParamSet _gen::ParamParabolicError(ParamSet delta){
 	for(int i=0;i<delta.Count();i++){
 		if(delta[i]<=0)
 			throw new FitException("Error in parabolic error calculation: delta cannot be zero or negative");
-		double s=S();
+		double s=GetOptimality();
 		ParamSet ab=m_data[0];ab.Set(i,ab[i]+delta[i]);
 		ParamSet be=m_data[0];be.Set(i,be[i]-delta[i]);
-		double sa=m_S->operator()(ab,*m_function);double sb=m_S->operator()(be,*m_function);
+		double sa=m_optimality->operator()(ab,*m_function);
+		double sb=m_optimality->operator()(be,*m_function);
 		double da=(sa-s)/delta[i];double db=(s-sb)/delta[i];
 		double dd=(da-db)/delta[i];
 		if(dd<0){
@@ -111,7 +112,7 @@ void _gen::Iterate(unsigned char threads){
 		throw new FitException("Cannot run fitting on zero threads");
 	if(m_data.size()==0)
 		throw new FitException("Fitting algorithm cannot work with zero size of population");
-	int n=count();
+	int n=ParamCount();
 	vector<ParamSet> tmp_data;
 	vector<double> tmp_S;
 	auto func=[this,&tmp_data,&tmp_S](int a, int b){
@@ -124,7 +125,7 @@ void _gen::Iterate(unsigned char threads){
 				m_function->CorrectParams(newC)&& 
 				m_filter->CorrectParams(newC)
 			)
-				new_s=m_S->operator ()(newC,*m_function);
+				new_s=m_optimality->operator ()(newC,*m_function);
 			{Lock lock(m_mutex);
 				int ind = WhereToInsert(0,tmp_S.size()-1,tmp_S,old_s);
 				tmp_S.insert(tmp_S.begin()+ind,old_s);
@@ -164,9 +165,9 @@ void _gen::Iterate(unsigned char threads){
 	}
 }
 std::shared_ptr<IParamFunc> _gen::GetFunction(){return m_function;}
-std::shared_ptr<IOptimalityFunction> _gen::GetOptimalityCalculator(){return m_S;}
-FitGenVeg::FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S):
-	_gen(function,S){}
+std::shared_ptr<IOptimalityFunction> _gen::GetOptimalityCalculator(){return m_optimality;}
+FitGenVeg::FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality):
+	_gen(function,optimality){}
 FitGenVeg::~FitGenVeg(){}
 ParamSet FitGenVeg::Mutation(MutationType index){
 	switch(index){
@@ -215,22 +216,22 @@ void FitGenVeg::SetMutation(MutationType index,ParamSet val){
 }
 ParamSet FitGenVeg::born(ParamSet &C){
 	ParamSet res;
-	int a=rand()%N();int b=rand()%N();
+	int a=rand()%PopulationSize();int b=rand()%PopulationSize();
 	ParamSet A=Point(a), B=Point(b);
-	for(int j=0; j<count();j++)
+	for(int j=0; j<ParamCount();j++)
 		res<<(C[j]+m_Mut_Differential[j]*(A[j]-B[j])
 			+RandomGauss(m_Mut_Ratio[j]*C[j])
 			+RandomGauss(m_Mut_Absolute[j]));
 	return res;
 }
-FitGen::FitGen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> S):
-	FitGenVeg(function,S){}
+FitGen::FitGen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality):
+	FitGenVeg(function,optimality){}
 FitGen::~FitGen(){}
 ParamSet FitGen::born(ParamSet &C){
 	ParamSet res;
 	ParamSet veg=FitGenVeg::born(C);
-	int gen=rand()%N();
-	for(int j=0; j<count();j++){
+	int gen=rand()%PopulationSize();
+	for(int j=0; j<ParamCount();j++){
 		if(rand()%2==0)
 			res<<Point(gen)[j];
 		else

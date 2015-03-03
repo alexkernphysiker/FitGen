@@ -38,7 +38,7 @@ int main(int argcnt, char **arg){
 	FitGen fit(make_shared<Add<Foreground,Background>>(),points_to_fit);
 
 	auto initial_cond=make_shared<GenerateByGauss>();
-	initial_cond->Add(1,20).Add(20,20).Add(-8,0).Add(300,300).Add(4,4).Add(0,0.01).Add(0,0.01).Add(0,0.01);
+	initial_cond->Add(1,20).Add(20,20).Add(-20,0).Add(300,300).Add(4,4).Add(0,0.01).Add(0,0.01).Add(0,0.01);
 	fit.Init(1000,initial_cond);
 
 	auto filter=make_shared<FilterRangeIn>();
@@ -50,15 +50,15 @@ int main(int argcnt, char **arg){
 
 	do{
 		fit.Iterate(threads);
-		printf("%f <= chi^2 <= %f     \r",fit.S(),fit.S(fit.N()-1));
-	}while (fit.S(fit.N()-1)>fit.S());
-	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.S());
+		printf("%f <= chi^2 <= %f     \r",fit.GetOptimality(),fit.GetOptimality(fit.PopulationSize()-1));
+	}while (fit.GetOptimality(fit.PopulationSize()-1)>fit.GetOptimality());
+	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.GetOptimality());
 
 	ParamSet delta;
-	for(int i=0; i<fit.count();i++)
+	for(int i=0; i<fit.ParamCount();i++)
 		delta<<((fit.ParamDispersion()[i]>0.1)?fit.ParamDispersion()[i]:0.1);
 	ParamSet er=fit.ParamParabolicError(delta);
-	for(int i=0; i<fit.count();i++)
+	for(int i=0; i<fit.ParamCount();i++)
 		printf("par%i = %f +/- %f\n",i,fit[i],er[i]);
 
 	{
