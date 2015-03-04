@@ -38,11 +38,11 @@ namespace Fit{
 		Lock lock(m_mutex);
 		m_itercount=0;
 		for(int i=0;i<population_size;i++){
-			ParamSet new_member=CreateNew(
+			ParamSet new_param=CreateNew(
 				[initial_conditions](){return initial_conditions->Generate();},
 				[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
 			);
-			m_population.push_back(make_pair(new_member,m_optimality->operator()(new_member,*m_function)));
+			m_population.push_back(make_pair(new_param,m_optimality->operator()(new_param,*m_function)));
 		}
 	}
 	void _gen::Iterate(){
@@ -52,11 +52,11 @@ namespace Fit{
 			throw new FitException("Fitting algorithm cannot work with zero size of population");
 		vector<Point> tmp_population;
 		for(auto point:m_population){
-			ParamSet new_member=CreateNew(
+			ParamSet new_param=CreateNew(
 				[this,&point](){return born(point.first);},
 				[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
 			);
-			auto new_point=make_pair(new_member,m_optimality->operator()(new_member,*m_function));
+			auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
 			{Lock lock(m_mutex);
 				InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
 				InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
