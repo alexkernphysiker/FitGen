@@ -1,7 +1,8 @@
-#ifndef ___INITIAL_H____
-#define ___INITIAL_H____
+#ifndef ___DnoQpUEN
+#define ___DnoQpUEN
 #include "fit_gen.h"
 namespace Fit{
+	using namespace std;
 	class GenerateUniform:public IInitialConditions{
 public:
 	GenerateUniform();
@@ -12,8 +13,8 @@ public:
 	GenerateUniform &Add(double min,double max);
 	virtual ParamSet Generate()override;
 private:
-	std::vector<double> m_min;
-	std::vector<double> m_max;
+	vector<double> m_min;
+	vector<double> m_max;
 };
 
 class GenerateByGauss:public IInitialConditions{
@@ -26,8 +27,8 @@ public:
 	GenerateByGauss &Add(double mean,double sig);
 	virtual ParamSet Generate()override;
 private:
-	std::vector<double> m_mean;
-	std::vector<double> m_sig;
+	vector<double> m_mean;
+	vector<double> m_sig;
 };
 }
 #endif

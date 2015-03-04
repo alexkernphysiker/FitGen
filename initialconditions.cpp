@@ -2,6 +2,7 @@
 #include "math_h/randomfunc.h"
 #include "fitexception.h"
 namespace Fit{
+	using namespace std;
 	GenerateUniform::GenerateUniform(){}
 	GenerateUniform::~GenerateUniform(){}
 	int GenerateUniform::Count(){

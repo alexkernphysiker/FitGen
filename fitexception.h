@@ -1,5 +1,5 @@
-#ifndef APROEXCEPTION_H
-#define APROEXCEPTION_H
+#ifndef ____EuiGhCCk
+#define ____EuiGhCCk
 #include <exception>
 #include <string>
 #include "fit_gen.h"
@@ -11,4 +11,4 @@ public:
 private:
 	std::string m_msg;
 };
-#endif // APROEXCEPTION_H
+#endif

@@ -48,6 +48,7 @@ namespace Fit{
 			res+=::pow(Y(i)-func(X(i),params),2)*W(i);
 		return res;
 	}
+	
 	double chi_2::operator ()(ParamSet &params, IParamFunc &func){
 		double z=Count()-params.Count();
 		if(z<=0)throw new FitException("wrong conditions for calculating xi^2");
@@ -56,6 +57,7 @@ namespace Fit{
 			res+=::pow((Y(i)-func(X(i),params))/W(i),2);
 		return res/z;
 	}
+	
 	double chi_2_wx::operator ()(ParamSet &params, IParamFunc &func){
 		double z=Count()-params.Count();
 		if(z<=0)throw new FitException("wrong conditions for calculating xi^2");

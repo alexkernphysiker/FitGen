@@ -1,7 +1,7 @@
 #include "fit_gen.h"
 #include "fitexception.h"
-using namespace std;
 namespace Fit{
+	using namespace std;
 	typedef lock_guard<mutex> Lock;
 	ParamSet::ParamSet(){}
 	ParamSet::ParamSet(double x):ParamSet(){operator<<(x);}
