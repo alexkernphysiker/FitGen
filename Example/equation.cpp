@@ -9,13 +9,13 @@ using namespace Fit::FuncWrappers_P;
 int main(int argcnt, char **arg){
 	auto empty=make_shared<NoParamFunc>();
 	auto eq=make_shared<SearchMin<add<
-			power< sub<iconst<1>,par<0>>, iconst<2>>,
-			mul<iconst<100>, power< sub< par<1>, power<par<0>,iconst<2>> >, iconst<2> > >
+		power< sub<iconst<1>,par<0>>, iconst<2>>,
+		mul<iconst<100>, power< sub< par<1>, power<par<0>,iconst<2>> >, iconst<2> > >
 	>>>();
 	auto initial=make_shared<GenerateUniform>();
 	initial->Add(-20,20).Add(-20,20);
 	FitGenVeg solve(empty,eq);
-	solve.Init(50,initial);
+	solve.Init(40,initial);
 	solve.SetMutation(Fit::mutDifferential,ParamSet(1,1));
 	solve.SetMutation(Fit::mutRatio,ParamSet(0,0));
 	solve.SetMutation(Fit::mutAbsolute,ParamSet(0,0));

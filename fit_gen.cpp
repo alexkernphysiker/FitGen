@@ -1,15 +1,22 @@
 #include <thread>
 #include "fit_gen.h"
 #include "fitexception.h"
-typedef std::pair<Fit::ParamSet,double> Point;
-bool operator>(Point a,Point b){return a.second>b.second;}
-bool operator<(Point a,Point b){return a.second<b.second;}
 #include "math_h/interpolate.h"
 #include "math_h/randomfunc.h"
 #include "math_h/sigma.h"
 using namespace std;
 typedef lock_guard<mutex> Lock;
 namespace Fit{
+typedef pair<ParamSet,double> Point;
+bool operator>(Point a,Point b){return a.second>b.second;}
+bool operator<(Point a,Point b){return a.second<b.second;}
+template<class Create,class Condition>
+inline ParamSet CreateNew(Create create,Condition condition){
+	while(true){
+		ParamSet res=create();
+		if(condition(res))return res;
+	}
+}
 class EmptyFilter:public IParamCheck{
 public:
 	EmptyFilter(){}
@@ -29,41 +36,30 @@ void _gen::Init(int population_size, std::shared_ptr<IInitialConditions> initial
 	Lock lock(m_mutex);
 	m_itercount=0;
 	for(int i=0;i<population_size;i++){
-		bool oncemore=true;
-		while(oncemore){
-			ParamSet tmp=initial_conditions->Generate();
-			if(m_function->CorrectParams(tmp)&&
-				m_filter->CorrectParams(tmp)
-			){
-				m_population.push_back(make_pair(tmp,m_optimality->operator()(tmp,*m_function)));
-				oncemore=false;
-			}
-		}
+		ParamSet new_member=CreateNew(
+			[initial_conditions](){return initial_conditions->Generate();},
+			[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+		);
+		m_population.push_back(make_pair(new_member,m_optimality->operator()(new_member,*m_function)));
 	}
 }
 void _gen::Iterate(){
-	int n=m_population.size();
+	int n=PopulationSize();
+	int par_cnt=ParamCount();
 	if(n==0)
 		throw new FitException("Fitting algorithm cannot work with zero size of population");
 	vector<Point> tmp_population;
 	for(auto point:m_population){
-		bool once_more=true;
-		while(once_more){
-			ParamSet new_member=born(point.first);
-			if(
-				m_function->CorrectParams(new_member)&& 
-				m_filter->CorrectParams(new_member)
-			){
-				once_more=false;
-				auto new_point=make_pair(new_member,m_optimality->operator()(new_member,*m_function));
-				{Lock lock(m_mutex);
-					tmp_population.insert(tmp_population.begin()+WhereToInsert(0,tmp_population.size()-1,tmp_population,point),point);
-					tmp_population.insert(tmp_population.begin()+WhereToInsert(0,tmp_population.size()-1,tmp_population,new_point),new_point);
-				}
-			}
+		ParamSet new_member=CreateNew(
+			[this,&point](){return born(point.first);},
+			[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+		);
+		auto new_point=make_pair(new_member,m_optimality->operator()(new_member,*m_function));
+		{Lock lock(m_mutex);
+			InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
+			InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
 		}
 	}
-	int par_cnt=ParamCount();
 	{Lock locker(m_mutex);
 		Sigma<double> disp[par_cnt];
 		m_population.clear();

@@ -1,3 +1,6 @@
+#in your own ckame project you should just use 
+#add_subdirectory(FitGen)
+#for adding library from this repository
 cmake_minimum_required(VERSION 2.6)
 project(fitapp)
 include_directories(..)
