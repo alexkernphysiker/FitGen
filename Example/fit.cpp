@@ -46,7 +46,6 @@ int main(int argcnt, char **arg){
 	fit.SetFilter(filter);
 	fit.SetMutation(Fit::mutDifferential,parEq(7,0.9)<<1);
 	fit.SetMutation(Fit::mutRatio,ParamSet(0.01,0,0,0.1)<<parEq(2,0.05)<<0.1<<0.2);
-	fit.SetMutation(Fit::mutAbsolute,parZeros(8));
 
 	do{
 		fit.Iterate();
