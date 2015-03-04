@@ -40,7 +40,7 @@ namespace Fit{
 		for(int i=0;i<population_size;i++){
 			ParamSet new_member=CreateNew(
 				[initial_conditions](){return initial_conditions->Generate();},
-										  [this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+				[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
 			);
 			m_population.push_back(make_pair(new_member,m_optimality->operator()(new_member,*m_function)));
 		}
@@ -54,7 +54,7 @@ namespace Fit{
 		for(auto point:m_population){
 			ParamSet new_member=CreateNew(
 				[this,&point](){return born(point.first);},
-										  [this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+				[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
 			);
 			auto new_point=make_pair(new_member,m_optimality->operator()(new_member,*m_function));
 			{Lock lock(m_mutex);
