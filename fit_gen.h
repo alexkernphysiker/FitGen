@@ -75,7 +75,9 @@ namespace Fit{
 		double operator[](int i);
 		double operator()(ParamSet &X);
 		unsigned int iteration_count();
+		ParamSet ParamAverage();
 		ParamSet ParamDispersion();
+		ParamSet ParamMaxDeviation();
 		ParamSet ParamParabolicError(ParamSet delta);
 		shared_ptr<IParamFunc> GetFunction();
 		shared_ptr<IOptimalityFunction> GetOptimalityCalculator();
@@ -87,7 +89,9 @@ namespace Fit{
 		shared_ptr<IOptimalityFunction> m_optimality;
 		shared_ptr<IParamCheck> m_filter;
 		vector<pair<ParamSet,double>> m_population;
+		ParamSet m_avr;
 		ParamSet m_disp;
+		ParamSet m_max_dev;
 		unsigned int m_itercount;
 	};
 	

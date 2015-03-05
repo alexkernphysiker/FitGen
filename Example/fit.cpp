@@ -53,12 +53,11 @@ int main(int argcnt, char **arg){
 	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.01));
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.GetOptimality());
 
-	ParamSet delta;
+	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
+	ParamSet err=fit.ParamParabolicError(parEq(fit.ParamCount(),0.001));
 	for(int i=0; i<fit.ParamCount();i++)
-		delta<<((fit.ParamDispersion()[i]>0.1)?fit.ParamDispersion()[i]:0.1);
-	ParamSet er=fit.ParamParabolicError(delta);
-	for(int i=0; i<fit.ParamCount();i++)
-		printf("par%i = %f +/- %f\n",i,fit[i],er[i]);
+		printf("par%i \t\t%f \t\t%f \t\t%f \t\t%f \t\t%f \n",i,
+			   fit[i],err[i],fit.ParamMaxDeviation()[i],fit.ParamAverage()[i],fit.ParamDispersion()[i]);
 
 	{
 		ofstream data;

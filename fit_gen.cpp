@@ -64,15 +64,23 @@ namespace Fit{
 		}
 		{Lock locker(m_mutex);
 			Sigma<double> disp[par_cnt];
+			m_max_dev=parZeros(par_cnt);
 			m_population.clear();
 			for(int i=0; i<n;i++){
 				m_population.push_back(tmp_population[i]);
-				for(int j=0;j<par_cnt;j++)
+				for(int j=0;j<par_cnt;j++){
 					disp[j].AddValue(tmp_population[i].first[j]);
+					double dev=abs(tmp_population[i].first[j]-tmp_population[0].first[j]);
+					if(dev>m_max_dev[j])
+						m_max_dev.Set(j,dev);
+				}
 			}
+			m_avr=ParamSet();
 			m_disp=ParamSet();
-			for(int j=0;j<par_cnt;j++)
+			for(int j=0;j<par_cnt;j++){
+				m_avr<<disp[j].getAverage();
 				m_disp<<disp[j].getSigma();
+			}
 			m_itercount++;
 		}
 	}
@@ -118,7 +126,9 @@ namespace Fit{
 		Lock lock(m_mutex);
 		return m_population[0].first[i];
 	}
+	ParamSet _gen::ParamAverage(){return m_avr;}
 	ParamSet _gen::ParamDispersion(){return m_disp;}
+	ParamSet _gen::ParamMaxDeviation(){return m_max_dev;}
 	ParamSet _gen::ParamParabolicError(ParamSet delta){
 		if(PopulationSize()==0)
 			throw new FitException("Attempt to calculate parabolic error with no results");
