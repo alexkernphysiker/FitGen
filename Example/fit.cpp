@@ -39,13 +39,12 @@ int main(int argcnt, char **arg){
 
 	auto initial_cond=make_shared<GenerateByGauss>();
 	initial_cond->Add(1,20).Add(20,20).Add(-20,0).Add(300,300).Add(4,4).Add(0,0.01).Add(0,0.01).Add(0,0.01);
-	fit.Init(100,initial_cond);
+	fit.Init(50,initial_cond);
 
 	auto filter=make_shared<FilterRangeIn>();
 	filter->Add(0,30).Add(5,50).Add(-100,0).Add(0,1000).Add(0,10).Add(-1,1).Add(-0.1,0.1).Add(-0.1,0.1);
 	fit.SetFilter(filter);
-	fit.SetMutation(Fit::mutDifferential,parEq(7,0.9)<<1);
-	fit.SetMutation(Fit::mutRatio,ParamSet(0.01,0,0,0.1)<<parEq(2,0.05)<<0.1<<0.2);
+	fit.SetMutation(Fit::mutDifferential,parEq(8,0.5));
 
 	do{
 		fit.Iterate();
