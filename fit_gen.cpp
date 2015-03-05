@@ -10,7 +10,7 @@ namespace Fit{
 	public:
 		EmptyFilter(){}
 		virtual ~EmptyFilter(){}
-		virtual bool CorrectParams(ParamSet &)override{return true;}
+		virtual bool CorrectParams(ParamSet)override{return true;}
 	};
 
 	typedef lock_guard<mutex> Lock;
@@ -156,77 +156,43 @@ namespace Fit{
 		return res;
 	}
 	
-	FitGenVeg::FitGenVeg(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):_gen(function,optimality){}
-	FitGenVeg::~FitGenVeg(){}
-	ParamSet FitGenVeg::Mutation(MutationType index){
-		switch(index){
-			case mutDifferential:
-				return m_Mut_Differential;
-			case mutRatio:
-				return m_Mut_Ratio;
-			case mutAbsolute:
-				return m_Mut_Absolute;
-			default:
-				throw new FitException("Mutation: Index out of range");
-		};
+	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):_gen(function,optimality){
+		F=0.5;
 	}
-	void FitGenVeg::SetMutation(MutationType index,ParamSet val){
-		switch(index){
-			case mutDifferential:{
-				Lock locker(m_mutex);
-				m_Mut_Differential=ParamSet();
-				for(int i=0;i<val.Count();i++)
-					if((val[i]<0)|(val[i]>1))
-						throw new FitException("Attempt to set invalid M_0: should be in the range [0:1]");
-					else
-						m_Mut_Differential<<val[i];
-			}break;
-			case mutRatio:{
-				Lock locker(m_mutex);
-				m_Mut_Ratio=ParamSet();
-				for(int i=0;i<val.Count();i++)
-					if(val[i]<0)
-						throw new FitException("Attempt to set invalid M_1: should be a positive value");
-					else
-						m_Mut_Ratio<<val[i];
-			}break;
-			case mutAbsolute:{
-				Lock locker(m_mutex);
-				m_Mut_Absolute=ParamSet();
-				for(int i=0;i<val.Count();i++)
-					if(val[i]<0)
-						throw new FitException("Attempt to set invalid M_2: should be a positive value");
-					else
-						m_Mut_Absolute<<val[i];
-			}break;
-			default:
-				throw new FitException("Mutation: Index out of range");
-		};
+	FitGen::~FitGen(){}
+	double FitGen::Mutation(){return F;}
+	void FitGen::SetMutation(double val){
+		if(val<=0)
+			throw new FitException("Invalid mutation coefficient value");
+		F=val;
 	}
-	ParamSet FitGenVeg::born(ParamSet &C){
+	ParamSet FitGen::born(ParamSet C){
 		ParamSet res;
 		int a=rand()%PopulationSize();int b=rand()%PopulationSize();
 		ParamSet A=GetParameters(a), 
 		B=GetParameters(b);
 		for(int j=0; j<ParamCount();j++)
-			res<<(C[j]+m_Mut_Differential[j]*(A[j]-B[j])
-			+RandomGauss(m_Mut_Ratio[j]*C[j])
-			+RandomGauss(m_Mut_Absolute[j]));
+			res<<(C[j]+F*(A[j]-B[j]));
 		return res;
 	}
 	
-	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):FitGenVeg(function,optimality){}
-	FitGen::~FitGen(){}
-	ParamSet FitGen::born(ParamSet &C){
-		ParamSet res;
-		ParamSet veg=FitGenVeg::born(C);
-		auto gen=GetParameters(rand()%PopulationSize());
-		for(int j=0; j<ParamCount();j++){
-			if(rand()%2==0)
-				res<<gen[j];
-			else
-				res<<veg[j];
-		}
-		return res;
+	FitGenWithCrossing::FitGenWithCrossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
+		FitGen(function,optimality){
+		P=0.5;
+	}
+	FitGenWithCrossing::~FitGenWithCrossing(){}
+	double FitGenWithCrossing::CrossingProbability(){return P;}
+	void FitGenWithCrossing::SetCrossingProbability(double val){
+		if((val<0)||(val>1))
+			throw new FitException("Invalid crossing probability value");
+		P=val;
+	}
+	ParamSet FitGenWithCrossing::born(ParamSet parent){
+		auto X=FitGen::born(parent);
+		auto C=FitGen::born(GetParameters(rand()%PopulationSize()));
+		for(int i=0; i<ParamCount();i++)
+			if(RandomUniformly(0.0,1.0)<=P)
+				X.Set(i,C[i]);
+		return X;
 	}
 }

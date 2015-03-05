@@ -21,12 +21,12 @@ namespace Fit{
 		return Add(x,ParamSet(),y,weight);
 	}
 	int FitPointsAbstract::Count(){return m_data.size();}
-	ParamSet &FitPointsAbstract::X(int i){
+	ParamSet FitPointsAbstract::X(int i){
 		if((i<0)||(i>=m_data.size()))
 			throw new FitException("AproPoints: attempt to get point out of range");
 		return m_data[i];
 	}
-	ParamSet &FitPointsAbstract::X_w(int i){
+	ParamSet FitPointsAbstract::X_w(int i){
 		if((i<0)||(i>=m_data_w.size()))
 			throw new FitException("AproPoints: attempt to get point out of range");
 		return m_data_w[i];
@@ -42,14 +42,14 @@ namespace Fit{
 		return m_w[i];
 	}
 	
-	double SquareDiff::operator ()(ParamSet &params, IParamFunc &func){
+	double SquareDiff::operator ()(ParamSet params, IParamFunc &func){
 		double res=0;
 		for(int i=0; i<Count();i++)
 			res+=::pow(Y(i)-func(X(i),params),2)*W(i);
 		return res;
 	}
 	
-	double chi_2::operator ()(ParamSet &params, IParamFunc &func){
+	double chi_2::operator ()(ParamSet params, IParamFunc &func){
 		double z=Count()-params.Count();
 		if(z<=0)throw new FitException("wrong conditions for calculating xi^2");
 		double res=0;
@@ -58,7 +58,7 @@ namespace Fit{
 		return res/z;
 	}
 	
-	double chi_2_wx::operator ()(ParamSet &params, IParamFunc &func){
+	double chi_2_wx::operator ()(ParamSet params, IParamFunc &func){
 		double z=Count()-params.Count();
 		if(z<=0)throw new FitException("wrong conditions for calculating xi^2");
 		double res=0;

@@ -35,29 +35,25 @@ int main(int argcnt, char **arg){
 		.Add(ParamSet( 17.5),ParamSet(2,5), 495.286, 14.1408)
 		.Add(ParamSet( 22.5),ParamSet(2,5), 497.253, 14.3717)
 		.Add(ParamSet( 27.5),ParamSet(2,5), 511.347, 15.0141);
+	printf("Initing\n");
 	FitGen fit(make_shared<Add<Foreground,Background>>(),points_to_fit);
-
 	auto initial_cond=make_shared<GenerateByGauss>();
 	initial_cond->Add(1,20).Add(20,20).Add(-20,0).Add(300,300).Add(4,4).Add(0,0.01).Add(0,0.01).Add(0,0.01);
-	fit.Init(50,initial_cond);
-
 	auto filter=make_shared<FilterRangeIn>();
 	filter->Add(0,30).Add(5,50).Add(-100,0).Add(0,1000).Add(0,10).Add(-1,1).Add(-0.1,0.1).Add(-0.1,0.1);
 	fit.SetFilter(filter);
-	fit.SetMutation(Fit::mutDifferential,parEq(8,0.5));
-
+	fit.Init(50,initial_cond);
+	printf("Running calculation\n");
 	do{
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.GetOptimality(),fit.GetOptimality(fit.PopulationSize()-1));
-	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.01));
+	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.001));
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.GetOptimality());
-
 	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
 	ParamSet err=fit.ParamParabolicError(parEq(fit.ParamCount(),0.001));
 	for(int i=0; i<fit.ParamCount();i++)
 		printf("par%i \t\t%f \t\t%f \t\t%f \t\t%f \t\t%f \n",i,
 			   fit[i],err[i],fit.ParamMaxDeviation()[i],fit.ParamAverage()[i],fit.ParamDispersion()[i]);
-
 	{
 		ofstream data;
 		data.open("output.data.txt");
@@ -82,12 +78,11 @@ int main(int argcnt, char **arg){
 		){
 			Background bg_func;
 			Foreground fg_func;
-			ParamSet P=fit.GetParameters();
 			for(double x=-70; x<=30; x+=1){
 				ParamSet X(x);
 				out<<x<<" "<<fit(X)<<"\n";
-				outbg<<x<<" "<<bg_func(X,P)<<"\n";
-				outfg<<x<<" "<<fg_func(X,P)<<"\n";
+				outbg<<x<<" "<<bg_func(X,fit.GetParameters())<<"\n";
+				outfg<<x<<" "<<fg_func(X,fit.GetParameters())<<"\n";
 			}
 			out.close();
 			outbg.close();

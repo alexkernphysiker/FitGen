@@ -14,9 +14,8 @@ int main(int argcnt, char **arg){
 	>>>();
 	auto initial=make_shared<GenerateUniform>();
 	initial->Add(-20,20).Add(-20,20);
-	FitGenVeg solve(empty,eq);
+	FitGen solve(empty,eq);
 	solve.Init(30,initial);
-	solve.SetMutation(Fit::mutDifferential,ParamSet(0.5,0.5));
 	do{solve.Iterate();}while(solve.GetOptimality()<solve.GetOptimality(solve.PopulationSize()-1));
 	printf("%i iterations\n",solve.iteration_count());
 	printf("x=%f; y=%f\n",solve[0],solve[1]);

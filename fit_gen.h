@@ -47,17 +47,17 @@ namespace Fit{
 	class IParamCheck{
 	public:
 		virtual ~IParamCheck(){}
-		virtual bool CorrectParams(ParamSet &params)=0;
+		virtual bool CorrectParams(ParamSet params)=0;
 	};
 	class IParamFunc:public IParamCheck{
 	public:
 		virtual ~IParamFunc(){}
-		virtual double operator()(ParamSet &X, ParamSet &P)=0;
+		virtual double operator()(ParamSet X, ParamSet P)=0;
 	};
 	class IOptimalityFunction{
 	public:
 		virtual ~IOptimalityFunction(){}
-		virtual double operator()(ParamSet &params, IParamFunc &func)=0;
+		virtual double operator()(ParamSet params, IParamFunc &func)=0;
 	};
 	
 	class _gen{
@@ -82,7 +82,7 @@ namespace Fit{
 		shared_ptr<IParamFunc> GetFunction();
 		shared_ptr<IOptimalityFunction> GetOptimalityCalculator();
 	protected:
-		virtual ParamSet born(ParamSet&)=0;
+		virtual ParamSet born(ParamSet)=0;
 		mutex m_mutex;
 	private:
 		shared_ptr<IParamFunc> m_function;
@@ -95,26 +95,27 @@ namespace Fit{
 		unsigned int m_itercount;
 	};
 	
-	enum MutationType{mutDifferential=0,mutRatio=1,mutAbsolute=2};
-	class FitGenVeg: public _gen{
-	public:
-		FitGenVeg(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
-		virtual ~FitGenVeg();
-		ParamSet Mutation(MutationType index);
-		void SetMutation(MutationType index,ParamSet val);
-	protected:
-		virtual ParamSet born(ParamSet &C)override;
-	private:
-		ParamSet m_Mut_Differential;
-		ParamSet m_Mut_Ratio;
-		ParamSet m_Mut_Absolute;
-	};
-	class FitGen: public FitGenVeg{
+	class FitGen: public _gen{
 	public:
 		FitGen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
 		virtual ~FitGen();
+		double Mutation();
+		void SetMutation(double val);
 	protected:
-		virtual ParamSet born(ParamSet &C)override;
+		virtual ParamSet born(ParamSet C)override;
+	private:
+		double F;
+	};
+	class FitGenWithCrossing: public FitGen{
+	public:
+		FitGenWithCrossing(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
+		virtual ~FitGenWithCrossing();
+		double CrossingProbability();
+		void SetCrossingProbability(double val);
+	protected:
+		virtual ParamSet born(ParamSet C)override;
+	private:
+		double P;
 	};
 }
 #endif

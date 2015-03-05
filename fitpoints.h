@@ -9,10 +9,10 @@ namespace Fit{
 		virtual ~FitPointsAbstract();
 		FitPointsAbstract &Add(ParamSet x, double y, double weight=1);
 		FitPointsAbstract &Add(ParamSet x, ParamSet x_w, double y, double weight=1);
-		virtual double operator()(ParamSet &params, IParamFunc &func)override=0;
+		virtual double operator()(ParamSet params, IParamFunc &func)override=0;
 		int Count();
-		ParamSet &X(int i);// gets measured parameters for the points
-		ParamSet &X_w(int i);// gets measured parameters errors for the points (if used)
+		ParamSet X(int i);// gets measured parameters for the points
+		ParamSet X_w(int i);// gets measured parameters errors for the points (if used)
 		double Y(int i);// gets the value
 		double W(int i);// gets the point's weight/error
 	protected:
@@ -25,19 +25,19 @@ namespace Fit{
 	public:
 		SquareDiff(){}
 		virtual ~SquareDiff(){}
-		virtual double operator()(ParamSet &params, IParamFunc &func)override;
+		virtual double operator()(ParamSet params, IParamFunc &func)override;
 	};
 	class chi_2:public FitPointsAbstract{
 	public:
 		chi_2(){}
 		virtual ~chi_2(){}
-		virtual double operator()(ParamSet &params, IParamFunc &func)override;
+		virtual double operator()(ParamSet params, IParamFunc &func)override;
 	};
 	class chi_2_wx:public FitPointsAbstract{
 	public:
 		chi_2_wx(){}
 		virtual ~chi_2_wx(){}
-		virtual double operator()(ParamSet &params, IParamFunc &func)override;
+		virtual double operator()(ParamSet params, IParamFunc &func)override;
 	};
 	
 	template<class fitpoints,class fitpoints2=fitpoints>

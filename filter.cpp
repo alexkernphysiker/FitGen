@@ -24,7 +24,7 @@ namespace Fit{
 		m_max.push_back(max);
 		return *this;
 	}
-	bool FilterRangeIn::CorrectParams(ParamSet &params){
+	bool FilterRangeIn::CorrectParams(ParamSet params){
 		bool res=params.Count()==Count();
 		if(res){
 			for(int i=0; i<Count();i++)
@@ -32,7 +32,7 @@ namespace Fit{
 		}
 		return res;
 	}
-	bool FilterRangeOut::CorrectParams(ParamSet &params){
+	bool FilterRangeOut::CorrectParams(ParamSet params){
 		bool res=params.Count()==Count();
 		if(res){
 			for(int i=0; i<Count();i++)
@@ -52,13 +52,13 @@ namespace Fit{
 		return *this;
 	}
 	FilterMulti::~FilterMulti(){}
-	bool FilterAnd::CorrectParams(ParamSet &params){
+	bool FilterAnd::CorrectParams(ParamSet params){
 		bool res=true;
 		for(auto f: m_data)
 			res&=f->CorrectParams(params);
 		return res;
 	}
-	bool FilterOr::CorrectParams(ParamSet &params){
+	bool FilterOr::CorrectParams(ParamSet params){
 		bool res=false;
 		for(auto f: m_data)
 			res|=f->CorrectParams(params);

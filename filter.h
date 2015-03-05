@@ -10,7 +10,7 @@ namespace Fit{
 		double Min(int i);
 		double Max(int i);
 		FilterRange &Add(double min,double max);
-		virtual bool CorrectParams(ParamSet &params)override=0;
+		virtual bool CorrectParams(ParamSet params)override=0;
 	protected:
 		vector<double> m_min;
 		vector<double> m_max;
@@ -20,14 +20,14 @@ namespace Fit{
 		FilterRangeIn(){}
 		FilterRangeIn(double min,double max){Add(min,max);}
 		virtual ~FilterRangeIn(){}
-		virtual bool CorrectParams(ParamSet &params)override;
+		virtual bool CorrectParams(ParamSet params)override;
 	};
 	class FilterRangeOut:public FilterRange{
 	public:
 		FilterRangeOut(){}
 		FilterRangeOut(double min,double max){Add(min,max);}
 		virtual ~FilterRangeOut(){}
-		virtual bool CorrectParams(ParamSet &params)override;
+		virtual bool CorrectParams(ParamSet params)override;
 	};
 	
 	class FilterMulti:public IParamCheck{
@@ -37,7 +37,7 @@ namespace Fit{
 		IParamCheck &Get(int i);
 		IParamCheck &operator ()(int i){return Get(i);}
 		FilterMulti &Add(std::shared_ptr<IParamCheck> val);
-		virtual bool CorrectParams(ParamSet &params)override=0;
+		virtual bool CorrectParams(ParamSet params)override=0;
 	protected:
 		vector<shared_ptr<IParamCheck>> m_data;
 	};
@@ -46,14 +46,14 @@ namespace Fit{
 		FilterAnd(){}
 		FilterAnd(shared_ptr<IParamCheck> val){Add(val);}
 		virtual ~FilterAnd(){}
-		virtual bool CorrectParams(ParamSet &params)override;
+		virtual bool CorrectParams(ParamSet params)override;
 	};
 	class FilterOr:public FilterMulti{
 	public:
 		FilterOr(){}
 		FilterOr(shared_ptr<IParamCheck> val){Add(val);}
 		virtual ~FilterOr(){}
-		virtual bool CorrectParams(ParamSet &params)override;
+		virtual bool CorrectParams(ParamSet params)override;
 	};
 }
 #endif
