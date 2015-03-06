@@ -47,7 +47,7 @@ int main(int argcnt, char **arg){
 	do{
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.GetOptimality(),fit.GetOptimality(fit.PopulationSize()-1));
-	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.001));
+	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.000001));
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.GetOptimality());
 	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
 	ParamSet err=fit.ParamParabolicError(parEq(fit.ParamCount(),0.001));
