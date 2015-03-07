@@ -3,19 +3,23 @@
 #include <math.h>
 #include "fit_gen.h"
 namespace Fit {
+	using namespace std;
 	//include templates for creating complicated functions double (func)(ParamSet&)
 	#define use_num_type double
 	#define use_indexer_type ParamSet&
 	#include <math_h/wrap1.h>
 	#undef use_num_type
 	#undef use_indexer_type
-	// "empty" IParamFunc for giving as a parameter when it's not needed
 	class NoParamFunc:public IParamFunc{
 	public:
 		NoParamFunc(){}virtual ~NoParamFunc(){}
 		virtual double operator()(ParamSet,ParamSet) override{return 0;}
 		virtual bool CorrectParams(ParamSet) override{return true;}
 	};
+	template<class eq,class fit=FitGen>
+	shared_ptr<fit> Solve(){
+		return make_shared<fit>(make_shared<NoParamFunc>(),make_shared<eq>());
+	}
 	// IOptimalityFunction for solving equation func(P)=0
 	template<double (func)(ParamSet&)>
 	class Equation:public IOptimalityFunction{
