@@ -3,6 +3,22 @@
 #include "fit_gen.h"
 namespace Fit{
 	using namespace std;
+	class FilterAbove:public IParamCheck{
+	public:
+		FilterAbove(ParamSet v);
+		virtual ~FilterAbove(){}
+		virtual bool CorrectParams(ParamSet params)override;
+	private:
+		ParamSet m_data;
+	};
+	class FilterBelow:public IParamCheck{
+	public:
+		FilterBelow(ParamSet v);
+		virtual ~FilterBelow(){}
+		virtual bool CorrectParams(ParamSet params)override;
+	private:
+		ParamSet m_data;
+	};
 	class FilterRange:public IParamCheck{
 	public:
 		virtual ~FilterRange(){}

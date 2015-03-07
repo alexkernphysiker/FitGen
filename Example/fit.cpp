@@ -11,6 +11,7 @@ using namespace Fit;
 
 typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
 typedef PolynomFunc<0,3,4> Background;
+typedef Add<Foreground,Background> TotalFunc;
 
 double X[]={-67.5,-62.5,-57.5,-52.5,-47.5,-42.5,-37.5,-32.5,-27.5,-22.5,-17.5,-12.5,-7.5,-2.5,2.5,7.5,12.5,17.5,22.5,27.5};
 double dX[]={2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5};
@@ -21,19 +22,21 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY<chi_2_wx>(0,19,X,dX,Y,dY);
-	printf("Initing\n");
-	FitGen fit(make_shared<Add<Foreground,Background>>(),points_to_fit);
 	auto initial_cond=make_shared<GenerateByGauss>();
-	initial_cond->Add(1,20).Add(20,20).Add(-20,0).Add(300,300).Add(4,4).Add(0,0.01).Add(0,0.01).Add(0,0.01);
-	auto filter=make_shared<FilterRangeIn>();
-	filter->Add(0,30).Add(5,50).Add(-100,0).Add(0,1000).Add(0,10).Add(-1,1).Add(-0.1,0.1).Add(-0.1,0.1);
+	initial_cond->Add(1,20).Add(20,20).Add(-20,0).Add(300,300).Add(4,4);
+	while(initial_cond->Count()<TotalFunc::ParamCount())
+		initial_cond->Add(0,0.01);
+	auto signfilter=make_shared<FilterAbove>(ParamSet(0,0,INFINITY,0,0));
+	auto range=make_shared<FilterBelow>(ParamSet(INFINITY,40));
+	auto filter=make_shared<FilterAnd>();
+	filter->Add(signfilter).Add(range);
+	FitGen fit(make_shared<TotalFunc>(),points_to_fit);
 	fit.SetFilter(filter);
 	fit.Init(50,initial_cond);
-	printf("Running calculation\n");
 	do{
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
-	}while (fit.Optimality(fit.PopulationSize()-1)>(fit.Optimality()*1.000001));
+	}while (fit.Optimality(fit.PopulationSize()-1)>(fit.Optimality()*1.0000001));
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.Optimality());
 	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
 	ParamSet err=fit.ParamParabolicError(parEq(fit.ParamCount(),0.001));

@@ -1,6 +1,24 @@
+#include <math.h>
 #include "filter.h"
 #include "fitexception.h"
 namespace Fit{
+	using namespace std;
+	FilterAbove::FilterAbove(ParamSet v){m_data=v;}
+	bool FilterAbove::CorrectParams(ParamSet params){
+		bool res=true;
+		for(int i=0;i<m_data.Count();i++)
+			if(isfinite(m_data[i]))
+				res&=(params[i]>=m_data[i]);
+		return res;
+	}
+	FilterBelow::FilterBelow(ParamSet v){m_data=v;}
+	bool FilterBelow::CorrectParams(ParamSet params){
+		bool res=true;
+		for(int i=0;i<m_data.Count();i++)
+			if(isfinite(m_data[i]))
+				res&=(params[i]<=m_data[i]);
+		return res;
+	}
 	int FilterRange::Count(){
 		int r = m_min.size();
 		if(r!=m_max.size())

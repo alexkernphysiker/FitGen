@@ -5,11 +5,6 @@
 #include "math_h/functions.h"
 namespace Fit{
 	using namespace std;
-	#define use_num_type double
-	#define use_indexer_type ParamSet&
-	#include "math_h/wrap2.h"
-	#undef use_num_type
-	#undef use_indexer_type
 	template<class FUNC>
 	class PARAMFUNC:public virtual IParamFunc{
 	private:
@@ -50,6 +45,8 @@ namespace Fit{
 		Const(){}virtual ~Const(){}
 		virtual double operator()(ParamSet, ParamSet) override{return double(value);}
 		virtual bool CorrectParams(ParamSet) override{return true;}
+		inline static int ParamCount(){return 0;}
+		inline static int ArgCount(){return 0;}
 	};
 	template<int x_index>
 	class Arg:public virtual IParamFunc{
@@ -57,6 +54,8 @@ namespace Fit{
 		Arg(){}virtual ~Arg(){}
 		virtual double operator()(ParamSet X, ParamSet) override{return X[x_index];}
 		virtual bool CorrectParams(ParamSet) override{return true;}
+		inline static int ParamCount(){return 0;}
+		inline static int ArgCount(){return x_index+1;}
 	};
 	template<int p_index>
 	class Par:public virtual IParamFunc{
@@ -64,6 +63,8 @@ namespace Fit{
 		Par(){}virtual ~Par(){}
 		virtual double operator()(ParamSet, ParamSet P) override{return P[p_index];}
 		virtual bool CorrectParams(ParamSet) override{return true;}
+		inline static int ParamCount(){return p_index+1;}
+		inline static int ArgCount(){return 0;}
 	};
 	template<int x_index,int p_index,unsigned int power>
 	class PolynomFunc:public virtual IParamFunc{
@@ -74,6 +75,8 @@ namespace Fit{
 			return Polynom<power,double,ParamSet,p_index>(X[x_index],P);
 		}
 		virtual bool CorrectParams(ParamSet) override{return true;}
+		inline static int ParamCount(){return p_index+power+1;}
+		inline static int ArgCount(){return x_index+1;}
 	};
 	template<double (func)(double), class FUNC>
 	class Func:public virtual FUNC{
@@ -82,7 +85,10 @@ namespace Fit{
 			return func(FUNC::operator()(X,P));
 		}
 		virtual bool CorrectParams(ParamSet P) override{return FUNC::CorrectParams(P);}
+		inline static int ParamCount(){return FUNC::ParamCount();}
+		inline static int ArgCount(){return FUNC::ArgCount();}
 	};
+	#define retmax(r) int res=0;for(auto v:r)if(res<v)res=v;return res;
 	template<double (func)(double,double), class FUNC1, class FUNC2>
 	class Func2:public virtual FUNC1,public virtual FUNC2{
 		public:Func2():FUNC1(),FUNC2(){}virtual ~Func2(){}
@@ -91,6 +97,18 @@ namespace Fit{
 		}
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
+		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			retmax(r)
 		}
 	};
 	template<double (func)(double,double,double), class FUNC1, class FUNC2, class FUNC3>
@@ -102,6 +120,20 @@ namespace Fit{
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P);
 		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			r.push_back(FUNC3::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			r.push_back(FUNC3::ArgCount());
+			retmax(r)
+		}
 	};
 	template<double (func)(double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4>
 	class Func4:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4{
@@ -111,6 +143,22 @@ namespace Fit{
 		}
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P)&&FUNC4::CorrectParams(P);
+		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			r.push_back(FUNC3::ParamCount());
+			r.push_back(FUNC4::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			r.push_back(FUNC3::ArgCount());
+			r.push_back(FUNC4::ArgCount());
+			retmax(r)
 		}
 	};
 	template<double (func)(double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5>
@@ -122,6 +170,24 @@ namespace Fit{
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P)&&FUNC4::CorrectParams(P)&&FUNC5::CorrectParams(P);
 		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			r.push_back(FUNC3::ParamCount());
+			r.push_back(FUNC4::ParamCount());
+			r.push_back(FUNC5::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			r.push_back(FUNC3::ArgCount());
+			r.push_back(FUNC4::ArgCount());
+			r.push_back(FUNC5::ArgCount());
+			retmax(r)
+		}
 	};
 	template<double (func)(double,double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, class FUNC6>
 	class Func6:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
@@ -131,6 +197,26 @@ namespace Fit{
 		}
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P)&&FUNC4::CorrectParams(P)&&FUNC5::CorrectParams(P)&&FUNC6::CorrectParams(P);
+		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			r.push_back(FUNC3::ParamCount());
+			r.push_back(FUNC4::ParamCount());
+			r.push_back(FUNC5::ParamCount());
+			r.push_back(FUNC6::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			r.push_back(FUNC3::ArgCount());
+			r.push_back(FUNC4::ArgCount());
+			r.push_back(FUNC5::ArgCount());
+			r.push_back(FUNC6::ArgCount());
+			retmax(r)
 		}
 	};
 	template<class FUNC,int x_index, int p_index>
@@ -143,6 +229,8 @@ namespace Fit{
 			return FUNC::operator()(x,P);
 		}
 		virtual bool CorrectParams(ParamSet P) override{return FUNC::CorrectParams(P);}
+		inline static int ParamCount(){return FUNC::ParamCount();}
+		inline static int ArgCount(){return FUNC::ArgCount();}
 	};
 	template<class FUNC,int x_index, int p_index>
 	class ArgScale:public virtual FUNC{
@@ -154,6 +242,8 @@ namespace Fit{
 			return FUNC::operator()(x,P);
 		}
 		virtual bool CorrectParams(ParamSet P) override{return FUNC::CorrectParams(P);}
+		inline static int ParamCount(){return FUNC::ParamCount();}
+		inline static int ArgCount(){return FUNC::ArgCount();}
 	};
 	template<class FUNC1,class FUNC2>
 	class Add:public virtual FUNC1, public virtual FUNC2{
@@ -164,6 +254,18 @@ namespace Fit{
 		}
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
+		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			retmax(r)
 		}
 	};
 	template<class FUNC1,class FUNC2>
@@ -176,6 +278,18 @@ namespace Fit{
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
 		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			retmax(r)
+		}
 	};
 	template<class FUNC1,class FUNC2>
 	class Mul:public virtual FUNC1, public virtual FUNC2{
@@ -186,6 +300,18 @@ namespace Fit{
 		}
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
+		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			retmax(r)
 		}
 	};
 	template<class FUNC1,class FUNC2>
@@ -198,6 +324,18 @@ namespace Fit{
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
 		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			retmax(r)
+		}
 	};
 	template<class FUNC1,class FUNC2>
 	class Power:public virtual FUNC1, public virtual FUNC2{
@@ -208,6 +346,18 @@ namespace Fit{
 		}
 		virtual bool CorrectParams(ParamSet P) override{
 			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
+		}
+		inline static int ParamCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ParamCount());
+			r.push_back(FUNC2::ParamCount());
+			retmax(r)
+		}
+		inline static int ArgCount(){
+			vector<int> r;
+			r.push_back(FUNC1::ArgCount());
+			r.push_back(FUNC2::ArgCount());
+			retmax(r)
 		}
 	};
 }

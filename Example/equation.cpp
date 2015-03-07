@@ -5,7 +5,7 @@
 #include <initialconditions.h>
 using namespace std;
 using namespace Fit;
-using namespace Fit::FuncWrappers_P;
+using namespace Fit::wrap_func_indexer;
 int main(int argcnt, char **arg){
 	auto solve=Solve<SearchMin<
 		add<

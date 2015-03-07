@@ -7,7 +7,7 @@ namespace Fit {
 	//include templates for creating complicated functions double (func)(ParamSet&)
 	#define use_num_type double
 	#define use_indexer_type ParamSet&
-	#include <math_h/wrap1.h>
+	#include <math_h/wrap_func_indexer.h>
 	#undef use_num_type
 	#undef use_indexer_type
 	class NoParamFunc:public IParamFunc{
