@@ -16,8 +16,8 @@ int main(int argcnt, char **arg){
 	auto initial=make_shared<GenerateUniform>();
 	initial->Add(-20,20).Add(-20,20);
 	solve->Init(30,initial);
-	do{solve->Iterate();}while(solve->GetOptimality()<solve->GetOptimality(solve->PopulationSize()-1));
+	do{solve->Iterate();}while(solve->Optimality()<solve->Optimality(solve->PopulationSize()-1));
 	printf("%i iterations\n",solve->iteration_count());
-	printf("x=%f; y=%f\n",solve->GetParameters()[0],solve->GetParameters()[1]);
+	printf("x=%f; y=%f\n",solve->Parameters()[0],solve->Parameters()[1]);
 	return 0;
 }

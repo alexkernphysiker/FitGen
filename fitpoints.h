@@ -40,51 +40,48 @@ namespace Fit{
 		virtual double operator()(ParamSet params, IParamFunc &func)override;
 	};
 	
-	template<class fitpoints,class fitpoints2=fitpoints>
-	shared_ptr<fitpoints> SelectFitPoints(shared_ptr<fitpoints2> data, IParamCheck &condition){
+	template<class fitpoints>
+	shared_ptr<fitpoints> SelectFitPoints(shared_ptr<FitPointsAbstract> data, IParamCheck &condition){
 		shared_ptr<fitpoints> res=make_shared<fitpoints>();
-		for(uint i=0; i<data->Count();i++){
+		for(int i=0; i<data->Count();i++){
 			if(condition.CorrectParams(data->X(i)))
 				res->Add(data->X(i),data->Y(i),data->W(i));
 		}
 		return res;
 	}
-	template <class fitpoints, class func,class fitpoints2=fitpoints>
-	shared_ptr<fitpoints> SelectFitPointsByY(shared_ptr<fitpoints2> data, IParamCheck &condition, func Ycond){
+	template <class fitpoints, class func>
+	shared_ptr<fitpoints> SelectFitPointsByY(shared_ptr<FitPointsAbstract> data, IParamCheck &condition, func Ycond){
 		shared_ptr<fitpoints> res=make_shared<fitpoints>();
-		for(uint i=0; i<data->Count();i++){
+		for(int i=0; i<data->Count();i++){
 			if(condition.CorrectParams(data->X(i)) && Ycond(data->Y(i)))
 				res->Add(data->X(i),data->Y(i),data->W(i));
 		}
 		return res;
 	}
 	template <class fitpoints, class indexerx, class indexery = indexerx>
-	class FitPoints:public fitpoints{
-	public:
-		FitPoints(int from, int to, indexerx X, indexery Y):fitpoints(){
-			if(to<from)throw;
-			for(int i=from; i<=to;i++)
-				this->Add(ParamSet()<<X[i],Y[i]);
-		}
-	};
+	shared_ptr<fitpoints> FitPointsXY(int from, int to, indexerx X, indexery Y){
+		if(to<from)throw;
+		auto res=make_shared<fitpoints>();
+		for(int i=from; i<=to;i++)
+			res->Add(ParamSet(X[i]),Y[i]);
+		return res;
+	}
 	template <class fitpoints, class indexerx, class indexery = indexerx, class indexererr = indexery>
-	class FitPointsWithErrors:public fitpoints{
-	public:
-		FitPointsWithErrors(int from, int to, indexerx X, indexery Y,indexererr W):fitpoints(){
-			if(to<from)throw;
-			for(int i=from; i<=to;i++)
-				this->Add(ParamSet()<<X[i],Y[i],W[i]);
-		}
-	};
+	shared_ptr<fitpoints> FitPointsXYdY(int from, int to, indexerx X, indexery Y,indexererr W){
+		if(to<from)throw;
+		auto res=make_shared<fitpoints>();
+		for(int i=from; i<=to;i++)
+			res->Add(ParamSet(X[i]),Y[i],W[i]);
+		return res;
+	}
 	template <class fitpoints, class indexerx, class indexerx_err=indexerx, class indexery = indexerx, class indexererr = indexery>
-	class FitPointsWithXErrors:public fitpoints{
-	public:
-		FitPointsWithXErrors(int from, int to, indexerx X, indexerx_err X_w, indexery Y,indexererr W):fitpoints(){
-			if(to<from)throw;
-			for(int i=from; i<=to;i++)
-				this->Add(ParamSet()<<X[i],ParamSet()<<X_w[i],Y[i],W[i]);
-		}
-	};
+	shared_ptr<fitpoints> FitPointsXdXYdY(int from, int to, indexerx X, indexerx_err X_w, indexery Y,indexererr W){
+		if(to<from)throw;
+		auto res=make_shared<fitpoints>();
+		for(int i=from; i<=to;i++)
+			res->Add(ParamSet()<<X[i],ParamSet()<<X_w[i],Y[i],W[i]);
+		return res;
+	}
 	template <class fitpoints>
 	class Distribution1D:public fitpoints{
 		private:double m_min;double m_max;double binwidth;

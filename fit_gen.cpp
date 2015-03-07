@@ -84,8 +84,8 @@ namespace Fit{
 			m_itercount++;
 		}
 	}
-	shared_ptr<IParamFunc> _gen::GetFunction(){return m_function;}
-	shared_ptr<IOptimalityFunction> _gen::GetOptimalityCalculator(){return m_optimality;}
+	shared_ptr<IParamFunc> _gen::Function(){return m_function;}
+	shared_ptr<IOptimalityFunction> _gen::OptimalityCalculator(){return m_optimality;}
 	void _gen::SetFilter(shared_ptr<IParamCheck> filter){
 		Lock lock(m_mutex);
 		m_filter=filter;
@@ -104,20 +104,20 @@ namespace Fit{
 		Lock lock(m_mutex);
 		return m_itercount;
 	}
-	double _gen::GetOptimality(int point_index){
+	double _gen::Optimality(int point_index){
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw new FitException("Point index out of range or no results were calculated");
 		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
-	ParamSet _gen::GetParameters(int point_index){
+	ParamSet _gen::Parameters(int point_index){
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw new FitException("Point index out of range or no results were calculated");
 		Lock lock(m_mutex);
 		return m_population[point_index].first;
 	}
 	double _gen::operator ()(ParamSet &X){
-		ParamSet P=GetParameters();
+		ParamSet P=Parameters();
 		return m_function->operator()(X,P);
 	}
 	double _gen::operator [](int i){
@@ -138,8 +138,8 @@ namespace Fit{
 		for(int i=0;i<delta.Count();i++){
 			if(delta[i]<=0)
 				throw new FitException("Error in parabolic error calculation: delta cannot be zero or negative");
-			double s=GetOptimality();
-			ParamSet ab=GetParameters();
+			double s=Optimality();
+			ParamSet ab=Parameters();
 			ParamSet be=ab;
 			ab.Set(i,ab[i]+delta[i]);
 			be.Set(i,be[i]-delta[i]);
@@ -169,8 +169,8 @@ namespace Fit{
 	ParamSet FitGen::born(ParamSet C){
 		ParamSet res;
 		int a=rand()%PopulationSize();int b=rand()%PopulationSize();
-		ParamSet A=GetParameters(a), 
-		B=GetParameters(b);
+		ParamSet A=Parameters(a), 
+		B=Parameters(b);
 		for(int j=0; j<ParamCount();j++)
 			res<<(C[j]+F*(A[j]-B[j]));
 		return res;
@@ -189,7 +189,7 @@ namespace Fit{
 	}
 	ParamSet FitGenWithCrossing::born(ParamSet parent){
 		auto X=FitGen::born(parent);
-		auto C=FitGen::born(GetParameters(rand()%PopulationSize()));
+		auto C=FitGen::born(Parameters(rand()%PopulationSize()));
 		for(int i=0; i<ParamCount();i++)
 			if(RandomUniformly(0.0,1.0)<=P)
 				X.Set(i,C[i]);

@@ -69,8 +69,8 @@ namespace Fit{
 		void Init(int population_size,std::shared_ptr<IInitialConditions> initial_conditions);
 		void Iterate();
 		int PopulationSize();
-		ParamSet GetParameters(int point_index=0);
-		double GetOptimality(int point_index=0);
+		ParamSet Parameters(int point_index=0);
+		double Optimality(int point_index=0);
 		int ParamCount();
 		double operator[](int i);
 		double operator()(ParamSet &X);
@@ -79,8 +79,8 @@ namespace Fit{
 		ParamSet ParamDispersion();
 		ParamSet ParamMaxDeviation();
 		ParamSet ParamParabolicError(ParamSet delta);
-		shared_ptr<IParamFunc> GetFunction();
-		shared_ptr<IOptimalityFunction> GetOptimalityCalculator();
+		shared_ptr<IParamFunc> Function();
+		shared_ptr<IOptimalityFunction> OptimalityCalculator();
 	protected:
 		virtual ParamSet born(ParamSet)=0;
 		mutex m_mutex;

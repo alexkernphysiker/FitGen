@@ -12,29 +12,15 @@ using namespace Fit;
 typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
 typedef PolynomFunc<0,3,4> Background;
 
+double X[]={-67.5,-62.5,-57.5,-52.5,-47.5,-42.5,-37.5,-32.5,-27.5,-22.5,-17.5,-12.5,-7.5,-2.5,2.5,7.5,12.5,17.5,22.5,27.5};
+double dX[]={2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5};
+double Y[]={179.355, 223.078, 211.644, 220.101, 214.429, 241.046, 237.26, 230.127, 258.658, 290.287, 307.54, 317.218
+	,365.392, 371.688, 406.558, 413.209, 455.075, 495.286, 497.253, 511.347};
+double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.81692, 10.1093, 10.5735,
+	10.7944, 10.679, 11.4741, 11.4566, 12.0048, 12.1155, 13.117, 14.1408, 14.3717, 15.0141};
+
 int main(int argcnt, char **arg){
-	auto points_to_fit=make_shared<chi_2_wx>();
-	points_to_fit->
-		 Add(ParamSet(-67.5),ParamSet(2,5), 179.355, 12.4159)
-		.Add(ParamSet(-62.5),ParamSet(2,5), 223.078, 13.178)
-		.Add(ParamSet(-57.5),ParamSet(2,5), 211.644, 11.8098)
-		.Add(ParamSet(-52.5),ParamSet(2,5), 220.101, 11.4024)
-		.Add(ParamSet(-47.5),ParamSet(2,5), 214.429, 10.555)
-		.Add(ParamSet(-42.5),ParamSet(2,5), 241.046, 10.7758)
-		.Add(ParamSet(-37.5),ParamSet(2,5), 237.26 , 10.3217)
-		.Add(ParamSet(-32.5),ParamSet(2,5), 230.127,  9.81692)
-		.Add(ParamSet(-27.5),ParamSet(2,5), 258.658, 10.1093)
-		.Add(ParamSet(-22.5),ParamSet(2,5), 290.287, 10.5735)
-		.Add(ParamSet(-17.5),ParamSet(2,5), 307.54 , 10.7944)
-		.Add(ParamSet(-12.5),ParamSet(2,5), 317.218, 10.679)
-		.Add(ParamSet(- 7.5),ParamSet(2,5), 365.392, 11.4741)
-		.Add(ParamSet(- 2.5),ParamSet(2,5), 371.688, 11.4566)
-		.Add(ParamSet(  2.5),ParamSet(2,5), 406.558, 12.0048)
-		.Add(ParamSet(  7.5),ParamSet(2,5), 413.209, 12.1155)
-		.Add(ParamSet( 12.5),ParamSet(2,5), 455.075, 13.117)
-		.Add(ParamSet( 17.5),ParamSet(2,5), 495.286, 14.1408)
-		.Add(ParamSet( 22.5),ParamSet(2,5), 497.253, 14.3717)
-		.Add(ParamSet( 27.5),ParamSet(2,5), 511.347, 15.0141);
+	auto points_to_fit=FitPointsXdXYdY<chi_2_wx>(0,19,X,dX,Y,dY);
 	printf("Initing\n");
 	FitGen fit(make_shared<Add<Foreground,Background>>(),points_to_fit);
 	auto initial_cond=make_shared<GenerateByGauss>();
@@ -46,9 +32,9 @@ int main(int argcnt, char **arg){
 	printf("Running calculation\n");
 	do{
 		fit.Iterate();
-		printf("%f <= chi^2 <= %f     \r",fit.GetOptimality(),fit.GetOptimality(fit.PopulationSize()-1));
-	}while (fit.GetOptimality(fit.PopulationSize()-1)>(fit.GetOptimality()*1.000001));
-	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.GetOptimality());
+		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
+	}while (fit.Optimality(fit.PopulationSize()-1)>(fit.Optimality()*1.000001));
+	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.Optimality());
 	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
 	ParamSet err=fit.ParamParabolicError(parEq(fit.ParamCount(),0.001));
 	for(int i=0; i<fit.ParamCount();i++)
@@ -81,8 +67,8 @@ int main(int argcnt, char **arg){
 			for(double x=-70; x<=30; x+=1){
 				ParamSet X(x);
 				out<<x<<" "<<fit(X)<<"\n";
-				outbg<<x<<" "<<bg_func(X,fit.GetParameters())<<"\n";
-				outfg<<x<<" "<<fg_func(X,fit.GetParameters())<<"\n";
+				outbg<<x<<" "<<bg_func(X,fit.Parameters())<<"\n";
+				outfg<<x<<" "<<fg_func(X,fit.Parameters())<<"\n";
 			}
 			out.close();
 			outbg.close();
