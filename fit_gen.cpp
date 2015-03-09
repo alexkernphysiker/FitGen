@@ -42,7 +42,8 @@ namespace Fit{
 				[initial_conditions](){return initial_conditions->Generate();},
 				[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
 			);
-			m_population.push_back(make_pair(new_param,m_optimality->operator()(new_param,*m_function)));
+			auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
+			InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
 		}
 	}
 	void _gen::Iterate(){

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <fit_gen.h>
 #include <equation.h>
 #include <initialconditions.h>
 using namespace std;
@@ -14,9 +13,13 @@ int main(int argcnt, char **arg){
 		>
 	>>();
 	auto initial=make_shared<GenerateUniform>();
-	initial->Add(-20,20).Add(-20,20);
-	solve->Init(30,initial);
-	do{solve->Iterate();}while(solve->Optimality()<solve->Optimality(solve->PopulationSize()-1));
+	initial->Add(-50,50).Add(-50,50);
+	//the wider the range of searching the bigger population needed
+	solve->Init(60,initial);
+	do{
+		solve->Iterate();
+		
+	}while(solve->Optimality()<solve->Optimality(solve->PopulationSize()-1));
 	printf("%i iterations\n",solve->iteration_count());
 	printf("x=%f; y=%f\n",solve->Parameters()[0],solve->Parameters()[1]);
 	return 0;
