@@ -27,16 +27,16 @@ namespace Fit{
 		virtual ~SquareDiff(){}
 		virtual double operator()(ParamSet params, IParamFunc &func)override;
 	};
-	class chi_2:public FitPointsAbstract{
+	class ChiSquare:public FitPointsAbstract{
 	public:
-		chi_2(){}
-		virtual ~chi_2(){}
+		ChiSquare(){}
+		virtual ~ChiSquare(){}
 		virtual double operator()(ParamSet params, IParamFunc &func)override;
 	};
-	class chi_2_wx:public FitPointsAbstract{
+	class ChiSquareWithXError:public FitPointsAbstract{
 	public:
-		chi_2_wx(){}
-		virtual ~chi_2_wx(){}
+		ChiSquareWithXError(){}
+		virtual ~ChiSquareWithXError(){}
 		virtual double operator()(ParamSet params, IParamFunc &func)override;
 	};
 	

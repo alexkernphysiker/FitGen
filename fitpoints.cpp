@@ -49,7 +49,7 @@ namespace Fit{
 		return res;
 	}
 	
-	double chi_2::operator ()(ParamSet params, IParamFunc &func){
+	double ChiSquare::operator ()(ParamSet params, IParamFunc &func){
 		double z=Count()-params.Count();
 		if(z<=0)throw new FitException("wrong conditions for calculating xi^2");
 		double res=0;
@@ -58,7 +58,7 @@ namespace Fit{
 		return res/z;
 	}
 	
-	double chi_2_wx::operator ()(ParamSet params, IParamFunc &func){
+	double ChiSquareWithXError::operator ()(ParamSet params, IParamFunc &func){
 		double z=Count()-params.Count();
 		if(z<=0)throw new FitException("wrong conditions for calculating xi^2");
 		double res=0;
