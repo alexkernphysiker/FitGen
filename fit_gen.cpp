@@ -190,10 +190,12 @@ namespace Fit{
 	}
 	ParamSet FitGenWithCrossing::born(ParamSet parent){
 		auto X=FitGen::born(parent);
-		auto C=FitGen::born(Parameters(rand()%PopulationSize()));
-		for(int i=0; i<ParamCount();i++)
-			if(RandomUniformly(0.0,1.0)<=P)
-				X.Set(i,C[i]);
+		if(P>0){
+			auto C=FitGen::born(Parameters(rand()%PopulationSize()));
+			for(int i=0; i<ParamCount();i++)
+				if(RandomUniformly(0.0,1.0)<=P)
+					X.Set(i,C[i]);
+		}
 		return X;
 	}
 }
