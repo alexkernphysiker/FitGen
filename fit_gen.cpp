@@ -12,7 +12,6 @@ namespace Fit{
 		virtual ~EmptyFilter(){}
 		virtual bool CorrectParams(ParamSet)override{return true;}
 	};
-
 	typedef lock_guard<mutex> Lock;
 	typedef pair<ParamSet,double> Point;
 	bool operator>(Point a,Point b){return a.second>b.second;}
@@ -29,7 +28,7 @@ namespace Fit{
 		m_function=function;
 		m_optimality=optimality;
 		m_itercount=0;
-		m_filter=std::make_shared<EmptyFilter>();
+		m_filter=make_shared<EmptyFilter>();
 	}
 	_gen::~_gen(){}
 	void _gen::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions){
@@ -85,11 +84,21 @@ namespace Fit{
 			m_itercount++;
 		}
 	}
-	shared_ptr<IParamFunc> _gen::Function(){return m_function;}
-	shared_ptr<IOptimalityFunction> _gen::OptimalityCalculator(){return m_optimality;}
+	shared_ptr<IParamFunc> _gen::Function(){
+		Lock lock(m_mutex);
+		return m_function;
+	}
+	shared_ptr<IOptimalityFunction> _gen::OptimalityCalculator(){
+		Lock lock(m_mutex);
+		return m_optimality;
+	}
 	void _gen::SetFilter(shared_ptr<IParamCheck> filter){
 		Lock lock(m_mutex);
 		m_filter=filter;
+	}
+	void _gen::RemoveFilter(){
+		Lock lock(m_mutex);
+		m_filter=make_shared<EmptyFilter>();
 	}
 	int _gen::PopulationSize(){
 		Lock lock(m_mutex);
@@ -127,16 +136,26 @@ namespace Fit{
 		Lock lock(m_mutex);
 		return m_population[0].first[i];
 	}
-	ParamSet _gen::ParamAverage(){return m_avr;}
-	ParamSet _gen::ParamDispersion(){return m_disp;}
-	ParamSet _gen::ParamMaxDeviation(){return m_max_dev;}
+	ParamSet _gen::ParamAverage(){
+		Lock lock(m_mutex);
+		return m_avr;
+	}
+	ParamSet _gen::ParamDispersion(){
+		Lock lock(m_mutex);
+		return m_disp;
+	}
+	ParamSet _gen::ParamMaxDeviation(){
+		Lock lock(m_mutex);
+		return m_max_dev;
+	}
 	ParamSet _gen::ParamParabolicError(ParamSet delta){
 		if(PopulationSize()==0)
 			throw new FitException("Attempt to calculate parabolic error with no results");
-		if(delta.Count()!=ParamCount())
+		auto cnt=ParamCount();
+		if(delta.Count()!=cnt)
 			throw new FitException("Error in parabolic error calculation: incorrect delta size");
 		ParamSet res;
-		for(int i=0;i<delta.Count();i++){
+		for(int i=0;i<cnt;i++){
 			if(delta[i]<=0)
 				throw new FitException("Error in parabolic error calculation: delta cannot be zero or negative");
 			double s=Optimality();
@@ -157,11 +176,12 @@ namespace Fit{
 		return res;
 	}
 	
-	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):_gen(function,optimality){
-		F=0.5;
-	}
+	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
+		_gen(function,optimality),F(0.5){}
 	FitGen::~FitGen(){}
-	double FitGen::Mutation(){return F;}
+	double FitGen::Mutation(){
+		return F;
+	}
 	void FitGen::SetMutation(double val){
 		if(val<=0)
 			throw new FitException("Invalid mutation coefficient value");
@@ -169,20 +189,19 @@ namespace Fit{
 	}
 	ParamSet FitGen::born(ParamSet C){
 		ParamSet res;
-		int a=rand()%PopulationSize();int b=rand()%PopulationSize();
-		ParamSet A=Parameters(a), 
-		B=Parameters(b);
+		auto A=Parameters(rand()%PopulationSize());
+		auto B=Parameters(rand()%PopulationSize());
 		for(int j=0; j<ParamCount();j++)
 			res<<(C[j]+F*(A[j]-B[j]));
 		return res;
 	}
 	
 	FitGenWithCrossing::FitGenWithCrossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-		FitGen(function,optimality){
-		P=0.5;
-	}
+		FitGen(function,optimality),P(0.1){}
 	FitGenWithCrossing::~FitGenWithCrossing(){}
-	double FitGenWithCrossing::CrossingProbability(){return P;}
+	double FitGenWithCrossing::CrossingProbability(){
+		return P;
+	}
 	void FitGenWithCrossing::SetCrossingProbability(double val){
 		if((val<0)||(val>1))
 			throw new FitException("Invalid crossing probability value");
@@ -193,7 +212,7 @@ namespace Fit{
 		if(P>0){
 			auto C=FitGen::born(Parameters(rand()%PopulationSize()));
 			for(int i=0; i<ParamCount();i++)
-				if(RandomUniformly(0.0,1.0)<=P)
+				if(RandomUniformly(0.0,1.0)<P)
 					X.Set(i,C[i]);
 		}
 		return X;

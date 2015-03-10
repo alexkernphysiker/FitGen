@@ -3,27 +3,30 @@
 #include "fitexception.h"
 namespace Fit{
 	using namespace std;
-	FilterAbove::FilterAbove(ParamSet v){m_data=v;}
+	FilterAbove::FilterAbove(ParamSet v):m_data(v){}
 	bool FilterAbove::CorrectParams(ParamSet params){
 		bool res=true;
-		for(int i=0;i<m_data.Count();i++)
-			if(isfinite(m_data[i]))
-				res&=(params[i]>=m_data[i]);
+		int index=0;
+		for(auto value:m_data){
+			if(isfinite(value))
+				res&=(params[index]>=value);
+			index++;
+		}
 		return res;
 	}
-	FilterBelow::FilterBelow(ParamSet v){m_data=v;}
+	FilterBelow::FilterBelow(ParamSet v):m_data(v){}
 	bool FilterBelow::CorrectParams(ParamSet params){
 		bool res=true;
-		for(int i=0;i<m_data.Count();i++)
-			if(isfinite(m_data[i]))
-				res&=(params[i]<=m_data[i]);
+		int index=0;
+		for(auto value:m_data){
+			if(isfinite(value))
+				res&=(params[index]<=value);
+			index++;
+		}
 		return res;
 	}
 	int FilterRange::Count(){
-		int r = m_min.size();
-		if(r!=m_max.size())
-			throw new FitException("FilterRange: unknown error. Min and max lists counts are different.");
-		return r;
+		return m_min.size();
 	}
 	double FilterRange::Min(int i){
 		if((i>=0)&(i<m_min.size()))
@@ -43,7 +46,7 @@ namespace Fit{
 		return *this;
 	}
 	bool FilterRangeIn::CorrectParams(ParamSet params){
-		bool res=params.Count()==Count();
+		bool res=true;
 		if(res){
 			for(int i=0; i<Count();i++)
 				res&=(params[i]>=m_min[i])&(params[i]<=m_max[i]);
@@ -51,14 +54,16 @@ namespace Fit{
 		return res;
 	}
 	bool FilterRangeOut::CorrectParams(ParamSet params){
-		bool res=params.Count()==Count();
+		bool res=true;
 		if(res){
 			for(int i=0; i<Count();i++)
 				res&=(params[i]<=m_min[i])||(params[i]>=m_max[i]);
 		}
 		return res;
 	}
-	int FilterMulti::Count(){return m_data.size();}
+	int FilterMulti::Count(){
+		return m_data.size();
+	}
 	IParamCheck &FilterMulti::Get(int i){
 		if((i>=0)&(i<m_data.size()))
 			return *m_data[i];

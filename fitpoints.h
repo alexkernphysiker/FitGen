@@ -11,10 +11,10 @@ namespace Fit{
 		FitPointsAbstract &Add(ParamSet x, ParamSet x_w, double y, double weight=1);
 		virtual double operator()(ParamSet params, IParamFunc &func)override=0;
 		int Count();
-		ParamSet X(int i);// gets measured parameters for the points
-		ParamSet X_w(int i);// gets measured parameters errors for the points (if used)
-		double Y(int i);// gets the value
-		double W(int i);// gets the point's weight/error
+		ParamSet X(int i);
+		ParamSet X_w(int i);
+		double Y(int i);
+		double W(int i);
 	protected:
 		vector<ParamSet> m_data;
 		vector<ParamSet> m_data_w;

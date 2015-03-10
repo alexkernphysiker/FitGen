@@ -23,22 +23,31 @@ namespace Fit{
 		ParamSet &operator<<(ParamSet val);
 		int Count();
 		void Set(int i,double v);
+		typedef vector<double>::iterator iterator;
+		typedef vector<double>::const_iterator const_iterator;
+		iterator begin();
+		const_iterator cbegin()const;
+		iterator end();
+		const_iterator cend() const;
 	protected:
 		mutex m_mutex;
 	private:
 		vector<double> m_values;
 	};
 	template<class indexer> 
-	ParamSet CreateParamSet(int n,indexer x){
+	ParamSet parFrom(int n,indexer x){
 		ParamSet res;
 		for(int i=0; i<n;i++)
 			res<<(x[i]);
 		return res;
 	}
 	ParamSet parEq(unsigned int cnt,double val);
-	inline ParamSet parZeros(unsigned int cnt){return parEq(cnt,0);}
-	inline ParamSet parOnes(unsigned int cnt){return parEq(cnt,1);}
-	
+	inline ParamSet parZeros(unsigned int cnt){
+		return parEq(cnt,0);
+	}
+	inline ParamSet parOnes(unsigned int cnt){
+		return parEq(cnt,1);
+	}
 	class IInitialConditions{
 	public:
 		virtual ~IInitialConditions(){}
@@ -59,14 +68,14 @@ namespace Fit{
 		virtual ~IOptimalityFunction(){}
 		virtual double operator()(ParamSet params, IParamFunc &func)=0;
 	};
-	
 	class _gen{
 	protected:
-		_gen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
+		_gen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
 	public:
 		virtual ~_gen();
-		void SetFilter(std::shared_ptr<IParamCheck> filter);
-		void Init(int population_size,std::shared_ptr<IInitialConditions> initial_conditions);
+		void SetFilter(shared_ptr<IParamCheck> filter);
+		void RemoveFilter();
+		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions);
 		void Iterate();
 		int PopulationSize();
 		ParamSet Parameters(int point_index=0);
@@ -94,10 +103,9 @@ namespace Fit{
 		ParamSet m_max_dev;
 		unsigned int m_itercount;
 	};
-	
 	class FitGen: public _gen{
 	public:
-		FitGen(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
+		FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
 		virtual ~FitGen();
 		double Mutation();
 		void SetMutation(double val);
@@ -108,7 +116,7 @@ namespace Fit{
 	};
 	class FitGenWithCrossing: public FitGen{
 	public:
-		FitGenWithCrossing(std::shared_ptr<IParamFunc> function, std::shared_ptr<IOptimalityFunction> optimality);
+		FitGenWithCrossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
 		virtual ~FitGenWithCrossing();
 		double CrossingProbability();
 		void SetCrossingProbability(double val);
