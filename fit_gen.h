@@ -53,6 +53,11 @@ namespace Fit{
 		virtual ~IInitialConditions(){}
 		virtual ParamSet Generate()=0;
 	};
+	template<class AdderOfPairs>
+	inline shared_ptr<AdderOfPairs> operator<<(shared_ptr<AdderOfPairs> adder, pair<double,double> value){
+		adder->Add(value.first,value.second);
+		return adder;
+	}
 	class IParamCheck{
 	public:
 		virtual ~IParamCheck(){}

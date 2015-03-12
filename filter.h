@@ -81,5 +81,10 @@ namespace Fit{
 		virtual ~FilterOr(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
+	template<class Filter>
+	inline shared_ptr<Filter> operator<<(shared_ptr<Filter> filter, std::shared_ptr<IParamCheck> value){
+		filter->Add(value);
+		return filter;
+	}
 }
 #endif
