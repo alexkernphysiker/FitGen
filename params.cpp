@@ -26,11 +26,12 @@ namespace Fit{
 		for(auto value:source.m_values)
 			m_values.push_back(value);
 	}
-	void ParamSet::operator =(const ParamSet &source){
+	ParamSet &ParamSet::operator =(const ParamSet &source){
 		Lock lock(m_mutex);
 		m_values.clear();
 		for(auto value:source.m_values)
 			m_values.push_back(value);
+		return *this;
 	}
 	ParamSet::~ParamSet(){}
 	int ParamSet::Count(){

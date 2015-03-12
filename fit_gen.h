@@ -17,7 +17,7 @@ namespace Fit{
 		ParamSet(double x,double y,double z,double zz, double zzz);
 		ParamSet(double x,double y,double z,double zz, double zzz, double zzzz);
 		~ParamSet();
-		void operator=(const ParamSet &source);
+		ParamSet &operator=(const ParamSet &source);
 		double operator[](int i);
 		ParamSet &operator<<(double val);
 		ParamSet &operator<<(ParamSet val);
