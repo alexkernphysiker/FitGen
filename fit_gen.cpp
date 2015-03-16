@@ -94,7 +94,14 @@ namespace Fit{
 			res&=(v==0);
 		return res;
 	}
-	bool _gen::OptimalityExitCondition(double accuracy){
+	bool _gen::AbsoluteOptimalityExitCondition(double accuracy){
+		if(accuracy<0)
+			throw new FitException("Wrong optimality exit condition.");
+		if(accuracy==0)
+			return Optimality(PopulationSize()-1)==Optimality();
+		return (Optimality(PopulationSize()-1)-Optimality())<=accuracy;
+	}
+	bool _gen::RelativeOptimalityExitCondition(double accuracy){
 		if(accuracy<0)
 			throw new FitException("Wrong optimality exit condition.");
 		if(accuracy==0)
@@ -216,10 +223,10 @@ namespace Fit{
 	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
 		_gen(function,optimality),F(0.5){}
 	FitGen::~FitGen(){}
-	double FitGen::Mutation(){
+	double FitGen::MutationCoefficient(){
 		return F;
 	}
-	void FitGen::SetMutation(double val){
+	void FitGen::SetMutationCoefficient(double val){
 		if(val<=0)
 			throw new FitException("Invalid mutation coefficient value");
 		F=val;
@@ -231,27 +238,5 @@ namespace Fit{
 		for(int j=0; j<ParamCount();j++)
 			res<<(C[j]+F*(A[j]-B[j]));
 		return res;
-	}
-	
-	FitGenWithCrossing::FitGenWithCrossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-		FitGen(function,optimality),P(0.1){}
-	FitGenWithCrossing::~FitGenWithCrossing(){}
-	double FitGenWithCrossing::CrossingProbability(){
-		return P;
-	}
-	void FitGenWithCrossing::SetCrossingProbability(double val){
-		if((val<0)||(val>1))
-			throw new FitException("Invalid crossing probability value");
-		P=val;
-	}
-	ParamSet FitGenWithCrossing::born(ParamSet parent){
-		auto X=FitGen::born(parent);
-		if(P>0){
-			auto C=FitGen::born(Parameters(rand()%PopulationSize()));
-			for(int i=0; i<ParamCount();i++)
-				if(RandomUniformly(0.0,1.0)<P)
-					X.Set(i,C[i]);
-		}
-		return X;
 	}
 }

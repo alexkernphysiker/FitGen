@@ -36,7 +36,7 @@ int main(int argcnt, char **arg){
 	);
 	fit.Init(TotalFunc::ParamCount*5,initial_cond);
 	printf("Population size: %i\n",fit.PopulationSize());
-	while(!fit.OptimalityExitCondition(0.000001)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}

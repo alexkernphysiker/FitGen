@@ -2,6 +2,7 @@
 #include <fstream>
 #include <equation.h>
 #include <initialconditions.h>
+#include <additional_mutations.h>
 using namespace std;
 using namespace Fit;
 using namespace Fit::wrap_func_indexer;

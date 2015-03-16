@@ -90,7 +90,8 @@ namespace Fit{
 		double operator()(ParamSet &X);
 		unsigned int iteration_count();
 		bool ConcentratedInOnePoint();
-		bool OptimalityExitCondition(double accuracy=0);
+		bool AbsoluteOptimalityExitCondition(double accuracy=0);
+		bool RelativeOptimalityExitCondition(double accuracy=0);
 		ParamSet ParamAverage();
 		ParamSet ParamDispersion();
 		ParamSet ParamMaxDeviation();
@@ -120,23 +121,12 @@ namespace Fit{
 	public:
 		FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
 		virtual ~FitGen();
-		double Mutation();
-		void SetMutation(double val);
+		double MutationCoefficient();
+		void SetMutationCoefficient(double val);
 	protected:
 		virtual ParamSet born(ParamSet C)override;
 	private:
 		double F;
-	};
-	class FitGenWithCrossing: public FitGen{
-	public:
-		FitGenWithCrossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
-		virtual ~FitGenWithCrossing();
-		double CrossingProbability();
-		void SetCrossingProbability(double val);
-	protected:
-		virtual ParamSet born(ParamSet C)override;
-	private:
-		double P;
 	};
 }
 #endif
