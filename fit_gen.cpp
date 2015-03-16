@@ -24,14 +24,14 @@ namespace Fit{
 		}
 	}
 	
-	_gen::_gen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality){
+	AbstractGenetic::AbstractGenetic(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality){
 		m_function=function;
 		m_optimality=optimality;
 		m_itercount=0;
 		m_filter=make_shared<EmptyFilter>();
 	}
-	_gen::~_gen(){}
-	void _gen::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions){
+	AbstractGenetic::~AbstractGenetic(){}
+	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions){
 		if(m_population.size()>0)throw new FitException("Fitting algorithm cannot be inited twice");
 		if(population_size<=0)throw new FitException("Fitting algorithm got incorrect parameters");
 		Lock lock(m_mutex);
@@ -45,7 +45,7 @@ namespace Fit{
 			InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
 		}
 	}
-	void _gen::Iterate(){
+	void AbstractGenetic::Iterate(){
 		int n=PopulationSize();
 		int par_cnt=ParamCount();
 		if(n==0)
@@ -84,7 +84,7 @@ namespace Fit{
 			m_itercount++;
 		}
 	}
-	bool _gen::ConcentratedInOnePoint(){
+	bool AbstractGenetic::ConcentratedInOnePoint(){
 		if(m_population.size()==0)
 			throw new FitException("Attempt to obtain unexisting results");
 		if(Optimality(PopulationSize()-1)>Optimality())
@@ -94,105 +94,105 @@ namespace Fit{
 			res&=(v==0);
 		return res;
 	}
-	bool _gen::AbsoluteOptimalityExitCondition(double accuracy){
+	bool AbstractGenetic::AbsoluteOptimalityExitCondition(double accuracy){
 		if(accuracy<0)
 			throw new FitException("Wrong optimality exit condition.");
 		if(accuracy==0)
 			return Optimality(PopulationSize()-1)==Optimality();
 		return (Optimality(PopulationSize()-1)-Optimality())<=accuracy;
 	}
-	bool _gen::RelativeOptimalityExitCondition(double accuracy){
+	bool AbstractGenetic::RelativeOptimalityExitCondition(double accuracy){
 		if(accuracy<0)
 			throw new FitException("Wrong optimality exit condition.");
 		if(accuracy==0)
 			return Optimality(PopulationSize()-1)==Optimality();
 		return Optimality(PopulationSize()-1)<=(Optimality()*(1.0+accuracy));
 	}
-	shared_ptr<IParamFunc> _gen::Function(){
+	shared_ptr<IParamFunc> AbstractGenetic::Function(){
 		Lock lock(m_mutex);
 		return m_function;
 	}
-	shared_ptr<IOptimalityFunction> _gen::OptimalityCalculator(){
+	shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator(){
 		Lock lock(m_mutex);
 		return m_optimality;
 	}
-	void _gen::SetFilter(shared_ptr<IParamCheck> filter){
+	void AbstractGenetic::SetFilter(shared_ptr<IParamCheck> filter){
 		Lock lock(m_mutex);
 		m_filter=filter;
 	}
-	void _gen::RemoveFilter(){
+	void AbstractGenetic::RemoveFilter(){
 		Lock lock(m_mutex);
 		m_filter=make_shared<EmptyFilter>();
 	}
-	int _gen::PopulationSize(){
+	int AbstractGenetic::PopulationSize(){
 		Lock lock(m_mutex);
 		return m_population.size();
 	}
-	int _gen::ParamCount(){
+	int AbstractGenetic::ParamCount(){
 		if(m_population.size()==0)
 			throw new FitException("Attempt to obtain unexisting results");
 		Lock lock(m_mutex);
 		return m_population[0].first.Count();
 	}
-	unsigned int _gen::iteration_count(){
+	unsigned int AbstractGenetic::iteration_count(){
 		Lock lock(m_mutex);
 		return m_itercount;
 	}
-	double _gen::Optimality(int point_index){
+	double AbstractGenetic::Optimality(int point_index){
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw new FitException("Point index out of range or no results were calculated");
 		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
-	ParamSet _gen::Parameters(int point_index){
+	ParamSet AbstractGenetic::Parameters(int point_index){
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw new FitException("Point index out of range or no results were calculated");
 		Lock lock(m_mutex);
 		return m_population[point_index].first;
 	}
-	double _gen::operator ()(ParamSet &X){
+	double AbstractGenetic::operator ()(ParamSet &X){
 		ParamSet P=Parameters();
 		return m_function->operator()(X,P);
 	}
-	double _gen::operator [](int i){
+	double AbstractGenetic::operator [](int i){
 		if((i<0)|(i>=ParamCount()))
 			throw new FitException("Parameter index out of range");
 		Lock lock(m_mutex);
 		return m_population[0].first[i];
 	}
-	_gen::iterator _gen::begin(){
+	AbstractGenetic::iterator AbstractGenetic::begin(){
 		if(m_population.size()==0)
 			throw new FitException("Population size is zero. Attempt to get unexisting results");
 		return m_population[0].first.begin();
 	}
-	_gen::const_iterator _gen::cbegin()const{
+	AbstractGenetic::const_iterator AbstractGenetic::cbegin()const{
 		if(m_population.size()==0)
 			throw new FitException("Population size is zero. Attempt to get unexisting results");
 		return m_population[0].first.cbegin();
 	}
-	_gen::iterator _gen::end(){
+	AbstractGenetic::iterator AbstractGenetic::end(){
 		if(m_population.size()==0)
 			throw new FitException("Population size is zero. Attempt to get unexisting results");
 		return m_population[0].first.end();
 	}
-	_gen::const_iterator _gen::cend() const{
+	AbstractGenetic::const_iterator AbstractGenetic::cend() const{
 		if(m_population.size()==0)
 			throw new FitException("Population size is zero. Attempt to get unexisting results");
 		return m_population[0].first.cend();
 	}
-	ParamSet _gen::ParamAverage(){
+	ParamSet AbstractGenetic::ParamAverage(){
 		Lock lock(m_mutex);
 		return m_avr;
 	}
-	ParamSet _gen::ParamDispersion(){
+	ParamSet AbstractGenetic::ParamDispersion(){
 		Lock lock(m_mutex);
 		return m_disp;
 	}
-	ParamSet _gen::ParamMaxDeviation(){
+	ParamSet AbstractGenetic::ParamMaxDeviation(){
 		Lock lock(m_mutex);
 		return m_max_dev;
 	}
-	ParamSet _gen::ParamParabolicError(ParamSet delta){
+	ParamSet AbstractGenetic::ParamParabolicError(ParamSet delta){
 		if(PopulationSize()==0)
 			throw new FitException("Attempt to calculate parabolic error with no results");
 		auto cnt=ParamCount();
@@ -221,7 +221,7 @@ namespace Fit{
 	}
 	
 	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-		_gen(function,optimality),F(0.5){}
+		AbstractGenetic(function,optimality),F(0.5){}
 	FitGen::~FitGen(){}
 	double FitGen::MutationCoefficient(){
 		return F;

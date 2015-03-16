@@ -73,11 +73,11 @@ namespace Fit{
 		virtual ~IOptimalityFunction(){}
 		virtual double operator()(ParamSet params, IParamFunc &func)=0;
 	};
-	class _gen{
+	class AbstractGenetic{
 	protected:
-		_gen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
+		AbstractGenetic(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
 	public:
-		virtual ~_gen();
+		virtual ~AbstractGenetic();
 		void SetFilter(shared_ptr<IParamCheck> filter);
 		void RemoveFilter();
 		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions);
@@ -90,8 +90,8 @@ namespace Fit{
 		double operator()(ParamSet &X);
 		unsigned int iteration_count();
 		bool ConcentratedInOnePoint();
-		bool AbsoluteOptimalityExitCondition(double accuracy=0);
-		bool RelativeOptimalityExitCondition(double accuracy=0);
+		bool AbsoluteOptimalityExitCondition(double accuracy);
+		bool RelativeOptimalityExitCondition(double accuracy);
 		ParamSet ParamAverage();
 		ParamSet ParamDispersion();
 		ParamSet ParamMaxDeviation();
@@ -117,7 +117,7 @@ namespace Fit{
 		ParamSet m_max_dev;
 		unsigned int m_itercount;
 	};
-	class FitGen: public _gen{
+	class FitGen: public AbstractGenetic{
 	public:
 		FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
 		virtual ~FitGen();
