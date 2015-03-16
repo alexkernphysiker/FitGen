@@ -12,12 +12,10 @@ int main(int argcnt, char **arg){
 			mul<iconst<100>, power< sub< par<1>, power<par<0>,iconst<2>> >, iconst<2> > >
 		>
 	>>();
-	auto initial=make_shared<GenerateUniform>()<<make_pair(-80.0,80.0)<<make_pair(-80.0,80.0);
-	solve->Init(100,initial);
+	solve->Init(100,make_shared<GenerateUniform>()<<make_pair(-80.0,80.0)<<make_pair(-80.0,80.0));
 	printf("Population size: %i \n%i variables\n",solve->PopulationSize(),solve->ParamCount());
-	do{
+	while(!solve->ConcentratedInOnePoint())
 		solve->Iterate();
-	}while(solve->Optimality()<solve->Optimality(solve->PopulationSize()-1));
 	printf("%i iterations\n",solve->iteration_count());
 	for(int i=0;i<solve->ParamCount();i++)
 		printf("var%i = %f\n",i,solve->Parameters()[i]);

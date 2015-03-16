@@ -84,6 +84,23 @@ namespace Fit{
 			m_itercount++;
 		}
 	}
+	bool _gen::ConcentratedInOnePoint(){
+		if(m_population.size()==0)
+			throw new FitException("Attempt to obtain unexisting results");
+		if(Optimality(PopulationSize()-1)>Optimality())
+			return false;
+		bool res=true;
+		for(auto v:m_max_dev)
+			res&=(v==0);
+		return res;
+	}
+	bool _gen::OptimalityExitCondition(double accuracy){
+		if(accuracy<0)
+			throw new FitException("Wrong optimality exit condition.");
+		if(accuracy==0)
+			return Optimality(PopulationSize()-1)==Optimality();
+		return Optimality(PopulationSize()-1)<=(Optimality()*(1.0+accuracy));
+	}
 	shared_ptr<IParamFunc> _gen::Function(){
 		Lock lock(m_mutex);
 		return m_function;
@@ -135,6 +152,26 @@ namespace Fit{
 			throw new FitException("Parameter index out of range");
 		Lock lock(m_mutex);
 		return m_population[0].first[i];
+	}
+	_gen::iterator _gen::begin(){
+		if(m_population.size()==0)
+			throw new FitException("Population size is zero. Attempt to get unexisting results");
+		return m_population[0].first.begin();
+	}
+	_gen::const_iterator _gen::cbegin()const{
+		if(m_population.size()==0)
+			throw new FitException("Population size is zero. Attempt to get unexisting results");
+		return m_population[0].first.cbegin();
+	}
+	_gen::iterator _gen::end(){
+		if(m_population.size()==0)
+			throw new FitException("Population size is zero. Attempt to get unexisting results");
+		return m_population[0].first.end();
+	}
+	_gen::const_iterator _gen::cend() const{
+		if(m_population.size()==0)
+			throw new FitException("Population size is zero. Attempt to get unexisting results");
+		return m_population[0].first.cend();
 	}
 	ParamSet _gen::ParamAverage(){
 		Lock lock(m_mutex);

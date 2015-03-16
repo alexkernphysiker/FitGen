@@ -89,12 +89,20 @@ namespace Fit{
 		double operator[](int i);
 		double operator()(ParamSet &X);
 		unsigned int iteration_count();
+		bool ConcentratedInOnePoint();
+		bool OptimalityExitCondition(double accuracy=0);
 		ParamSet ParamAverage();
 		ParamSet ParamDispersion();
 		ParamSet ParamMaxDeviation();
 		ParamSet ParamParabolicError(ParamSet delta);
 		shared_ptr<IParamFunc> Function();
 		shared_ptr<IOptimalityFunction> OptimalityCalculator();
+		typedef vector<double>::iterator iterator;
+		typedef vector<double>::const_iterator const_iterator;
+		iterator begin();
+		const_iterator cbegin()const;
+		iterator end();
+		const_iterator cend() const;
 	protected:
 		virtual ParamSet born(ParamSet)=0;
 		mutex m_mutex;
