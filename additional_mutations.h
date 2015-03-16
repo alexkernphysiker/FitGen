@@ -40,7 +40,7 @@ namespace Fit{
 	public:
 		AbsoluteRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
 			FITGEN(function,optimality){}
-			virtual ~AbsoluteRandomMutations(){}
+		virtual ~AbsoluteRandomMutations(){}
 		ParamSet AbsoluteMutations(){
 			return m_coef;
 		}
@@ -64,7 +64,7 @@ namespace Fit{
 		ParamSet m_coef;
 	public:
 		RelativeRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-		FITGEN(function,optimality){}
+			FITGEN(function,optimality){}
 		virtual ~RelativeRandomMutations(){}
 		ParamSet RelativeMutations(){
 			return m_coef;
