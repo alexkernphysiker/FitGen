@@ -6,12 +6,14 @@
 namespace Fit{
 	using namespace std;
 	template<class FITGEN>
-	class Crossing:public virtual FITGEN{
+	class Crossing:public FITGEN{
 	private:
 		double P;
 	public:
 		Crossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-			FITGEN(function,optimality),P(0){}
+			FITGEN(function,optimality){
+				P=0;
+		}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -34,52 +36,52 @@ namespace Fit{
 		}
 	};
 	template<class FITGEN>
-	class AbsoluteRandomMutations:public virtual FITGEN{
+	class AbsoluteRandomMutations:public FITGEN{
 	private:
-		ParamSet m_coef;
+		ParamSet P;
 	public:
 		AbsoluteRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
 			FITGEN(function,optimality){}
 		virtual ~AbsoluteRandomMutations(){}
 		ParamSet AbsoluteMutations(){
-			return m_coef;
+			return P;
 		}
-		void SetAbsoluteMutations(ParamSet coef){
-			for(double v:coef)
+		void SetAbsoluteMutations(ParamSet p){
+			for(double v:p)
 				if(v<0)
 					throw new FitException("Wrong random mutation coefficient. Cannot be negative");
-			m_coef=coef;
+			P=p;
 		}
 	protected:
 		virtual ParamSet born(ParamSet C)override{
 			auto res=FITGEN::born(C);
 			for(int i=0;i<res.Count();i++)
-				res.Set(i,res[i]+RandomGauss(m_coef[i]));
+				res.Set(i,res[i]+RandomGauss(P[i]));
 			return res;
 		}
 	};
 	template<class FITGEN>
-	class RelativeRandomMutations:public virtual FITGEN{
+	class RelativeRandomMutations:public FITGEN{
 	private:
-		ParamSet m_coef;
+		ParamSet P;
 	public:
 		RelativeRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
 			FITGEN(function,optimality){}
 		virtual ~RelativeRandomMutations(){}
 		ParamSet RelativeMutations(){
-			return m_coef;
+			return P;
 		}
-		void SetRelativeMutations(ParamSet coef){
-			for(double v:coef)
+		void SetRelativeMutations(ParamSet p){
+			for(double v:p)
 				if(v<0)
 					throw new FitException("Wrong random mutation coefficient. Cannot be negative");
-				m_coef=coef;
+				P=p;
 		}
 	protected:
 		virtual ParamSet born(ParamSet C)override{
 			auto res=FITGEN::born(C);
 			for(int i=0;i<res.Count();i++)
-				res.Set(i,res[i]+RandomGauss(m_coef[i]*C[i]));
+				res.Set(i,res[i]+RandomGauss(P[i]*C[i]));
 			return res;
 		}
 	};
