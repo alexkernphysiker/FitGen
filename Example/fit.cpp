@@ -6,7 +6,7 @@
 #include <paramfunc.h>
 #include <filter.h>
 #include <initialconditions.h>
-const int background_polynom_power=6;
+const int background_polynom_power=5;
 using namespace std;
 using namespace Fit;
 typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
@@ -34,7 +34,8 @@ int main(int argcnt, char **arg){
 		<<make_shared<FilterAbove>(ParamSet(0,0,INFINITY,0,0))
 		<<make_shared<FilterBelow>(ParamSet(INFINITY,40))
 	);
-	fit.Init(50,initial_cond);
+	fit.Init(TotalFunc::ParamCount*5,initial_cond);
+	printf("Population size: %i\n",fit.PopulationSize());
 	while(!fit.OptimalityExitCondition(0.000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
