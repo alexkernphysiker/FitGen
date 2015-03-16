@@ -27,7 +27,7 @@ namespace Fit{
 		virtual ParamSet born(ParamSet C)override{
 			auto X=FITGEN::born(C);
 			if(P>0){
-				auto C=FitGen::born(this->Parameters(rand()%this->PopulationSize()));
+				auto C=FITGEN::born(this->Parameters(rand()%this->PopulationSize()));
 				for(int i=0; i<this->ParamCount();i++)
 					if(RandomUniformly(0.0,1.0)<P)
 						X.Set(i,C[i]);
