@@ -87,6 +87,8 @@ namespace Fit{
 	bool AbstractGenetic::ConcentratedInOnePoint(){
 		if(m_population.size()==0)
 			throw new FitException("Attempt to obtain unexisting results");
+		if(m_itercount==0)
+			return false;
 		if(Optimality(PopulationSize()-1)>Optimality())
 			return false;
 		bool res=true;
@@ -97,6 +99,8 @@ namespace Fit{
 	bool AbstractGenetic::AbsoluteOptimalityExitCondition(double accuracy){
 		if(accuracy<0)
 			throw new FitException("Wrong optimality exit condition.");
+		if(m_itercount==0)
+			return false;
 		if(accuracy==0)
 			return Optimality(PopulationSize()-1)==Optimality();
 		return (Optimality(PopulationSize()-1)-Optimality())<=accuracy;
@@ -104,6 +108,8 @@ namespace Fit{
 	bool AbstractGenetic::RelativeOptimalityExitCondition(double accuracy){
 		if(accuracy<0)
 			throw new FitException("Wrong optimality exit condition.");
+		if(m_itercount==0)
+			return false;
 		if(accuracy==0)
 			return Optimality(PopulationSize()-1)==Optimality();
 		return Optimality(PopulationSize()-1)<=(Optimality()*(1.0+accuracy));
