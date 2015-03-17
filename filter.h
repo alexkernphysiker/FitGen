@@ -3,6 +3,14 @@
 #include "fit_gen.h"
 namespace Fit{
 	using namespace std;
+	
+	template<class Filter>
+	inline shared_ptr<Filter> operator<<(shared_ptr<Filter> filter, std::shared_ptr<IParamCheck> value){
+		filter->Add(value);
+		return filter;
+	}
+	
+	
 	class FilterAbove:public IParamCheck{
 	public:
 		FilterAbove(ParamSet v);
@@ -19,72 +27,53 @@ namespace Fit{
 	private:
 		ParamSet m_data;
 	};
-	class FilterRange:public IParamCheck{
+	
+	class AbstractFilterRange:public IParamCheck{
 	public:
-		virtual ~FilterRange(){}
+		virtual ~AbstractFilterRange(){}
 		int Count();
 		double Min(int i);
 		double Max(int i);
-		FilterRange &Add(double min,double max);
+		AbstractFilterRange &Add(double min,double max);
 		virtual bool CorrectParams(ParamSet params)override=0;
 	protected:
 		vector<double> m_min;
 		vector<double> m_max;
 	};
-	class FilterRangeIn:public FilterRange{
+	class FilterRangeIn:public AbstractFilterRange{
 	public:
 		FilterRangeIn(){}
-		FilterRangeIn(double min,double max){
-			Add(min,max);
-		}
 		virtual ~FilterRangeIn(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
-	class FilterRangeOut:public FilterRange{
+	class FilterRangeOut:public AbstractFilterRange{
 	public:
 		FilterRangeOut(){}
-		FilterRangeOut(double min,double max){
-			Add(min,max);
-		}
 		virtual ~FilterRangeOut(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
 	
-	class FilterMulti:public IParamCheck{
+	class AbstractFilterMulti:public IParamCheck{
 	public:
-		virtual ~FilterMulti();
+		virtual ~AbstractFilterMulti();
 		int Count();
 		IParamCheck &Get(int i);
-		IParamCheck &operator ()(int i){
-			return Get(i);
-		}
-		FilterMulti &Add(std::shared_ptr<IParamCheck> val);
+		AbstractFilterMulti &Add(std::shared_ptr<IParamCheck> val);
 		virtual bool CorrectParams(ParamSet params)override=0;
 	protected:
 		vector<shared_ptr<IParamCheck>> m_data;
 	};
-	class FilterAnd:public FilterMulti{
+	class FilterAnd:public AbstractFilterMulti{
 	public:
 		FilterAnd(){}
-		FilterAnd(shared_ptr<IParamCheck> val){
-			Add(val);
-		}
 		virtual ~FilterAnd(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
-	class FilterOr:public FilterMulti{
+	class FilterOr:public AbstractFilterMulti{
 	public:
 		FilterOr(){}
-		FilterOr(shared_ptr<IParamCheck> val){
-			Add(val);
-		}
 		virtual ~FilterOr(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
-	template<class Filter>
-	inline shared_ptr<Filter> operator<<(shared_ptr<Filter> filter, std::shared_ptr<IParamCheck> value){
-		filter->Add(value);
-		return filter;
-	}
 }
 #endif
