@@ -56,9 +56,7 @@ namespace Fit{
 		virtual ParamSet born(ParamSet C)override{
 			auto res=FITGEN::born(C);
 			for(int i=0;i<res.Count();i++){
-				double p=P[i];
-				if(p>0)
-					res.Set(i,res[i]+RandomGauss(p));
+				res.Set(i,res[i]+RandomGauss(P[i]));
 			}
 			return res;
 		}
@@ -84,9 +82,7 @@ namespace Fit{
 		virtual ParamSet born(ParamSet C)override{
 			auto res=FITGEN::born(C);
 			for(int i=0;i<res.Count();i++){
-				double p=P[i];
-				if(p>0)
-					res.Set(i,res[i]+RandomGauss(p*C[i]));
+				res.Set(i,res[i]+RandomGauss(P[i]*C[i]));
 			}
 			return res;
 		}
