@@ -10,8 +10,8 @@ namespace Fit{
 	private:
 		double P;
 	public:
-		Crossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-			FITGEN(function,optimality){
+		Crossing(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count=1)
+			:FITGEN(function,optimality,threads_count){
 				P=0;
 		}
 		virtual ~Crossing(){}
@@ -40,8 +40,8 @@ namespace Fit{
 	private:
 		ParamSet P;
 	public:
-		AbsoluteRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-			FITGEN(function,optimality){}
+		AbsoluteRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count=1)
+			:FITGEN(function,optimality,threads_count){}
 		virtual ~AbsoluteRandomMutations(){}
 		ParamSet AbsoluteMutations(){
 			return P;
@@ -66,8 +66,8 @@ namespace Fit{
 	private:
 		ParamSet P;
 	public:
-		RelativeRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-			FITGEN(function,optimality){}
+		RelativeRandomMutations(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count=1)
+			:FITGEN(function,optimality,threads_count){}
 		virtual ~RelativeRandomMutations(){}
 		ParamSet RelativeMutations(){
 			return P;

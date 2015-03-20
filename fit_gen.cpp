@@ -24,7 +24,10 @@ namespace Fit{
 		}
 	}
 	
-	AbstractGenetic::AbstractGenetic(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality){
+	AbstractGenetic::AbstractGenetic(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count){
+		if(threads_count==0)
+			throw new FitException("Cannot run genetic algorithm with zero threads");
+		threads=threads_count;
 		m_function=function;
 		m_optimality=optimality;
 		m_itercount=0;
@@ -32,28 +35,40 @@ namespace Fit{
 	}
 	AbstractGenetic::~AbstractGenetic(){}
 	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions){
-		if(m_population.size()>0)throw new FitException("Fitting algorithm cannot be inited twice");
-		if(population_size<=0)throw new FitException("Fitting algorithm got incorrect parameters");
-		Lock lock(m_mutex);
-		m_itercount=0;
-		for(int i=0;i<population_size;i++){
-			ParamSet new_param=CreateNew(
-				[initial_conditions](){return initial_conditions->Generate();},
-				[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
-			);
-			auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
-			InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
+		if(m_population.size()>0)
+			throw new FitException("Fitting algorithm cannot be inited twice");
+		if(population_size<=0)
+			throw new FitException("Fitting algorithm got incorrect parameters");
+		auto calc_func=[this,initial_conditions](int cnt){
+			for(int i=0;i<cnt;i++){
+				ParamSet new_param=CreateNew(
+					[initial_conditions](){return initial_conditions->Generate();},
+					[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+				);
+				auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
+				{Lock lock(m_mutex);
+					InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
+				}
+			}
+		};
+		int piece_size=population_size/threads;
+		int rest=population_size%threads;
+		vector<shared_ptr<thread>> thread_vector;
+		for(int i=1;i<threads;i++)
+			thread_vector.push_back(make_shared<thread>(calc_func,piece_size));
+		calc_func(piece_size+rest);
+		for(auto thr:thread_vector)
+			thr->join();
+		{Lock lock(m_mutex);
+			m_itercount=0;
 		}
 	}
-	void AbstractGenetic::Iterate(unsigned int threads){
-		if(threads==0)
-			throw new FitException("Cannot run iteration with zero threads");
+	void AbstractGenetic::Iterate(){
 		int n=PopulationSize();
 		int par_cnt=ParamCount();
 		if(n==0)
 			throw new FitException("Fitting algorithm cannot work with zero size of population");
 		vector<Point> tmp_population;
-		vector<shared_ptr<thread>> thread_vector;
 		auto calc_func=[this,&tmp_population](int beg,int end){
 			for(int i=beg;i<=end;i++){
 				Point point;
@@ -72,6 +87,7 @@ namespace Fit{
 			}
 		};
 		int piece_size=n/threads;
+		vector<shared_ptr<thread>> thread_vector;
 		for(int i=1;i<threads;i++)
 			thread_vector.push_back(make_shared<thread>(calc_func,(i-1)*piece_size,(i*piece_size)-1));
 		calc_func((threads-1)*piece_size,m_population.size()-1);
@@ -241,8 +257,8 @@ namespace Fit{
 		return res;
 	}
 	
-	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality):
-		AbstractGenetic(function,optimality),F(0.5){}
+	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count)
+		:AbstractGenetic(function,optimality,threads_count),F(0.5){}
 	FitGen::~FitGen(){}
 	double FitGen::MutationCoefficient(){
 		return F;

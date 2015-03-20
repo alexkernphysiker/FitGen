@@ -75,13 +75,13 @@ namespace Fit{
 	};
 	class AbstractGenetic{
 	protected:
-		AbstractGenetic(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
+		AbstractGenetic(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count);
 	public:
 		virtual ~AbstractGenetic();
 		void SetFilter(shared_ptr<IParamCheck> filter);
 		void RemoveFilter();
 		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions);
-		void Iterate(unsigned int threads=1);
+		void Iterate();
 		int PopulationSize();
 		ParamSet Parameters(int point_index=0);
 		double Optimality(int point_index=0);
@@ -116,10 +116,11 @@ namespace Fit{
 		ParamSet m_disp;
 		ParamSet m_max_dev;
 		unsigned int m_itercount;
+		unsigned int threads;
 	};
 	class FitGen: public AbstractGenetic{
 	public:
-		FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality);
+		FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count=1);
 		virtual ~FitGen();
 		double MutationCoefficient();
 		void SetMutationCoefficient(double val);

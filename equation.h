@@ -23,8 +23,8 @@ namespace Fit {
 		};
 	};
 	template<class eq,class fit=FitGen>
-	shared_ptr<fit> Solve(){
-		return make_shared<fit>(make_shared<details::NoParamFunc>(),make_shared<eq>());
+	shared_ptr<fit> Solve(unsigned int threads_count=1){
+		return make_shared<fit>(make_shared<details::NoParamFunc>(),make_shared<eq>(),threads_count);
 	}
 	template<double (func)(ParamSet&)>
 	class Equation:public IOptimalityFunction{
