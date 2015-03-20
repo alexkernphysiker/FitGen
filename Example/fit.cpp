@@ -31,12 +31,12 @@ int main(int argcnt, char **arg){
 	while(initial_cond->Count()<TotalFunc::ParamCount)
 		initial_cond<<make_pair(0.0,0.01);
 	fit.SetFilter(make_shared<FilterAnd>()
-		<<make_shared<FilterAbove>(ParamSet(0,0,INFINITY,0,0))
+		<<make_shared<FilterAbove>(ParamSet(0,7,INFINITY,0,0))
 		<<make_shared<FilterBelow>(ParamSet(INFINITY,40))
 	);
-	fit.Init(TotalFunc::ParamCount*5,initial_cond);
+	fit.Init(TotalFunc::ParamCount*10,initial_cond);
 	printf("Population size: %i\n",fit.PopulationSize());
-	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.0000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}

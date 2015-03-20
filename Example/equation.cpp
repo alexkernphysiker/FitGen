@@ -12,9 +12,11 @@ int main(int argcnt, char **arg){
 	auto solve=Solve<SearchMin<func2<Rosenbrock,par<0>,par<1>>>>();
 	solve->Init(100,make_shared<GenerateUniform>()<<make_pair(-80.0,80.0)<<make_pair(-80.0,80.0));
 	printf("Population size: %i \n%i variables\n",solve->PopulationSize(),solve->ParamCount());
-	while(!solve->ConcentratedInOnePoint())
+	while(!solve->ConcentratedInOnePoint()){
 		solve->Iterate();
-	printf("%i iterations\n",solve->iteration_count());
+		printf("%i iterations\r",solve->iteration_count());
+	}
+	printf("\n");
 	for(int i=0;i<solve->ParamCount();i++)
 		printf("var%i = %f\n",i,solve->Parameters()[i]);
 	return 0;

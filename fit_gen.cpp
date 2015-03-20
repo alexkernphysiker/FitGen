@@ -45,23 +45,38 @@ namespace Fit{
 			InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
 		}
 	}
-	void AbstractGenetic::Iterate(){
+	void AbstractGenetic::Iterate(unsigned int threads){
+		if(threads==0)
+			throw new FitException("Cannot run iteration with zero threads");
 		int n=PopulationSize();
 		int par_cnt=ParamCount();
 		if(n==0)
 			throw new FitException("Fitting algorithm cannot work with zero size of population");
 		vector<Point> tmp_population;
-		for(auto point:m_population){
-			ParamSet new_param=CreateNew(
-				[this,&point](){return born(point.first);},
-				[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
-			);
-			auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
-			{Lock lock(m_mutex);
-				InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
-				InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
+		vector<shared_ptr<thread>> thread_vector;
+		auto calc_func=[this,&tmp_population](int beg,int end){
+			for(int i=beg;i<=end;i++){
+				Point point;
+				{Lock lock(m_mutex);
+					point=m_population[i];
+				}
+				ParamSet new_param=CreateNew(
+					[this,&point](){return born(point.first);},
+					[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+				);
+				auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
+				{Lock lock(m_mutex);
+					InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
+					InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
+				}
 			}
-		}
+		};
+		int piece_size=n/threads;
+		for(int i=1;i<threads;i++)
+			thread_vector.push_back(make_shared<thread>(calc_func,(i-1)*piece_size,(i*piece_size)-1));
+		calc_func((threads-1)*piece_size,m_population.size()-1);
+		for(auto thr:thread_vector)
+			thr->join();
 		{Lock locker(m_mutex);
 			Sigma<double> disp[par_cnt];
 			m_max_dev=parZeros(par_cnt);

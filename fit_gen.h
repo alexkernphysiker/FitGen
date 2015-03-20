@@ -81,7 +81,7 @@ namespace Fit{
 		void SetFilter(shared_ptr<IParamCheck> filter);
 		void RemoveFilter();
 		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions);
-		void Iterate();
+		void Iterate(unsigned int threads=1);
 		int PopulationSize();
 		ParamSet Parameters(int point_index=0);
 		double Optimality(int point_index=0);
