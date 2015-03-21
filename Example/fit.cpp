@@ -29,7 +29,7 @@ int main(int argcnt, char **arg){
 	fit.SetCrossingProbability(0.1);
 	auto initial_cond=make_shared<GenerateByGauss>()
 		<<make_pair(1.0,20.0)<<make_pair(20.0,20.0)<<make_pair(-20.0,0)
-		<<make_pair(300.0,300.0)<<make_pair(4.0,4.0);
+		<<make_pair(400.0,100.0)<<make_pair(4.0,4.0);
 	while(initial_cond->Count()<TotalFunc::ParamCount)
 		initial_cond<<make_pair(0.0,0.01);
 	fit.SetFilter(make_shared<FilterAnd>()
