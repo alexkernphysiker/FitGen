@@ -6,15 +6,15 @@
 namespace Fit{
 	using namespace std;
 	template<class FITGEN=AbstractGenetic>
-	class Genetic: public FITGEN{
+	class DifferentialRandomMutations: public FITGEN{
 	private:
 		double M;
 	public:
-		Genetic(shared_ptr<IParamFunc> function, 
+		DifferentialRandomMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality, 
 			unsigned int threads_count
 		):FITGEN(function,optimality,threads_count),M(0.5){}
-		virtual ~Genetic(){}
+		virtual ~DifferentialRandomMutations(){}
 		double MutationCoefficient(){
 			return M;
 		}
@@ -40,7 +40,7 @@ namespace Fit{
 		Crossing(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0){}
+		):FITGEN(function,optimality,threads_count),P(0.1){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -65,7 +65,7 @@ namespace Fit{
 	template<class FITGEN=AbstractGenetic>
 	class AbsoluteRandomMutations:public FITGEN{
 	private:
-		ParamSet P;
+		ParamSet M;
 	public:
 		AbsoluteRandomMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
@@ -73,26 +73,26 @@ namespace Fit{
 		):FITGEN(function,optimality,threads_count){}
 		virtual ~AbsoluteRandomMutations(){}
 		ParamSet AbsoluteMutations(){
-			return P;
+			return M;
 		}
 		void SetAbsoluteMutations(ParamSet p){
 			for(double v:p)
 				if(v<0)
 					throw new FitException("Wrong random mutation coefficient. Cannot be negative");
-			P=p;
+			M=p;
 		}
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
 			for(int i=0;i<AbstractGenetic::ParamCount();i++){
-				C.Set(i,C[i]+RandomGauss(P[i]));
+				C.Set(i,C[i]+RandomGauss(M[i]));
 			}
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
 	class RelativeRandomMutations:public FITGEN{
 	private:
-		ParamSet P;
+		ParamSet M;
 	public:
 		RelativeRandomMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
@@ -100,19 +100,19 @@ namespace Fit{
 		):FITGEN(function,optimality,threads_count){}
 		virtual ~RelativeRandomMutations(){}
 		ParamSet RelativeMutations(){
-			return P;
+			return M;
 		}
 		void SetRelativeMutations(ParamSet p){
 			for(double v:p)
 				if(v<0)
 					throw new FitException("Wrong random mutation coefficient. Cannot be negative");
-				P=p;
+				M=p;
 		}
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
 			for(int i=0;i<AbstractGenetic::ParamCount();i++){
-				C.Set(i,C[i]*(1+RandomGauss(P[i])));
+				C.Set(i,C[i]*(1+RandomGauss(M[i])));
 			}
 		}
 	};
