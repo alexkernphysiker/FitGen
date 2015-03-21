@@ -43,8 +43,8 @@ namespace Fit{
 			throw new FitException("Fitting algorithm cannot be inited twice");
 		if(population_size<=0)
 			throw new FitException("Fitting algorithm got incorrect parameters");
-		auto calc_func=[this,initial_conditions](int cnt){
-			for(int i=0;i<cnt;i++){
+		auto add_to_population=[this,initial_conditions](int count){
+			for(int i=0;i<count;i++){
 				ParamSet new_param=CreateNew(
 					[initial_conditions](){return initial_conditions->Generate();},
 					[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
@@ -59,8 +59,8 @@ namespace Fit{
 		int rest=population_size%threads;
 		vector<shared_ptr<thread>> thread_vector;
 		for(int i=1;i<threads;i++)
-			thread_vector.push_back(make_shared<thread>(calc_func,piece_size));
-		calc_func(piece_size+rest);
+			thread_vector.push_back(make_shared<thread>(add_to_population,piece_size));
+		add_to_population(piece_size+rest);
 		for(auto thr:thread_vector)
 			thr->join();
 		{Lock lock(m_mutex);
@@ -73,8 +73,8 @@ namespace Fit{
 		if(n==0)
 			throw new FitException("Fitting algorithm cannot work with zero size of population");
 		vector<Point> tmp_population;
-		auto calc_func=[this,&tmp_population](int beg,int end){
-			for(int i=beg;i<=end;i++){
+		auto process_elements=[this,&tmp_population](int from,int to){
+			for(int i=from;i<=to;i++){
 				Point point;
 				{Lock lock(m_mutex);
 					point=m_population[i];
@@ -93,8 +93,8 @@ namespace Fit{
 		int piece_size=n/threads;
 		vector<shared_ptr<thread>> thread_vector;
 		for(int i=1;i<threads;i++)
-			thread_vector.push_back(make_shared<thread>(calc_func,(i-1)*piece_size,(i*piece_size)-1));
-		calc_func((threads-1)*piece_size,m_population.size()-1);
+			thread_vector.push_back(make_shared<thread>(process_elements,(i-1)*piece_size,(i*piece_size)-1));
+		process_elements((threads-1)*piece_size,n-1);
 		for(auto thr:thread_vector)
 			thr->join();
 		{Lock locker(m_mutex);
