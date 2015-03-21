@@ -24,7 +24,7 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY<ChiSquareWithXError>(0,19,X,dX,Y,dY);
-	FitGen fit(make_shared<TotalFunc>(),points_to_fit);
+	FitGen fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
 	auto initial_cond=make_shared<GenerateByGauss>()
 		<<make_pair(1.0,20.0)<<make_pair(20.0,20.0)<<make_pair(-20.0,0)
 		<<make_pair(300.0,300.0)<<make_pair(4.0,4.0);

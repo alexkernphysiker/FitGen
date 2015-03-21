@@ -3,13 +3,11 @@
 #include "fit_gen.h"
 namespace Fit{
 	using namespace std;
-	
 	template<class Filter>
 	inline shared_ptr<Filter> operator<<(shared_ptr<Filter> filter, std::shared_ptr<IParamCheck> value){
 		filter->Add(value);
 		return filter;
 	}
-	
 	
 	class FilterAbove:public IParamCheck{
 	public:

@@ -24,7 +24,11 @@ namespace Fit{
 		}
 	}
 	
-	AbstractGenetic::AbstractGenetic(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count){
+	AbstractGenetic::AbstractGenetic(
+		shared_ptr<IParamFunc> function, 
+		shared_ptr<IOptimalityFunction> optimality,
+		unsigned int threads_count
+	){
 		if(threads_count==0)
 			throw new FitException("Cannot run genetic algorithm with zero threads");
 		threads=threads_count;
@@ -257,7 +261,9 @@ namespace Fit{
 		return res;
 	}
 	
-	FitGen::FitGen(shared_ptr<IParamFunc> function, shared_ptr<IOptimalityFunction> optimality,unsigned int threads_count)
+	FitGen::FitGen(shared_ptr<IParamFunc> function, 
+		shared_ptr<IOptimalityFunction> optimality,
+		unsigned int threads_count)
 		:AbstractGenetic(function,optimality,threads_count),F(0.5){}
 	FitGen::~FitGen(){}
 	double FitGen::MutationCoefficient(){

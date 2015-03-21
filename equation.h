@@ -23,7 +23,7 @@ namespace Fit {
 		};
 	};
 	template<class eq,class fit=FitGen>
-	shared_ptr<fit> Solve(unsigned int threads_count=1){
+	shared_ptr<fit> Solve(unsigned int threads_count){
 		return make_shared<fit>(make_shared<details::NoParamFunc>(),make_shared<eq>(),threads_count);
 	}
 	template<double (func)(ParamSet&)>
