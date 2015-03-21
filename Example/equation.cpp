@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <equation.h>
+#include <genetic.h>
 #include <initialconditions.h>
 using namespace std;
 using namespace Fit;
@@ -9,8 +10,8 @@ double Rosenbrock(double x, double y){
 	return pow(1.0-x,2)+100*pow(y-pow(x,2),2);
 }
 int main(int argcnt, char **arg){
-	auto solve=Solve<SearchMin<func2<Rosenbrock,par<0>,par<1>>>>(THREADS_COUNT);
-	solve->Init(100,make_shared<GenerateUniform>()<<make_pair(-80.0,80.0)<<make_pair(-80.0,80.0));
+	auto solve=Solve<SearchMin<func2<Rosenbrock,par<0>,par<1>>>,Genetic<>>(THREADS_COUNT);
+	solve->Init(100,make_shared<GenerateUniform>()<<make_pair(-80,80)<<make_pair(-80,80));
 	printf("Population size: %i \n%i variables\n",solve->PopulationSize(),solve->ParamCount());
 	while(!solve->ConcentratedInOnePoint()){
 		solve->Iterate();

@@ -23,7 +23,6 @@ namespace Fit{
 			if(condition(res))return res;
 		}
 	}
-	
 	AbstractGenetic::AbstractGenetic(
 		shared_ptr<IParamFunc> function, 
 		shared_ptr<IOptimalityFunction> optimality,
@@ -46,8 +45,12 @@ namespace Fit{
 		auto add_to_population=[this,initial_conditions](int count){
 			for(int i=0;i<count;i++){
 				ParamSet new_param=CreateNew(
-					[initial_conditions](){return initial_conditions->Generate();},
-					[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+					[initial_conditions](){
+						return initial_conditions->Generate();
+					},
+					[this](ParamSet p){
+						return m_function->CorrectParams(p) && m_filter->CorrectParams(p);
+					}
 				);
 				auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
 				{Lock lock(m_mutex);
@@ -67,6 +70,7 @@ namespace Fit{
 			m_itercount=0;
 		}
 	}
+	void AbstractGenetic::mutations(ParamSet&){}
 	void AbstractGenetic::Iterate(){
 		int n=PopulationSize();
 		int par_cnt=ParamCount();
@@ -80,8 +84,14 @@ namespace Fit{
 					point=m_population[i];
 				}
 				ParamSet new_param=CreateNew(
-					[this,&point](){return born(point.first);},
-					[this](ParamSet p){return m_function->CorrectParams(p) && m_filter->CorrectParams(p);}
+					[this,&point](){
+						ParamSet res=point.first;
+						mutations(res);
+						return res;
+					},
+					[this](ParamSet p){
+						return m_function->CorrectParams(p) && m_filter->CorrectParams(p);
+					}
 				);
 				auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
 				{Lock lock(m_mutex);
@@ -258,28 +268,6 @@ namespace Fit{
 			else
 				res<<sqrt(2.0/dd);
 		}
-		return res;
-	}
-	
-	FitGen::FitGen(shared_ptr<IParamFunc> function, 
-		shared_ptr<IOptimalityFunction> optimality,
-		unsigned int threads_count)
-		:AbstractGenetic(function,optimality,threads_count),F(0.5){}
-	FitGen::~FitGen(){}
-	double FitGen::MutationCoefficient(){
-		return F;
-	}
-	void FitGen::SetMutationCoefficient(double val){
-		if(val<=0)
-			throw new FitException("Invalid mutation coefficient value");
-		F=val;
-	}
-	ParamSet FitGen::born(ParamSet C){
-		ParamSet res;
-		auto A=Parameters(rand()%PopulationSize());
-		auto B=Parameters(rand()%PopulationSize());
-		for(int j=0; j<ParamCount();j++)
-			res<<(C[j]+F*(A[j]-B[j]));
 		return res;
 	}
 }

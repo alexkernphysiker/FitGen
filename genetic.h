@@ -5,7 +5,34 @@
 #include "math_h/randomfunc.h"
 namespace Fit{
 	using namespace std;
-	template<class FITGEN>
+	template<class FITGEN=AbstractGenetic>
+	class Genetic: public FITGEN{
+	private:
+		double M;
+	public:
+		Genetic(shared_ptr<IParamFunc> function, 
+			shared_ptr<IOptimalityFunction> optimality, 
+			unsigned int threads_count
+		):FITGEN(function,optimality,threads_count),M(0.5){}
+		virtual ~Genetic(){}
+		double MutationCoefficient(){
+			return M;
+		}
+		void SetMutationCoefficient(double val){
+			if(val<=0)
+				throw new FitException("Invalid mutation coefficient value");
+			M=val;
+		}
+	protected:
+		virtual void mutations(ParamSet &C)override{
+			FITGEN::mutations(C);
+			auto A=AbstractGenetic::Parameters(rand()%AbstractGenetic::PopulationSize());
+			auto B=AbstractGenetic::Parameters(rand()%AbstractGenetic::PopulationSize());
+			for(int i=0; i<AbstractGenetic::ParamCount();i++)
+				C.Set(i,C[i]+M*(A[i]-B[i]));
+		}
+	};
+	template<class FITGEN=AbstractGenetic>
 	class Crossing:public FITGEN{
 	private:
 		double P;
@@ -13,9 +40,7 @@ namespace Fit{
 		Crossing(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count){
-			P=0;
-		}
+		):FITGEN(function,optimality,threads_count),P(0){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -26,18 +51,18 @@ namespace Fit{
 			P=val;
 		}
 	protected:
-		virtual ParamSet born(ParamSet C)override{
-			auto X=FITGEN::born(C);
+		virtual void mutations(ParamSet &C)override{
+			FITGEN::mutations(C);
 			if(P>0){
-				auto C=FITGEN::born(this->Parameters(rand()%this->PopulationSize()));
-				for(int i=0; i<this->ParamCount();i++)
+				auto X=AbstractGenetic::Parameters(rand()%AbstractGenetic::PopulationSize());
+				FITGEN::mutations(X);
+				for(int i=0; i<AbstractGenetic::ParamCount();i++)
 					if(RandomUniformly(0.0,1.0)<P)
-						X.Set(i,C[i]);
+						C.Set(i,X[i]);
 			}
-			return X;
 		}
 	};
-	template<class FITGEN>
+	template<class FITGEN=AbstractGenetic>
 	class AbsoluteRandomMutations:public FITGEN{
 	private:
 		ParamSet P;
@@ -57,15 +82,14 @@ namespace Fit{
 			P=p;
 		}
 	protected:
-		virtual ParamSet born(ParamSet C)override{
-			auto res=FITGEN::born(C);
-			for(int i=0;i<res.Count();i++){
-				res.Set(i,res[i]+RandomGauss(P[i]));
+		virtual void mutations(ParamSet &C)override{
+			FITGEN::mutations(C);
+			for(int i=0;i<AbstractGenetic::ParamCount();i++){
+				C.Set(i,C[i]+RandomGauss(P[i]));
 			}
-			return res;
 		}
 	};
-	template<class FITGEN>
+	template<class FITGEN=AbstractGenetic>
 	class RelativeRandomMutations:public FITGEN{
 	private:
 		ParamSet P;
@@ -85,12 +109,11 @@ namespace Fit{
 				P=p;
 		}
 	protected:
-		virtual ParamSet born(ParamSet C)override{
-			auto res=FITGEN::born(C);
-			for(int i=0;i<res.Count();i++){
-				res.Set(i,res[i]+RandomGauss(P[i]*C[i]));
+		virtual void mutations(ParamSet &C)override{
+			FITGEN::mutations(C);
+			for(int i=0;i<AbstractGenetic::ParamCount();i++){
+				C.Set(i,C[i]*(1+RandomGauss(P[i])));
 			}
-			return res;
 		}
 	};
 }

@@ -1,8 +1,8 @@
 #ifndef ____WrKDhKHP___
 #define ____WrKDhKHP___
-#include <memory>
 #include <mutex>
 #include <vector>
+#include <memory>
 #include <utility>
 #include "paramset.h"
 namespace Fit{
@@ -61,7 +61,7 @@ namespace Fit{
 		iterator end();
 		const_iterator cend() const;
 	protected:
-		virtual ParamSet born(ParamSet)=0;
+		virtual void mutations(ParamSet&);
 		mutex m_mutex;
 	private:
 		shared_ptr<IParamFunc> m_function;
@@ -74,22 +74,8 @@ namespace Fit{
 		unsigned int m_itercount;
 		unsigned int threads;
 	};
-	class FitGen: public AbstractGenetic{
-	public:
-		FitGen(shared_ptr<IParamFunc> function, 
-			shared_ptr<IOptimalityFunction> optimality, 
-			unsigned int threads_count);
-		virtual ~FitGen();
-		double MutationCoefficient();
-		void SetMutationCoefficient(double val);
-	protected:
-		virtual ParamSet born(ParamSet C)override;
-	private:
-		double F;
-	};
-	
-	template<class AdderOfPairs>
-	inline shared_ptr<AdderOfPairs> operator<<(shared_ptr<AdderOfPairs> adder, pair<double,double> value){
+	template<class AdderOfPairs,class F, class S>
+	inline shared_ptr<AdderOfPairs> operator<<(shared_ptr<AdderOfPairs> adder, pair<F,S> value){
 		adder->Add(value.first,value.second);
 		return adder;
 	}

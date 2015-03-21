@@ -1,12 +1,10 @@
 #include <iostream>
 #include <fstream>
-
-#include <fit_gen.h>
+#include <genetic.h>
 #include <fitpoints.h>
 #include <paramfunc.h>
 #include <filter.h>
 #include <initialconditions.h>
-#include <additional_mutations.h>
 const int background_polynom_power=4;
 using namespace std;
 using namespace Fit;
@@ -25,20 +23,19 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY<ChiSquareWithXError>(0,19,X,dX,Y,dY);
-	Crossing<FitGen> fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
-	fit.SetCrossingProbability(0.1);
+	Genetic<> fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
 	auto initial_cond=make_shared<GenerateByGauss>()
-		<<make_pair(1.0,20.0)<<make_pair(20.0,20.0)<<make_pair(-20.0,0)
-		<<make_pair(400.0,100.0)<<make_pair(4.0,4.0);
+		<<make_pair(1,20)<<make_pair(20,20)<<make_pair(-20,0)
+		<<make_pair(400,100)<<make_pair(4,4);
 	while(initial_cond->Count()<TotalFunc::ParamCount)
-		initial_cond<<make_pair(0.0,0.01);
+		initial_cond<<make_pair(0,0.01);
 	fit.SetFilter(make_shared<FilterAnd>()
 		<<make_shared<FilterAbove>(ParamSet(0,10))
 		<<make_shared<FilterBelow>(ParamSet(INFINITY,50))
 	);
 	fit.Init(TotalFunc::ParamCount*10,initial_cond);
 	printf("Population size: %i\n",fit.PopulationSize());
-	while(!fit.AbsoluteOptimalityExitCondition(0.0000001)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
