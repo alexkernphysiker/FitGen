@@ -1,4 +1,4 @@
-#include "fit_gen.h"
+#include "paramset.h"
 #include "fitexception.h"
 namespace Fit{
 	using namespace std;
