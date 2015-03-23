@@ -3,7 +3,7 @@
 #include <genetic.h>
 #include <fitpoints.h>
 #include <paramfunc.h>
-#include <filter.h>
+#include <extended_filter.h>
 #include <initialconditions.h>
 const int background_polynom_power=4;
 using namespace std;
@@ -29,13 +29,10 @@ int main(int argcnt, char **arg){
 		<<make_pair(400,100)<<make_pair(4,4);
 	while(initial_cond->Count()<TotalFunc::ParamCount)
 		initial_cond<<make_pair(0,0.01);
-	fit.SetFilter(make_shared<FilterAnd>()
-		<<make_shared<FilterAbove>(ParamSet(0,10))
-		<<make_shared<FilterBelow>(ParamSet(INFINITY,50))
-	);
+	fit.SetFilter(Condition<ParamWrap1<Foreground,2>,NG,ParamWrap<Mul<Par<1>,Const<2>>>>());
 	fit.Init(TotalFunc::ParamCount*10,initial_cond);
 	printf("Population size: %i\n",fit.PopulationSize());
-	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.0000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}

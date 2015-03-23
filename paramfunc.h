@@ -16,56 +16,6 @@ namespace Fit{
 	template<int a,int b,int c,int d,int e,int f>
 	struct max6{enum{val=(max5<a,b,c,d,e>::val>f)?max5<a,b,c,d,e>::val:f};};
 	
-	template<class FUNC>
-	class PARAMFUNC:public virtual IParamFunc{
-	private:
-		FUNC Func;
-	public:
-		PARAMFUNC(FUNC func):Func(func){}
-		virtual ~PARAMFUNC(){}
-		virtual double operator()(ParamSet X,ParamSet P)override{
-			return Func(X,P);
-		}
-		virtual bool CorrectParams(ParamSet)override{
-			return true;
-		}
-	};
-	template<class FUNC,class FILTER>
-	class PARAM_FUNC:public virtual PARAMFUNC<FUNC>{
-	private:
-		FILTER Filter;
-	public:
-		PARAM_FUNC(FUNC func,FILTER filter):PARAMFUNC<FUNC>(func),Filter(filter){}
-		virtual ~PARAM_FUNC(){}
-		virtual bool CorrectParams(ParamSet P)override{
-			return Filter(P);
-		}
-	};
-	template<double (func)(ParamSet,ParamSet)>
-	class ParamFunc:public virtual IParamFunc{
-	public:
-		ParamFunc(){}
-		virtual ~ParamFunc(){}
-		virtual double operator()(ParamSet X, ParamSet P) override{
-			return func(X,P);
-		}
-		virtual bool CorrectParams(ParamSet) override{
-			return true;
-		}
-	};
-	template<double (func)(ParamSet,ParamSet),bool (filter)(ParamSet)>
-	class Param_Func:public virtual IParamFunc{
-	public:
-		Param_Func(){}
-		virtual ~Param_Func(){}
-		virtual double operator()(ParamSet X, ParamSet P) override{
-			return func(X,P);
-		}
-		virtual bool CorrectParams(ParamSet P) override{
-			return filter(P);
-		}
-	};
-	
 	template<int value>
 	class Const:public virtual IParamFunc{
 	public:

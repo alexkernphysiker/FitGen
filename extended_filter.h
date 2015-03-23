@@ -42,27 +42,47 @@ namespace Fit{
 		}
 	};
 	template<class FUNC>
-	class ParamWrap{
-	private:
-		shared_ptr<FUNC> func;
+	class ParamWrap:FUNC{
+	protected:
 		ParamSet X;
 	public:
-		ParamWrap(){
-			func=make_shared<FUNC>();
-			X=parZeros(FUNC::ParamCount);
+		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
+		ParamWrap():FUNC(){
+			X=parZeros(ArgCount);
 		}
 		ParamWrap(const ParamWrap &C){
-			func=C.func;
 			X=C.X;
 		}
-		~ParamWrap(){}
-		double operator()(ParamSet P){
-			return func->operator()(X,P);
+		virtual ~ParamWrap(){}
+		virtual double operator()(ParamSet P){
+			return FUNC::operator()(X,P);
+		}
+	};
+	template<class FUNC,int arg0>
+	class ParamWrap1:public ParamWrap<FUNC>{
+	public:
+		ParamWrap1():ParamWrap<FUNC>(){}
+		ParamWrap1(const ParamWrap1 &C):ParamWrap<FUNC>(C){}
+		virtual ~ParamWrap1(){}
+		virtual double operator()(ParamSet P)override{
+			ParamWrap<FUNC>::X.Set(0,P[arg0]);
+			return ParamWrap<FUNC>::operator()(P);
+		}
+	};
+	template<class FUNC,int arg0,int arg1>
+	class ParamWrap2:public ParamWrap1<FUNC,arg0>{
+	public:
+		ParamWrap2():ParamWrap1<FUNC,arg0>(){}
+		ParamWrap2(const ParamWrap2 &C):ParamWrap1<FUNC,arg0>(C){}
+		virtual ~ParamWrap2(){}
+		virtual double operator()(ParamSet P)override{
+			ParamWrap<FUNC>::X.Set(0,P[arg1]);
+			return ParamWrap1<FUNC,arg0>::operator()(P);
 		}
 	};
 	template<class FUNC1,condition c, class FUNC2>
 	shared_ptr<IParamCheck> Condition(){
-		return make_shared<FilterCondition<ParamWrap<FUNC1>,ParamWrap<FUNC2>>>(ParamWrap<FUNC1>(),c,ParamWrap<FUNC2>());
+		return make_shared<FilterCondition<FUNC1,FUNC2>>(FUNC1(),c,FUNC2());
 	}
 }
 #endif
