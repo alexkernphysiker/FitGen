@@ -2,8 +2,8 @@
 #include "fitexception.h"
 namespace Fit{
 	using namespace std;
-	FilterAbove::FilterAbove(ParamSet v):m_data(v){}
-	bool FilterAbove::CorrectParams(ParamSet params){
+	Above::Above(ParamSet v):m_data(v){}
+	bool Above::CorrectParams(ParamSet params){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
@@ -13,8 +13,8 @@ namespace Fit{
 		}
 		return res;
 	}
-	FilterBelow::FilterBelow(ParamSet v):m_data(v){}
-	bool FilterBelow::CorrectParams(ParamSet params){
+	Below::Below(ParamSet v):m_data(v){}
+	bool Below::CorrectParams(ParamSet params){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
@@ -44,7 +44,7 @@ namespace Fit{
 		m_max.push_back(max);
 		return *this;
 	}
-	bool FilterRangeIn::CorrectParams(ParamSet params){
+	bool RangeIn::CorrectParams(ParamSet params){
 		bool res=true;
 		if(res){
 			for(int i=0; i<Count();i++)
@@ -52,7 +52,7 @@ namespace Fit{
 		}
 		return res;
 	}
-	bool FilterRangeOut::CorrectParams(ParamSet params){
+	bool RangeOut::CorrectParams(ParamSet params){
 		bool res=true;
 		if(res){
 			for(int i=0; i<Count();i++)
@@ -74,13 +74,13 @@ namespace Fit{
 		return *this;
 	}
 	AbstractFilterMulti::~AbstractFilterMulti(){}
-	bool FilterAnd::CorrectParams(ParamSet params){
+	bool And::CorrectParams(ParamSet params){
 		bool res=true;
 		for(auto f: m_data)
 			res&=f->CorrectParams(params);
 		return res;
 	}
-	bool FilterOr::CorrectParams(ParamSet params){
+	bool Or::CorrectParams(ParamSet params){
 		bool res=false;
 		for(auto f: m_data)
 			res|=f->CorrectParams(params);

@@ -9,18 +9,18 @@ namespace Fit{
 		return filter;
 	}
 	
-	class FilterAbove:public IParamCheck{
+	class Above:public IParamCheck{
 	public:
-		FilterAbove(ParamSet v);
-		virtual ~FilterAbove(){}
+		Above(ParamSet v);
+		virtual ~Above(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	private:
 		ParamSet m_data;
 	};
-	class FilterBelow:public IParamCheck{
+	class Below:public IParamCheck{
 	public:
-		FilterBelow(ParamSet v);
-		virtual ~FilterBelow(){}
+		Below(ParamSet v);
+		virtual ~Below(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	private:
 		ParamSet m_data;
@@ -38,16 +38,16 @@ namespace Fit{
 		vector<double> m_min;
 		vector<double> m_max;
 	};
-	class FilterRangeIn:public AbstractFilterRange{
+	class RangeIn:public AbstractFilterRange{
 	public:
-		FilterRangeIn(){}
-		virtual ~FilterRangeIn(){}
+		RangeIn(){}
+		virtual ~RangeIn(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
-	class FilterRangeOut:public AbstractFilterRange{
+	class RangeOut:public AbstractFilterRange{
 	public:
-		FilterRangeOut(){}
-		virtual ~FilterRangeOut(){}
+		RangeOut(){}
+		virtual ~RangeOut(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
 	
@@ -61,16 +61,16 @@ namespace Fit{
 	protected:
 		vector<shared_ptr<IParamCheck>> m_data;
 	};
-	class FilterAnd:public AbstractFilterMulti{
+	class And:public AbstractFilterMulti{
 	public:
-		FilterAnd(){}
-		virtual ~FilterAnd(){}
+		And(){}
+		virtual ~And(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
-	class FilterOr:public AbstractFilterMulti{
+	class Or:public AbstractFilterMulti{
 	public:
-		FilterOr(){}
-		virtual ~FilterOr(){}
+		Or(){}
+		virtual ~Or(){}
 		virtual bool CorrectParams(ParamSet params)override;
 	};
 }

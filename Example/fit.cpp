@@ -28,7 +28,7 @@ int main(int argcnt, char **arg){
 	DifferentialRandomMutations<> fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
 	auto heighth_width_ratio=Condition<ParamWrap1<Foreground,par<2>>,LE,ParamWrap<Mul<Par<1>,Const<2>>>>();
 	auto to_wide_peak_control=Condition<ParamWrap<Par<1>>,LE,ParamWrap<Const<50>>>();
-	fit.SetFilter(make_shared<FilterAnd>()<<heighth_width_ratio<<to_wide_peak_control);
+	fit.SetFilter(make_shared<And>()<<heighth_width_ratio<<to_wide_peak_control);
 	auto initial_cond=make_shared<GenerateByGauss>()
 		<<make_pair(1,20)<<make_pair(20,20)<<make_pair(-20,0)
 		<<make_pair(400,100)<<make_pair(4,4);
