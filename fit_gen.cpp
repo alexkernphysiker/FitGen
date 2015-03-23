@@ -135,7 +135,8 @@ namespace Fit{
 				m_population.push_back(tmp_population[i]);
 				for(int j=0;j<par_cnt;j++){
 					disp[j].AddValue(tmp_population[i].first[j]);
-					double dev=::abs(tmp_population[i].first[j]-tmp_population[0].first[j]);
+					double dev=tmp_population[i].first[j]-tmp_population[0].first[j];
+					if(dev<0)dev=-dev;
 					if(dev>m_max_dev[j])
 						m_max_dev.Set(j,dev);
 				}
