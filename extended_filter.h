@@ -53,7 +53,7 @@ namespace Fit{
 		}
 		ParamWrap(const ParamWrap &C):X(C.X){}
 		virtual ~ParamWrap(){}
-		virtual double operator()(ParamSet P){
+		virtual double operator()(ParamSet &P){
 			return FUNC::operator()(X,P);
 		}
 	};
@@ -63,7 +63,7 @@ namespace Fit{
 		ParamWrap1():ParamWrap<FUNC>(){}
 		ParamWrap1(const ParamWrap1 &C):ParamWrap<FUNC>(C){}
 		virtual ~ParamWrap1(){}
-		virtual double operator()(ParamSet P)override{
+		virtual double operator()(ParamSet &P)override{
 			ParamWrap<FUNC>::X.Set(0,arg0(P));
 			return ParamWrap<FUNC>::operator()(P);
 		}
@@ -74,7 +74,7 @@ namespace Fit{
 		ParamWrap2():ParamWrap1<FUNC,arg0>(){}
 		ParamWrap2(const ParamWrap2 &C):ParamWrap1<FUNC,arg0>(C){}
 		virtual ~ParamWrap2(){}
-		virtual double operator()(ParamSet P)override{
+		virtual double operator()(ParamSet &P)override{
 			ParamWrap<FUNC>::X.Set(1,arg1(P));
 			return ParamWrap1<FUNC,arg0>::operator()(P);
 		}
@@ -86,7 +86,7 @@ namespace Fit{
 		ParamWrap3():ParamWrap2<FUNC,arg0,arg1>(){}
 		ParamWrap3(const ParamWrap3 &C):ParamWrap2<FUNC,arg0,arg1>(C){}
 		virtual ~ParamWrap3(){}
-		virtual double operator()(ParamSet P)override{
+		virtual double operator()(ParamSet &P)override{
 			ParamWrap<FUNC>::X.Set(2,arg2(P));
 			return ParamWrap2<FUNC,arg0,arg1>::operator()(P);
 		}
@@ -98,7 +98,7 @@ namespace Fit{
 		ParamWrap4():ParamWrap3<FUNC,arg0,arg1,arg2>(){}
 		ParamWrap4(const ParamWrap4 &C):ParamWrap3<FUNC,arg0,arg1,arg2>(C){}
 		virtual ~ParamWrap4(){}
-		virtual double operator()(ParamSet P)override{
+		virtual double operator()(ParamSet &P)override{
 			ParamWrap<FUNC>::X.Set(3,arg3(P));
 			return ParamWrap3<FUNC,arg0,arg1,arg2>::operator()(P);
 		}
@@ -111,7 +111,7 @@ namespace Fit{
 		ParamWrap5():ParamWrap4<FUNC,arg0,arg1,arg2,arg3>(){}
 		ParamWrap5(const ParamWrap5 &C):ParamWrap4<FUNC,arg0,arg1,arg2,arg3>(C){}
 		virtual ~ParamWrap5(){}
-		virtual double operator()(ParamSet P)override{
+		virtual double operator()(ParamSet &P)override{
 			ParamWrap<FUNC>::X.Set(4,arg4(P));
 			return ParamWrap4<FUNC,arg0,arg1,arg2,arg3>::operator()(P);
 		}
@@ -124,7 +124,7 @@ namespace Fit{
 		ParamWrap6():ParamWrap5<FUNC,arg0,arg1,arg2,arg3,arg4>(){}
 		ParamWrap6(const ParamWrap6 &C):ParamWrap5<FUNC,arg0,arg1,arg2,arg3,arg4>(C){}
 		virtual ~ParamWrap6(){}
-		virtual double operator()(ParamSet P)override{
+		virtual double operator()(ParamSet &P)override{
 			ParamWrap<FUNC>::X.Set(5,arg5(P));
 			return ParamWrap5<FUNC,arg0,arg1,arg2,arg3,arg4>::operator()(P);
 		}
