@@ -51,9 +51,7 @@ namespace Fit{
 		ParamWrap():FUNC(){
 			X=parZeros(ArgCount);
 		}
-		ParamWrap(const ParamWrap &C){
-			X=C.X;
-		}
+		ParamWrap(const ParamWrap &C):X(C.X){}
 		virtual ~ParamWrap(){}
 		virtual double operator()(ParamSet P){
 			return FUNC::operator()(X,P);
@@ -81,7 +79,8 @@ namespace Fit{
 			return ParamWrap1<FUNC,arg0>::operator()(P);
 		}
 	};
-	template<class FUNC,double (arg0)(ParamSet&),double (arg1)(ParamSet&),double (arg2)(ParamSet&)>
+	template<class FUNC,double (arg0)(ParamSet&),double (arg1)(ParamSet&),
+		double (arg2)(ParamSet&)>
 	class ParamWrap3:public ParamWrap2<FUNC,arg0,arg1>{
 	public:
 		ParamWrap3():ParamWrap2<FUNC,arg0,arg1>(){}
@@ -90,6 +89,44 @@ namespace Fit{
 		virtual double operator()(ParamSet P)override{
 			ParamWrap<FUNC>::X.Set(2,arg2(P));
 			return ParamWrap2<FUNC,arg0,arg1>::operator()(P);
+		}
+	};
+	template<class FUNC,double (arg0)(ParamSet&),double (arg1)(ParamSet&),
+		double (arg2)(ParamSet&),double (arg3)(ParamSet&)>
+	class ParamWrap4:public ParamWrap3<FUNC,arg0,arg1,arg2>{
+	public:
+		ParamWrap4():ParamWrap3<FUNC,arg0,arg1,arg2>(){}
+		ParamWrap4(const ParamWrap4 &C):ParamWrap3<FUNC,arg0,arg1,arg2>(C){}
+		virtual ~ParamWrap4(){}
+		virtual double operator()(ParamSet P)override{
+			ParamWrap<FUNC>::X.Set(3,arg3(P));
+			return ParamWrap3<FUNC,arg0,arg1,arg2>::operator()(P);
+		}
+	};
+	template<class FUNC,double (arg0)(ParamSet&),double (arg1)(ParamSet&),
+		double (arg2)(ParamSet&),double (arg3)(ParamSet&),
+		double (arg4)(ParamSet&)>
+	class ParamWrap5:public ParamWrap4<FUNC,arg0,arg1,arg2,arg3>{
+	public:
+		ParamWrap5():ParamWrap4<FUNC,arg0,arg1,arg2,arg3>(){}
+		ParamWrap5(const ParamWrap5 &C):ParamWrap4<FUNC,arg0,arg1,arg2,arg3>(C){}
+		virtual ~ParamWrap5(){}
+		virtual double operator()(ParamSet P)override{
+			ParamWrap<FUNC>::X.Set(4,arg4(P));
+			return ParamWrap4<FUNC,arg0,arg1,arg2,arg3>::operator()(P);
+		}
+	};
+	template<class FUNC,double (arg0)(ParamSet&),double (arg1)(ParamSet&),
+		double (arg2)(ParamSet&),double (arg3)(ParamSet&),
+		double (arg4)(ParamSet&),double (arg5)(ParamSet&)>
+	class ParamWrap6:public ParamWrap5<FUNC,arg0,arg1,arg2,arg3,arg4>{
+	public:
+		ParamWrap6():ParamWrap5<FUNC,arg0,arg1,arg2,arg3,arg4>(){}
+		ParamWrap6(const ParamWrap6 &C):ParamWrap5<FUNC,arg0,arg1,arg2,arg3,arg4>(C){}
+		virtual ~ParamWrap6(){}
+		virtual double operator()(ParamSet P)override{
+			ParamWrap<FUNC>::X.Set(5,arg5(P));
+			return ParamWrap5<FUNC,arg0,arg1,arg2,arg3,arg4>::operator()(P);
 		}
 	};
 	template<class FUNC1,condition c, class FUNC2>
