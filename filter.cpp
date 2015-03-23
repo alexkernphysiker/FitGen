@@ -1,4 +1,3 @@
-#include <math.h>
 #include "filter.h"
 #include "fitexception.h"
 namespace Fit{
