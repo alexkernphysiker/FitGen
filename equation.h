@@ -4,11 +4,6 @@
 #include "fit_gen.h"
 namespace Fit {
 	using namespace std;
-	#define use_num_type double
-	#define use_indexer_type ParamSet&
-	#include <math_h/wrap_func_indexer.h>
-	#undef use_num_type
-	#undef use_indexer_type
 	namespace details{
 		class NoParamFunc:public IParamFunc{
 		public:

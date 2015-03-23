@@ -1,6 +1,7 @@
 #ifndef TXCBIZOCGJTYMMMX
 #define TXCBIZOCGJTYMMMX
 #include "fit_gen.h"
+#include "paramfunc.h"
 namespace Fit{
 	using namespace std;
 	enum condition{EQ,NE,GR,NG,LE,NL};
@@ -58,26 +59,37 @@ namespace Fit{
 			return FUNC::operator()(X,P);
 		}
 	};
-	template<class FUNC,int arg0>
+	template<class FUNC,double (arg0)(ParamSet&)>
 	class ParamWrap1:public ParamWrap<FUNC>{
 	public:
 		ParamWrap1():ParamWrap<FUNC>(){}
 		ParamWrap1(const ParamWrap1 &C):ParamWrap<FUNC>(C){}
 		virtual ~ParamWrap1(){}
 		virtual double operator()(ParamSet P)override{
-			ParamWrap<FUNC>::X.Set(0,P[arg0]);
+			ParamWrap<FUNC>::X.Set(0,arg0(P));
 			return ParamWrap<FUNC>::operator()(P);
 		}
 	};
-	template<class FUNC,int arg0,int arg1>
+	template<class FUNC,double (arg0)(ParamSet&),double (arg1)(ParamSet&)>
 	class ParamWrap2:public ParamWrap1<FUNC,arg0>{
 	public:
 		ParamWrap2():ParamWrap1<FUNC,arg0>(){}
 		ParamWrap2(const ParamWrap2 &C):ParamWrap1<FUNC,arg0>(C){}
 		virtual ~ParamWrap2(){}
 		virtual double operator()(ParamSet P)override{
-			ParamWrap<FUNC>::X.Set(0,P[arg1]);
+			ParamWrap<FUNC>::X.Set(1,arg1(P));
 			return ParamWrap1<FUNC,arg0>::operator()(P);
+		}
+	};
+	template<class FUNC,double (arg0)(ParamSet&),double (arg1)(ParamSet&),double (arg2)(ParamSet&)>
+	class ParamWrap3:public ParamWrap2<FUNC,arg0,arg1>{
+	public:
+		ParamWrap3():ParamWrap2<FUNC,arg0,arg1>(){}
+		ParamWrap3(const ParamWrap3 &C):ParamWrap2<FUNC,arg0,arg1>(C){}
+		virtual ~ParamWrap3(){}
+		virtual double operator()(ParamSet P)override{
+			ParamWrap<FUNC>::X.Set(2,arg2(P));
+			return ParamWrap2<FUNC,arg0,arg1>::operator()(P);
 		}
 	};
 	template<class FUNC1,condition c, class FUNC2>

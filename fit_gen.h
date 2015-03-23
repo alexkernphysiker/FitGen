@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <math.h>
 #include "paramset.h"
 namespace Fit{
 	using namespace std;
@@ -79,5 +80,10 @@ namespace Fit{
 		adder->Add(value.first,value.second);
 		return adder;
 	}
+	#define use_num_type double
+	#define use_indexer_type ParamSet&
+	#include <math_h/wrap_func_indexer.h>
+	#undef use_num_type
+	#undef use_indexer_type
 }
 #endif

@@ -3,11 +3,12 @@
 #include <genetic.h>
 #include <fitpoints.h>
 #include <paramfunc.h>
-#include <extended_filter.h>
 #include <initialconditions.h>
+#include <extended_filter.h>
 const int background_polynom_power=4;
 using namespace std;
 using namespace Fit;
+using namespace Fit::wrap_func_indexer;
 typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
 typedef PolynomFunc<0,3,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
@@ -24,24 +25,29 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY<ChiSquareWithXError>(0,19,X,dX,Y,dY);
 	DifferentialRandomMutations<> fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
+	//Provide condition that heighth of the peak must be less than it's doubled width
+	fit.SetFilter(Condition<ParamWrap1<Foreground,par<2>>,LE,ParamWrap<Mul<Par<1>,Const<2>>>>());
+	
 	auto initial_cond=make_shared<GenerateByGauss>()
 		<<make_pair(1,20)<<make_pair(20,20)<<make_pair(-20,0)
 		<<make_pair(400,100)<<make_pair(4,4);
 	while(initial_cond->Count()<TotalFunc::ParamCount)
 		initial_cond<<make_pair(0,0.01);
-	fit.SetFilter(Condition<ParamWrap1<Foreground,2>,NG,ParamWrap<Mul<Par<1>,Const<2>>>>());
-	fit.Init(TotalFunc::ParamCount*10,initial_cond);
+	fit.Init(TotalFunc::ParamCount*12,initial_cond);
 	printf("Population size: %i\n",fit.PopulationSize());
-	while(!fit.AbsoluteOptimalityExitCondition(0.0000001)){
+	
+	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
+	
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.Optimality());
 	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
 	ParamSet err=fit.ParamParabolicError(parEq(fit.ParamCount(),0.001));
 	for(int i=0; i<fit.ParamCount();i++)
 		printf("par%i \t\t%f \t\t%f \t\t%f \t\t%f \t\t%f \n",i,
 			   fit[i],err[i],fit.ParamMaxDeviation()[i],fit.ParamAverage()[i],fit.ParamDispersion()[i]);
+	
 	{//plot calculation results
 		ofstream data;
 		data.open("output.data.txt");
