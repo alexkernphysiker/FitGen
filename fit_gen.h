@@ -35,26 +35,35 @@ namespace Fit{
 			unsigned int threads_count);
 	public:
 		virtual ~AbstractGenetic();
+		
+		shared_ptr<IParamFunc> Function();
+		shared_ptr<IOptimalityFunction> OptimalityCalculator();
 		void SetFilter(shared_ptr<IParamCheck> filter);
 		void RemoveFilter();
+		
 		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions);
+	protected:
+		virtual void mutations(ParamSet&);
+	public:
 		void Iterate();
+		
+		unsigned int iteration_count();
 		int PopulationSize();
-		ParamSet Parameters(int point_index=0);
-		double Optimality(int point_index=0);
 		int ParamCount();
+		double Optimality(int point_index=0);
+		ParamSet Parameters(int point_index=0);
 		double operator[](int i);
 		double operator()(ParamSet &X);
-		unsigned int iteration_count();
-		bool ConcentratedInOnePoint();
-		bool AbsoluteOptimalityExitCondition(double accuracy);
-		bool RelativeOptimalityExitCondition(double accuracy);
 		ParamSet ParamAverage();
 		ParamSet ParamDispersion();
 		ParamSet ParamMaxDeviation();
-		ParamSet ParamParabolicError(ParamSet delta);
-		shared_ptr<IParamFunc> Function();
-		shared_ptr<IOptimalityFunction> OptimalityCalculator();
+		
+		bool ConcentratedInOnePoint();
+		bool AbsoluteOptimalityExitCondition(double accuracy);
+		bool RelativeOptimalityExitCondition(double accuracy);
+		
+		ParamSet GetParamParabolicError(ParamSet delta);
+		
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;
 		iterator begin();
@@ -62,7 +71,6 @@ namespace Fit{
 		iterator end();
 		const_iterator cend() const;
 	protected:
-		virtual void mutations(ParamSet&);
 		mutex m_mutex;
 	private:
 		shared_ptr<IParamFunc> m_function;
