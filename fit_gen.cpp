@@ -177,7 +177,7 @@ namespace Fit{
 		Lock lock(m_mutex);
 		return m_population[point_index].first;
 	}
-	double AbstractGenetic::operator ()(ParamSet &X){
+	double AbstractGenetic::operator ()(ParamSet X){
 		ParamSet P=Parameters();
 		return m_function->operator()(X,P);
 	}

@@ -92,12 +92,14 @@ namespace Fit{
 			binwidth=(max-min)/double(bins);
 			double offs=binwidth/2.0;
 			for(double x=min+offs;x<max;x+=binwidth)
-				fitpoints::Add(ParamSet()<<x,double(0));
+				fitpoints::Add(ParamSet(x),ParamSet(offs),double(0),double(1));
 		}
 		void AddValue(double x){
 			int bin_pos=int((x-m_min)/binwidth);
-			if((bin_pos>=0)&&(bin_pos<fitpoints::Count()))
+			if((bin_pos>=0)&&(bin_pos<fitpoints::Count())){
 				fitpoints::m_y[bin_pos]+=1;
+				fitpoints::m_w[bin_pos]=sqrt(fitpoints::m_y[bin_pos]);
+			}
 		}
 	};
 }

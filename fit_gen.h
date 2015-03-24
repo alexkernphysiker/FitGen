@@ -53,7 +53,7 @@ namespace Fit{
 		double Optimality(int point_index=0);
 		ParamSet Parameters(int point_index=0);
 		double operator[](int i);
-		double operator()(ParamSet &X);
+		double operator()(ParamSet X);
 		ParamSet ParamAverage();
 		ParamSet ParamDispersion();
 		ParamSet ParamMaxDeviation();
