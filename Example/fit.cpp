@@ -6,7 +6,7 @@
 #include <filter.h>
 #include <extended_filter.h>
 #include <initialconditions.h>
-const int background_polynom_power=6;
+const int background_polynom_power=5;
 using namespace std;
 using namespace Fit;
 using namespace Fit::wrap_func_indexer;

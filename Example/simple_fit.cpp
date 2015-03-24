@@ -14,16 +14,15 @@ int main(int argcnt, char **arg){
 	DifferentialRandomMutations<>
 		fit(make_shared<Mul<Func3<Gaussian,Arg<0>,Par<0>,Par<1>>,Par<2>>>(),points_to_fit,THREADS_COUNT);
 	fit.SetFilter(make_shared<Above>(ParamSet(INFINITY,0,0)));
-	fit.Init(20,make_shared<GenerateByGauss>()<<make_pair(4,2)<<make_pair(1,1)<<make_pair(500,500));
+	fit.Init(30,make_shared<GenerateByGauss>()<<make_pair(4,2)<<make_pair(1,1)<<make_pair(500,500));
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
-	
 	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
-	
-	printf("\nchi^2 = %f\n",fit.Optimality());
+	printf("%i iterations                     \n",fit.iteration_count());
+	printf("chi^2 = %f\n",fit.Optimality());
 	for(int i=0; i<fit.ParamCount();i++)
 		printf("par%i=%f\t",i,fit[i]);
 	printf("\n");
