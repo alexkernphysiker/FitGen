@@ -6,7 +6,7 @@
 #include <filter.h>
 #include <extended_filter.h>
 #include <initialconditions.h>
-const int background_polynom_power=4;
+const int background_polynom_power=6;
 using namespace std;
 using namespace Fit;
 using namespace Fit::wrap_func_indexer;
@@ -26,16 +26,18 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY<ChiSquareWithXError>(0,19,X,dX,Y,dY);
 	DifferentialRandomMutations<> fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
-	auto heighth_width_ratio=Condition<ParamWrap1<Foreground,par<2>>,LE,ParamWrap<Mul<Par<1>,Const<2>>>>();
-	auto to_wide_peak_control=Condition<ParamWrap<Par<1>>,LE,ParamWrap<Const<50>>>();
-	fit.SetFilter(make_shared<And>()<<heighth_width_ratio<<to_wide_peak_control);
-	auto initial_cond=make_shared<GenerateByGauss>()
-		<<make_pair(1,20)<<make_pair(20,20)<<make_pair(-20,0)
+	auto peak_positive=make_shared<Above>(ParamSet(0,0));
+	auto peak_heighth_width_ratio_control=Condition<ParamWrap1<Foreground,par<2>>,LE,ParamWrap<Mul<Par<1>,Const<2>>>>();
+	auto peak_width_control=Condition<ParamWrap<Par<1>>,LE,ParamWrap<Const<40>>>();
+	fit.SetFilter(make_shared<And>()<<peak_positive<<peak_heighth_width_ratio_control<<peak_width_control);
+	auto initial=make_shared<GenerateByGauss>()
+		<<make_pair(10,10)<<make_pair(20,20)<<make_pair(-20,0)
 		<<make_pair(400,100)<<make_pair(4,4);
-	while(initial_cond->Count()<TotalFunc::ParamCount)
-		initial_cond<<make_pair(0,0.01);
-	fit.Init(TotalFunc::ParamCount*12,initial_cond);
+	while(initial->Count()<TotalFunc::ParamCount)
+		initial<<make_pair(0,0.01);
+	fit.Init(TotalFunc::ParamCount*12,initial);
 	
+	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
 	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
 		fit.Iterate();
