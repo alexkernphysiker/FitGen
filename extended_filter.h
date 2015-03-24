@@ -25,7 +25,7 @@ namespace Fit{
 		}
 	};
 	template<double (func1)(ParamSet&),condition_enum c,double (func2)(ParamSet&)>
-	shared_ptr<IParamCheck> condition(){
+	inline shared_ptr<IParamCheck> condition(){
 		return make_shared<filterCondition<func1,c,func2>>();
 	}
 	
@@ -134,7 +134,7 @@ namespace Fit{
 		}
 	};
 	template<class FUNC1,condition_enum c, class FUNC2>
-	shared_ptr<IParamCheck> Condition(){
+	inline shared_ptr<IParamCheck> Condition(){
 		return make_shared<FilterCondition<FUNC1,FUNC2>>(FUNC1(),c,FUNC2());
 	}
 }

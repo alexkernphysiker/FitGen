@@ -18,7 +18,7 @@ namespace Fit {
 		};
 	};
 	template<class eq,class GENETIC>
-	shared_ptr<GENETIC> Solve(unsigned int threads_count){
+	inline shared_ptr<GENETIC> Solve(unsigned int threads_count){
 		return make_shared<GENETIC>(make_shared<details::NoParamFunc>(),make_shared<eq>(),threads_count);
 	}
 	template<double (func)(ParamSet&)>
