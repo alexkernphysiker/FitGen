@@ -184,6 +184,22 @@ namespace Fit{
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
+	template<class FUNC>
+	class Minus:public virtual FUNC{
+	public:
+		Minus():FUNC(){}
+		virtual ~Minus(){}
+		virtual double operator()(ParamSet X, ParamSet P) override{
+			return -FUNC::operator()(X,P);
+		}
+		virtual bool CorrectParams(ParamSet P) override{
+			return FUNC::CorrectParams(P);
+		}
+		enum{
+			ParamCount=FUNC::ParamCount,
+			ArgCount=FUNC::ArgCount
+		};
+	};
 	template<class FUNC1,class FUNC2>
 	class Add:public virtual FUNC1, public virtual FUNC2{
 	public:
