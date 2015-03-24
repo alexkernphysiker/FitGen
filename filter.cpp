@@ -45,20 +45,16 @@ namespace Fit{
 		return *this;
 	}
 	bool RangeIn::CorrectParams(ParamSet params){
-		bool res=true;
-		if(res){
-			for(int i=0; i<Count();i++)
-				res&=(params[i]>=m_min[i])&(params[i]<=m_max[i]);
-		}
-		return res;
+		for(int i=0; i<Count();i++)
+			if((params[i]<m_min[i])||(params[i]>m_max[i]))
+				return false;
+		return true;
 	}
 	bool RangeOut::CorrectParams(ParamSet params){
-		bool res=true;
-		if(res){
-			for(int i=0; i<Count();i++)
-				res&=(params[i]<=m_min[i])||(params[i]>=m_max[i]);
-		}
-		return res;
+		for(int i=0; i<Count();i++)
+			if((params[i]>m_min[i])&&(params[i]<m_max[i]))
+				return false;
+			return true;
 	}
 	int AbstractFilterMulti::Count(){
 		return m_data.size();
@@ -75,15 +71,15 @@ namespace Fit{
 	}
 	AbstractFilterMulti::~AbstractFilterMulti(){}
 	bool And::CorrectParams(ParamSet params){
-		bool res=true;
 		for(auto f: m_data)
-			res&=f->CorrectParams(params);
-		return res;
+			if(!f->CorrectParams(params))
+				return false;
+		return true;
 	}
 	bool Or::CorrectParams(ParamSet params){
-		bool res=false;
 		for(auto f: m_data)
-			res|=f->CorrectParams(params);
-		return res;
+			if(f->CorrectParams(params))
+				return true;
+		return false;
 	}
 }
