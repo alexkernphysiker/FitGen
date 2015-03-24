@@ -27,8 +27,8 @@ int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY<ChiSquareWithXError>(0,19,X,dX,Y,dY);
 	DifferentialRandomMutations<> fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
 	auto peak_positive=make_shared<Above>(ParamSet(0,0));
-	auto peak_heighth_width_ratio_control=Condition<ParamWrap1<Foreground,par<2>>,LE,ParamWrap<Mul<Par<1>,Const<2>>>>();
-	auto peak_width_control=Condition<ParamWrap<Par<1>>,LE,ParamWrap<Const<40>>>();
+	auto peak_heighth_width_ratio_control=Condition<ParamWrap1<Foreground,par<2>>,LE,Wrap<Mul<Par<1>,Const<2>>>>();
+	auto peak_width_control=condition<par<1>,LE,iconst<40>>();
 	fit.SetFilter(make_shared<And>()<<peak_positive<<peak_heighth_width_ratio_control<<peak_width_control);
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(10,10)<<make_pair(20,20)<<make_pair(-20,0)
