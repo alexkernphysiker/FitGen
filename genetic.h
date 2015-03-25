@@ -40,7 +40,7 @@ namespace Fit{
 		Crossing(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0.1){}
+		):FITGEN(function,optimality,threads_count),P(0.001){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -53,11 +53,11 @@ namespace Fit{
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
-			if(P>0){
+			if(RandomUniformly(0.0,1.0)<P){
 				auto X=AbstractGenetic::Parameters(rand()%AbstractGenetic::PopulationSize());
 				FITGEN::mutations(X);
 				for(int i=0; i<C.Count();i++)
-					if(RandomUniformly(0.0,1.0)<P)
+					if(rand()%2==1)
 						C.Set(i,X[i]);
 			}
 		}
@@ -71,7 +71,7 @@ namespace Fit{
 		AbsoluteMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0){}
+		):FITGEN(function,optimality,threads_count),P(0.001){}
 		virtual ~AbsoluteMutations(){}
 		ParamSet AbsoluteMutationCoeficients(){
 			return M;
@@ -107,7 +107,7 @@ namespace Fit{
 		RelativeMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0){}
+		):FITGEN(function,optimality,threads_count),P(0.001){}
 		virtual ~RelativeMutations(){}
 		ParamSet RelativeMutationCoefficients(){
 			return M;
