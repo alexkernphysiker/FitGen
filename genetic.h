@@ -40,7 +40,7 @@ namespace Fit{
 		Crossing(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0.001){}
+		):FITGEN(function,optimality,threads_count),P(0.0001){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -71,7 +71,7 @@ namespace Fit{
 		AbsoluteMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0.001){}
+		):FITGEN(function,optimality,threads_count),P(0.0001){}
 		virtual ~AbsoluteMutations(){}
 		ParamSet AbsoluteMutationCoeficients(){
 			return M;
@@ -107,7 +107,7 @@ namespace Fit{
 		RelativeMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0.001){}
+		):FITGEN(function,optimality,threads_count),P(0.0001){}
 		virtual ~RelativeMutations(){}
 		ParamSet RelativeMutationCoefficients(){
 			return M;
