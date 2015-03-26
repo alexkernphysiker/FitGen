@@ -17,7 +17,7 @@ namespace Fit{
 	bool operator<(Point a,Point b){return a.second<b.second;}
 	template<class Create,class Condition>
 	inline ParamSet CreateNew(Create create,Condition condition){
-		while(true){
+		while(true){//ToDo: this may be a problem source
 			ParamSet res=create();
 			if(condition(res))return res;
 		}
@@ -103,9 +103,9 @@ namespace Fit{
 				}
 				ParamSet new_param=CreateNew(
 					[this,&point](){
-						ParamSet res=point.first;
-						mutations(res);
-						return res;
+						ParamSet p=point.first;
+						mutations(p);
+						return p;
 					},
 					[this](ParamSet p){
 						return m_function->CorrectParams(p) && m_filter->CorrectParams(p);
