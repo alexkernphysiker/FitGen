@@ -3,6 +3,67 @@
 #include "fitexception.h"
 namespace Fit{
 	using namespace std;
+	Initialiser::Initialiser(){}
+	Initialiser::~Initialiser(){}
+	Initialiser& Initialiser::operator<<(generator gen){
+		generators.push_back(gen);
+		return *this;
+	}
+	generator Initialiser::operator[](int i){
+		return generators[i];
+	}
+	int Initialiser::Count(){
+		return generators.size();
+	}
+	ParamSet Initialiser::Generate(){
+		ParamSet res;
+		for(int i=0;i<Count();i++)
+			res<<operator[](i)();
+		return res;
+	}
+	Initialiser::iterator Initialiser::begin(){
+		return generators.begin();
+	}
+	Initialiser::const_iterator Initialiser::cbegin() const{
+		return  generators.cbegin();
+	}
+	Initialiser::iterator Initialiser::end(){
+		return generators.end();
+	}
+	Initialiser::const_iterator Initialiser::cend() const{
+		return generators.cend();
+	}
+	shared_ptr< Initialiser > operator<<(shared_ptr< Initialiser > init, generator gen){
+		init->operator<<(gen);
+		return init;
+	}
+	
+	InitialDistributions::InitialDistributions(){}
+	InitialDistributions::~InitialDistributions(){}
+	InitialDistributions& InitialDistributions::operator<<(shared_ptr<Distrib> distr){
+		ParamDistr.push_back(distr);
+		return *this;
+	}
+	int InitialDistributions::Count(){
+		return ParamDistr.size();
+	}
+	Distrib &InitialDistributions::operator[](int i){
+		return *ParamDistr[i];
+	}
+	ParamSet InitialDistributions::Generate(){
+		ParamSet res;
+		for(int i=0;i<Count();i++)
+			res<<operator[](i)();
+		return res;
+	}
+	shared_ptr<InitialDistributions> operator<<(
+		  shared_ptr<InitialDistributions> init, 
+		  shared_ptr<Distrib> func
+	){
+		init->operator<<(func);
+		return init;
+	}
+	
 	GenerateUniform::GenerateUniform(){}
 	GenerateUniform::~GenerateUniform(){}
 	int GenerateUniform::Count(){

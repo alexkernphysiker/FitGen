@@ -14,7 +14,10 @@ int main(int argcnt, char **arg){
 	DifferentialRandomMutations<>
 		fit(make_shared<Mul<Func3<Gaussian,Arg<0>,Par<0>,Par<1>>,Par<2>>>(),points_to_fit,THREADS_COUNT);
 	fit.SetFilter(make_shared<Above>(ParamSet(INFINITY,0,0)));
-	fit.Init(30,make_shared<GenerateByGauss>()<<make_pair(4,2)<<make_pair(1,1)<<make_pair(200,200));
+	printf("Initing\n");
+	fit.Init(30,make_shared<Initialiser>()<<[](){return RandomGauss(2.0,4.0);}
+		<<[](){return RandomGauss(1.0,1.0);}<<[](){return RandomGauss(200.0,200.0);}
+	);
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
 	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
