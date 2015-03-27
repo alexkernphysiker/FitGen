@@ -46,7 +46,7 @@ int main(int argcnt, char **arg){
 	
 	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.Optimality());
 	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
-	ParamSet err=fit.GetParamParabolicError(parEq(fit.ParamCount(),0.001));
+	ParamSet err=fit.GetParamParabolicError(parEq(fit.ParamCount(),0.01));
 	for(int i=0; i<fit.ParamCount();i++)
 		printf("par%i \t\t%f \t\t%f \t\t%f \t\t%f \t\t%f \n",i,
 			   fit[i],err[i],fit.ParamMaxDeviation()[i],fit.ParamAverage()[i],fit.ParamDispersion()[i]);
