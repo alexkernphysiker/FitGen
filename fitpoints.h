@@ -94,7 +94,7 @@ namespace Fit{
 			for(double x=min+offs;x<max;x+=binwidth)
 				fitpoints::Add(ParamSet(x),ParamSet(offs),double(0),double(1));
 		}
-		void AddValue(double x){
+		void Fill(double x){
 			int bin_pos=int((x-m_min)/binwidth);
 			if((bin_pos>=0)&&(bin_pos<fitpoints::Count())){
 				fitpoints::m_y[bin_pos]+=1;

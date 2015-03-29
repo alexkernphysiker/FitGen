@@ -7,25 +7,30 @@
 using namespace std;
 using namespace Fit;
 int main(int argcnt, char **arg){
-	auto points_to_fit=make_shared<Distribution1D<ChiSquareWithXError>>(0,10,20);
-	for(int i=0;i<200;i++)
-		points_to_fit->AddValue(RandomGauss(1.0,5.0));
+	double left=0;
+	double right=10;
+	unsigned int bins=2;
+	int count=500;
+	
+	auto points_to_fit=make_shared<Distribution1D<ChiSquareWithXError>>(left,right,int(right-left)*bins);
+	for(int i=0;i<count;i++)
+		points_to_fit->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
+	
 	DifferentialRandomMutations<> fit(make_shared<ParameterFunction<>>(
 			[](ParamSet& X,ParamSet& P){return Gaussian(X[0],P[0],P[1])*P[2];},
 			[](ParamSet& P){return (P[1]>0)&&(P[2]>0);}
 		),points_to_fit,THREADS_COUNT);
 	fit.Init(30,make_shared<Initialiser>()
-		<<[](){return RandomGauss(2.0,4.0);}
-		<<[](){return RandomGauss(1.0,1.0);}
-		<<[](){return RandomGauss(200.0,200.0);}
+		<<[left,right](){return RandomUniformly(left,right);}
+		<<[left,right](){return RandomUniformly(0.0,right-left);}
+		<<[count,bins](){return RandomGauss(double(count/bins),double(count/bins)*0.5);}
 	);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate();
 	printf("Done in %i iterations\n",fit.iteration_count());
 	printf("chi^2 = %f\n",fit.Optimality());
 	for(int i=0; i<fit.ParamCount();i++)
-		printf("par%i=%f\t",i,fit[i]);
-	printf("\n");
+		printf("par%i=%f\n",i,fit[i]);
 	
 	{//plot calculation results
 		ofstream data;
