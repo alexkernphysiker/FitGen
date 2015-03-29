@@ -12,8 +12,10 @@ int main(int argcnt, char **arg){
 	for(int i=0;i<200;i++)
 		points_to_fit->AddValue(RandomGauss(1.0,5.0));
 	DifferentialRandomMutations<>
-		fit(make_shared<Mul<Func3<Gaussian,Arg<0>,Par<0>,Par<1>>,Par<2>>>(),points_to_fit,THREADS_COUNT);
-	fit.SetFilter(make_shared<Above>()<<INFINITY<<0<<0);
+		fit(make_shared<ParameterFunction<>>(
+			[](ParamSet& X,ParamSet& P){return Gaussian(X[0],P[0],P[1])*P[2];},
+			[](ParamSet& P){return (P[1]>0)&&(P[2]>0);}
+		),points_to_fit,THREADS_COUNT);
 	printf("Initing\n");
 	fit.Init(30,make_shared<Initialiser>()<<[](){return RandomGauss(2.0,4.0);}
 		<<[](){return RandomGauss(1.0,1.0);}<<[](){return RandomGauss(200.0,200.0);}

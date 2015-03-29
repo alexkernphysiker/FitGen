@@ -5,6 +5,25 @@
 #include "math_h/functions.h"
 namespace Fit{
 	using namespace std;
+	template<class FUNC=function<double(ParamSet &,ParamSet &)>,class CONDITION=function<double(ParamSet &)>>
+	class ParameterFunction:public IParamFunc{
+	private:
+		FUNC func;
+		CONDITION condition;
+	public:
+		ParameterFunction(FUNC f,CONDITION c){
+			func=f;
+			condition=c;
+		}
+		virtual ~ParameterFunction(){}
+		virtual double operator()(ParamSet X, ParamSet P) override{
+			return func(X,P);
+		}
+		virtual bool CorrectParams(ParamSet P) override{
+			return condition(P);
+		}
+	};
+	
 	template<int a,int b>
 	struct max2{enum{val=(a>b)?a:b};};
 	template<int a,int b,int c>
