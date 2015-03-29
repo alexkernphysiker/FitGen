@@ -35,7 +35,7 @@ int main(int argcnt, char **arg){
 		<<make_pair(400,100)<<make_pair(5,1);
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_pair(0,0.01);
-	fit.Init(TotalFunc::ParamCount*12,initial);
+	fit.Init(TotalFunc::ParamCount*15,initial);
 	
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
