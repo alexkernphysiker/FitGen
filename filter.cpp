@@ -2,6 +2,7 @@
 #include "fitexception.h"
 namespace Fit{
 	using namespace std;
+	Above::Above(){}
 	Above::Above(ParamSet v):m_data(v){}
 	bool Above::CorrectParams(ParamSet params){
 		bool res=true;
@@ -13,6 +14,12 @@ namespace Fit{
 		}
 		return res;
 	}
+	Above& Above::operator<<(double value){
+		m_data<<value;
+		return *this;
+	}
+	
+	Below::Below(){}
 	Below::Below(ParamSet v):m_data(v){}
 	bool Below::CorrectParams(ParamSet params){
 		bool res=true;
@@ -24,6 +31,11 @@ namespace Fit{
 		}
 		return res;
 	}
+	Below& Below::operator<<(double value){
+		m_data<<value;
+		return *this;
+	}
+	
 	int AbstractFilterRange::Count(){
 		return m_min.size();
 	}

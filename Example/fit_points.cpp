@@ -4,7 +4,6 @@
 #include <fitpoints.h>
 #include <genetic.h>
 #include <filter.h>
-#include <extended_filter.h>
 #include <initialconditions.h>
 const int background_polynom_power=5;
 using namespace std;
