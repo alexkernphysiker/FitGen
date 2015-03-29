@@ -3,6 +3,7 @@
 #include <fitpoints.h>
 #include <genetic.h>
 #include <paramfunc.h>
+#include <filter.h>
 #include <initialconditions.h>
 using namespace std;
 using namespace Fit;
@@ -11,15 +12,15 @@ int main(int argcnt, char **arg){
 	double right=10;
 	unsigned int bins=2;
 	int count=500;
-	
 	auto points_to_fit=make_shared<Distribution1D<ChiSquareWithXError>>(left,right,int(right-left)*bins);
 	for(int i=0;i<count;i++)
 		points_to_fit->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
 	
-	DifferentialRandomMutations<> fit(make_shared<ParameterFunction<>>(
-			[](ParamSet& X,ParamSet& P){return Gaussian(X[0],P[0],P[1])*P[2];},
-			[](ParamSet& P){return (P[1]>0)&&(P[2]>0);}
-		),points_to_fit,THREADS_COUNT);
+	DifferentialRandomMutations<> fit(
+		make_shared<ParameterFunction<>>([](ParamSet& X,ParamSet& P){return Gaussian(X[0],P[0],P[1])*P[2];}),
+		points_to_fit,THREADS_COUNT
+	);
+	fit.SetFilter(make_shared<Filter<>>([](ParamSet& P){return (P[1]>0)&&(P[2]>0);}));
 	fit.Init(30,make_shared<Initialiser>()
 		<<[left,right](){return RandomUniformly(left,right);}
 		<<[left,right](){return RandomUniformly(0.0,right-left);}

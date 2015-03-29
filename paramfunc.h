@@ -5,17 +5,33 @@
 #include "math_h/functions.h"
 namespace Fit{
 	using namespace std;
-	template<class FUNC=function<double(ParamSet &,ParamSet &)>,class CONDITION=function<double(ParamSet &)>>
+	template<class FUNC=function<double(ParamSet &,ParamSet &)>>
 	class ParameterFunction:public IParamFunc{
+	private:
+		FUNC func;
+	public:
+		ParameterFunction(FUNC f){
+			func=f;
+		}
+		virtual ~ParameterFunction(){}
+		virtual double operator()(ParamSet X, ParamSet P) override{
+			return func(X,P);
+		}
+		virtual bool CorrectParams(ParamSet P) override{
+			return true;
+		}
+	};
+	template<class FUNC=function<double(ParamSet &,ParamSet &)>,class CONDITION=function<double(ParamSet &)>>
+	class ParameterFunctionWithCondition:public IParamFunc{
 	private:
 		FUNC func;
 		CONDITION condition;
 	public:
-		ParameterFunction(FUNC f,CONDITION c){
+		ParameterFunctionWithCondition(FUNC f,CONDITION c){
 			func=f;
 			condition=c;
 		}
-		virtual ~ParameterFunction(){}
+		virtual ~ParameterFunctionWithCondition(){}
 		virtual double operator()(ParamSet X, ParamSet P) override{
 			return func(X,P);
 		}

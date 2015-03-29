@@ -4,6 +4,20 @@
 #include "paramfunc.h"
 namespace Fit{
 	using namespace std;
+	template<class CONDITION=function<bool(ParamSet&)>>
+	class Filter:public IParamCheck{
+	private:
+		CONDITION condition;
+	public:
+		Filter(CONDITION c){
+			condition=c;
+		}
+		virtual ~Filter(){}
+		virtual bool CorrectParams(ParamSet params)override{
+			return condition(params);
+		}
+	};
+	
 	class Above:public IParamCheck{
 	public:
 		Above();
