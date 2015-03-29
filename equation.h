@@ -1,6 +1,5 @@
-#ifndef ____fuvBLcbd___
-#define ____fuvBLcbd___
-#include <math.h>
+#ifndef GIQYSBLPGFAJYVCC
+#define GIQYSBLPGFAJYVCC
 #include "fit_gen.h"
 namespace Fit {
 	using namespace std;

@@ -2,7 +2,7 @@
 #define ___DnoQpUEN
 #include <functional>
 #include "fit_gen.h"
-#include <math_h/randomfunc.h>
+#include "math_h/randomfunc.h"
 namespace Fit{
 	using namespace std;
 	typedef function<double()> generator;
