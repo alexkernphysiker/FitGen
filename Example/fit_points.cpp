@@ -5,7 +5,7 @@
 #include <genetic.h>
 #include <filter.h>
 #include <initialconditions.h>
-const int background_polynom_power=5;
+const int background_polynom_power=6;
 using namespace std;
 using namespace Fit;
 using namespace Fit::wrap_func_indexer;
@@ -25,10 +25,10 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY<ChiSquareWithXError>(0,19,X,dX,Y,dY);
 	DifferentialRandomMutations<> fit(make_shared<TotalFunc>(),points_to_fit,THREADS_COUNT);
-	auto peak_positive=make_shared<Above>(ParamSet(0,0));
+	auto peak_positive=make_shared<Above>()<<0<<0;
+	auto peak_width_control=make_shared<Below>()<<INFINITY<<35;
 	auto peak_heighth_width_ratio_control=Condition<ParamWrap1<Foreground,par<2>>,LE,Wrap<Mul<Par<1>,Const<2>>>>();
-	auto peak_width_control=condition<par<1>,LE,iconst<40>>();
-	fit.SetFilter(make_shared<And>()<<peak_positive<<peak_heighth_width_ratio_control<<peak_width_control);
+	fit.SetFilter(make_shared<And>()<<peak_positive<<peak_width_control<<peak_heighth_width_ratio_control);
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(10,10)<<make_pair(20,20)<<make_pair(-20,0)
 		<<make_pair(400,100)<<make_pair(4,4);
