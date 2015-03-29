@@ -36,38 +36,6 @@ namespace Fit{
 		return *this;
 	}
 	
-	int AbstractFilterRange::Count(){
-		return m_min.size();
-	}
-	double AbstractFilterRange::Min(int i){
-		if((i>=0)&(i<m_min.size()))
-			return m_min[i];
-		else
-			throw new FitException("FilterRange: attempt to get property by index out of range");
-	}
-	double AbstractFilterRange::Max(int i){
-		if((i>=0)&(i<m_max.size()))
-			return m_max[i];
-		else
-			throw new FitException("FilterRange: attempt to get property by index out of range");
-	}
-	AbstractFilterRange &AbstractFilterRange::Add(double min, double max){
-		m_min.push_back(min);
-		m_max.push_back(max);
-		return *this;
-	}
-	bool RangeIn::CorrectParams(ParamSet params){
-		for(int i=0; i<Count();i++)
-			if((params[i]<m_min[i])||(params[i]>m_max[i]))
-				return false;
-		return true;
-	}
-	bool RangeOut::CorrectParams(ParamSet params){
-		for(int i=0; i<Count();i++)
-			if((params[i]>m_min[i])&&(params[i]<m_max[i]))
-				return false;
-			return true;
-	}
 	int AbstractFilterMulti::Count(){
 		return m_data.size();
 	}

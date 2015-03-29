@@ -44,32 +44,6 @@ namespace Fit{
 		return filter;
 	}
 	
-	
-	class AbstractFilterRange:public IParamCheck{
-	public:
-		virtual ~AbstractFilterRange(){}
-		int Count();
-		double Min(int i);
-		double Max(int i);
-		AbstractFilterRange &Add(double min,double max);
-		virtual bool CorrectParams(ParamSet params)override=0;
-	protected:
-		vector<double> m_min;
-		vector<double> m_max;
-	};
-	class RangeIn:public AbstractFilterRange{
-	public:
-		RangeIn(){}
-		virtual ~RangeIn(){}
-		virtual bool CorrectParams(ParamSet params)override;
-	};
-	class RangeOut:public AbstractFilterRange{
-	public:
-		RangeOut(){}
-		virtual ~RangeOut(){}
-		virtual bool CorrectParams(ParamSet params)override;
-	};
-	
 	class AbstractFilterMulti:public IParamCheck{
 	public:
 		virtual ~AbstractFilterMulti();
@@ -123,7 +97,6 @@ namespace Fit{
 	inline shared_ptr<IParamCheck> condition(){
 		return make_shared<filterCondition<func1,c,func2>>();
 	}
-	
 	template<class Func1,class Func2>
 	class FilterCondition:public IParamCheck{
 	private:
