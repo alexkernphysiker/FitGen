@@ -40,7 +40,7 @@ namespace Fit{
 		Crossing(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0.0001){}
+		):FITGEN(function,optimality,threads_count),P(0){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -71,7 +71,7 @@ namespace Fit{
 		AbsoluteMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0.0001){}
+		):FITGEN(function,optimality,threads_count),P(0){}
 		virtual ~AbsoluteMutations(){}
 		ParamSet AbsoluteMutationCoeficients(){
 			return M;
@@ -107,7 +107,7 @@ namespace Fit{
 		RelativeMutations(shared_ptr<IParamFunc> function, 
 			shared_ptr<IOptimalityFunction> optimality,
 			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0.0001){}
+		):FITGEN(function,optimality,threads_count),P(0){}
 		virtual ~RelativeMutations(){}
 		ParamSet RelativeMutationCoefficients(){
 			return M;
@@ -126,13 +126,37 @@ namespace Fit{
 				throw new FitException("Invalid crossing probability value");
 			P=val;
 		}
-		
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
 			if(RandomUniformly(0.0,1.0)<P)
 				for(int i=0;i<AbstractGenetic::ParamCount();i++)
 					C.Set(i,C[i]*(1+RandomGauss(M[i])));
+		}
+	};
+	template<class FITGEN>
+	class ExactCopying:public FITGEN{
+	private:
+		double P;
+	public:
+		ExactCopying(shared_ptr<IParamFunc> function, 
+					 shared_ptr<IOptimalityFunction> optimality,
+			   unsigned int threads_count
+		):FITGEN(function,optimality,threads_count),P(0){}
+		virtual ~ExactCopying(){}
+		void SetExactCopyingProbability(double value){
+			if((value<0)||(value>1))
+				throw;
+			P=value;
+		}
+		double ExactCopyingProbability(){
+			return P;
+		}
+	protected:
+		virtual void mutations(ParamSet &C)override{
+			if(RandomUniformly(0.0,1.0)>=P)
+				FITGEN::mutations(C);
+			
 		}
 	};
 }
