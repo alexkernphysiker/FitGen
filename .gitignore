@@ -1,6 +1,7 @@
 *~
 bin
 build
+example*
 *cmake
 CMakeCache*
 CMakeFiles
