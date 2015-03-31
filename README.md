@@ -1,7 +1,13 @@
 Genetic algorithm for fitting and solving equations (C++11)
 ===========================================================
 
-This source can be built with cmake. Just execute two commands
+After clonning this repository, please run:
+
+git submodule init
+
+git submodule update
+
+After that the library can be built with cmake:
 
 cmake .
 
@@ -9,9 +15,11 @@ make
 
 and you will be able to link the library and run example applications.
 
+For using this library in your project, please add the path to cloned repository to your include paths.
 
-Examples
-========
+
+Example sources
+===============
 
 Example/equation.cpp - example of using genetic algorithm for solving equation.
 
@@ -20,8 +28,8 @@ Example/fit_distribution.cpp - example of fitting of random numbers distribution
 Example/fit_points.cpp - example of fitting data points with x and y errors with using template classes for parametric functions that allow to build complicated ones combining with each other.
 
 
-header files
-============
+Library header files
+====================
 
 paramset.h - set of parameters.
 
