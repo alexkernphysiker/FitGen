@@ -1,6 +1,13 @@
 Genetic algorithm for fitting and solving equations (C++11)
 ===========================================================
 
+This source can be built with cmake. Just execute two commands
+
+cmake .
+make
+
+and you will be able to link the library and run example applications.
+
 paramset.h - set of parameters.
 
 fit_gen.h - base abstract classes used in the whole library.
