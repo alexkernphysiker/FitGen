@@ -5,13 +5,15 @@ Genetic algorithm for fitting and solving equations (C++11)
 
 Compiling
 =========
-After clonning this repository, please run:
+For using this library, please run:
+
+git clone https://github.com/alexkernphysiker/FitGen.git
+
+cd FitGen
 
 git submodule init
 
 git submodule update
-
-After that the library can be built with cmake:
 
 cmake .
 
@@ -20,7 +22,8 @@ make
 and you will be able to link the library and run example applications.
 For using this library in your project, please add the path to cloned repository to your include paths.
 If you have your own cmake project, you can use this library by adding add_subdirectory instruction.
-You may also uncomment line 5 for using random device instead of pseudorandom number generator.
+
+You may also uncomment line 5 in CMakeLists.txt for using random device instead of pseudorandom number generator.
 In that case you should also add such define to your project for using random device also in template classes.
 
 
