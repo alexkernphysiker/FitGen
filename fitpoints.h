@@ -1,5 +1,6 @@
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
+#include <functional>
 #include "fit_gen.h"
 #include "fitexception.h"
 namespace Fit{
@@ -41,19 +42,19 @@ namespace Fit{
 	};
 	
 	template<class fitpoints>
-	shared_ptr<fitpoints> SelectFitPoints(shared_ptr<FitPointsAbstract> data, IParamCheck &condition){
+	shared_ptr<fitpoints> SelectFitPoints(shared_ptr<FitPointsAbstract> data,shared_ptr<IParamCheck> condition){
 		shared_ptr<fitpoints> res=make_shared<fitpoints>();
 		for(int i=0; i<data->Count();i++){
-			if(condition.CorrectParams(data->X(i)))
+			if(condition->CorrectParams(data->X(i)))
 				res->Add(data->X(i),data->Y(i),data->W(i));
 		}
 		return res;
 	}
-	template <class fitpoints, class func>
-	shared_ptr<fitpoints> SelectFitPointsByY(shared_ptr<FitPointsAbstract> data, IParamCheck &condition, func Ycond){
+	template <class fitpoints>
+	shared_ptr<fitpoints> SelectFitPointsByY(shared_ptr<FitPointsAbstract> data,shared_ptr<IParamCheck> condition, function<bool(double)> Ycond){
 		shared_ptr<fitpoints> res=make_shared<fitpoints>();
 		for(int i=0; i<data->Count();i++){
-			if(condition.CorrectParams(data->X(i)) && Ycond(data->Y(i)))
+			if(condition->CorrectParams(data->X(i)) && Ycond(data->Y(i)))
 				res->Add(data->X(i),data->Y(i),data->W(i));
 		}
 		return res;
@@ -79,7 +80,7 @@ namespace Fit{
 		if(to<from)throw;
 		auto res=make_shared<fitpoints>();
 		for(int i=from; i<=to;i++)
-			res->Add(ParamSet()<<X[i],ParamSet()<<X_w[i],Y[i],W[i]);
+			res->Add(ParamSet(X[i]),ParamSet(X_w[i]),Y[i],W[i]);
 		return res;
 	}
 	template <class fitpoints>
