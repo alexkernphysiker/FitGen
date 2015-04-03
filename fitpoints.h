@@ -42,7 +42,7 @@ namespace Fit{
 	};
 	
 	template<class fitpoints>
-	shared_ptr<fitpoints> SelectFitPoints(shared_ptr<FitPointsAbstract> data,shared_ptr<IParamCheck> condition){
+	shared_ptr<fitpoints> SelectFitPoints(shared_ptr<fitpoints> data,shared_ptr<IParamCheck> condition){
 		shared_ptr<fitpoints> res=make_shared<fitpoints>();
 		for(int i=0; i<data->Count();i++){
 			if(condition->CorrectParams(data->X(i)))
@@ -51,7 +51,7 @@ namespace Fit{
 		return res;
 	}
 	template <class fitpoints>
-	shared_ptr<fitpoints> SelectFitPointsByY(shared_ptr<FitPointsAbstract> data,shared_ptr<IParamCheck> condition, function<bool(double)> Ycond){
+	shared_ptr<fitpoints> SelectFitPointsByY(shared_ptr<fitpoints> data,shared_ptr<IParamCheck> condition, function<bool(double)> Ycond){
 		shared_ptr<fitpoints> res=make_shared<fitpoints>();
 		for(int i=0; i<data->Count();i++){
 			if(condition->CorrectParams(data->X(i)) && Ycond(data->Y(i)))
