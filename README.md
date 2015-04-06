@@ -20,11 +20,17 @@ cmake .
 make
 
 and you will be able to link the library and run example applications.
-For using this library in your project, please add the path to cloned repository to your include paths.
-If you have your own cmake project, you can use this library by adding add_subdirectory instruction.
+For using this library in your git repository please run:
 
-You may also uncomment line 5 in CMakeLists.txt for using random device instead of pseudorandom number generator.
-In that case you should also add such define to your project for using random device also in template classes.
+git submodule add https://github.com/alexkernphysiker/FitGen.git
+
+git submodule init
+
+git submodule update
+
+and add path to it's directory to your include paths.
+If you have your own cmake project, you can use this library by adding add_subdirectory instruction.
+You can add define USE_RANDOM_DEVICE in the whole your project including this library for using random device instead of pseudorandom number generator.
 
 
 
@@ -50,8 +56,7 @@ fit_gen.h - base abstract classes used in the whole library.
 genetic.h - template classes that provide different types of genetic algorithm. 
 Inheriting one template class from another allows to combine several mutation mechanisms.
 
-fitpoints.h - classes that provide optimality criteria for fitting algorithms taking data points into account.
-Several template classes allow to extend their functionality.
+fitpoints.h - classes representing set of point to fit and several usefull optimality criteria.
 
 paramfunc.h - template classes providing parametric functions. 
 Mechanism of inheriting template classes allows to construct complicated ones. 
