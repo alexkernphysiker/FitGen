@@ -32,7 +32,7 @@ int main(int argcnt, char **arg){
 	printf("Fitting...\n");
 	while(!fit.ConcentratedInOnePoint()){
 		fit.Iterate();
-		printf("%i iterations;%f<=chi^2<=%f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
+		printf("%i iterations; %f<=chi^2<=%f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
 	printf("\nParameters:\n");
 	for(double param:fit)

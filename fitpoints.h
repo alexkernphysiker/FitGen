@@ -35,6 +35,29 @@ namespace Fit{
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,function<bool(double)> Ycond);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition,function<bool(double)> Ycond);
+	template<class IndexerX,class IndexerY=IndexerX>
+	shared_ptr<FitPoints> FitPointsXY(int from,int to,IndexerX X,IndexerY Y){
+		auto res=make_shared<FitPoints>();
+		for(int i=from;i<=to;i++){
+			FitPoints::DataPoint P;
+			P.X<<X[i];
+			P.y=Y[i];
+			res<<P;
+		}
+		return res;
+	}
+	template<class IndexerX,class IndexerY=IndexerX,class IndexerWY=IndexerY>
+	shared_ptr<FitPoints> FitPointsXYdY(int from,int to,IndexerX X,IndexerY Y,IndexerWY WY){
+		auto res=make_shared<FitPoints>();
+		for(int i=from;i<=to;i++){
+			FitPoints::DataPoint P;
+			P.X<<X[i];
+			P.y=Y[i];
+			P.wy=WY[i];
+			res<<P;
+		}
+		return res;
+	}
 	template<class IndexerX,class IndexerWX=IndexerX,class IndexerY=IndexerX,class IndexerWY=IndexerY>
 	shared_ptr<FitPoints> FitPointsXdXYdY(int from,int to,IndexerX X,IndexerWX WX,IndexerY Y,IndexerWY WY){
 		auto res=make_shared<FitPoints>();
