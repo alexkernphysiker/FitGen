@@ -35,6 +35,7 @@ namespace Fit{
 		FitPoints::DataPoint P;
 		P.X<<p.first;
 		P.y=p.second;
+		P.wy=1;
 		return src<<P;
 	}
 	FitPoints::DataPoint& FitPoints::operator[](int i){
