@@ -43,7 +43,7 @@ int main(int argcnt, char **arg){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}	
-	printf("Iteration count: %i;\tchi^2 = %f\n",fit.iteration_count(),fit.Optimality());
+	printf("Iteration count: %i;    chi^2 = %f\n",fit.iteration_count(),fit.Optimality());
 	printf("\nParameters:\n");
 	for(double p:fit)
 		printf("\t%f",p);
