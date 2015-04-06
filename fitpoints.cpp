@@ -31,6 +31,12 @@ namespace Fit{
 		src->operator<<(p);
 		return src;
 	}
+	shared_ptr< FitPoints > operator<<(shared_ptr<FitPoints> src, pair<double,double> p){
+		FitPoints::DataPoint P;
+		P.X<<p.first;
+		P.y=p.second;
+		return src<<P;
+	}
 	FitPoints::DataPoint& FitPoints::operator[](int i){
 		return m_data[i];
 	}

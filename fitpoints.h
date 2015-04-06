@@ -32,6 +32,7 @@ namespace Fit{
 		vector<DataPoint> m_data;
 	};
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,FitPoints::DataPoint p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,pair<double,double> p);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,function<bool(double)> Ycond);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition,function<bool(double)> Ycond);
