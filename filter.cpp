@@ -4,12 +4,12 @@ namespace Fit{
 	using namespace std;
 	Above::Above(){}
 	Above::Above(ParamSet v):m_data(v){}
-	bool Above::CorrectParams(ParamSet params){
+	bool Above::CorrectParams(ParamSet&P){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
 			if(isfinite(value))
-				res&=(params[index]>=value);
+				res&=(P[index]>=value);
 			index++;
 		}
 		return res;
@@ -21,12 +21,12 @@ namespace Fit{
 	
 	Below::Below(){}
 	Below::Below(ParamSet v):m_data(v){}
-	bool Below::CorrectParams(ParamSet params){
+	bool Below::CorrectParams(ParamSet&P){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
 			if(isfinite(value))
-				res&=(params[index]<=value);
+				res&=(P[index]<=value);
 			index++;
 		}
 		return res;
@@ -50,15 +50,15 @@ namespace Fit{
 		return *this;
 	}
 	AbstractFilterMulti::~AbstractFilterMulti(){}
-	bool And::CorrectParams(ParamSet params){
+	bool And::CorrectParams(ParamSet&P){
 		for(auto f: m_data)
-			if(!f->CorrectParams(params))
+			if(!f->CorrectParams(P))
 				return false;
 		return true;
 	}
-	bool Or::CorrectParams(ParamSet params){
+	bool Or::CorrectParams(ParamSet&P){
 		for(auto f: m_data)
-			if(f->CorrectParams(params))
+			if(f->CorrectParams(P))
 				return true;
 		return false;
 	}

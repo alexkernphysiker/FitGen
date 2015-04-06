@@ -12,13 +12,25 @@ int main(int argcnt, char **arg){
 	double right=10;
 	unsigned int bins=2;
 	int count=500;
-	auto points_to_fit=make_shared<Distribution1D<ChiSquareWithXError>>(left,right,int(right-left)*bins);
+	auto points_to_fit=make_shared<Distribution1D>(left,right,int(right-left)*bins);
+	printf("Filling...\n");
 	for(int i=0;i<count;i++)
 		points_to_fit->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
-	
+	{
+		ofstream data;
+		data.open("output.data.txt");
+		if(data.is_open()){
+			for(auto p:(*points_to_fit))
+				data<<p.X[0]<<" "<<p.y<<" "<<p.WX[0]<<" "<<p.wy<<"\n";
+			data.close();
+		}
+	}
+	printf("Prepare fitting...\n");
 	DifferentialRandomMutations<> fit(
-		make_shared<ParameterFunction<>>([](ParamSet& X,ParamSet& P){return Gaussian(X[0],P[0],P[1])*P[2];}),
-		points_to_fit,1
+		make_shared<ParameterFunction<>>([](ParamSet& X,ParamSet& P){
+			return Gaussian(X[0],P[0],P[1])*P[2];
+		}),
+		ChiSquareWithXError(points_to_fit),1
 	);
 	fit.SetFilter(make_shared<Filter<>>([](ParamSet& P){return (P[1]>0)&&(P[2]>0);}));
 	fit.Init(30,make_shared<Initialiser>()
@@ -26,24 +38,16 @@ int main(int argcnt, char **arg){
 		<<[left,right](){return RandomUniformly(0.0,right-left);}
 		<<[count,bins](){return RandomGauss(double(count/bins),double(count/bins)*0.5);}
 	);
-	while(!fit.ConcentratedInOnePoint())
+	printf("Fitting...\n");
+	while(!fit.ConcentratedInOnePoint()){
 		fit.Iterate();
-	printf("Done in %i iterations\n",fit.iteration_count());
-	printf("chi^2 = %f\n",fit.Optimality());
+		printf("%i iterations;%f<=chi^2<=%f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
+	}
+	printf("\n");
 	for(int i=0; i<fit.ParamCount();i++)
-		printf("par%i=%f\n",i,fit[i]);
-	
+		printf("par%i=%f\t",i,fit[i]);
+	printf("\n");
 	{//plot calculation results
-		ofstream data;
-		data.open("output.data.txt");
-		if(data.is_open()){
-			for(int i=0;i<points_to_fit->Count();i++)
-				data<<points_to_fit->X(i)[0]<<" "
-				<<points_to_fit->Y(i)<<" "
-				<<points_to_fit->X_w(i)[0]<<" "
-				<<points_to_fit->W(i)<<"\n";
-			data.close();
-		}
 		ofstream out;
 		out.open("output.txt");
 		if(out.is_open()){

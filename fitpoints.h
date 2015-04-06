@@ -5,103 +5,63 @@
 #include "fitexception.h"
 namespace Fit{
 	using namespace std;
-	class FitPointsAbstract:public IOptimalityFunction{
+	class FitPoints{
 	public:
-		virtual ~FitPointsAbstract();
-		FitPointsAbstract &Add(ParamSet x, double y, double weight=1);
-		FitPointsAbstract &Add(ParamSet x, ParamSet x_w, double y, double weight=1);
-		virtual double operator()(ParamSet params, IParamFunc &func)override=0;
-		int Count();
-		ParamSet X(int i);
-		ParamSet X_w(int i);
-		double Y(int i);
-		double W(int i);
+		struct DataPoint{
+		public:
+			DataPoint();
+			DataPoint(const DataPoint &src);
+			DataPoint &operator=(const DataPoint &src);
+			ParamSet X;
+			ParamSet WX;
+			double y;
+			double wy;
+		};
+		FitPoints();
+		virtual ~FitPoints();
+		FitPoints &operator<<(DataPoint point);
+		DataPoint &operator[](int i);
+		int count();
+		typedef vector<DataPoint>::iterator iterator;
+		typedef vector<DataPoint>::const_iterator const_iterator;
+		iterator begin();
+		const_iterator cbegin()const;
+		iterator end();
+		const_iterator cend() const;
+	private:
+		vector<DataPoint> m_data;
+	};
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,FitPoints::DataPoint p);
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition);
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,function<bool(double)> Ycond);
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition,function<bool(double)> Ycond);
+	template<class IndexerX,class IndexerWX=IndexerX,class IndexerY=IndexerX,class IndexerWY=IndexerY>
+	shared_ptr<FitPoints> FitPointsXdXYdY(int from,int to,IndexerX X,IndexerWX WX,IndexerY Y,IndexerWY WY){
+		auto res=make_shared<FitPoints>();
+		for(int i=from;i<=to;i++){
+			FitPoints::DataPoint P;
+			P.X<<X[i];
+			P.WX<<WX[i];
+			P.y=Y[i];
+			P.wy=WY[i];
+			res<<P;
+		}
+		return res;
+	}
+	class Distribution1D:public FitPoints{
+	public:
+		Distribution1D(double min, double max, int bins);
+		void Fill(double x);
+	};
+	class OptimalityForPoints:public IOptimalityFunction{
+	public:
+		virtual ~OptimalityForPoints();
+		virtual double operator()(ParamSet&P,IParamFunc&F)override=0;
 	protected:
-		vector<ParamSet> m_data;
-		vector<ParamSet> m_data_w;
-		vector<double> m_y;
-		vector<double> m_w;
+		shared_ptr<FitPoints> points;
 	};
-	class SquareDiff:public FitPointsAbstract{
-	public:
-		SquareDiff(){}
-		virtual ~SquareDiff(){}
-		virtual double operator()(ParamSet params, IParamFunc &func)override;
-	};
-	class ChiSquare:public FitPointsAbstract{
-	public:
-		ChiSquare(){}
-		virtual ~ChiSquare(){}
-		virtual double operator()(ParamSet params, IParamFunc &func)override;
-	};
-	class ChiSquareWithXError:public FitPointsAbstract{
-	public:
-		ChiSquareWithXError(){}
-		virtual ~ChiSquareWithXError(){}
-		virtual double operator()(ParamSet params, IParamFunc &func)override;
-	};
-	
-	template<class fitpoints>
-	shared_ptr<fitpoints> SelectFitPoints(shared_ptr<fitpoints> data,shared_ptr<IParamCheck> condition){
-		shared_ptr<fitpoints> res=make_shared<fitpoints>();
-		for(int i=0; i<data->Count();i++){
-			if(condition->CorrectParams(data->X(i)))
-				res->Add(data->X(i),data->Y(i),data->W(i));
-		}
-		return res;
-	}
-	template <class fitpoints>
-	shared_ptr<fitpoints> SelectFitPointsByY(shared_ptr<fitpoints> data,shared_ptr<IParamCheck> condition, function<bool(double)> Ycond){
-		shared_ptr<fitpoints> res=make_shared<fitpoints>();
-		for(int i=0; i<data->Count();i++){
-			if(condition->CorrectParams(data->X(i)) && Ycond(data->Y(i)))
-				res->Add(data->X(i),data->Y(i),data->W(i));
-		}
-		return res;
-	}
-	template <class fitpoints, class indexerx, class indexery = indexerx>
-	shared_ptr<fitpoints> FitPointsXY(int from, int to, indexerx X, indexery Y){
-		if(to<from)throw;
-		auto res=make_shared<fitpoints>();
-		for(int i=from; i<=to;i++)
-			res->Add(ParamSet(X[i]),Y[i]);
-		return res;
-	}
-	template <class fitpoints, class indexerx, class indexery = indexerx, class indexererr = indexery>
-	shared_ptr<fitpoints> FitPointsXYdY(int from, int to, indexerx X, indexery Y,indexererr W){
-		if(to<from)throw;
-		auto res=make_shared<fitpoints>();
-		for(int i=from; i<=to;i++)
-			res->Add(ParamSet(X[i]),Y[i],W[i]);
-		return res;
-	}
-	template <class fitpoints, class indexerx, class indexerx_err=indexerx, class indexery = indexerx, class indexererr = indexery>
-	shared_ptr<fitpoints> FitPointsXdXYdY(int from, int to, indexerx X, indexerx_err X_w, indexery Y,indexererr W){
-		if(to<from)throw;
-		auto res=make_shared<fitpoints>();
-		for(int i=from; i<=to;i++)
-			res->Add(ParamSet(X[i]),ParamSet(X_w[i]),Y[i],W[i]);
-		return res;
-	}
-	template <class fitpoints>
-	class Distribution1D:public fitpoints{
-		private:double m_min;double m_max;double binwidth;
-	public:
-		Distribution1D(double min, double max, int bins):fitpoints(){
-			if(max<min)throw;if(bins<1)throw;
-			m_max=max;m_min=min;
-			binwidth=(max-min)/double(bins);
-			double offs=binwidth/2.0;
-			for(double x=min+offs;x<max;x+=binwidth)
-				fitpoints::Add(ParamSet(x),ParamSet(offs),double(0),double(1));
-		}
-		void Fill(double x){
-			int bin_pos=int((x-m_min)/binwidth);
-			if((bin_pos>=0)&&(bin_pos<fitpoints::Count())){
-				fitpoints::m_y[bin_pos]+=1;
-				fitpoints::m_w[bin_pos]=sqrt(fitpoints::m_y[bin_pos]);
-			}
-		}
-	};
+	shared_ptr<OptimalityForPoints> SquareDiff(shared_ptr<FitPoints> points);
+	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points);
+	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points);
 }
 #endif

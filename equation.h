@@ -8,10 +8,10 @@ namespace Fit {
 		public:
 			NoParamFunc(){}
 			virtual ~NoParamFunc(){}
-			virtual double operator()(ParamSet,ParamSet) override{
+			virtual double operator()(ParamSet&,ParamSet&) override{
 				return 0;
 			}
-			virtual bool CorrectParams(ParamSet) override{
+			virtual bool CorrectParams(ParamSet&) override{
 				return true;
 			}
 		};
@@ -24,7 +24,7 @@ namespace Fit {
 	class Equation:public IOptimalityFunction{
 		public:Equation(){}
 		virtual ~Equation(){}
-		virtual double operator()(ParamSet P, IParamFunc&)override{
+		virtual double operator()(ParamSet&P,IParamFunc&)override{
 			double res=func(P);
 			if(res>=0)
 				return res; 
@@ -36,7 +36,7 @@ namespace Fit {
 	class Equation2:public IOptimalityFunction{
 		public:Equation2(){}
 		virtual ~Equation2(){}
-		virtual double operator()(ParamSet P, IParamFunc&)override{
+		virtual double operator()(ParamSet&P,IParamFunc&)override{
 			double res=func1(P)-func2(P);
 			if(res>=0)
 				return res; 
@@ -48,7 +48,7 @@ namespace Fit {
 	class SearchMin:public IOptimalityFunction{
 		public:SearchMin(){}
 		virtual ~SearchMin(){}
-		virtual double operator()(ParamSet P, IParamFunc&)override{
+		virtual double operator()(ParamSet&P,IParamFunc&)override{
 			return func(P);
 		}
 	};

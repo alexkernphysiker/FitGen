@@ -13,8 +13,8 @@ namespace Fit{
 			condition=c;
 		}
 		virtual ~Filter(){}
-		virtual bool CorrectParams(ParamSet params)override{
-			return condition(params);
+		virtual bool CorrectParams(ParamSet&P)override{
+			return condition(P);
 		}
 	};
 	
@@ -23,7 +23,7 @@ namespace Fit{
 		Above();
 		Above(ParamSet v);
 		virtual ~Above(){}
-		virtual bool CorrectParams(ParamSet params)override;
+		virtual bool CorrectParams(ParamSet&P)override;
 		Above &operator<<(double value);
 	private:
 		ParamSet m_data;
@@ -33,7 +33,7 @@ namespace Fit{
 		Below();
 		Below(ParamSet v);
 		virtual ~Below(){}
-		virtual bool CorrectParams(ParamSet params)override;
+		virtual bool CorrectParams(ParamSet&P)override;
 		Below &operator<<(double value);
 	private:
 		ParamSet m_data;
@@ -50,7 +50,6 @@ namespace Fit{
 		int Count();
 		IParamCheck &Get(int i);
 		AbstractFilterMulti &Add(std::shared_ptr<IParamCheck> val);
-		virtual bool CorrectParams(ParamSet params)override=0;
 	protected:
 		vector<shared_ptr<IParamCheck>> m_data;
 	};
@@ -58,20 +57,19 @@ namespace Fit{
 	public:
 		And(){}
 		virtual ~And(){}
-		virtual bool CorrectParams(ParamSet params)override;
+		virtual bool CorrectParams(ParamSet&P)override;
 	};
 	class Or:public AbstractFilterMulti{
 	public:
 		Or(){}
 		virtual ~Or(){}
-		virtual bool CorrectParams(ParamSet params)override;
+		virtual bool CorrectParams(ParamSet&P)override;
 	};
 	template<class Filter>
 	inline shared_ptr<Filter> operator<<(shared_ptr<Filter> filter, std::shared_ptr<IParamCheck> value){
 		filter->Add(value);
 		return filter;
 	}
-	
 	
 	enum condition_enum{EQ,NE,GR,NG,LE,NL};
 	inline bool TakeCondition(double a,condition_enum c, double b){
@@ -110,8 +108,8 @@ namespace Fit{
 			c=cond;
 		}
 		virtual ~FilterCondition(){}
-		virtual bool CorrectParams(ParamSet params)override{
-			return TakeCondition(func1(params),c,func2(params));
+		virtual bool CorrectParams(ParamSet&P)override{
+			return TakeCondition(func1(P),c,func2(P));
 		}
 	};
 	template<class FUNC>
@@ -125,7 +123,7 @@ namespace Fit{
 		}
 		Wrap(const Wrap &C):X(C.X){}
 		virtual ~Wrap(){}
-		virtual double operator()(ParamSet &P){
+		virtual double operator()(ParamSet&P){
 			return FUNC::operator()(X,P);
 		}
 	};

@@ -9,7 +9,7 @@ namespace Fit{
 	public:
 		EmptyFilter(){}
 		virtual ~EmptyFilter(){}
-		virtual bool CorrectParams(ParamSet)override{return true;}
+		virtual bool CorrectParams(ParamSet&)override{return true;}
 	};
 	typedef lock_guard<mutex> Lock;
 	typedef pair<ParamSet,double> Point;
@@ -171,7 +171,7 @@ namespace Fit{
 		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
-	ParamSet AbstractGenetic::Parameters(int point_index){
+	ParamSet& AbstractGenetic::Parameters(int point_index){
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw new FitException("Point index out of range or no results were calculated");
 		Lock lock(m_mutex);

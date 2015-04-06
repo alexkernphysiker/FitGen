@@ -16,17 +16,17 @@ namespace Fit{
 	class IParamCheck{
 	public:
 		virtual ~IParamCheck(){}
-		virtual bool CorrectParams(ParamSet params)=0;
+		virtual bool CorrectParams(ParamSet&P)=0;
 	};
 	class IParamFunc:public IParamCheck{
 	public:
 		virtual ~IParamFunc(){}
-		virtual double operator()(ParamSet X, ParamSet P)=0;
+		virtual double operator()(ParamSet&X,ParamSet&P)=0;
 	};
 	class IOptimalityFunction{
 	public:
 		virtual ~IOptimalityFunction(){}
-		virtual double operator()(ParamSet params, IParamFunc &func)=0;
+		virtual double operator()(ParamSet&P,IParamFunc&F)=0;
 	};
 	class AbstractGenetic{
 	protected:
@@ -51,7 +51,7 @@ namespace Fit{
 		int PopulationSize();
 		int ParamCount();
 		double Optimality(int point_index=0);
-		ParamSet Parameters(int point_index=0);
+		ParamSet& Parameters(int point_index=0);
 		double operator[](int i);
 		double operator()(ParamSet X);
 		ParamSet ParamAverage();
