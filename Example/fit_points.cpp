@@ -42,15 +42,21 @@ int main(int argcnt, char **arg){
 	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
 		fit.Iterate();
 		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
-	}
-	
-	printf("Iteration count: %i           \nchi^2 = %f\n",fit.iteration_count(),fit.Optimality());
-	printf("par\t\toptimal\t\tParabolicErr\t\tmax_dev\t\taverage\t\tdisp\n");
-	ParamSet err=fit.GetParamParabolicError(parEq(fit.ParamCount(),0.01));
-	for(int i=0; i<fit.ParamCount();i++)
-		printf("par%i \t\t%f \t\t%f \t\t%f \t\t%f \t\t%f \n",i,
-			   fit[i],err[i],fit.ParamMaxDeviation()[i],fit.ParamAverage()[i],fit.ParamDispersion()[i]);
-	
+	}	
+	printf("Iteration count: %i;\tchi^2 = %f\n",fit.iteration_count(),fit.Optimality());
+	printf("\nParameters:\n");
+	for(double p:fit)
+		printf("\t%f",p);
+	printf("\nErrors:\n");
+	for(double p:fit.GetParamParabolicError(parEq(fit.ParamCount(),0.01)))
+		printf("\t%f",p);
+	printf("\nAverage:\n");
+	for(double p:fit.ParamAverage())
+		printf("\t%f",p);
+	printf("\nDispersion:\n");
+	for(double p:fit.ParamDispersion())
+		printf("\t%f",p);
+	printf("\n");
 	{//plot calculation results
 		ofstream data;
 		data.open("output.data.txt");

@@ -16,15 +16,6 @@ int main(int argcnt, char **arg){
 	printf("Filling...\n");
 	for(int i=0;i<count;i++)
 		points_to_fit->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
-	{
-		ofstream data;
-		data.open("output.data.txt");
-		if(data.is_open()){
-			for(auto p:(*points_to_fit))
-				data<<p.X[0]<<" "<<p.y<<" "<<p.WX[0]<<" "<<p.wy<<"\n";
-			data.close();
-		}
-	}
 	printf("Prepare fitting...\n");
 	DifferentialRandomMutations<> fit(
 		make_shared<ParameterFunction<>>([](ParamSet& X,ParamSet& P){
@@ -43,11 +34,21 @@ int main(int argcnt, char **arg){
 		fit.Iterate();
 		printf("%i iterations;%f<=chi^2<=%f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
-	printf("\n");
-	for(int i=0; i<fit.ParamCount();i++)
-		printf("par%i=%f\t",i,fit[i]);
+	printf("\nParameters:\n");
+	for(double param:fit)
+		printf("\t%f",param);
+	printf("\nErrors:\n");
+	for(double p:fit.GetParamParabolicError(parEq(fit.ParamCount(),0.01)))
+		printf("\t%f",p);
 	printf("\n");
 	{//plot calculation results
+		ofstream data;
+		data.open("output.data.txt");
+		if(data.is_open()){
+			for(auto p:(*points_to_fit))
+				data<<p.X[0]<<" "<<p.y<<" "<<p.WX[0]<<" "<<p.wy<<"\n";
+			data.close();
+		}
 		ofstream out;
 		out.open("output.txt");
 		if(out.is_open()){
