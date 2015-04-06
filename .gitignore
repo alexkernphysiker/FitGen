@@ -6,6 +6,8 @@ example*
 CMakeCache*
 CMakeFiles
 *kdev*
+output*.txt
+.plotscript.gp
 # Compiled Object files
 *.slo
 *.lo
