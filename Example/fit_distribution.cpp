@@ -12,25 +12,23 @@ int main(int argcnt, char **arg){
 	double right=10;
 	unsigned int bins=2;
 	int count=500;
-	auto points_to_fit=make_shared<Distribution1D>(left,right,int(right-left)*bins);
+	auto distribution=make_shared<Distribution1D>(left,right,int(right-left)*bins);
 	printf("Filling...\n");
 	for(int i=0;i<count;i++)
-		points_to_fit->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
+		distribution->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
 	printf("Prepare fitting...\n");
 	DifferentialRandomMutations<> fit(
-		make_shared<ParameterFunction<>>([](ParamSet& X,ParamSet& P){
-			return Gaussian(X[0],P[0],P[1])*P[2];
-		}),
-		ChiSquareWithXError(points_to_fit),1
+		make_shared<ParameterFunction<>>([](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];}),
+		ChiSquareWithXError(distribution),1
 	);
 	fit.SetFilter(make_shared<Filter<>>([](ParamSet& P){return (P[1]>0)&&(P[2]>0);}));
 	fit.Init(30,make_shared<Initialiser>()
 		<<[left,right](){return RandomUniformly(left,right);}
 		<<[left,right](){return RandomUniformly(0.0,right-left);}
-		<<[count,bins](){return RandomGauss(double(count/bins),double(count/bins)*0.5);}
+		<<[count,bins](){return RandomGauss(double(count/bins),double(count/bins));}
 	);
 	printf("Fitting...\n");
-	while(!fit.ConcentratedInOnePoint()){
+	while(!fit.AbsoluteOptimalityExitCondition(0.0000001)){
 		fit.Iterate();
 		printf("%i iterations; %f<=chi^2<=%f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
@@ -45,7 +43,7 @@ int main(int argcnt, char **arg){
 		ofstream data;
 		data.open("output.data.txt");
 		if(data.is_open()){
-			for(auto p:(*points_to_fit))
+			for(auto p:*distribution)
 				data<<p.X[0]<<" "<<p.y<<" "<<p.WX[0]<<" "<<p.wy<<"\n";
 			data.close();
 		}

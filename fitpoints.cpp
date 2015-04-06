@@ -106,7 +106,7 @@ namespace Fit{
 		virtual ~_square_diff(){}
 		virtual double operator()(ParamSet&P,IParamFunc&F)override{
 			double res=0;
-			for(FitPoints::DataPoint p:(*points))
+			for(FitPoints::DataPoint p:*points)
 				res+=pow(p.y-F(p.X,P),2)*p.wy;
 			return res;
 		}
@@ -125,8 +125,9 @@ namespace Fit{
 			if(z<=0)
 				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			double res=0;
-			for(FitPoints::DataPoint p:(*points))
-				res+=pow(p.y-F(p.X,P),2)*p.wy;
+			for(FitPoints::DataPoint p:*points){
+				res+=pow((p.y-F(p.X,P))/p.wy,2);
+			}
 			return res/z;
 		}
 	};
@@ -144,7 +145,7 @@ namespace Fit{
 			if(z<=0)
 				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			double res=0;
-			for(FitPoints::DataPoint p:(*points)){
+			for(FitPoints::DataPoint p:*points){
 				double w=pow(p.wy,2);
 				for(int j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
 					ParamSet x1=p.X;
