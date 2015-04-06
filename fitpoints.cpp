@@ -120,14 +120,12 @@ namespace Fit{
 		}
 		virtual ~_chi_square(){}
 		virtual double operator()(ParamSet&P,IParamFunc&F)override{
-			printf("Chi^2\n");
 			double z=points->count()-P.Count();
 			if(z<=0)
 				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			double res=0;
 			for(FitPoints::DataPoint p:(*points))
 				res+=pow(p.y-F(p.X,P),2)*p.wy;
-			printf("%f\n",res/z);
 			return res/z;
 		}
 	};
