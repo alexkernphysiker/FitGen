@@ -4,14 +4,14 @@
 #include "fitexception.h"
 using namespace std;
 namespace Fit{
-	FitPoints::DataPoint::DataPoint(){}
-	FitPoints::DataPoint::DataPoint(const DataPoint& src){
+	FitPoints::Point::Point(){}
+	FitPoints::Point::Point(const Point& src){
 		X=src.X;
 		WX=src.WX;
 		y=src.y;
 		wy=src.wy;
 	}
-	FitPoints::DataPoint& FitPoints::DataPoint::operator=(const DataPoint& src){
+	FitPoints::Point& FitPoints::Point::operator=(const Point& src){
 		X=src.X;
 		WX=src.WX;
 		y=src.y;
@@ -23,22 +23,22 @@ namespace Fit{
 	int FitPoints::count(){
 		return m_data.size();
 	}
-	FitPoints& FitPoints::operator<<(DataPoint point){
+	FitPoints& FitPoints::operator<<(Point point){
 		m_data.push_back(point);
 		return *this;
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src, FitPoints::DataPoint p){
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src, FitPoints::Point p){
 		src->operator<<(p);
 		return src;
 	}
 	shared_ptr< FitPoints > operator<<(shared_ptr<FitPoints> src, pair<double,double> p){
-		FitPoints::DataPoint P;
+		FitPoints::Point P;
 		P.X<<p.first;
 		P.y=p.second;
 		P.wy=1;
 		return src<<P;
 	}
-	FitPoints::DataPoint& FitPoints::operator[](int i){
+	FitPoints::Point& FitPoints::operator[](int i){
 		return m_data[i];
 	}
 	FitPoints::iterator FitPoints::begin(){
@@ -55,21 +55,21 @@ namespace Fit{
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::DataPoint p:(*src))
+		for(FitPoints::Point p:(*src))
 			if(condition->CorrectParams(p.X))
 				res<<p;
 			return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::DataPoint p:(*src))
+		for(FitPoints::Point p:(*src))
 			if(Ycond(p.y))
 				res<<p;
 			return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::DataPoint p:(*src))
+		for(FitPoints::Point p:(*src))
 			if(condition->CorrectParams(p.X))
 				res<<p;
 			return res;
@@ -82,7 +82,7 @@ namespace Fit{
 		double binwidth=(max-min)/double(bins);
 		double halfwidth=binwidth/2.0;
 		for(double x=min+halfwidth;x<max;x+=binwidth){
-			DataPoint P;
+			Point P;
 			P.X<<x;
 			P.WX<<halfwidth;
 			P.y=0;
@@ -91,75 +91,75 @@ namespace Fit{
 		}
 	}
 	void Distribution1D::Fill(double x){
-		for(DataPoint&p:(*this))
+		for(Point&p:(*this))
 			if((x>=(p.X[0]-p.WX[0]))&&(x<(p.X[0]+p.WX[0]))){
 				p.y=p.y+1.0;
 				p.wy=sqrt(p.y);
 			}
 	}
+	OptimalityForPoints::OptimalityForPoints(std::shared_ptr< FitPoints > p, OptimalityForPoints::Coefficient c, OptimalityForPoints::Summand s){
+		points=p;
+		C=c;
+		S=s;
+	}
 	OptimalityForPoints::~OptimalityForPoints(){}
-	class _square_diff:public OptimalityForPoints{
-	public:
-		_square_diff(shared_ptr<FitPoints> p){
-			points=p;
-		}
-		virtual ~_square_diff(){}
-		virtual double operator()(ParamSet&P,IParamFunc&F)override{
-			double res=0;
-			for(FitPoints::DataPoint p:*points)
-				res+=pow(p.y-F(p.X,P),2)*p.wy;
-			return res;
-		}
-	};
-	shared_ptr<OptimalityForPoints> SquareDiff(shared_ptr<FitPoints> points){
-		return make_shared<_square_diff>(points);
+	double OptimalityForPoints::operator()(ParamSet& P, IParamFunc& F){
+		double res=0;
+		for(FitPoints::Point p:*points)
+			res+=S(p,P,F);
+		return res*C(P,F);
 	}
-	class _chi_square:public OptimalityForPoints{
-	public:
-		_chi_square(shared_ptr<FitPoints> p){
-			points=p;
-		}
-		virtual ~_chi_square(){}
-		virtual double operator()(ParamSet&P,IParamFunc&F)override{
-			double z=points->count()-P.Count();
-			if(z<=0)
-				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
-			double res=0;
-			for(FitPoints::DataPoint p:*points){
-				res+=pow((p.y-F(p.X,P))/p.wy,2);
-			}
-			return res/z;
-		}
-	};
+	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points){
+		OptimalityForPoints::Coefficient c=[](ParamSet&,IParamFunc&){
+			return 1.0;
+		};
+		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
+			return pow(p.y-F(p.X,P),2);
+		};
+		return make_shared<OptimalityForPoints>(points,c,s);
+	}
+	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points){
+		OptimalityForPoints::Coefficient c=[points](ParamSet&,IParamFunc&){
+			double z=0;
+			for(FitPoints::Point p:*points)
+				z+=p.wy;
+			return 1.0/z;
+		};
+		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
+			return pow(p.y-F(p.X,P),2)*p.wy;
+		};
+		return make_shared<OptimalityForPoints>(points,c,s);
+	}
 	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points){
-		return make_shared<_chi_square>(points);
-	}
-	class _chi_square_wxe:public OptimalityForPoints{
-	public:
-		_chi_square_wxe(shared_ptr<FitPoints> p){
-			points=p;
-		}
-		virtual ~_chi_square_wxe(){}
-		virtual double operator()(ParamSet&P,IParamFunc&F)override{
+		OptimalityForPoints::Coefficient c=[points](ParamSet&P,IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
 				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
-			double res=0;
-			for(FitPoints::DataPoint p:*points){
-				double w=pow(p.wy,2);
-				for(int j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
-					ParamSet x1=p.X;
-					ParamSet x2=p.X;
-					x1.Set(j,p.X[j]+p.WX[j]);
-					x2.Set(j,p.X[j]-p.WX[j]);
-					w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
-				}
-				res+=pow((p.y-F(p.X,P)),2)/w;
-			}
-			return res/z;
-		}
-	};
+			return 1.0/z;
+		};
+		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
+			return pow((p.y-F(p.X,P))/p.wy,2);
+		};
+		return make_shared<OptimalityForPoints>(points,c,s);
+	}
 	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points){
-		return make_shared<_chi_square_wxe>(points);
+		OptimalityForPoints::Coefficient c=[points](ParamSet&P,IParamFunc&){
+			double z=points->count()-P.Count();
+			if(z<=0)
+				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+			return 1.0/z;
+		};
+		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
+			double w=pow(p.wy,2);
+			for(int j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
+				ParamSet x1=p.X;
+				ParamSet x2=p.X;
+				x1.Set(j,p.X[j]+p.WX[j]);
+				x2.Set(j,p.X[j]-p.WX[j]);
+				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
+			}
+			return pow((p.y-F(p.X,P)),2)/w;
+		};
+		return make_shared<OptimalityForPoints>(points,c,s);
 	}
 }
