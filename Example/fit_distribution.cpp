@@ -23,8 +23,8 @@ int main(int argcnt, char **arg){
 	);
 	fit.SetFilter(make_shared<Filter<>>([](ParamSet& P){return (P[1]>0)&&(P[2]>0);}));
 	fit.Init(30,make_shared<Initialiser>()
-		<<[left,right](){return RandomUniformly(left,right);}
-		<<[left,right](){return RandomUniformly(0.0,right-left);}
+		<<[left,right](){return RandomUniformlyR(left,right);}
+		<<[left,right](){return RandomUniformlyR(0.0,right-left);}
 		<<[count,bins](){return RandomGauss(double(count/bins),double(count/bins));}
 	);
 	printf("Fitting...\n");

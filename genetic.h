@@ -26,8 +26,8 @@ namespace Fit{
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
-			auto A=AbstractGenetic::Parameters(rand()%AbstractGenetic::PopulationSize());
-			auto B=AbstractGenetic::Parameters(rand()%AbstractGenetic::PopulationSize());
+			auto A=AbstractGenetic::Parameters(RandomUniformlyI(0,AbstractGenetic::PopulationSize()-1));
+			auto B=AbstractGenetic::Parameters(RandomUniformlyI(0,AbstractGenetic::PopulationSize()-1));
 			for(int i=0; i<C.Count();i++)
 				C.Set(i,C[i]+M*(A[i]-B[i]));
 		}
@@ -53,8 +53,8 @@ namespace Fit{
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
-			if(RandomUniformly(0.0,1.0)<P){
-				auto X=AbstractGenetic::Parameters(rand()%AbstractGenetic::PopulationSize());
+			if(RandomUniformlyR(0.0,1.0)<P){
+				auto X=AbstractGenetic::Parameters(RandomUniformlyI(0,AbstractGenetic::PopulationSize()-1));
 				FITGEN::mutations(X);
 				for(int i=0; i<C.Count();i++)
 					if(rand()%2==1)
@@ -93,7 +93,7 @@ namespace Fit{
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
-			if(RandomUniformly(0.0,1.0)<P)
+			if(RandomUniformlyR(0.0,1.0)<P)
 				for(int i=0;i<C.Count();i++)
 					C.Set(i,C[i]+RandomGauss(M[i]));
 		}
@@ -129,7 +129,7 @@ namespace Fit{
 	protected:
 		virtual void mutations(ParamSet &C)override{
 			FITGEN::mutations(C);
-			if(RandomUniformly(0.0,1.0)<P)
+			if(RandomUniformlyR(0.0,1.0)<P)
 				for(int i=0;i<AbstractGenetic::ParamCount();i++)
 					C.Set(i,C[i]*(1+RandomGauss(M[i])));
 		}
@@ -154,7 +154,7 @@ namespace Fit{
 		}
 	protected:
 		virtual void mutations(ParamSet &C)override{
-			if(RandomUniformly(0.0,1.0)>=P)
+			if(RandomUniformlyR(0.0,1.0)>=P)
 				FITGEN::mutations(C);
 			
 		}

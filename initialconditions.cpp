@@ -92,7 +92,7 @@ namespace Fit{
 	ParamSet GenerateUniform::Generate(){
 		ParamSet res;
 		for(int i=0; i<Count();i++)
-			res<<RandomUniformly(m_min[i],m_max[i]);
+			res<<RandomUniformlyR(m_min[i],m_max[i]);
 		return res;
 	}
 	

@@ -64,7 +64,7 @@ namespace Fit{
 					[initial_conditions](){
 						return initial_conditions->Generate();
 					},
-					[this](ParamSet p){
+					[this](ParamSet&p){
 						return m_function->CorrectParams(p) && m_filter->CorrectParams(p);
 					}
 				);
@@ -107,7 +107,7 @@ namespace Fit{
 						mutations(p);
 						return p;
 					},
-					[this](ParamSet p){
+					[this](ParamSet&p){
 						return m_function->CorrectParams(p) && m_filter->CorrectParams(p);
 					}
 				);
