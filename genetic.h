@@ -156,7 +156,6 @@ namespace Fit{
 		virtual void mutations(ParamSet &C)override{
 			if(RandomUniformlyR(0.0,1.0)>=P)
 				FITGEN::mutations(C);
-			
 		}
 	};
 }

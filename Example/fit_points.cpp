@@ -36,14 +36,12 @@ int main(int argcnt, char **arg){
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_pair(0,0.01);
 	fit.Init(TotalFunc::ParamCount*15,initial);
-	
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
 	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
 		fit.Iterate();
-		printf("%f <= chi^2 <= %f     \r",fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
-	}	
-	printf("Iteration count: %i;    chi^2 = %f\n",fit.iteration_count(),fit.Optimality());
+		printf("Iteration count: %i; %f <= chi^2 <= %f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
+	}
 	printf("\nParameters:\n");
 	for(double p:fit)
 		printf("\t%f",p);

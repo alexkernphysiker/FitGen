@@ -27,6 +27,8 @@ int main(int argcnt, char **arg){
 		<<[left,right](){return RandomUniformlyR(0.0,right-left);}
 		<<[count,bins](){return RandomGauss(double(count/bins),double(count/bins));}
 	);
+	printf("Parameter count: %i\n",fit.ParamCount());
+	printf("Population size: %i\n",fit.PopulationSize());
 	printf("Fitting...\n");
 	while(!fit.AbsoluteOptimalityExitCondition(0.0000001)){
 		fit.Iterate();

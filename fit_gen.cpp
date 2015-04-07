@@ -150,7 +150,6 @@ namespace Fit{
 			m_itercount++;
 		}
 	}
-	
 	unsigned int AbstractGenetic::iteration_count(){
 		Lock lock(m_mutex);
 		return m_itercount;
