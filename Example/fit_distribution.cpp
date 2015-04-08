@@ -19,7 +19,7 @@ int main(int argcnt, char **arg){
 	printf("Prepare fitting...\n");
 	DifferentialRandomMutations<> fit(
 		make_shared<ParameterFunction<>>([](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];}),
-		ChiSquareWithXError(distribution),1
+		ChiSquareWithXError(distribution)
 	);
 	fit.SetFilter(make_shared<Filter<>>([](ParamSet& P){return (P[1]>0)&&(P[2]>0);}));
 	fit.Init(30,make_shared<Initialiser>()

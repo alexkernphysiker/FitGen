@@ -30,9 +30,7 @@ namespace Fit{
 	};
 	class AbstractGenetic{
 	protected:
-		AbstractGenetic(shared_ptr<IParamFunc> function, 
-			shared_ptr<IOptimalityFunction> optimality,
-			unsigned int threads_count);
+		AbstractGenetic(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality);
 	public:
 		virtual ~AbstractGenetic();
 		
@@ -41,13 +39,15 @@ namespace Fit{
 		void SetFilter(shared_ptr<IParamCheck> filter);
 		void RemoveFilter();
 		
+		void SetThreadCount(unsigned int threads_count);
+		unsigned int ThreadCount();
 		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions);
 	protected:
 		virtual void mutations(ParamSet&);
 	public:
 		void Iterate();
 		
-		unsigned int iteration_count();
+		unsigned long int iteration_count();
 		int PopulationSize();
 		int ParamCount();
 		double Optimality(int point_index=0);
@@ -80,7 +80,7 @@ namespace Fit{
 		ParamSet m_avr;
 		ParamSet m_disp;
 		ParamSet m_max_dev;
-		unsigned int m_itercount;
+		unsigned long int m_itercount;
 		unsigned int threads;
 	};
 	template<class AdderOfPairs,class F, class S>

@@ -24,12 +24,11 @@ namespace Fit{
 	}
 	AbstractGenetic::AbstractGenetic(
 		shared_ptr<IParamFunc> function, 
-		shared_ptr<IOptimalityFunction> optimality,
-		unsigned int threads_count
+		shared_ptr<IOptimalityFunction> optimality
 	){
-		if(threads_count==0)
-			throw new FitException("Cannot run genetic algorithm with zero threads");
-		threads=threads_count;
+		threads=thread::hardware_concurrency();
+		if(threads==0)
+			threads=1;
 		m_function=function;
 		m_optimality=optimality;
 		m_itercount=0;
@@ -53,6 +52,16 @@ namespace Fit{
 		m_filter=make_shared<EmptyFilter>();
 	}
 	
+	void AbstractGenetic::SetThreadCount(unsigned int threads_count){
+		Lock lock(m_mutex);
+		if(threads_count==0)
+			throw new FitException("Cannot run genetic algorithm with zero threads");
+		threads=threads_count;
+	}
+	unsigned int AbstractGenetic::ThreadCount(){
+		Lock lock(m_mutex);
+		return threads;
+	}
 	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions){
 		if(m_population.size()>0)
 			throw new FitException("Fitting algorithm cannot be inited twice");
@@ -150,7 +159,7 @@ namespace Fit{
 			m_itercount++;
 		}
 	}
-	unsigned int AbstractGenetic::iteration_count(){
+	unsigned long int AbstractGenetic::iteration_count(){
 		Lock lock(m_mutex);
 		return m_itercount;
 	}

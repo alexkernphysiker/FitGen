@@ -10,10 +10,8 @@ namespace Fit{
 	private:
 		double M;
 	public:
-		DifferentialRandomMutations(shared_ptr<IParamFunc> function, 
-			shared_ptr<IOptimalityFunction> optimality, 
-			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),M(0.5){}
+		DifferentialRandomMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(function,optimality),M(0.5){}
 		virtual ~DifferentialRandomMutations(){}
 		double MutationCoefficient(){
 			return M;
@@ -37,10 +35,8 @@ namespace Fit{
 	private:
 		double P;
 	public:
-		Crossing(shared_ptr<IParamFunc> function, 
-			shared_ptr<IOptimalityFunction> optimality,
-			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0){}
+		Crossing(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(function,optimality),P(0){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -68,10 +64,8 @@ namespace Fit{
 		ParamSet M;
 		double P;
 	public:
-		AbsoluteMutations(shared_ptr<IParamFunc> function, 
-			shared_ptr<IOptimalityFunction> optimality,
-			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0){}
+		AbsoluteMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(function,optimality),P(0){}
 		virtual ~AbsoluteMutations(){}
 		ParamSet AbsoluteMutationCoeficients(){
 			return M;
@@ -104,10 +98,8 @@ namespace Fit{
 		ParamSet M;
 		double P;
 	public:
-		RelativeMutations(shared_ptr<IParamFunc> function, 
-			shared_ptr<IOptimalityFunction> optimality,
-			unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0){}
+		RelativeMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(function,optimality),P(0){}
 		virtual ~RelativeMutations(){}
 		ParamSet RelativeMutationCoefficients(){
 			return M;
@@ -139,10 +131,8 @@ namespace Fit{
 	private:
 		double P;
 	public:
-		ExactCopying(shared_ptr<IParamFunc> function, 
-					 shared_ptr<IOptimalityFunction> optimality,
-			   unsigned int threads_count
-		):FITGEN(function,optimality,threads_count),P(0){}
+		ExactCopying(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(function,optimality),P(0){}
 		virtual ~ExactCopying(){}
 		void SetExactCopyingProbability(double value){
 			if((value<0)||(value>1))
