@@ -6,13 +6,13 @@
 namespace Fit{
 	using namespace std;
 	template<class FITGEN=AbstractGenetic>
-	class DifferentialRandomMutations: public FITGEN{
+	class DifferentialMutations: public FITGEN{
 	private:
 		double M;
 	public:
-		DifferentialRandomMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
+		DifferentialMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
 			:FITGEN(function,optimality),M(0.5){}
-		virtual ~DifferentialRandomMutations(){}
+		virtual ~DifferentialMutations(){}
 		double MutationCoefficient(){
 			return M;
 		}

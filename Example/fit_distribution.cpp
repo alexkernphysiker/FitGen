@@ -5,6 +5,7 @@
 #include <paramfunc.h>
 #include <filter.h>
 #include <initialconditions.h>
+#include <math_h/randomfunc.h>
 using namespace std;
 using namespace Fit;
 int main(int argcnt, char **arg){
@@ -17,7 +18,7 @@ int main(int argcnt, char **arg){
 	for(int i=0;i<count;i++)
 		distribution->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
 	printf("Prepare fitting...\n");
-	DifferentialRandomMutations<> fit(
+	DifferentialMutations<> fit(
 		make_shared<ParameterFunction<>>([](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];}),
 		ChiSquareWithXError(distribution)
 	);

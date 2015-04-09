@@ -9,6 +9,7 @@ const int background_polynom_power=6;
 using namespace std;
 using namespace Fit;
 using namespace Fit::wrap_func_indexer;
+#include <math_h/functions.h>
 typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
 typedef PolynomFunc<0,3,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
@@ -24,7 +25,7 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY(0,19,X,dX,Y,dY);
-	DifferentialRandomMutations<> fit(make_shared<TotalFunc>(),ChiSquareWithXError(points_to_fit));
+	DifferentialMutations<> fit(make_shared<TotalFunc>(),ChiSquareWithXError(points_to_fit));
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<(make_shared<Below>()<<INFINITY<<15)
