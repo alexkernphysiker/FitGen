@@ -39,7 +39,7 @@ int main(int argcnt, char **arg){
 	for(double param:fit)
 		printf("\t%f",param);
 	printf("\nErrors:\n");
-	for(double p:fit.GetParamParabolicError(parEq(fit.ParamCount(),0.01)))
+	for(double p:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.01)))
 		printf("\t%f",p);
 	printf("\n");
 	{//plot calculation results

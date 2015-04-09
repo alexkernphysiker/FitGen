@@ -239,31 +239,30 @@ namespace Fit{
 		return Optimality(PopulationSize()-1)<=(Optimality()*(1.0+accuracy));
 	}
 	
-	ParamSet AbstractGenetic::GetParamParabolicError(ParamSet delta){
+	double AbstractGenetic::GetParamParabolicError(double delta, int i){
 		if(PopulationSize()==0)
 			throw new FitException("Attempt to calculate parabolic error with no results");
-		auto cnt=ParamCount();
-		if(delta.Count()!=cnt)
-			throw new FitException("Error in parabolic error calculation: incorrect delta size");
+		if(delta<=0)
+			throw new FitException("Error in parabolic error calculation: delta cannot be zero or negative");
+		double s=Optimality();
+		ParamSet ab=Parameters();
+		ParamSet be=ab;
+		ab.Set(i,ab[i]+delta);
+		be.Set(i,be[i]-delta);
+		double sa=m_optimality->operator()(ab,*m_function);
+		double sb=m_optimality->operator()(be,*m_function);
+		double da=(sa-s)/delta;
+		double db=(s-sb)/delta;
+		double dd=(da-db)/delta;
+		if(dd<=0)
+			return INFINITY;
+		else
+			return sqrt(2.0/dd);
+	}
+	ParamSet AbstractGenetic::GetParamParabolicErrors(ParamSet delta){
 		ParamSet res;
-		for(int i=0;i<cnt;i++){
-			if(delta[i]<=0)
-				throw new FitException("Error in parabolic error calculation: delta cannot be zero or negative");
-			double s=Optimality();
-			ParamSet ab=Parameters();
-			ParamSet be=ab;
-			ab.Set(i,ab[i]+delta[i]);
-			be.Set(i,be[i]-delta[i]);
-			double sa=m_optimality->operator()(ab,*m_function);
-			double sb=m_optimality->operator()(be,*m_function);
-			double da=(sa-s)/delta[i];
-			double db=(s-sb)/delta[i];
-			double dd=(da-db)/delta[i];
-			if(dd<=0)
-				res<<INFINITY;
-			else
-				res<<sqrt(2.0/dd);
-		}
+		for(int i=0,n=ParamCount();i<n;i++)
+			res<<GetParamParabolicError(delta[i],i);
 		return res;
 	}
 

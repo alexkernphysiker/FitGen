@@ -47,7 +47,7 @@ int main(int argcnt, char **arg){
 	for(double p:fit)
 		printf("\t%f",p);
 	printf("\nErrors:\n");
-	for(double p:fit.GetParamParabolicError(parEq(fit.ParamCount(),0.01)))
+	for(double p:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.01)))
 		printf("\t%f",p);
 	printf("\nAverage:\n");
 	for(double p:fit.ParamAverage())

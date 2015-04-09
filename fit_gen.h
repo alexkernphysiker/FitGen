@@ -62,7 +62,8 @@ namespace Fit{
 		bool AbsoluteOptimalityExitCondition(double accuracy);
 		bool RelativeOptimalityExitCondition(double accuracy);
 		
-		ParamSet GetParamParabolicError(ParamSet delta);
+		double GetParamParabolicError(double delta,int i);
+		ParamSet GetParamParabolicErrors(ParamSet delta);
 		
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;
