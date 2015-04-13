@@ -97,12 +97,11 @@ namespace Genetic{
 		Coefficient C;
 		Summand S;
 	};
-	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<OptimalityForPoints>);
-	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	
-	template<class GENETIC,shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
+	shared_ptr<IOptimalityFunction> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class Fit:public GENETIC{
 	private:
 		shared_ptr<IParamFunc> m_func;
@@ -114,6 +113,40 @@ namespace Genetic{
 			m_func=f;
 		}
 		virtual ~Fit(){}
+		double operator()(ParamSet X){
+			return m_func->operator()(X,AbstractGenetic::Parameters());
+		}
+	};
+	
+	class OptimalityForPointsWithFuncError:public IOptimalityFunction{
+	public:
+		typedef function<double(ParamSet&,IParamFunc&,IParamFunc&)> Coefficient;
+		typedef function<double(FitPoints::Point&,ParamSet&,IParamFunc&,IParamFunc&)> Summand;
+		OptimalityForPointsWithFuncError(shared_ptr<FitPoints> p,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e,Coefficient c,Summand s);
+		virtual ~OptimalityForPointsWithFuncError();
+		virtual double operator()(ParamSet&P)override;
+	protected:
+		shared_ptr<FitPoints> points;
+		shared_ptr<IParamFunc> func;
+		shared_ptr<IParamFunc> error;
+		Coefficient C;
+		Summand S;
+	};
+	shared_ptr<IOptimalityFunction> ChiSquare2(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
+	shared_ptr<IOptimalityFunction> ChiSquareWithXError2(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
+	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
+	class Fit2:public GENETIC{
+	private:
+		shared_ptr<IParamFunc> m_func;
+	public:
+		Fit2(
+			shared_ptr<FitPoints> points, 
+			shared_ptr<IParamFunc> f,
+			shared_ptr<IParamFunc> e
+		):GENETIC(OptimalityAlgorithm(points,f,e)){
+			m_func=f;
+		}
+		virtual ~Fit2(){}
 		double operator()(ParamSet X){
 			return m_func->operator()(X,AbstractGenetic::Parameters());
 		}

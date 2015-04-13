@@ -115,7 +115,7 @@ namespace Genetic{
 			res+=S(p,P,*func);
 		return res*C(P,*func);
 	}
-	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<IOptimalityFunction> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[](ParamSet&,IParamFunc&){
 			return 1.0;
 		};
@@ -125,7 +125,7 @@ namespace Genetic{
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
 	
-	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](ParamSet&,IParamFunc&){
 			double z=0;
 			for(FitPoints::Point p:*points)
@@ -137,7 +137,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](ParamSet&P,IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -149,7 +149,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](ParamSet&P,IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -168,5 +168,57 @@ namespace Genetic{
 			return pow((p.y-F(p.X,P)),2)/w;
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
+	}
+	
+	OptimalityForPointsWithFuncError::OptimalityForPointsWithFuncError(
+		shared_ptr< FitPoints > p, 
+		shared_ptr< IParamFunc > f, 
+		shared_ptr< IParamFunc > e, 
+		Coefficient c, Summand s
+	){
+		points=p;
+		func=f;
+		error=e;
+		C=c;
+		S=s;
+	}
+	OptimalityForPointsWithFuncError::~OptimalityForPointsWithFuncError(){}
+	double OptimalityForPointsWithFuncError::operator()(ParamSet& P){
+		double res=0;
+		for(FitPoints::Point p:*points)
+			res+=S(p,P,*func,*error);
+		return res*C(P,*func,*error);
+	}
+	shared_ptr<IOptimalityFunction> ChiSquare2(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+		OptimalityForPointsWithFuncError::Coefficient c=[points](ParamSet&P,IParamFunc&,IParamFunc&){
+			double z=points->count()-P.Count();
+			if(z<=0)
+				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+			return 1.0/z;
+		};
+		OptimalityForPointsWithFuncError::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F,IParamFunc&E){
+			return pow((p.y-F(p.X,P))/(p.wy+E(p.X,P)),2);
+		};
+		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
+	}
+	shared_ptr<IOptimalityFunction> ChiSquareWithXError2(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+		OptimalityForPointsWithFuncError::Coefficient c=[points](ParamSet&P,IParamFunc&,IParamFunc&){
+			double z=points->count()-P.Count();
+			if(z<=0)
+				throw new FitException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+			return 1.0/z;
+		};
+		OptimalityForPointsWithFuncError::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F,IParamFunc&E){
+			double w=pow(p.wy+E(p.X,P),2);
+			for(int j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
+				ParamSet x1=p.X;
+				ParamSet x2=p.X;
+				x1.Set(j,p.X[j]+p.WX[j]);
+				x2.Set(j,p.X[j]-p.WX[j]);
+				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
+			}
+			return pow((p.y-F(p.X,P)),2)/w;
+		};
+		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
 	}
 }
