@@ -1,9 +1,9 @@
 #ifndef ___DnoQpUEN
 #define ___DnoQpUEN
 #include <functional>
-#include "fit_gen.h"
+#include "abstract.h"
 #include "math_h/randomfunc.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	typedef function<double()> generator;
 	typedef RandomValueGenerator<double> Distrib;

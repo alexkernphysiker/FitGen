@@ -1,9 +1,8 @@
-#include <iostream>
 #include <math.h>
-#include "fitpoints.h"
+#include "fit.h"
 #include "fitexception.h"
 using namespace std;
-namespace Fit{
+namespace Genetic{
 	FitPoints::Point::Point(){}
 	FitPoints::Point::Point(const Point& src){
 		X=src.X;
@@ -56,7 +55,7 @@ namespace Fit{
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point p:(*src))
-			if(condition->CorrectParams(p.X))
+			if(condition->operator()(p.X))
 				res<<p;
 			return res;
 	}
@@ -70,7 +69,7 @@ namespace Fit{
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point p:(*src))
-			if(condition->CorrectParams(p.X))
+			if(condition->operator()(p.X))
 				res<<p;
 			return res;
 	}
@@ -97,28 +96,36 @@ namespace Fit{
 				p.wy=sqrt(p.y);
 			}
 	}
-	OptimalityForPoints::OptimalityForPoints(std::shared_ptr< FitPoints > p, OptimalityForPoints::Coefficient c, OptimalityForPoints::Summand s){
+	
+	OptimalityForPoints::OptimalityForPoints(
+		std::shared_ptr< FitPoints > p, 
+		shared_ptr<IParamFunc> f,
+		OptimalityForPoints::Coefficient c, 
+		OptimalityForPoints::Summand s
+	){
 		points=p;
+		func=f;
 		C=c;
 		S=s;
 	}
 	OptimalityForPoints::~OptimalityForPoints(){}
-	double OptimalityForPoints::operator()(ParamSet& P, IParamFunc& F){
+	double OptimalityForPoints::operator()(ParamSet& P){
 		double res=0;
 		for(FitPoints::Point p:*points)
-			res+=S(p,P,F);
-		return res*C(P,F);
+			res+=S(p,P,*func);
+		return res*C(P,*func);
 	}
-	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points){
+	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[](ParamSet&,IParamFunc&){
 			return 1.0;
 		};
 		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
 			return pow(p.y-F(p.X,P),2);
 		};
-		return make_shared<OptimalityForPoints>(points,c,s);
+		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points){
+	
+	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](ParamSet&,IParamFunc&){
 			double z=0;
 			for(FitPoints::Point p:*points)
@@ -128,9 +135,9 @@ namespace Fit{
 		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
 			return pow(p.y-F(p.X,P),2)*p.wy;
 		};
-		return make_shared<OptimalityForPoints>(points,c,s);
+		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points){
+	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](ParamSet&P,IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -140,9 +147,9 @@ namespace Fit{
 		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
 			return pow((p.y-F(p.X,P))/p.wy,2);
 		};
-		return make_shared<OptimalityForPoints>(points,c,s);
+		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points){
+	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](ParamSet&P,IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -160,6 +167,6 @@ namespace Fit{
 			}
 			return pow((p.y-F(p.X,P)),2)/w;
 		};
-		return make_shared<OptimalityForPoints>(points,c,s);
+		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
 }

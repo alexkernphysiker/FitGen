@@ -2,7 +2,6 @@
 #define ____EuiGhCCk
 #include <exception>
 #include <string>
-#include "fit_gen.h"
 class FitException:public std::exception{
 public:
 	FitException(std::string msg);

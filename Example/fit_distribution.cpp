@@ -1,13 +1,12 @@
 #include <iostream>
 #include <fstream>
-#include <fitpoints.h>
-#include <genetic.h>
+#include <fit.h>
 #include <paramfunc.h>
 #include <filter.h>
 #include <initialconditions.h>
 #include <math_h/randomfunc.h>
 using namespace std;
-using namespace Fit;
+using namespace Genetic;
 int main(int argcnt, char **arg){
 	double left=0;
 	double right=10;
@@ -18,9 +17,8 @@ int main(int argcnt, char **arg){
 	for(int i=0;i<count;i++)
 		distribution->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
 	printf("Prepare fitting...\n");
-	DifferentialMutations<> fit(
-		make_shared<ParameterFunction<>>([](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];}),
-		ChiSquareWithXError(distribution)
+	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,
+		make_shared<ParameterFunction<>>([](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];})
 	);
 	fit.SetFilter(make_shared<Filter<>>([](ParamSet& P){return (P[1]>0)&&(P[2]>0);}));
 	fit.Init(30,make_shared<Initialiser>()

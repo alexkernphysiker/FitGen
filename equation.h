@@ -1,30 +1,17 @@
 #ifndef GIQYSBLPGFAJYVCC
 #define GIQYSBLPGFAJYVCC
-#include "fit_gen.h"
-namespace Fit {
+#include "abstract.h"
+namespace Genetic{
 	using namespace std;
-	namespace details{
-		class NoParamFunc:public IParamFunc{
-		public:
-			NoParamFunc(){}
-			virtual ~NoParamFunc(){}
-			virtual double operator()(ParamSet&,ParamSet&) override{
-				return 0;
-			}
-			virtual bool CorrectParams(ParamSet&) override{
-				return true;
-			}
-		};
-	};
 	template<class eq,class GENETIC>
 	inline shared_ptr<GENETIC> Solve(){
-		return make_shared<GENETIC>(make_shared<details::NoParamFunc>(),make_shared<eq>());
+		return make_shared<GENETIC>(make_shared<eq>());
 	}
 	template<double (func)(ParamSet&)>
 	class Equation:public IOptimalityFunction{
 		public:Equation(){}
 		virtual ~Equation(){}
-		virtual double operator()(ParamSet&P,IParamFunc&)override{
+		virtual double operator()(ParamSet&P)override{
 			double res=func(P);
 			if(res>=0)
 				return res; 
@@ -36,7 +23,7 @@ namespace Fit {
 	class Equation2:public IOptimalityFunction{
 		public:Equation2(){}
 		virtual ~Equation2(){}
-		virtual double operator()(ParamSet&P,IParamFunc&)override{
+		virtual double operator()(ParamSet&P)override{
 			double res=func1(P)-func2(P);
 			if(res>=0)
 				return res; 
@@ -48,7 +35,7 @@ namespace Fit {
 	class SearchMin:public IOptimalityFunction{
 		public:SearchMin(){}
 		virtual ~SearchMin(){}
-		virtual double operator()(ParamSet&P,IParamFunc&)override{
+		virtual double operator()(ParamSet&P)override{
 			return func(P);
 		}
 	};

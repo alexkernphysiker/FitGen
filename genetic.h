@@ -1,17 +1,17 @@
 #ifndef RGCFVQNCAQKWQXFU
 #define RGCFVQNCAQKWQXFU
-#include "fit_gen.h"
+#include "abstract.h"
 #include "fitexception.h"
 #include "math_h/randomfunc.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	template<class FITGEN=AbstractGenetic>
 	class DifferentialMutations: public FITGEN{
 	private:
 		double M;
 	public:
-		DifferentialMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(function,optimality),M(0.5){}
+		DifferentialMutations(shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(optimality),M(0.5){}
 		virtual ~DifferentialMutations(){}
 		double MutationCoefficient(){
 			return M;
@@ -35,8 +35,8 @@ namespace Fit{
 	private:
 		double P;
 	public:
-		Crossing(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(function,optimality),P(0){}
+		Crossing(shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(optimality),P(0){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -64,8 +64,8 @@ namespace Fit{
 		ParamSet M;
 		double P;
 	public:
-		AbsoluteMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(function,optimality),P(0){}
+		AbsoluteMutations(shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(optimality),P(0){}
 		virtual ~AbsoluteMutations(){}
 		ParamSet AbsoluteMutationCoeficients(){
 			return M;
@@ -98,8 +98,8 @@ namespace Fit{
 		ParamSet M;
 		double P;
 	public:
-		RelativeMutations(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(function,optimality),P(0){}
+		RelativeMutations(shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(optimality),P(0){}
 		virtual ~RelativeMutations(){}
 		ParamSet RelativeMutationCoefficients(){
 			return M;
@@ -131,8 +131,8 @@ namespace Fit{
 	private:
 		double P;
 	public:
-		ExactCopying(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(function,optimality),P(0){}
+		ExactCopying(shared_ptr<IOptimalityFunction> optimality)
+			:FITGEN(optimality),P(0){}
 		virtual ~ExactCopying(){}
 		void SetExactCopyingProbability(double value){
 			if((value<0)||(value>1))

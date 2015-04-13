@@ -1,9 +1,9 @@
 #ifndef ____mVYpymgQ
 #define ____mVYpymgQ
 #include <math.h>
-#include "fit_gen.h"
+#include "fit.h"
 #include "math_h/functions.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	template<class FUNC=function<double(ParamSet &,ParamSet &)>>
 	class ParameterFunction:public IParamFunc{
@@ -16,27 +16,6 @@ namespace Fit{
 		virtual ~ParameterFunction(){}
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return func(X,P);
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return true;
-		}
-	};
-	template<class FUNC=function<double(ParamSet &,ParamSet &)>,class CONDITION=function<double(ParamSet &)>>
-	class ParameterFunctionWithCondition:public IParamFunc{
-	private:
-		FUNC func;
-		CONDITION condition;
-	public:
-		ParameterFunctionWithCondition(FUNC f,CONDITION c){
-			func=f;
-			condition=c;
-		}
-		virtual ~ParameterFunctionWithCondition(){}
-		virtual double operator()(ParamSet&X,ParamSet&P) override{
-			return func(X,P);
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return condition(P);
 		}
 	};
 	
@@ -59,9 +38,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&,ParamSet&) override{
 			return double(value);
 		}
-		virtual bool CorrectParams(ParamSet&) override{
-			return true;
-		}
 		enum{ParamCount=0,ArgCount=0};
 	};
 	template<int x_index>
@@ -71,9 +47,6 @@ namespace Fit{
 		virtual ~Arg(){}
 		virtual double operator()(ParamSet&X,ParamSet&) override{
 			return X[x_index];
-		}
-		virtual bool CorrectParams(ParamSet&) override{
-			return true;
 		}
 		enum{ParamCount=0,ArgCount=x_index+1};
 	};
@@ -85,9 +58,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&,ParamSet&P) override{
 			return P[p_index];
 		}
-		virtual bool CorrectParams(ParamSet&) override{
-			return true;
-		}
 		enum{ParamCount=p_index+1,ArgCount=0};
 	};
 	template<int x_index,int p_index,unsigned int power>
@@ -98,9 +68,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return Polynom<power,double,ParamSet,p_index>(X[x_index],P);
 		}
-		virtual bool CorrectParams(ParamSet&) override{
-			return true;
-		}
 		enum{ParamCount=p_index+power+1,ArgCount=x_index+1};
 	};
 	template<double (func)(double), class FUNC>
@@ -110,9 +77,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return func(FUNC::operator()(X,P));
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC::CorrectParams(P);
-		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
 	template<double (func)(double,double), class FUNC1, class FUNC2>
@@ -121,9 +85,6 @@ namespace Fit{
 		virtual ~Func2(){}
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P));
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
@@ -137,9 +98,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P));
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P);
-		}
 		enum{
 			ParamCount=max3<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount>::val,
 			ArgCount=max3<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount>::val
@@ -151,9 +109,6 @@ namespace Fit{
 		virtual ~Func4(){}
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),FUNC4::operator()(X,P));
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P)&&FUNC4::CorrectParams(P);
 		}
 		enum{
 			ParamCount=max4<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount>::val,
@@ -167,9 +122,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),FUNC4::operator()(X,P),FUNC5::operator()(X,P));
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P)&&FUNC4::CorrectParams(P)&&FUNC5::CorrectParams(P);
-		}
 		enum{
 			ParamCount=max5<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount,FUNC5::ParamCount>::val,
 			ArgCount=max5<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount,FUNC4::ArgCount,FUNC5::ArgCount>::val
@@ -181,9 +133,6 @@ namespace Fit{
 		virtual ~Func6(){}
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),FUNC4::operator()(X,P),FUNC5::operator()(X,P),FUNC6::operator()(X,P));
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P)&&FUNC3::CorrectParams(P)&&FUNC4::CorrectParams(P)&&FUNC5::CorrectParams(P)&&FUNC6::CorrectParams(P);
 		}
 		enum{
 			ParamCount=max6<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
@@ -199,9 +148,6 @@ namespace Fit{
 			x.Set(x_index,x[x_index]+P[p_index]);
 			return FUNC::operator()(x,P);
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC::CorrectParams(P);
-		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
 	template<class FUNC,int x_index, int p_index>
@@ -214,9 +160,6 @@ namespace Fit{
 			x.Set(x_index,x[x_index]*P[p_index]);
 			return FUNC::operator()(x,P);
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC::CorrectParams(P);
-		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
 	template<class FUNC>
@@ -226,9 +169,6 @@ namespace Fit{
 		virtual ~Minus(){}
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return -FUNC::operator()(X,P);
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC::CorrectParams(P);
 		}
 		enum{
 			ParamCount=FUNC::ParamCount,
@@ -243,9 +183,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return FUNC1::operator()(X,P)+FUNC2::operator()(X,P);
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
-		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
@@ -258,9 +195,6 @@ namespace Fit{
 		virtual ~Sub(){}
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return FUNC1::operator()(X,P)-FUNC2::operator()(X,P);
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
@@ -275,9 +209,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return FUNC1::operator()(X,P)*FUNC2::operator()(X,P);
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
-		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
@@ -291,9 +222,6 @@ namespace Fit{
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return FUNC1::operator()(X,P)/FUNC2::operator()(X,P);
 		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
-		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
@@ -306,9 +234,6 @@ namespace Fit{
 		virtual ~Power(){}
 		virtual double operator()(ParamSet&X,ParamSet&P) override{
 			return pow(FUNC1::operator()(X,P),FUNC2::operator()(X,P));
-		}
-		virtual bool CorrectParams(ParamSet&P) override{
-			return FUNC1::CorrectParams(P)&&FUNC2::CorrectParams(P);
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,

@@ -4,8 +4,8 @@
 #include <genetic.h>
 #include <initialconditions.h>
 using namespace std;
-using namespace Fit;
-using namespace Fit::wrap_func_indexer;
+using namespace Genetic;
+using namespace Genetic::wrap_func_indexer;
 double Rosenbrock(double x, double y){
 	return pow(1.0-x,2)+100*pow(y-pow(x,2),2);
 }

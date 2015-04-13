@@ -1,10 +1,16 @@
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
 #include <functional>
-#include "fit_gen.h"
+#include "abstract.h"
+#include "genetic.h"
 #include "fitexception.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
+	class IParamFunc{
+	public:
+		virtual ~IParamFunc(){}
+		virtual double operator()(ParamSet&X,ParamSet&P)=0;
+	};
 	class FitPoints{
 	public:
 		struct Point{
@@ -77,21 +83,40 @@ namespace Fit{
 		Distribution1D(double min, double max, int bins);
 		void Fill(double x);
 	};
+	
 	class OptimalityForPoints:public IOptimalityFunction{
 	public:
 		typedef function<double(ParamSet&,IParamFunc&)> Coefficient;
 		typedef function<double(FitPoints::Point&,ParamSet&,IParamFunc&)> Summand;
-		OptimalityForPoints(shared_ptr<FitPoints> p,Coefficient c,Summand s);
+		OptimalityForPoints(shared_ptr<FitPoints> p, shared_ptr<IParamFunc> f,Coefficient c,Summand s);
 		virtual ~OptimalityForPoints();
-		virtual double operator()(ParamSet&P,IParamFunc&F)override;
+		virtual double operator()(ParamSet&P)override;
 	protected:
 		shared_ptr<FitPoints> points;
+		shared_ptr<IParamFunc> func;
 		Coefficient C;
 		Summand S;
 	};
-	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points);
-	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points);
-	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points);
-	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points);
+	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<OptimalityForPoints>);
+	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	
+	template<class GENETIC,shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
+	class Fit:public GENETIC{
+	private:
+		shared_ptr<IParamFunc> m_func;
+	public:
+		Fit(
+			shared_ptr<FitPoints> points, 
+			shared_ptr<IParamFunc> f
+		):GENETIC(OptimalityAlgorithm(points,f)){
+			m_func=f;
+		}
+		virtual ~Fit(){}
+		double operator()(ParamSet X){
+			return m_func->operator()(X,AbstractGenetic::Parameters());
+		}
+	};
 }
 #endif

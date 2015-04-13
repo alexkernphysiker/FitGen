@@ -1,6 +1,6 @@
 #include "paramset.h"
 #include "fitexception.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	typedef lock_guard<mutex> Lock;
 	ParamSet::ParamSet(){}

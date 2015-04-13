@@ -1,15 +1,15 @@
 #include <thread>
-#include "fit_gen.h"
+#include "abstract.h"
 #include "fitexception.h"
 #include "math_h/interpolate.h"
 #include "math_h/sigma.h"
 using namespace std;
-namespace Fit{
+namespace Genetic{
 	class EmptyFilter:public IParamCheck{
 	public:
 		EmptyFilter(){}
 		virtual ~EmptyFilter(){}
-		virtual bool CorrectParams(ParamSet&)override{return true;}
+		virtual bool operator()(ParamSet&)override{return true;}
 	};
 	typedef lock_guard<mutex> Lock;
 	typedef pair<ParamSet,double> Point;
@@ -23,22 +23,16 @@ namespace Fit{
 		}
 	}
 	AbstractGenetic::AbstractGenetic(
-		shared_ptr<IParamFunc> function, 
 		shared_ptr<IOptimalityFunction> optimality
 	){
 		threads=thread::hardware_concurrency();
 		if(threads==0)
 			threads=1;
-		m_function=function;
 		m_optimality=optimality;
 		m_itercount=0;
 		m_filter=make_shared<EmptyFilter>();
 	}
 	AbstractGenetic::~AbstractGenetic(){}
-	shared_ptr<IParamFunc> AbstractGenetic::Function(){
-		Lock lock(m_mutex);
-		return m_function;
-	}
 	shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator(){
 		Lock lock(m_mutex);
 		return m_optimality;
@@ -70,14 +64,10 @@ namespace Fit{
 		auto add_to_population=[this,initial_conditions](int count){
 			for(int i=0;i<count;i++){
 				ParamSet new_param=CreateNew(
-					[initial_conditions](){
-						return initial_conditions->Generate();
-					},
-					[this](ParamSet&p){
-						return m_function->CorrectParams(p) && m_filter->CorrectParams(p);
-					}
+					[initial_conditions](){return initial_conditions->Generate();},
+					[this](ParamSet&p){return m_filter->operator()(p);}
 				);
-				auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
+				auto new_point=make_pair(new_param,m_optimality->operator()(new_param));
 				{Lock lock(m_mutex);
 					InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
 				}
@@ -116,11 +106,9 @@ namespace Fit{
 						mutations(p);
 						return p;
 					},
-					[this](ParamSet&p){
-						return m_function->CorrectParams(p) && m_filter->CorrectParams(p);
-					}
+					[this](ParamSet&p){return m_filter->operator()(p);}
 				);
-				auto new_point=make_pair(new_param,m_optimality->operator()(new_param,*m_function));
+				auto new_point=make_pair(new_param,m_optimality->operator()(new_param));
 				{Lock lock(m_mutex);
 					InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
 					InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
@@ -185,10 +173,6 @@ namespace Fit{
 		Lock lock(m_mutex);
 		return m_population[point_index].first;
 	}
-	double AbstractGenetic::operator ()(ParamSet X){
-		ParamSet P=Parameters();
-		return m_function->operator()(X,P);
-	}
 	double AbstractGenetic::operator [](int i){
 		if((i<0)|(i>=ParamCount()))
 			throw new FitException("Parameter index out of range");
@@ -249,8 +233,8 @@ namespace Fit{
 		ParamSet be=ab;
 		ab.Set(i,ab[i]+delta);
 		be.Set(i,be[i]-delta);
-		double sa=m_optimality->operator()(ab,*m_function);
-		double sb=m_optimality->operator()(be,*m_function);
+		double sa=m_optimality->operator()(ab);
+		double sb=m_optimality->operator()(be);
 		double da=(sa-s)/delta;
 		double db=(s-sb)/delta;
 		double dd=(da-db)/delta;

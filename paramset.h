@@ -2,7 +2,7 @@
 #define PUWJZCZDMORMZODA
 #include <vector>
 #include <mutex>
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	class ParamSet{
 	public:

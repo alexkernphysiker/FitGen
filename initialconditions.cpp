@@ -1,7 +1,7 @@
 #include "initialconditions.h"
 #include "math_h/randomfunc.h"
 #include "fitexception.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	Initialiser::Initialiser(){}
 	Initialiser::~Initialiser(){}

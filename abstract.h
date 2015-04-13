@@ -6,7 +6,7 @@
 #include <utility>
 #include <math.h>
 #include "paramset.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	class IInitialConditions{
 	public:
@@ -16,25 +16,19 @@ namespace Fit{
 	class IParamCheck{
 	public:
 		virtual ~IParamCheck(){}
-		virtual bool CorrectParams(ParamSet&P)=0;
-	};
-	class IParamFunc:public IParamCheck{
-	public:
-		virtual ~IParamFunc(){}
-		virtual double operator()(ParamSet&X,ParamSet&P)=0;
+		virtual bool operator()(ParamSet&P)=0;
 	};
 	class IOptimalityFunction{
 	public:
 		virtual ~IOptimalityFunction(){}
-		virtual double operator()(ParamSet&P,IParamFunc&F)=0;
+		virtual double operator()(ParamSet&P)=0;
 	};
 	class AbstractGenetic{
 	protected:
-		AbstractGenetic(shared_ptr<IParamFunc> function,shared_ptr<IOptimalityFunction> optimality);
+		AbstractGenetic(shared_ptr<IOptimalityFunction> optimality);
 	public:
 		virtual ~AbstractGenetic();
 		
-		shared_ptr<IParamFunc> Function();
 		shared_ptr<IOptimalityFunction> OptimalityCalculator();
 		void SetFilter(shared_ptr<IParamCheck> filter);
 		void RemoveFilter();
@@ -53,7 +47,6 @@ namespace Fit{
 		double Optimality(int point_index=0);
 		ParamSet& Parameters(int point_index=0);
 		double operator[](int i);
-		double operator()(ParamSet X);
 		ParamSet ParamAverage();
 		ParamSet ParamDispersion();
 		ParamSet ParamMaxDeviation();
@@ -74,7 +67,6 @@ namespace Fit{
 	protected:
 		mutex m_mutex;
 	private:
-		shared_ptr<IParamFunc> m_function;
 		shared_ptr<IOptimalityFunction> m_optimality;
 		shared_ptr<IParamCheck> m_filter;
 		vector<pair<ParamSet,double>> m_population;

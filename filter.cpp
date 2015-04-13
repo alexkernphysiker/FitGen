@@ -1,10 +1,10 @@
 #include "filter.h"
 #include "fitexception.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	Above::Above(){}
 	Above::Above(ParamSet v):m_data(v){}
-	bool Above::CorrectParams(ParamSet&P){
+	bool Above::operator()(ParamSet&P){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
@@ -21,7 +21,7 @@ namespace Fit{
 	
 	Below::Below(){}
 	Below::Below(ParamSet v):m_data(v){}
-	bool Below::CorrectParams(ParamSet&P){
+	bool Below::operator()(ParamSet&P){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
@@ -50,15 +50,15 @@ namespace Fit{
 		return *this;
 	}
 	AbstractFilterMulti::~AbstractFilterMulti(){}
-	bool And::CorrectParams(ParamSet&P){
+	bool And::operator()(ParamSet&P){
 		for(auto f: m_data)
-			if(!f->CorrectParams(P))
+			if(!f->operator()(P))
 				return false;
 		return true;
 	}
-	bool Or::CorrectParams(ParamSet&P){
+	bool Or::operator()(ParamSet&P){
 		for(auto f: m_data)
-			if(f->CorrectParams(P))
+			if(f->operator()(P))
 				return true;
 		return false;
 	}

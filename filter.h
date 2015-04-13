@@ -1,8 +1,8 @@
 #ifndef CNTMUXAHBUIYZXIG
 #define CNTMUXAHBUIYZXIG
-#include "fit_gen.h"
+#include "abstract.h"
 #include "paramfunc.h"
-namespace Fit{
+namespace Genetic{
 	using namespace std;
 	template<class CONDITION=function<bool(ParamSet&)>>
 	class Filter:public IParamCheck{
@@ -13,7 +13,7 @@ namespace Fit{
 			condition=c;
 		}
 		virtual ~Filter(){}
-		virtual bool CorrectParams(ParamSet&P)override{
+		virtual bool operator()(ParamSet&P)override{
 			return condition(P);
 		}
 	};
@@ -23,7 +23,7 @@ namespace Fit{
 		Above();
 		Above(ParamSet v);
 		virtual ~Above(){}
-		virtual bool CorrectParams(ParamSet&P)override;
+		virtual bool operator()(ParamSet&P)override;
 		Above &operator<<(double value);
 	private:
 		ParamSet m_data;
@@ -33,7 +33,7 @@ namespace Fit{
 		Below();
 		Below(ParamSet v);
 		virtual ~Below(){}
-		virtual bool CorrectParams(ParamSet&P)override;
+		virtual bool operator()(ParamSet&P)override;
 		Below &operator<<(double value);
 	private:
 		ParamSet m_data;
@@ -57,13 +57,13 @@ namespace Fit{
 	public:
 		And(){}
 		virtual ~And(){}
-		virtual bool CorrectParams(ParamSet&P)override;
+		virtual bool operator()(ParamSet&P)override;
 	};
 	class Or:public AbstractFilterMulti{
 	public:
 		Or(){}
 		virtual ~Or(){}
-		virtual bool CorrectParams(ParamSet&P)override;
+		virtual bool operator()(ParamSet&P)override;
 	};
 	template<class Filter>
 	inline shared_ptr<Filter> operator<<(shared_ptr<Filter> filter, std::shared_ptr<IParamCheck> value){
@@ -87,7 +87,7 @@ namespace Fit{
 	public:
 		filterCondition(){}
 		virtual ~filterCondition(){}
-		virtual bool CorrectParams(ParamSet params)override{
+		virtual bool operator()(ParamSet params)override{
 			return TakeCondition(func1(params),c,func2(params));
 		}
 	};
@@ -108,7 +108,7 @@ namespace Fit{
 			c=cond;
 		}
 		virtual ~FilterCondition(){}
-		virtual bool CorrectParams(ParamSet&P)override{
+		virtual bool operator()(ParamSet&P)override{
 			return TakeCondition(func1(P),c,func2(P));
 		}
 	};
