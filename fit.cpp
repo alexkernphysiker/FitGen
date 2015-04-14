@@ -197,7 +197,7 @@ namespace Genetic{
 			res+=S(p,P,*func,*error);
 		return res*C(P,*func,*error);
 	}
-	shared_ptr<IOptimalityFunction> ChiSquare2(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](ParamSet&P,IParamFunc&,IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -209,7 +209,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
 	}
-	shared_ptr<IOptimalityFunction> ChiSquareWithXError2(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](ParamSet&P,IParamFunc&,IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
