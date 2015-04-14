@@ -64,4 +64,3 @@ fit.h - classes needed for fitting algorithms.
 paramfunc.h - template classes providing parametric functions for fitting algorithm. 
 Mechanism of inheriting template classes allows to construct complicated ones. 
 Parameter number is obtained automatically.
-There are also template classes that can accept std::function or other function-like objects.
