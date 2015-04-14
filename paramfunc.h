@@ -5,20 +5,6 @@
 #include "math_h/functions.h"
 namespace Genetic{
 	using namespace std;
-	template<class FUNC=function<double(ParamSet &,ParamSet &)>>
-	class ParameterFunction:public IParamFunc{
-	private:
-		FUNC func;
-	public:
-		ParameterFunction(FUNC f){
-			func=f;
-		}
-		virtual ~ParameterFunction(){}
-		virtual double operator()(ParamSet&X,ParamSet&P) override{
-			return func(X,P);
-		}
-	};
-	
 	template<int a,int b>
 	struct max2{enum{val=(a>b)?a:b};};
 	template<int a,int b,int c>
@@ -29,7 +15,6 @@ namespace Genetic{
 	struct max5{enum{val=(max4<a,b,c,d>::val>e)?max4<a,b,c,d>::val:e};};
 	template<int a,int b,int c,int d,int e,int f>
 	struct max6{enum{val=(max5<a,b,c,d,e>::val>f)?max5<a,b,c,d,e>::val:f};};
-	
 	template<int value>
 	class Const:public virtual IParamFunc{
 	public:

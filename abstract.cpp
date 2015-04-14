@@ -5,12 +5,21 @@
 #include "math_h/sigma.h"
 using namespace std;
 namespace Genetic{
-	class EmptyFilter:public IParamCheck{
-	public:
-		EmptyFilter(){}
-		virtual ~EmptyFilter(){}
-		virtual bool operator()(ParamSet&)override{return true;}
-	};
+	Filter::Filter(function<bool(ParamSet&)> c){
+		condition=c;
+	}
+	Filter::~Filter(){}
+	bool Filter::operator()(ParamSet& P){
+		return condition(P);
+	}
+	OptimalityFunction::OptimalityFunction(function<double(ParamSet&)> f){
+		func=f;
+	}
+	OptimalityFunction::~OptimalityFunction(){}
+	double OptimalityFunction::operator()(ParamSet& P){
+		return func(P);
+	}
+	
 	typedef lock_guard<mutex> Lock;
 	typedef pair<ParamSet,double> Point;
 	bool operator>(Point a,Point b){return a.second>b.second;}
@@ -30,7 +39,7 @@ namespace Genetic{
 			threads=1;
 		m_optimality=optimality;
 		m_itercount=0;
-		m_filter=make_shared<EmptyFilter>();
+		m_filter=make_shared<Filter>([](ParamSet&){return true;});
 	}
 	AbstractGenetic::~AbstractGenetic(){}
 	shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator(){
@@ -41,9 +50,13 @@ namespace Genetic{
 		Lock lock(m_mutex);
 		m_filter=filter;
 	}
+	void AbstractGenetic::SetFilter(function<bool(ParamSet&)> f){
+		Lock lock(m_mutex);
+		m_filter=make_shared<Filter>(f);
+	}
 	void AbstractGenetic::RemoveFilter(){
 		Lock lock(m_mutex);
-		m_filter=make_shared<EmptyFilter>();
+		m_filter=make_shared<Filter>([](ParamSet&){return true;});
 	}
 	
 	void AbstractGenetic::SetThreadCount(unsigned int threads_count){

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <fit.h>
-#include <paramfunc.h>
 #include <filter.h>
 #include <initialconditions.h>
 #include <math_h/randomfunc.h>
@@ -17,10 +16,8 @@ int main(int argcnt, char **arg){
 	for(int i=0;i<count;i++)
 		distribution->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
 	printf("Prepare fitting...\n");
-	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,
-		make_shared<ParameterFunction<>>([](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];})
-	);
-	fit.SetFilter(make_shared<Filter<>>([](ParamSet& P){return (P[1]>0)&&(P[2]>0);}));
+	Fit<DifferentialMutations<>> fit(distribution,[](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];},ChiSquareWithXError);
+	fit.SetFilter([](ParamSet& P){return (P[1]>0)&&(P[2]>0);});
 	fit.Init(30,make_shared<Initialiser>()
 		<<[left,right](){return RandomUniformlyR(left,right);}
 		<<[left,right](){return RandomUniformlyR(0.0,right-left);}

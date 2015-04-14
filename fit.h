@@ -11,6 +11,15 @@ namespace Genetic{
 		virtual ~IParamFunc(){}
 		virtual double operator()(ParamSet&X,ParamSet&P)=0;
 	};
+	class ParameterFunction:public IParamFunc{
+	public:
+		ParameterFunction(function<double(ParamSet &,ParamSet &)> f);
+		virtual ~ParameterFunction();
+		virtual double operator()(ParamSet&X,ParamSet&P) override;
+	private:
+		function<double(ParamSet &,ParamSet &)> func;
+	};
+	
 	class FitPoints{
 	public:
 		struct Point{
@@ -101,17 +110,23 @@ namespace Genetic{
 	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
+	template<class GENETIC>
 	class Fit:public GENETIC{
 	private:
 		shared_ptr<IParamFunc> m_func;
 	public:
 		Fit(
 			shared_ptr<FitPoints> points, 
-			shared_ptr<IParamFunc> f
+			shared_ptr<IParamFunc> f,
+			function<shared_ptr<IOptimalityFunction>(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)> OptimalityAlgorithm
 		):GENETIC(OptimalityAlgorithm(points,f)){
 			m_func=f;
 		}
+		Fit(
+			shared_ptr<FitPoints> points,
+			function<double(ParamSet &,ParamSet &)> f,
+			function<shared_ptr<IOptimalityFunction>(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)> OptimalityAlgorithm
+		):Fit(points,make_shared<ParameterFunction>(f),OptimalityAlgorithm){}
 		virtual ~Fit(){}
 		double operator()(ParamSet X){
 			return m_func->operator()(X,AbstractGenetic::Parameters());
@@ -134,7 +149,7 @@ namespace Genetic{
 	};
 	shared_ptr<IOptimalityFunction> ChiSquare2(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
 	shared_ptr<IOptimalityFunction> ChiSquareWithXError2(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
-	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
+	template<class GENETIC>
 	class Fit2:public GENETIC{
 	private:
 		shared_ptr<IParamFunc> m_func;
@@ -142,10 +157,17 @@ namespace Genetic{
 		Fit2(
 			shared_ptr<FitPoints> points, 
 			shared_ptr<IParamFunc> f,
-			shared_ptr<IParamFunc> e
-		):GENETIC(OptimalityAlgorithm(points,f,e)){
+			shared_ptr<IParamFunc> e,
+			function<shared_ptr<IOptimalityFunction>(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)> OptiimalityAlgorithm
+		):GENETIC(OptiimalityAlgorithm(points,f,e)){
 			m_func=f;
 		}
+		Fit2(
+			shared_ptr<FitPoints> points,
+			function<double(ParamSet &,ParamSet &)> f,
+			function<double(ParamSet &,ParamSet &)> e,
+			function<shared_ptr<IOptimalityFunction>(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)> OptimalityAlgorithm
+		):Fit2(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e),OptimalityAlgorithm){}
 		virtual ~Fit2(){}
 		double operator()(ParamSet X){
 			return m_func->operator()(X,AbstractGenetic::Parameters());

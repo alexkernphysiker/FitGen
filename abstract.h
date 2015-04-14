@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <functional>
 #include <math.h>
 #include "paramset.h"
 namespace Genetic{
@@ -18,11 +19,28 @@ namespace Genetic{
 		virtual ~IParamCheck(){}
 		virtual bool operator()(ParamSet&P)=0;
 	};
+	class Filter:public IParamCheck{
+	public:
+		Filter(function<bool(ParamSet&)> c);
+		virtual ~Filter();
+		virtual bool operator()(ParamSet&P)override;
+	private:
+		function<bool(ParamSet&)> condition;
+	};
 	class IOptimalityFunction{
 	public:
 		virtual ~IOptimalityFunction(){}
 		virtual double operator()(ParamSet&P)=0;
 	};
+	class OptimalityFunction:public IOptimalityFunction{
+	public:
+		OptimalityFunction(function<double(ParamSet&)> f);
+		virtual ~OptimalityFunction();
+		virtual double operator()(ParamSet& P)override;
+	private:
+		function<double(ParamSet&)> func;
+	};
+	
 	class AbstractGenetic{
 	protected:
 		AbstractGenetic(shared_ptr<IOptimalityFunction> optimality);
@@ -31,6 +49,7 @@ namespace Genetic{
 		
 		shared_ptr<IOptimalityFunction> OptimalityCalculator();
 		void SetFilter(shared_ptr<IParamCheck> filter);
+		void SetFilter(function<bool(ParamSet&)>);
 		void RemoveFilter();
 		
 		void SetThreadCount(unsigned int threads_count);
@@ -84,7 +103,7 @@ namespace Genetic{
 	#define use_num_type double
 	#define use_indexer_type ParamSet&
 	#include "math_h/wrap_func_indexer.h"
-	#undef use_num_type
 	#undef use_indexer_type
+	#undef use_num_type
 }
 #endif

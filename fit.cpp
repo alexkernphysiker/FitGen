@@ -3,6 +3,14 @@
 #include "fitexception.h"
 using namespace std;
 namespace Genetic{
+	ParameterFunction::ParameterFunction(function<double(ParamSet &,ParamSet &)> f){
+		func=f;
+	}
+	ParameterFunction::~ParameterFunction(){}
+	double ParameterFunction::operator()(ParamSet& X, ParamSet& P){
+		return func(X,P);
+	}
+	
 	FitPoints::Point::Point(){}
 	FitPoints::Point::Point(const Point& src){
 		X=src.X;

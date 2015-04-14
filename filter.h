@@ -4,20 +4,6 @@
 #include "paramfunc.h"
 namespace Genetic{
 	using namespace std;
-	template<class CONDITION=function<bool(ParamSet&)>>
-	class Filter:public IParamCheck{
-	private:
-		CONDITION condition;
-	public:
-		Filter(CONDITION c){
-			condition=c;
-		}
-		virtual ~Filter(){}
-		virtual bool operator()(ParamSet&P)override{
-			return condition(P);
-		}
-	};
-	
 	class Above:public IParamCheck{
 	public:
 		Above();

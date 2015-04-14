@@ -24,7 +24,7 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY(0,19,X,dX,Y,dY);
-	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(points_to_fit,make_shared<TotalFunc>());
+	Fit<DifferentialMutations<>> fit(points_to_fit,make_shared<TotalFunc>(),ChiSquareWithXError);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<(make_shared<Below>()<<INFINITY<<15)
