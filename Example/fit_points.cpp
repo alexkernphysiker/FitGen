@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <paramfunc.h>
 #include <fit.h>
+#include <paramfunc.h>
 #include <filter.h>
 #include <initialconditions.h>
 const int background_polynom_power=6;
@@ -22,11 +22,11 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 
 int main(int argcnt, char **arg){
 	auto points_to_fit=FitPointsXdXYdY(0,19,X,dX,Y,dY);
-	Fit<DifferentialMutations<>> fit(points_to_fit,make_shared<TotalFunc>(),ChiSquareWithXError);
+	FitFunction<DifferentialMutations<>,TotalFunc> fit(points_to_fit,ChiSquareWithXError);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<(make_shared<Below>()<<INFINITY<<15)
-		<<[](ParamSet&P){Foreground f;ParamSet X;X<<P[2];return f(X,P)<P[1]*2.0;}
+		<<[](ParamSet&P){Foreground F;ParamSet X;return F(X<<P[2],P)<P[1]*3.0;}
 	);
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(10,10)<<make_pair(20,20)<<make_pair(-20,0)

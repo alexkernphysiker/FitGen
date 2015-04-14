@@ -1,9 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <fit.h>
-#include <filter.h>
 #include <initialconditions.h>
-#include <math_h/randomfunc.h>
+#include <math_h/functions.h>
 using namespace std;
 using namespace Genetic;
 int main(int argcnt, char **arg){

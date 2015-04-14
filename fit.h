@@ -132,6 +132,15 @@ namespace Genetic{
 			return m_func->operator()(X,AbstractGenetic::Parameters());
 		}
 	};
+	template<class GENETIC,class FUNC>
+	class FitFunction:public Fit<GENETIC>{
+	public:
+		FitFunction(
+			shared_ptr<FitPoints> points, 
+			function<shared_ptr<IOptimalityFunction>(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)> OptimalityAlgorithm
+		):Fit<GENETIC>(points,make_shared<FUNC>(),OptimalityAlgorithm){}
+		virtual ~FitFunction(){}
+	};
 	
 	class OptimalityForPointsWithFuncError:public IOptimalityFunction{
 	public:
