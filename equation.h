@@ -8,13 +8,9 @@ namespace Genetic{
 	class Equation:public GENETIC{
 	public:
 		Equation(function<double(ParamSet&)> f)
-		:GENETIC(make_shared<OptimalityFunction>([f](ParamSet&P){
-			double res=f(P);
-			if(res>=0)
-				return res;
-			else
-				return -res;
-		})){}
+			:GENETIC(make_shared<OptimalityFunction>([f](ParamSet&P){return pow(f(P),2);})){}
+		Equation(function<double(ParamSet&)> left,function<double(ParamSet&)> right)
+			:GENETIC(make_shared<OptimalityFunction>([left,right](ParamSet&P){return pow(left(P)-right(P),2);})){}
 	};
 	template<class GENETIC>
 	class SearchMin:public GENETIC{
