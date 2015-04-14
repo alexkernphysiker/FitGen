@@ -65,5 +65,10 @@ namespace Genetic{
 		vector<double> m_mean;
 		vector<double> m_sig;
 	};
+	template<class AdderOfPairs,class F, class S>
+	inline shared_ptr<AdderOfPairs> operator<<(shared_ptr<AdderOfPairs> adder, pair<F,S> value){
+		adder->Add(value.first,value.second);
+		return adder;
+	}
 }
 #endif
