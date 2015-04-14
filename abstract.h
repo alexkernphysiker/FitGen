@@ -100,10 +100,5 @@ namespace Genetic{
 		adder->Add(value.first,value.second);
 		return adder;
 	}
-	#define use_num_type double
-	#define use_indexer_type ParamSet&
-	#include "math_h/wrap_func_indexer.h"
-	#undef use_indexer_type
-	#undef use_num_type
 }
 #endif

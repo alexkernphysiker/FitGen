@@ -49,6 +49,18 @@ namespace Genetic{
 		m_data.push_back(val);
 		return *this;
 	}
+	AbstractFilterMulti& AbstractFilterMulti::Add(function<bool(ParamSet&)> condition){
+		m_data.push_back(make_shared<Filter>(condition));
+		return *this;
+	}
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter, shared_ptr<IParamCheck> value){
+		filter->Add(value);
+		return filter;
+	}
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,function<bool(ParamSet&)> condition){
+		filter->Add(condition);
+		return filter;
+	}
 	AbstractFilterMulti::~AbstractFilterMulti(){}
 	bool And::operator()(ParamSet&P){
 		for(auto f: m_data)
