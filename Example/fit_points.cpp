@@ -7,7 +7,7 @@
 const int background_polynom_power=6;
 using namespace std;
 using namespace Genetic;
-typedef Func4<BreitWigner,Arg<0>,Par<0>,Par<1>,Par<2>> Foreground;
+typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
 typedef PolynomFunc<0,3,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
 
@@ -25,8 +25,8 @@ int main(int argcnt, char **arg){
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
-		<<(make_shared<Below>()<<INFINITY<<15)
-		<<[](ParamSet&P){Foreground F;ParamSet X;return F(X<<P[2],P)<P[1]*3.0;}
+		<<(make_shared<Below>()<<INFINITY<<5)
+		<<[](ParamSet&P){Foreground F;ParamSet X;return F(X<<P[2],P)<P[1]*5.0;}
 	);
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(10,10)<<make_pair(20,20)<<make_pair(-20,0)
