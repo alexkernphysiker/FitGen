@@ -25,7 +25,7 @@ int main(int argcnt, char **arg){
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
 	printf("Fitting...\n");
-	while(!fit.AbsoluteOptimalityExitCondition(0.0000001)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.00000001)){
 		fit.Iterate();
 		printf("%i iterations;   %f<=chi^2<=%f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
