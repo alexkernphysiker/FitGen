@@ -1,4 +1,5 @@
 #include <thread>
+#include <math.h>
 #include "abstract.h"
 #include "fitexception.h"
 #include "math_h/interpolate.h"
@@ -76,11 +77,16 @@ namespace Genetic{
 			throw new FitException("Fitting algorithm got incorrect parameters");
 		auto add_to_population=[this,initial_conditions](int count){
 			for(int i=0;i<count;i++){
+				double s=INFINITY;
 				ParamSet new_param=CreateNew(
 					[initial_conditions](){return initial_conditions->Generate();},
-					[this](ParamSet&p){return m_filter->operator()(p);}
+					[this,&s](ParamSet&p){
+						if(!(m_filter->operator()(p)))return false;
+						s=m_optimality->operator()(p);
+						return isfinite(s)!=0;
+					}
 				);
-				auto new_point=make_pair(new_param,m_optimality->operator()(new_param));
+				auto new_point=make_pair(new_param,s);
 				{Lock lock(m_mutex);
 					InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
 				}
@@ -113,15 +119,20 @@ namespace Genetic{
 				{Lock lock(m_mutex);
 					point=m_population[i];
 				}
+				double s=INFINITY;
 				ParamSet new_param=CreateNew(
 					[this,&point](){
 						ParamSet p=point.first;
 						mutations(p);
 						return p;
 					},
-					[this](ParamSet&p){return m_filter->operator()(p);}
+					[this,&s](ParamSet&p){
+						if(!(m_filter->operator()(p)))return false;
+						s=m_optimality->operator()(p);
+						return isfinite(s)!=0;
+					}
 				);
-				auto new_point=make_pair(new_param,m_optimality->operator()(new_param));
+				auto new_point=make_pair(new_param,s);
 				{Lock lock(m_mutex);
 					InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
 					InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
