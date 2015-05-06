@@ -2,6 +2,7 @@
 #include <paramset.h>
 #include <genetic_exception.h>
 using namespace Genetic;
+using namespace std;
 TEST(ParamSet, Constructor0){
 	ParamSet p;
 	EXPECT_EQ(0,p.Count());
