@@ -72,3 +72,36 @@ TEST(InitialDistributions,Add){
 	}
 }
 
+TEST(GenerateUniform,Create){
+	GenerateUniform I;
+	EXPECT_EQ(0,I.Count());
+}
+TEST(GenerateUniform,Add){
+	for(int count=1;count<n;count++){
+		GenerateUniform I;
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(&I,&(I.Add(i,2*n-i)));
+		EXPECT_EQ(count,I.Count());
+		for(int i=0;i<count;i++){
+			EXPECT_EQ(i,I.Min(i));
+			EXPECT_EQ(2*n-i,I.Max(i));
+		}
+		EXPECT_THROW(I.Min(count),GeneticException);
+		EXPECT_THROW(I.Max(count),GeneticException);
+		EXPECT_THROW(I.Min(-1),GeneticException);
+		EXPECT_THROW(I.Max(-1),GeneticException);
+	}
+}
+TEST(GenerateUniform,Generate){
+	for(int count=1;count<n;count++){
+		GenerateUniform I;
+		for(int i=0;i<count;i++)
+			I.Add(i,2*n-i);
+		for(int i=0;i<100;i++){
+			ParamSet P=I.Generate();
+			EXPECT_EQ(count,P.Count());
+			for(int c=0;c<count;c++)
+				ASSERT_TRUE((P[c]>=double(c))&&(P[c]<=double(2*n-c)));
+		}
+	}
+}
