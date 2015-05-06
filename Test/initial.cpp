@@ -105,3 +105,24 @@ TEST(GenerateUniform,Generate){
 		}
 	}
 }
+
+TEST(GenerateByGauss,Create){
+	GenerateByGauss I;
+	EXPECT_EQ(0,I.Count());
+}
+TEST(GenerateByGauss,Add){
+	for(int count=1;count<n;count++){
+		GenerateByGauss I;
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(&I,&(I.Add(i,2*n-i)));
+		EXPECT_EQ(count,I.Count());
+		for(int i=0;i<count;i++){
+			EXPECT_EQ(i,I.Mean(i));
+			EXPECT_EQ(2*n-i,I.Sigma(i));
+		}
+		EXPECT_THROW(I.Mean(count),GeneticException);
+		EXPECT_THROW(I.Sigma(count),GeneticException);
+		EXPECT_THROW(I.Mean(-1),GeneticException);
+		EXPECT_THROW(I.Sigma(-1),GeneticException);
+	}
+}
