@@ -52,3 +52,25 @@ TEST(Below,BasicTest){
 		}
 	}
 }
+const int n=5;
+shared_ptr<Filter> filters[]={
+	make_shared<Filter>([](ParamSet&){return true;}),
+	make_shared<Filter>([](ParamSet&){return true;}),
+	make_shared<Filter>([](ParamSet&){return true;}),
+	make_shared<Filter>([](ParamSet&){return true;}),
+	make_shared<Filter>([](ParamSet&){return true;})
+};
+template<class FilterMulti>void test_multi(){
+	for(int count=0;count<n;count++){
+		FilterMulti I;
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(&I,&(I.Add(filters[i])));
+		EXPECT_EQ(count,I.Count());
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(filters[i].get(),&I.Get(i));
+		ASSERT_ANY_THROW(I.Get(count));
+		ASSERT_ANY_THROW(I.Get(-1));
+	}
+}
+TEST(And,Add){test_multi<And>();}
+TEST(Or,Add){test_multi<Or>();}
