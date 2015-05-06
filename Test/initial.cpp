@@ -25,8 +25,8 @@ TEST(Initialiser,Add){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Funcs[i](),I[i]());
-		//EXPECT_ANY_THROW(I[count]());
-		//EXPECT_ANY_THROW(I[-1]());
+		ASSERT_ANY_THROW(I[count]());
+		ASSERT_ANY_THROW(I[-1]());
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<Initialiser>();
@@ -59,8 +59,8 @@ TEST(InitialDistributions,Add){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Distrs[i].get(),&I[i]);
-		//EXPECT_ANY_THROW(I[count]());
-		//EXPECT_ANY_THROW(I[-1]());
+		ASSERT_ANY_THROW(I[count]());
+		ASSERT_ANY_THROW(I[-1]());
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<InitialDistributions>();
@@ -86,10 +86,14 @@ TEST(GenerateUniform,Add){
 			EXPECT_EQ(i,I.Min(i));
 			EXPECT_EQ(2*n-i,I.Max(i));
 		}
-		EXPECT_THROW(I.Min(count),GeneticException);
-		EXPECT_THROW(I.Max(count),GeneticException);
-		EXPECT_THROW(I.Min(-1),GeneticException);
-		EXPECT_THROW(I.Max(-1),GeneticException);
+		ASSERT_ANY_THROW(I.Min(count));
+		ASSERT_ANY_THROW(I.Max(count));
+		ASSERT_ANY_THROW(I.Min(-1));
+		ASSERT_ANY_THROW(I.Max(-1));
+	}
+	{
+		GenerateUniform I;
+		ASSERT_ANY_THROW(I.Add(2,1));
 	}
 }
 TEST(GenerateUniform,Generate){
@@ -120,9 +124,9 @@ TEST(GenerateByGauss,Add){
 			EXPECT_EQ(i,I.Mean(i));
 			EXPECT_EQ(2*n-i,I.Sigma(i));
 		}
-		EXPECT_THROW(I.Mean(count),GeneticException);
-		EXPECT_THROW(I.Sigma(count),GeneticException);
-		EXPECT_THROW(I.Mean(-1),GeneticException);
-		EXPECT_THROW(I.Sigma(-1),GeneticException);
+		ASSERT_ANY_THROW(I.Mean(count));
+		ASSERT_ANY_THROW(I.Sigma(count));
+		ASSERT_ANY_THROW(I.Mean(-1));
+		ASSERT_ANY_THROW(I.Sigma(-1));
 	}
 }
