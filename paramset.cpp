@@ -40,17 +40,19 @@ namespace Genetic{
 	}
 	double ParamSet::operator[](int i){
 		Lock lock(m_mutex);
-		if((i>=0)&(i<m_values.size()))
-			return m_values[i];
-		else
-			return 0;
+		if(i<0)
+			throw new GeneticException("ParamSet: negative index for get operation");
+		if(i>=m_values.size())
+			throw new GeneticException("ParamSet: index out of range for get operation");
+		return m_values[i];
 	}
 	void ParamSet::Set(int i, double v){
 		Lock lock(m_mutex);
-		if((i>=0)&&(i<m_values.size()))
-			m_values[i]=v;
-		else
-			throw new GeneticException("ParamSet: setting value out of range");
+		if(i<0)
+			throw new GeneticException("ParamSet: negative index for set operation");
+		if(i>=m_values.size())
+			throw new GeneticException("ParamSet: index out of range for set operation");
+		m_values[i]=v;
 	}
 	ParamSet &ParamSet::operator <<(double val){
 		Lock lock(m_mutex);
@@ -77,7 +79,7 @@ namespace Genetic{
 	}
 	ParamSet parEq(unsigned int cnt,double val){
 		ParamSet res;
-		for(int i=0;i<cnt;i++)
+		for(unsigned int i=0;i<cnt;i++)
 			res<<val;
 		return res;
 	}

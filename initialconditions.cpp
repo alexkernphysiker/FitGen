@@ -10,6 +10,10 @@ namespace Genetic{
 		return *this;
 	}
 	generator Initialiser::operator[](int i){
+		if(i<0)
+			throw new GeneticException("Initialiser: negative index");
+		if(i>=generators.size())
+			throw new GeneticException("Initialiser: index out of range");
 		return generators[i];
 	}
 	int Initialiser::Count(){
@@ -48,6 +52,10 @@ namespace Genetic{
 		return ParamDistr.size();
 	}
 	Distrib &InitialDistributions::operator[](int i){
+		if(i<0)
+			throw new GeneticException("InitialDistributions: negative index");
+		if(i>=ParamDistr.size())
+			throw new GeneticException("InitialDistributions: index out of range");
 		return *ParamDistr[i];
 	}
 	ParamSet InitialDistributions::Generate(){
@@ -73,21 +81,25 @@ namespace Genetic{
 		return r;
 	}
 	GenerateUniform &GenerateUniform::Add(double min, double max){
+		if(min>max)
+			throw new GeneticException("ParamRangeUniform: Max<Min");
 		m_min.push_back(min);
 		m_max.push_back(max);
 		return *this;
 	}
 	double GenerateUniform::Min(int i){
-		if((i>=0)&(i<m_min.size()))
-			return m_min[i];
-		else
-			throw new GeneticException("ParamRangeUniform: attempt to get property by index out of range");
+		if(i<0)
+			throw new GeneticException("ParamRangeUniform: negative index");
+		if(i>=m_min.size())
+			throw new GeneticException("ParamRangeUniform: index out of range");
+		return m_min[i];
 	}
 	double GenerateUniform::Max(int i){
-		if((i>=0)&(i<m_max.size()))
-			return m_max[i];
-		else
-			throw new GeneticException("ParamRangeUniform: attempt to get property by index out of range");
+		if(i<0)
+			throw new GeneticException("ParamRangeUniform: negative index");
+		if(i>=m_max.size())
+			throw new GeneticException("ParamRangeUniform: index out of range");
+		return m_max[i];
 	}
 	ParamSet GenerateUniform::Generate(){
 		ParamSet res;
@@ -110,16 +122,18 @@ namespace Genetic{
 		return *this;
 	}
 	double GenerateByGauss::Mean(int i){
-		if((i>=0)&(i<m_mean.size()))
-			return m_mean[i];
-		else
-			throw new GeneticException("ParamGauss: attempt to get property by index out of range");
+		if(i<0)
+			throw new GeneticException("ParamGauss: negative index");
+		if(i>=m_mean.size())
+			throw new GeneticException("ParamGauss: index out of range");
+		return m_mean[i];
 	}
 	double GenerateByGauss::Sigma(int i){
-		if((i>=0)&(i<m_sig.size()))
-			return m_sig[i];
-		else
-			throw new GeneticException("ParamGauss: attempt to get property by index out of range");
+		if(i<0)
+			throw new GeneticException("ParamGauss: negative index");
+		if(i>=m_sig.size())
+			throw new GeneticException("ParamGauss: index out of range");
+		return m_sig[i];
 	}
 	ParamSet GenerateByGauss::Generate(){
 		ParamSet res;
