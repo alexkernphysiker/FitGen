@@ -20,7 +20,8 @@ TEST(Initialiser,Create){
 TEST(Initialiser,Add){
 	for(int count=1;count<n;count++){
 		Initialiser I;
-		for(int i=0;i<count;i++)I<<Funcs[i];
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(&I,&(I<<Funcs[i]));
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Funcs[i](),I[i]());
@@ -29,7 +30,8 @@ TEST(Initialiser,Add){
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<Initialiser>();
-		for(int i=0;i<count;i++)I<<Funcs[i];
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(I.get(),(I<<Funcs[i]).get());
 		EXPECT_EQ(count,I->Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Funcs[i](),I->operator[](i)());
@@ -52,7 +54,8 @@ TEST(InitialDistributions,Create){
 TEST(InitialDistributions,Add){
 	for(int count=1;count<n;count++){
 		InitialDistributions I;
-		for(int i=0;i<count;i++)I<<Distrs[i];
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(&I,&(I<<Distrs[i]));
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Distrs[i].get(),&I[i]);
@@ -61,7 +64,8 @@ TEST(InitialDistributions,Add){
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<InitialDistributions>();
-		for(int i=0;i<count;i++)I<<Distrs[i];
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(I.get(),(I<<Distrs[i]).get());
 		EXPECT_EQ(count,I->Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Distrs[i].get(),&(I->operator[](i)));

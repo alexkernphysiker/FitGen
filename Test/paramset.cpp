@@ -10,32 +10,38 @@ TEST(ParamSet, Constructor0){
 TEST(ParamSet, Constructor1){
 	ParamSet p(1);
 	EXPECT_EQ(1,p.Count());
-	for(int i=1;i<=1;i++)EXPECT_EQ(i,p[i-1]);
+	for(int i=1;i<=1;i++)
+		EXPECT_EQ(i,p[i-1]);
 }
 TEST(ParamSet, Constructor2){
 	ParamSet p(1,2);
 	EXPECT_EQ(2,p.Count());
-	for(int i=1;i<=2;i++)EXPECT_EQ(i,p[i-1]);
+	for(int i=1;i<=2;i++)
+		EXPECT_EQ(i,p[i-1]);
 }
 TEST(ParamSet, Constructor3){
 	ParamSet p(1,2,3);
 	EXPECT_EQ(3,p.Count());
-	for(int i=1;i<=3;i++)EXPECT_EQ(i,p[i-1]);
+	for(int i=1;i<=3;i++)
+		EXPECT_EQ(i,p[i-1]);
 }
 TEST(ParamSet, Constructor4){
 	ParamSet p(1,2,3,4);
 	EXPECT_EQ(4,p.Count());
-	for(int i=1;i<=4;i++)EXPECT_EQ(i,p[i-1]);
+	for(int i=1;i<=4;i++)
+		EXPECT_EQ(i,p[i-1]);
 }
 TEST(ParamSet, Constructor5){
 	ParamSet p(1,2,3,4,5);
 	EXPECT_EQ(5,p.Count());
-	for(int i=1;i<=5;i++)EXPECT_EQ(i,p[i-1]);
+	for(int i=1;i<=5;i++)
+		EXPECT_EQ(i,p[i-1]);
 }
 TEST(ParamSet, Constructor6){
 	ParamSet p(1,2,3,4,5,6);
 	EXPECT_EQ(6,p.Count());
-	for(int i=1;i<=6;i++)EXPECT_EQ(i,p[i-1]);
+	for(int i=1;i<=6;i++)
+		EXPECT_EQ(i,p[i-1]);
 }
 const int n=10;
 double data[]={1,2,3,4,5,6,7,8,9,10};
@@ -47,7 +53,7 @@ void TestEq(ParamSet &p1,ParamSet &p2){
 TEST(ParamSet, AddNumber){
 	ParamSet p;
 	for(int i=0;i<n;i++){
-		p<<data[i];
+		EXPECT_EQ(&p,&(p<<data[i]));
 		EXPECT_EQ(i+1,p.Count());
 		EXPECT_EQ(data[i],p[p.Count()-1]);
 	}
@@ -59,11 +65,20 @@ TEST(ParamSet, AddParamSet){
 			ParamSet p;
 			for(int i=0;i<count;i++)p<<data[i];
 			int c=P.Count();
-			P<<p;
+			EXPECT_EQ(&P,&(P<<p));
 			EXPECT_EQ(c+count,P.Count());
 			for(int i=0;i<count;i++)
 				EXPECT_EQ(P[P.Count()-1-i],p[p.Count()-1-i]);
 		}
+	}
+}
+TEST(ParamSet, AddToItself){
+	for(int count=0;count<=n;count++){
+		ParamSet P;
+		for(int i=0;i<count;i++)P<<data[i];
+		int c=P.Count();
+		EXPECT_EQ(&P,&(P<<P));
+		EXPECT_EQ(c,P.Count());
 	}
 }
 TEST(ParamSet, Copying){
@@ -104,6 +119,7 @@ TEST(ParamSet,ParEQ){
 	for(int count=0;count<=n;count++){
 		ParamSet P=parEq(count,val);
 		EXPECT_EQ(count,P.Count());
-		for(int i=0;i<count;i++)EXPECT_EQ(val,P[i]);
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(val,P[i]);
 	}
 }
