@@ -19,6 +19,13 @@ TEST(Initialiser,Add){
 		//EXPECT_ANY_THROW(I[count]());
 		//EXPECT_ANY_THROW(I[-1]());
 	}
+	for(int count=1;count<n;count++){
+		auto I=make_shared<Initialiser>();
+		for(int i=0;i<count;i++)I<<Funcs[i];
+		EXPECT_EQ(count,I->Count());
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(Funcs[i](),I->operator[](i)());
+	}
 }
 TEST(Initialiser,Generate){
 	for(int count=1;count<5;count++){
@@ -26,7 +33,8 @@ TEST(Initialiser,Generate){
 		for(int i=0;i<count;i++)I<<Funcs[i];
 		ParamSet P=I.Generate();
 		EXPECT_EQ(count,P.Count());
-		for(int i=0;i<count;i++)EXPECT_EQ(Funcs[i](),P[i]);
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(Funcs[i](),P[i]);
 	}
 }
 
