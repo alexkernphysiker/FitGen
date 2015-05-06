@@ -1,5 +1,5 @@
 #include "paramset.h"
-#include "fitexception.h"
+#include "genetic_exception.h"
 namespace Genetic{
 	using namespace std;
 	typedef lock_guard<mutex> Lock;
@@ -50,7 +50,7 @@ namespace Genetic{
 		if((i>=0)&(i<m_values.size()))
 			m_values[i]=v;
 		else
-			throw new FitException("ParamSet: setting value out of range");
+			throw new GeneticException("ParamSet: setting value out of range");
 	}
 	ParamSet &ParamSet::operator <<(double val){
 		Lock lock(m_mutex);

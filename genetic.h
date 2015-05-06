@@ -1,7 +1,7 @@
 #ifndef RGCFVQNCAQKWQXFU
 #define RGCFVQNCAQKWQXFU
 #include "abstract.h"
-#include "fitexception.h"
+#include "genetic_exception.h"
 #include "math_h/randomfunc.h"
 namespace Genetic{
 	using namespace std;
@@ -18,7 +18,7 @@ namespace Genetic{
 		}
 		void SetMutationCoefficient(double val){
 			if(val<=0)
-				throw new FitException("Invalid mutation coefficient value");
+				throw new GeneticException("Invalid mutation coefficient value");
 			M=val;
 		}
 	protected:
@@ -43,7 +43,7 @@ namespace Genetic{
 		}
 		void SetCrossingProbability(double val){
 			if((val<0)||(val>1))
-				throw new FitException("Invalid crossing probability value");
+				throw new GeneticException("Invalid crossing probability value");
 			P=val;
 		}
 	protected:
@@ -73,7 +73,7 @@ namespace Genetic{
 		void SetAbsoluteMutationCoeficients(ParamSet p){
 			for(double v:p)
 				if(v<0)
-					throw new FitException("Wrong random mutation coefficient. Cannot be negative");
+					throw new GeneticException("Wrong random mutation coefficient. Cannot be negative");
 			M=p;
 		}
 		double AbsoluteMutationsProbability(){
@@ -81,7 +81,7 @@ namespace Genetic{
 		}
 		void SetAbsoluteMutationsProbability(double val){
 			if((val<0)||(val>1))
-				throw new FitException("Invalid crossing probability value");
+				throw new GeneticException("Invalid crossing probability value");
 			P=val;
 		}
 	protected:
@@ -107,7 +107,7 @@ namespace Genetic{
 		void SetRelativeMutationCoefficients(ParamSet p){
 			for(double v:p)
 				if(v<0)
-					throw new FitException("Wrong random mutation coefficient. Cannot be negative");
+					throw new GeneticException("Wrong random mutation coefficient. Cannot be negative");
 				M=p;
 		}
 		double RelativeMutationsProbability(){
@@ -115,7 +115,7 @@ namespace Genetic{
 		}
 		void SetRelativeMutationsProbability(double val){
 			if((val<0)||(val>1))
-				throw new FitException("Invalid crossing probability value");
+				throw new GeneticException("Invalid crossing probability value");
 			P=val;
 		}
 	protected:

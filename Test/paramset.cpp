@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <paramset.h>
-#include <fitexception.h>
+#include <genetic_exception.h>
 using namespace Genetic;
 TEST(ParamSet, Constructor0){
 	ParamSet p;
@@ -94,8 +94,8 @@ TEST(ParamSet, Set){
 		}
 		ParamSet source;
 		for(int i=0;i<count;i++)source<<data[i];
-		ASSERT_THROW(source.Set(-1,0.0),FitException);
-		ASSERT_THROW(source.Set(source.Count(),0.0),FitException);
+		ASSERT_THROW(source.Set(-1,0.0),GeneticException);
+		ASSERT_THROW(source.Set(source.Count(),0.0),GeneticException);
 	}
 }
 TEST(ParamSet,ParEQ){
