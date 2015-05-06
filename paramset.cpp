@@ -47,7 +47,7 @@ namespace Genetic{
 	}
 	void ParamSet::Set(int i, double v){
 		Lock lock(m_mutex);
-		if((i>=0)&(i<m_values.size()))
+		if((i>=0)&&(i<m_values.size()))
 			m_values[i]=v;
 		else
 			throw new GeneticException("ParamSet: setting value out of range");
