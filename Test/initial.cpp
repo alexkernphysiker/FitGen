@@ -25,6 +25,9 @@ TEST(Initialiser,Add){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Funcs[i](),I[i]());
+		int c=0;
+		for(auto i:I)c++;
+		EXPECT_EQ(c,count);
 		ASSERT_ANY_THROW(I[count]());
 		ASSERT_ANY_THROW(I[-1]());
 	}

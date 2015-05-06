@@ -3,7 +3,13 @@
 #include <genetic_exception.h>
 using namespace Genetic;
 using namespace std;
-
+TEST(Filter, BaseTest){
+	Filter must_be_false([](ParamSet&){return false;});
+	Filter must_be_true([](ParamSet&){return true;});
+	ParamSet p;
+	EXPECT_EQ(false,must_be_false(p));
+	EXPECT_EQ(true,must_be_true(p));
+}
 TEST(Above,BasicTest){
 	for(int count=0;count<10;count++){
 		ParamSet Check=parZeros(10);
