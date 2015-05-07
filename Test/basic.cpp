@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <abstract.h>
+#include "testgen.h"
 #include <math_h/randomfunc.h>
 using namespace Genetic;
 using namespace std;
@@ -11,12 +11,6 @@ TEST(OptimalityFunction,BaseTest){
 		EXPECT_EQ(f(X),F(X));
 	}
 }
-
-class GeneticTest:public AbstractGenetic{
-public:
-	GeneticTest(shared_ptr<IOptimalityFunction> optimality):AbstractGenetic(optimality){}
-	virtual ~GeneticTest(){}
-};
 class Init:public IInitialConditions{
 private:
 	function<ParamSet()> m_func;

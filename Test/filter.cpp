@@ -79,3 +79,40 @@ template<class FilterMulti>void test_multi(){
 }
 TEST(And,Add){test_multi<And>();}
 TEST(Or,Add){test_multi<Or>();}
+template<class FilterMulti>void test_add(){
+	auto I=make_shared<FilterMulti>();
+	EXPECT_EQ(0,I->Count());
+	auto filter=[](ParamSet&){return true;};
+	EXPECT_EQ(I.get(),&(I->Add(filter)));
+	EXPECT_EQ(1,I->Count());
+	EXPECT_EQ(I.get(),(I<<filter).get());
+	EXPECT_EQ(2,I->Count());
+	EXPECT_EQ(I.get(),(I<<make_shared<Filter>(filter)).get());
+	EXPECT_EQ(3,I->Count());
+}
+TEST(And,Add2){test_add<And>();}
+TEST(Or,Add2){test_add<Or>();}
+class ConstFilter:public IParamCheck{
+private:
+	bool value;
+public:
+	ConstFilter(bool v):value(v){}
+	virtual ~ConstFilter(){}
+	virtual bool operator()(ParamSet&P)override{return value;}
+};
+#define TRUE make_shared<ConstFilter>(true)
+#define FALSE make_shared<ConstFilter>(false)
+TEST(And,Work){
+	ParamSet P;
+	EXPECT_EQ(true,(make_shared<And>()<<TRUE<<TRUE)->operator()(P));
+	EXPECT_EQ(false,(make_shared<And>()<<FALSE<<TRUE)->operator()(P));
+	EXPECT_EQ(false,(make_shared<And>()<<TRUE<<FALSE)->operator()(P));
+	EXPECT_EQ(false,(make_shared<And>()<<FALSE<<FALSE)->operator()(P));
+}
+TEST(Or,Work){
+	ParamSet P;
+	EXPECT_EQ(true,(make_shared<Or>()<<TRUE<<TRUE)->operator()(P));
+	EXPECT_EQ(true,(make_shared<Or>()<<FALSE<<TRUE)->operator()(P));
+	EXPECT_EQ(true,(make_shared<Or>()<<TRUE<<FALSE)->operator()(P));
+	EXPECT_EQ(false,(make_shared<Or>()<<FALSE<<FALSE)->operator()(P));
+}
