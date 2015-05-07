@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <fit.h>
 #include <initialconditions.h>
+#include <paramfunc.h>
 #include <genetic_exception.h>
 using namespace Genetic;
 using namespace std;
@@ -201,4 +202,45 @@ TEST(Parabolic,Base){
 	ParabolicTest gen;
 	gen.Init(1,make_shared<Initialiser>()<<[](){return 0.0;});
 	EXPECT_EQ(1,gen.GetParamParabolicErrors(0.01)[0]);
+}
+typedef Add<Mul<Arg<0>,Par<0>>,Par<1>> Fit_Func;
+typedef Const<1> Fit_Func_err;
+auto Points=make_shared<FitPoints>()<<make_pair(0,1)<<make_pair(1,2)<<make_pair(2,3);
+auto Init=make_shared<GenerateUniform>()<<make_pair(0,2)<<make_pair(0,2);
+TEST(Fit,Basetest){
+	Fit<DifferentialMutations<>,SumSquareDiff> fit(Points,make_shared<Fit_Func>());
+	fit.Init(20,Init);
+	while(!fit.ConcentratedInOnePoint())
+		fit.Iterate();
+	ASSERT_TRUE(fit.ParamCount()==2);
+	ASSERT_TRUE(fit.PopulationSize()==20);
+	ASSERT_TRUE(fit.Optimality()==0);
+	ASSERT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
+	EXPECT_EQ(1,fit[0]);
+	EXPECT_EQ(1,fit[1]);
+}
+TEST(FitFunction,Basetest){
+	FitFunction<DifferentialMutations<>,Fit_Func,SumSquareDiff> fit(Points);
+	fit.Init(20,Init);
+	while(!fit.ConcentratedInOnePoint())
+		fit.Iterate();
+	ASSERT_TRUE(fit.ParamCount()==2);
+	ASSERT_TRUE(fit.PopulationSize()==20);
+	ASSERT_TRUE(fit.Optimality()==0);
+	ASSERT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
+	EXPECT_EQ(1,fit[0]);
+	EXPECT_EQ(1,fit[1]);
+}
+TEST(FitFunctionWithError,Basetest){
+	for(auto&p:*Points)p.wy=1;
+	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,make_shared<Fit_Func>(),make_shared<Fit_Func_err>());
+	fit.Init(20,Init);
+	while(!fit.ConcentratedInOnePoint())
+		fit.Iterate();
+	ASSERT_TRUE(fit.ParamCount()==2);
+	ASSERT_TRUE(fit.PopulationSize()==20);
+	ASSERT_TRUE(fit.Optimality()==0);
+	ASSERT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
+	EXPECT_EQ(1,fit[0]);
+	EXPECT_EQ(1,fit[1]);
 }
