@@ -50,3 +50,18 @@ void test_init(unsigned int threads,int population){
 }
 TEST(AbstractGenetic,InitSync){test_init(1,10);}
 TEST(AbstractGenetic,InitAsync){test_init(2,10);}
+void test_iterate(unsigned int threads,int population,unsigned int iterations){
+	GeneticTest gen(optimality);
+	gen.SetThreadCount(threads);
+	ASSERT_ANY_THROW(gen.Iterate());
+	gen.Init(population,initial);
+	for(unsigned int i=0;i<iterations;i++){
+		gen.Iterate();
+		EXPECT_EQ(population,gen.PopulationSize());
+		EXPECT_EQ(1,gen.ParamCount());
+		EXPECT_EQ(i+1,gen.iteration_count());
+		EXPECT_EQ(true,gen.ConcentratedInOnePoint());
+	}
+}
+TEST(AbstractGenetic,RunSync){test_iterate(1,10,100);}
+TEST(AbstractGenetic,RunAsync){test_iterate(2,10,100);}
