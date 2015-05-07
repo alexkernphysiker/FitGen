@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <paramset.h>
-#include <genetic_exception.h>
 using namespace Genetic;
 using namespace std;
 TEST(ParamSet, Constructor0){
