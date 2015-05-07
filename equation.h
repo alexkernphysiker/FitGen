@@ -16,7 +16,7 @@ namespace Genetic{
 	class SearchMin:public GENETIC{
 	public:
 		SearchMin(function<double(ParamSet&)> f)
-			:GENETIC(make_shared<OptimalityFunction>(f)){}
+		:GENETIC(make_shared<OptimalityFunction>([f](ParamSet&P){return f(P);})){}
 	};
 }
 #endif
