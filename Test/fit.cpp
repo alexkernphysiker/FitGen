@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <fit.h>
+#include <initialconditions.h>
 #include <genetic_exception.h>
 using namespace Genetic;
 using namespace std;
@@ -190,4 +191,14 @@ void test_optimality2(){
 TEST(OptimalityForPointsWithFuncError,Algorithms){
 	test_optimality2<ChiSquare>();
 	test_optimality2<ChiSquareWithXError>();
+}
+class ParabolicTest:public virtual Parabolic{
+public:
+    ParabolicTest():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&P){return P[0]*P[0];})),Parabolic(){}
+    virtual ~ParabolicTest(){}
+};
+TEST(Parabolic,Base){
+	ParabolicTest gen;
+	gen.Init(1,make_shared<Initialiser>()<<[](){return 0.0;});
+	EXPECT_EQ(1,gen.GetParamParabolicErrors(0.01)[0]);
 }
