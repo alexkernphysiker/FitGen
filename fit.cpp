@@ -79,7 +79,7 @@ namespace Genetic{
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point p:(*src))
-			if(condition->operator()(p.X))
+			if(condition->operator()(p.X)&&Ycond(p.y))
 				res<<p;
 			return res;
 	}
