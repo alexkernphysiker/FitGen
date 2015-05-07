@@ -78,7 +78,7 @@ TEST(ParamSet, AddToItself){
 		for(int i=0;i<count;i++)P<<data[i];
 		int c=P.Count();
 		EXPECT_EQ(&P,&(P<<P));
-		EXPECT_EQ(c,P.Count());
+		EXPECT_EQ(c+c,P.Count());
 	}
 }
 TEST(ParamSet, Copying){
