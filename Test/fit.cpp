@@ -43,21 +43,21 @@ TEST(point,Base){
 TEST(FitPoints,Base){
 	FitPoints points;
 	EXPECT_EQ(0,points.count());
-	ASSERT_ANY_THROW(points[-1]);
-	ASSERT_ANY_THROW(points[0]);
+	ASSERT_THROW(points[-1],GeneticException);
+	ASSERT_THROW(points[0],GeneticException);
 	point p1;
 	p1.X<<0;
 	EXPECT_EQ(&points,&(points<<p1));
 	EXPECT_EQ(1,points.count());
-	ASSERT_ANY_THROW(points[-1]);
-	ASSERT_ANY_THROW(points[1]);
+	ASSERT_THROW(points[-1],GeneticException);
+	ASSERT_THROW(points[1],GeneticException);
 	EXPECT_EQ(p1.X[0],points[0].X[0]);
 	point p2;
 	p2.X<<0;
 	EXPECT_EQ(&points,&(points<<p2));
 	EXPECT_EQ(2,points.count());
-	ASSERT_ANY_THROW(points[-1]);
-	ASSERT_ANY_THROW(points[2]);
+	ASSERT_THROW(points[-1],GeneticException);
+	ASSERT_THROW(points[2],GeneticException);
 	EXPECT_EQ(p1.X[0],points[0].X[0]);
 	EXPECT_EQ(p2.X[0],points[1].X[0]);
 	int c=0;
@@ -94,9 +94,9 @@ TEST(Distribution1D,Base){
 	for(point&p:d)EXPECT_EQ(1,p.y);
 }
 TEST(Distribution1D,Throw){
-	ASSERT_ANY_THROW(Distribution1D(2,0,2));
-	ASSERT_ANY_THROW(Distribution1D(0,2,0));
-	ASSERT_ANY_THROW(Distribution1D(2,0,0));
+	ASSERT_THROW(Distribution1D(2,0,2),GeneticException);
+	ASSERT_THROW(Distribution1D(0,2,0),GeneticException);
+	ASSERT_THROW(Distribution1D(2,0,0),GeneticException);
 }
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();

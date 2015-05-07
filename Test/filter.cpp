@@ -74,8 +74,8 @@ template<class FilterMulti>void test_multi(){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(filters[i].get(),&I.Get(i));
-		ASSERT_ANY_THROW(I.Get(count));
-		ASSERT_ANY_THROW(I.Get(-1));
+		ASSERT_THROW(I.Get(count),GeneticException);
+		ASSERT_THROW(I.Get(-1),GeneticException);
 	}
 }
 TEST(And,Add){test_multi<And>();}
