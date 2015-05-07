@@ -84,3 +84,65 @@ TEST(FitPoints,Select){
 		EXPECT_EQ(true,y_filter(p.y));
 	}
 }
+TEST(Distribution1D,Base){
+	Distribution1D d(0,2,2);
+	EXPECT_EQ(2,d.count());
+	for(point&p:d)EXPECT_EQ(0,p.y);
+	d.Fill(0.5);
+	d.Fill(1.5);
+	for(point&p:d)EXPECT_EQ(1,p.y);
+}
+TEST(Distribution1D,Throw){
+	ASSERT_ANY_THROW(Distribution1D(2,0,2));
+	ASSERT_ANY_THROW(Distribution1D(0,2,0));
+	ASSERT_ANY_THROW(Distribution1D(2,0,0));
+}
+TEST(OptimalityForPoints,Base){
+	auto points=make_shared<FitPoints>();
+	int func_calls=0;
+	auto f=[&func_calls](ParamSet&,ParamSet&){func_calls++;return 0.0;};
+	int summand_calls=0;
+	auto s=[&summand_calls](FitPoints::Point&,ParamSet&,IParamFunc&){summand_calls++;return 1.0;};
+	int coef_calls=0;
+	auto c=[&coef_calls](ParamSet&,IParamFunc&){coef_calls++;return 1.0;};
+	OptimalityForPoints S(points,make_shared<ParameterFunction>(f),c,s);
+	ParamSet P;
+	EXPECT_EQ(0,S(P));
+	EXPECT_EQ(0,func_calls);
+	EXPECT_EQ(points->count(),summand_calls);
+	EXPECT_EQ(1,coef_calls);
+	for(int count=1;count<5;count++){
+		func_calls=summand_calls=coef_calls=0;
+		points<<make_pair(0,0);
+		EXPECT_EQ(count,S(P));
+		EXPECT_EQ(0,func_calls);
+		EXPECT_EQ(points->count(),summand_calls);
+		EXPECT_EQ(1,coef_calls);
+	}
+}
+TEST(OptimalityForPointsWithFuncError,Base){
+	auto points=make_shared<FitPoints>();
+	int func_calls=0;
+	auto f=[&func_calls](ParamSet&,ParamSet&){func_calls++;return 0.0;};
+	int err_calls=0;
+	auto e=[&err_calls](ParamSet&,ParamSet&){err_calls++;return 0.0;};
+	int summand_calls=0;
+	auto s=[&summand_calls](FitPoints::Point&,ParamSet&,IParamFunc&,IParamFunc&){summand_calls++;return 1.0;};
+	int coef_calls=0;
+	auto c=[&coef_calls](ParamSet&,IParamFunc&,IParamFunc&){coef_calls++;return 1.0;};
+	OptimalityForPointsWithFuncError S(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e),c,s);
+	ParamSet P;
+	EXPECT_EQ(0,S(P));
+	EXPECT_EQ(0,func_calls);
+	EXPECT_EQ(points->count(),summand_calls);
+	EXPECT_EQ(1,coef_calls);
+	for(int count=1;count<5;count++){
+		func_calls=summand_calls=coef_calls=0;
+		points<<make_pair(0,0);
+		EXPECT_EQ(count,S(P));
+		EXPECT_EQ(0,func_calls);
+		EXPECT_EQ(points->count(),summand_calls);
+		EXPECT_EQ(1,coef_calls);
+	}
+}
+
