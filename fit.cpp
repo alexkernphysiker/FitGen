@@ -46,6 +46,8 @@ namespace Genetic{
 		return src<<P;
 	}
 	FitPoints::Point& FitPoints::operator[](int i){
+		if(i<0)throw new GeneticException("FitPoints: Range check error");
+		if(i>=count())throw new GeneticException("FitPoints: Range check error");
 		return m_data[i];
 	}
 	FitPoints::iterator FitPoints::begin(){
