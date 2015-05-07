@@ -32,9 +32,10 @@ namespace Genetic{
 			if(condition(res))return res;
 		}
 	}
+	AbstractGenetic::AbstractGenetic(){}
 	AbstractGenetic::AbstractGenetic(
 		shared_ptr<IOptimalityFunction> optimality
-	){
+	):AbstractGenetic(){
 		threads=thread::hardware_concurrency();
 		if(threads==0)
 			threads=1;

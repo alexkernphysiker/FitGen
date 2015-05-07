@@ -231,4 +231,30 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
 	}
+	Parabolic::Parabolic(){}
+	Parabolic::~Parabolic(){}
+	double Parabolic::GetParamParabolicError(double delta, int i){
+		if(delta<=0)
+			throw new GeneticException("Error in parabolic error calculation: delta cannot be zero or negative");
+		double s=Optimality();
+		ParamSet ab=Parameters();
+		ParamSet be=ab;
+		ab.Set(i,ab[i]+delta);
+		be.Set(i,be[i]-delta);
+		double sa=OptimalityCalculator()->operator()(ab);
+		double sb=OptimalityCalculator()->operator()(be);
+		double da=(sa-s)/delta;
+		double db=(s-sb)/delta;
+		double dd=(da-db)/delta;
+		if(dd<=0)
+			return INFINITY;
+		else
+			return sqrt(2.0/dd);
+	}
+	ParamSet Parabolic::GetParamParabolicErrors(ParamSet delta){
+		ParamSet res;
+		for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
+			res<<GetParamParabolicError(delta[i],i);
+		return res;
+	}
 }

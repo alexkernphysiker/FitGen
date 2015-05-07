@@ -6,12 +6,11 @@
 namespace Genetic{
 	using namespace std;
 	template<class FITGEN=AbstractGenetic>
-	class DifferentialMutations: public FITGEN{
+	class DifferentialMutations: public virtual FITGEN{
 	private:
 		double M;
 	public:
-		DifferentialMutations(shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(optimality),M(0.5){}
+		DifferentialMutations():FITGEN(),M(0.5){}
 		virtual ~DifferentialMutations(){}
 		double MutationCoefficient(){
 			return M;
@@ -31,12 +30,11 @@ namespace Genetic{
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
-	class Crossing:public FITGEN{
+	class Crossing:public virtual FITGEN{
 	private:
 		double P;
 	public:
-		Crossing(shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(optimality),P(0){}
+		Crossing():FITGEN(),P(0){}
 		virtual ~Crossing(){}
 		double CrossingProbability(){
 			return P;
@@ -59,13 +57,12 @@ namespace Genetic{
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
-	class AbsoluteMutations:public FITGEN{
+	class AbsoluteMutations:public virtual FITGEN{
 	private:
 		ParamSet M;
 		double P;
 	public:
-		AbsoluteMutations(shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(optimality),P(0){}
+		AbsoluteMutations():FITGEN(),P(0){}
 		virtual ~AbsoluteMutations(){}
 		ParamSet AbsoluteMutationCoeficients(){
 			return M;
@@ -93,13 +90,12 @@ namespace Genetic{
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
-	class RelativeMutations:public FITGEN{
+	class RelativeMutations:public virtual FITGEN{
 	private:
 		ParamSet M;
 		double P;
 	public:
-		RelativeMutations(shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(optimality),P(0){}
+		RelativeMutations():FITGEN(),P(0){}
 		virtual ~RelativeMutations(){}
 		ParamSet RelativeMutationCoefficients(){
 			return M;
@@ -127,12 +123,11 @@ namespace Genetic{
 		}
 	};
 	template<class FITGEN>
-	class ExactCopying:public FITGEN{
+	class ExactCopying:public virtual FITGEN{
 	private:
 		double P;
 	public:
-		ExactCopying(shared_ptr<IOptimalityFunction> optimality)
-			:FITGEN(optimality),P(0){}
+		ExactCopying():FITGEN(),P(0){}
 		virtual ~ExactCopying(){}
 		void SetExactCopyingProbability(double value){
 			if((value<0)||(value>1))

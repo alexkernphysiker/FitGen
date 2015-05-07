@@ -43,6 +43,7 @@ namespace Genetic{
 	
 	class AbstractGenetic{
 	protected:
+		AbstractGenetic();
 		AbstractGenetic(shared_ptr<IOptimalityFunction> optimality);
 	public:
 		virtual ~AbstractGenetic();

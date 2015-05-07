@@ -106,49 +106,27 @@ namespace Genetic{
 		Coefficient C;
 		Summand S;
 	};
-	template<class GENETIC>
-	class Parabolic:public GENETIC{
+	class Parabolic:public virtual AbstractGenetic{
+	protected:
+		Parabolic();
 	public:
-		Parabolic(shared_ptr<IOptimalityFunction> opt):GENETIC(opt){}
-		virtual ~Parabolic(){}
-		double GetParamParabolicError(double delta,int i){
-			if(delta<=0)
-				throw new GeneticException("Error in parabolic error calculation: delta cannot be zero or negative");
-			double s=AbstractGenetic::Optimality();
-			ParamSet ab=AbstractGenetic::Parameters();
-			ParamSet be=ab;
-			ab.Set(i,ab[i]+delta);
-			be.Set(i,be[i]-delta);
-			double sa=AbstractGenetic::OptimalityCalculator()->operator()(ab);
-			double sb=AbstractGenetic::OptimalityCalculator()->operator()(be);
-			double da=(sa-s)/delta;
-			double db=(s-sb)/delta;
-			double dd=(da-db)/delta;
-			if(dd<=0)
-				return INFINITY;
-			else
-				return sqrt(2.0/dd);
-		}
-		ParamSet GetParamParabolicErrors(ParamSet delta){
-			ParamSet res;
-			for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
-				res<<GetParamParabolicError(delta[i],i);
-			return res;
-		}
+		virtual ~Parabolic();
+		double GetParamParabolicError(double delta,int i);
+		ParamSet GetParamParabolicErrors(ParamSet delta);
 	};
 	shared_ptr<IOptimalityFunction> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
-	class Fit:public Parabolic<GENETIC>{
+	class Fit:public virtual GENETIC,public virtual Parabolic{
 	private:
 		shared_ptr<IParamFunc> m_func;
 	public:
 		Fit(
 			shared_ptr<FitPoints> points, 
 			shared_ptr<IParamFunc> f
-		):Parabolic<GENETIC>(OptimalityAlgorithm(points,f)){
+		):GENETIC(),Parabolic(),AbstractGenetic(OptimalityAlgorithm(points,f)){
 			m_func=f;
 		}
 		Fit(
@@ -183,13 +161,13 @@ namespace Genetic{
 	};
 	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
 	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
-	template<class GENETIC,shared_ptr<IOptimalityFunction> OptiimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
-	class FitFunctionWithError:public Parabolic<GENETIC>{
+	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
+	class FitFunctionWithError:public virtual GENETIC,public virtual Parabolic{
 	private:
 		shared_ptr<IParamFunc> m_func;
 	public:
 		FitFunctionWithError(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e)
-			:Parabolic<GENETIC>(OptiimalityAlgorithm(points,f,e)){
+			:AbstractGenetic(OptimalityAlgorithm(points,f,e)),GENETIC(),Parabolic(){
 			m_func=f;
 		}
 		FitFunctionWithError(
