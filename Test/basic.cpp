@@ -58,12 +58,13 @@ TEST(AbstractGenetic,Throwing){
 	ASSERT_ANY_THROW(gen.RelativeOptimalityExitCondition(1));
 	ASSERT_ANY_THROW(gen.Iterate());
 	ASSERT_ANY_THROW(gen.Optimality(0));
-	gen.Init(1,initial);
+	ASSERT_NO_THROW(gen.Init(2,initial));
 	ASSERT_ANY_THROW(gen.AbsoluteOptimalityExitCondition(-1));
 	ASSERT_ANY_THROW(gen.RelativeOptimalityExitCondition(-1));
 	ASSERT_ANY_THROW(gen.Optimality(-1));
 	ASSERT_NO_THROW(gen.Optimality(0));
-	ASSERT_ANY_THROW(gen.Optimality(1));
+	ASSERT_NO_THROW(gen.Optimality(1));
+	ASSERT_ANY_THROW(gen.Optimality(2));
 	ASSERT_ANY_THROW(gen[-1]);
 	ASSERT_NO_THROW(gen[0]);
 	ASSERT_ANY_THROW(gen[1]);
@@ -93,3 +94,17 @@ void test_iterate(unsigned int threads,int population,unsigned int iterations){
 }
 TEST(AbstractGenetic,RunSync){test_iterate(1,10,100);}
 TEST(AbstractGenetic,RunAsync){test_iterate(2,10,100);}
+TEST(AbstractGenetic,Parabolic){
+	GeneticTest gen(optimality);
+	gen.Init(2,initial);
+	for(unsigned int i=0;i<3;i++){
+		gen.Iterate();
+		EXPECT_EQ(1,gen.GetParamParabolicError(0.1,0));
+		EXPECT_EQ(1,gen.GetParamParabolicErrors(0.1)[0]);
+		ASSERT_ANY_THROW(gen.GetParamParabolicError(-0.1,0));
+		ASSERT_ANY_THROW(gen.GetParamParabolicErrors(-0.1)[0]);
+	}
+}
+TEST(AbstractGenetic,FilterSetting){
+	//ToDo
+}
