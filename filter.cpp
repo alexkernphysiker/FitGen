@@ -43,7 +43,7 @@ namespace Genetic{
 		if((i>=0)&(i<m_data.size()))
 			return *m_data[i];
 		else
-			throw new GeneticException("FilterRange: attempt to get property by index out of range");
+			throw GeneticException("FilterRange: attempt to get property by index out of range");
 	}
 	AbstractFilterMulti &AbstractFilterMulti::Add(std::shared_ptr<IParamCheck> val){
 		m_data.push_back(val);
