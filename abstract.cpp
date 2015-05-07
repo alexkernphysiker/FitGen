@@ -186,12 +186,16 @@ namespace Genetic{
 		return m_population[0].first.Count();
 	}
 	double AbstractGenetic::Optimality(int point_index){
+		if(m_population.size()==0)
+			throw new GeneticException("Attempt to obtain unexisting results");
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw new GeneticException("Point index out of range or no results were calculated");
 		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
 	ParamSet& AbstractGenetic::Parameters(int point_index){
+		if(m_population.size()==0)
+			throw new GeneticException("Attempt to obtain unexisting results");
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw new GeneticException("Point index out of range or no results were calculated");
 		Lock lock(m_mutex);
@@ -229,6 +233,8 @@ namespace Genetic{
 		return res;
 	}
 	bool AbstractGenetic::AbsoluteOptimalityExitCondition(double accuracy){
+		if(m_population.size()==0)
+			throw new GeneticException("Attempt to obtain unexisting results");
 		if(accuracy<0)
 			throw new GeneticException("Wrong optimality exit condition.");
 		if(m_itercount==0)
@@ -238,6 +244,8 @@ namespace Genetic{
 		return (Optimality(PopulationSize()-1)-Optimality())<=accuracy;
 	}
 	bool AbstractGenetic::RelativeOptimalityExitCondition(double accuracy){
+		if(m_population.size()==0)
+			throw new GeneticException("Attempt to obtain unexisting results");
 		if(accuracy<0)
 			throw new GeneticException("Wrong optimality exit condition.");
 		if(m_itercount==0)
