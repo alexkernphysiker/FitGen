@@ -93,6 +93,46 @@ void test_iterate(unsigned int threads,int population,unsigned int iterations){
 }
 TEST(AbstractGenetic,RunSync){test_iterate(1,10,100);}
 TEST(AbstractGenetic,RunAsync){test_iterate(2,10,100);}
+class GeneticTestWithMutations:public AbstractGenetic{
+public:
+	GeneticTestWithMutations(shared_ptr<IOptimalityFunction> optimality):AbstractGenetic(optimality){}
+	virtual ~GeneticTestWithMutations(){}
+protected:
+	virtual void mutations(ParamSet&P)override{P.Set(0,RandomUniformlyR(0.0,1.0));}
+};
+TEST(AbstractGenetic,FilterSettingFunc){
+	auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(0.0,1.0));});
+	auto filter=[](ParamSet&P){return P[0]>0.5;};
+	GeneticTestWithMutations gen(optimality);
+	gen.SetFilter(filter);
+	gen.Init(100,initial_uniform);
+	for(int i=0,n=gen.PopulationSize();i<n;i++)
+		EXPECT_EQ(true,filter(gen.Parameters(i)));
+	for(int j=0;j<10;j++){
+		gen.Iterate();
+		for(int i=0,n=gen.PopulationSize();i<n;i++)
+			EXPECT_EQ(true,filter(gen.Parameters(i)));
+	}
+	gen.RemoveFilter();
+	for(int j=0;j<10;j++)gen.Iterate();
+	for(int i=0,n=gen.PopulationSize();i<n;i++)
+		EXPECT_EQ(false,filter(gen.Parameters(i)));
+}
 TEST(AbstractGenetic,FilterSetting){
 	auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(0.0,1.0));});
+	auto filter=[](ParamSet&P){return P[0]>0.5;};
+	GeneticTestWithMutations gen(optimality);
+	gen.SetFilter(make_shared<Filter>(filter));
+	gen.Init(100,initial_uniform);
+	for(int i=0,n=gen.PopulationSize();i<n;i++)
+		EXPECT_EQ(true,filter(gen.Parameters(i)));
+	for(int j=0;j<10;j++){
+		gen.Iterate();
+		for(int i=0,n=gen.PopulationSize();i<n;i++)
+			EXPECT_EQ(true,filter(gen.Parameters(i)));
+	}
+	gen.RemoveFilter();
+	for(int j=0;j<10;j++)gen.Iterate();
+	for(int i=0,n=gen.PopulationSize();i<n;i++)
+		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
