@@ -32,16 +32,17 @@ namespace Genetic{
 			if(condition(res))return res;
 		}
 	}
-	AbstractGenetic::AbstractGenetic(){}
-	AbstractGenetic::AbstractGenetic(
-		shared_ptr<IOptimalityFunction> optimality
-	):AbstractGenetic(){
+	AbstractGenetic::AbstractGenetic(){
 		threads=thread::hardware_concurrency();
 		if(threads==0)
 			threads=1;
-		m_optimality=optimality;
 		m_itercount=0;
 		m_filter=make_shared<Filter>([](ParamSet&){return true;});
+	}
+	AbstractGenetic::AbstractGenetic(
+		shared_ptr<IOptimalityFunction> optimality
+	):AbstractGenetic(){
+		m_optimality=optimality;
 	}
 	AbstractGenetic::~AbstractGenetic(){}
 	shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator(){

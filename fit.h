@@ -122,11 +122,15 @@ namespace Genetic{
 	class Fit:public virtual GENETIC,public virtual Parabolic{
 	private:
 		shared_ptr<IParamFunc> m_func;
+	protected:
+		Fit(shared_ptr<IParamFunc> f):GENETIC(),Parabolic(){
+			m_func=f;
+		}
 	public:
 		Fit(
 			shared_ptr<FitPoints> points, 
 			shared_ptr<IParamFunc> f
-		):GENETIC(),Parabolic(),AbstractGenetic(OptimalityAlgorithm(points,f)){
+		):AbstractGenetic(OptimalityAlgorithm(points,f)){
 			m_func=f;
 		}
 		Fit(
@@ -139,9 +143,10 @@ namespace Genetic{
 		}
 	};
 	template<class GENETIC,class FUNC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
-	class FitFunction:public Fit<GENETIC,OptimalityAlgorithm>{
+	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
 	public:
-		FitFunction(shared_ptr<FitPoints> points):Fit<GENETIC,OptimalityAlgorithm>(points,make_shared<FUNC>()){}
+		FitFunction(shared_ptr<FitPoints> points):Fit<GENETIC,OptimalityAlgorithm>(make_shared<FUNC>()),
+			AbstractGenetic(OptimalityAlgorithm(points,make_shared<FUNC>())){}
 		virtual ~FitFunction(){}
 	};
 	

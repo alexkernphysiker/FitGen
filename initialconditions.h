@@ -65,13 +65,13 @@ namespace Genetic{
 		vector<double> m_mean;
 		vector<double> m_sig;
 	};
-	inline shared_ptr<GenerateByGauss> operator<<(shared_ptr<GenerateByGauss> adder, pair<double,double> value){
-		adder->Add(value.first,value.second);
-		return adder;
+	inline shared_ptr<GenerateByGauss> operator<<(shared_ptr<GenerateByGauss> G, pair<double,double> value){
+		G->Add(value.first,value.second);
+		return G;
 	}
-	inline shared_ptr<GenerateUniform> operator<<(shared_ptr<GenerateUniform> adder, pair<double,double> value){
-		adder->Add(value.first,value.second);
-		return adder;
+	inline shared_ptr<GenerateUniform> operator<<(shared_ptr<GenerateUniform> G, pair<double,double> value){
+		G->Add(value.first,value.second);
+		return G;
 	}
 }
 #endif
