@@ -74,9 +74,6 @@ namespace Genetic{
 		bool AbsoluteOptimalityExitCondition(double accuracy);
 		bool RelativeOptimalityExitCondition(double accuracy);
 		
-		double GetParamParabolicError(double delta,int i);
-		ParamSet GetParamParabolicErrors(ParamSet delta);
-		
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;
 		iterator begin();

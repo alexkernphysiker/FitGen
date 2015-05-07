@@ -31,7 +31,6 @@ public:
 };
 auto optimality=make_shared<OptimalityFunction>([](ParamSet&p){return pow(p[0],2);});
 auto initial=make_shared<Init>([](){return ParamSet(0);});
-auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(0.0,1.0));});
 void test_init(unsigned int threads,int population){
 	GeneticTest gen(optimality);
 	EXPECT_EQ(optimality.get(),gen.OptimalityCalculator().get());
@@ -94,17 +93,6 @@ void test_iterate(unsigned int threads,int population,unsigned int iterations){
 }
 TEST(AbstractGenetic,RunSync){test_iterate(1,10,100);}
 TEST(AbstractGenetic,RunAsync){test_iterate(2,10,100);}
-TEST(AbstractGenetic,Parabolic){
-	GeneticTest gen(optimality);
-	gen.Init(2,initial);
-	for(unsigned int i=0;i<3;i++){
-		gen.Iterate();
-		EXPECT_EQ(1,gen.GetParamParabolicError(0.1,0));
-		EXPECT_EQ(1,gen.GetParamParabolicErrors(0.1)[0]);
-		ASSERT_ANY_THROW(gen.GetParamParabolicError(-0.1,0));
-		ASSERT_ANY_THROW(gen.GetParamParabolicErrors(-0.1)[0]);
-	}
-}
 TEST(AbstractGenetic,FilterSetting){
-	//ToDo
+	auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(0.0,1.0));});
 }

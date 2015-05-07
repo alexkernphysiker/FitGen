@@ -129,6 +129,32 @@ namespace Genetic{
 		double operator()(ParamSet X){
 			return m_func->operator()(X,AbstractGenetic::Parameters());
 		}
+		double GetParamParabolicError(double delta,int i){
+			if(AbstractGenetic::PopulationSize()==0)
+				throw new GeneticException("Attempt to calculate parabolic error with no results");
+			if(delta<=0)
+				throw new GeneticException("Error in parabolic error calculation: delta cannot be zero or negative");
+			double s=AbstractGenetic::Optimality();
+			ParamSet ab=AbstractGenetic::Parameters();
+			ParamSet be=ab;
+			ab.Set(i,ab[i]+delta);
+			be.Set(i,be[i]-delta);
+			double sa=AbstractGenetic::OptimalityCalculator()->operator()(ab);
+			double sb=AbstractGenetic::OptimalityCalculator()->operator()(be);
+			double da=(sa-s)/delta;
+			double db=(s-sb)/delta;
+			double dd=(da-db)/delta;
+			if(dd<=0)
+				return INFINITY;
+			else
+				return sqrt(2.0/dd);
+		}
+		ParamSet GetParamParabolicErrors(ParamSet delta){
+			ParamSet res;
+			for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
+				res<<GetParamParabolicError(delta[i],i);
+			return res;
+		}
 	};
 	template<class GENETIC,class FUNC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class FitFunction:public Fit<GENETIC,OptimalityAlgorithm>{
@@ -170,6 +196,32 @@ namespace Genetic{
 		virtual ~FitFunctionWithError(){}
 		double operator()(ParamSet X){
 			return m_func->operator()(X,AbstractGenetic::Parameters());
+		}
+		double GetParamParabolicError(double delta,int i){
+			if(AbstractGenetic::PopulationSize()==0)
+				throw new GeneticException("Attempt to calculate parabolic error with no results");
+			if(delta<=0)
+				throw new GeneticException("Error in parabolic error calculation: delta cannot be zero or negative");
+			double s=AbstractGenetic::Optimality();
+			ParamSet ab=AbstractGenetic::Parameters();
+			ParamSet be=ab;
+			ab.Set(i,ab[i]+delta);
+			be.Set(i,be[i]-delta);
+			double sa=AbstractGenetic::OptimalityCalculator()->operator()(ab);
+			double sb=AbstractGenetic::OptimalityCalculator()->operator()(be);
+			double da=(sa-s)/delta;
+			double db=(s-sb)/delta;
+			double dd=(da-db)/delta;
+			if(dd<=0)
+				return INFINITY;
+			else
+				return sqrt(2.0/dd);
+		}
+		ParamSet GetParamParabolicErrors(ParamSet delta){
+			ParamSet res;
+			for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
+				res<<GetParamParabolicError(delta[i],i);
+			return res;
 		}
 	};
 }

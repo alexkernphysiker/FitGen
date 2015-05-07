@@ -255,33 +255,6 @@ namespace Genetic{
 		return Optimality(PopulationSize()-1)<=(Optimality()*(1.0+accuracy));
 	}
 	
-	double AbstractGenetic::GetParamParabolicError(double delta, int i){
-		if(PopulationSize()==0)
-			throw new GeneticException("Attempt to calculate parabolic error with no results");
-		if(delta<=0)
-			throw new GeneticException("Error in parabolic error calculation: delta cannot be zero or negative");
-		double s=Optimality();
-		ParamSet ab=Parameters();
-		ParamSet be=ab;
-		ab.Set(i,ab[i]+delta);
-		be.Set(i,be[i]-delta);
-		double sa=m_optimality->operator()(ab);
-		double sb=m_optimality->operator()(be);
-		double da=(sa-s)/delta;
-		double db=(s-sb)/delta;
-		double dd=(da-db)/delta;
-		if(dd<=0)
-			return INFINITY;
-		else
-			return sqrt(2.0/dd);
-	}
-	ParamSet AbstractGenetic::GetParamParabolicErrors(ParamSet delta){
-		ParamSet res;
-		for(int i=0,n=ParamCount();i<n;i++)
-			res<<GetParamParabolicError(delta[i],i);
-		return res;
-	}
-
 	AbstractGenetic::iterator AbstractGenetic::begin(){
 		if(m_population.size()==0)
 			throw new GeneticException("Population size is zero. Attempt to get unexisting results");
