@@ -146,7 +146,7 @@ TEST(OptimalityForPointsWithFuncError,Base){
 	}
 }
 template<shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
-void test_optimality1(){
+void test_optimality1(double v=INFINITY){
 	point p;
 	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
 	auto points=make_shared<FitPoints>();
@@ -160,11 +160,13 @@ void test_optimality1(){
 	auto S1=OptimalityAlgorithm(points,F1);
 	EXPECT_NE(nullptr,S1.get());
 	EXPECT_EQ(true,S1->operator()(P)>0);
+	if(isfinite(v))
+		EXPECT_EQ(v,S1->operator()(P));
 }
 TEST(OptimalityForPoints,Algorithms){
-	test_optimality1<SumSquareDiff>();
-	test_optimality1<SumWeightedSquareDiff>();
-	test_optimality1<ChiSquare>();
+	test_optimality1<SumSquareDiff>(3);
+	test_optimality1<SumWeightedSquareDiff>(1);
+	test_optimality1<ChiSquare>(1);
 	test_optimality1<ChiSquareWithXError>();
 }
 template<shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
