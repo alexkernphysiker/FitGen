@@ -15,7 +15,7 @@ TEST(Equation,OneArg){
 	solve.Init(10,init);
 	while(!solve.AbsoluteOptimalityExitCondition(0.00001))
 		solve.Iterate();
-	ASSERT_TRUE(pow(solve[0]-1,2)<0.0001);
+	ASSERT_TRUE(pow(solve[0]-1,2)<0.001);
 }
 TEST(Equation,TwoArgs){
 	Equation<DifferentialMutations<>> solve(testfunc,zero);
@@ -23,7 +23,7 @@ TEST(Equation,TwoArgs){
 	solve.Init(10,init);
 	while(!solve.AbsoluteOptimalityExitCondition(0.00001))
 		solve.Iterate();
-	ASSERT_TRUE(pow(solve[0]-1,2)<0.0001);
+	ASSERT_TRUE(pow(solve[0]-1,2)<0.001);
 }
 TEST(SearchMin,OneArg){
 	SearchMin<DifferentialMutations<>> solve(testfunc);
@@ -31,5 +31,5 @@ TEST(SearchMin,OneArg){
 	solve.Init(10,init);
 	while(!solve.AbsoluteOptimalityExitCondition(0.00001))
 		solve.Iterate();
-	ASSERT_TRUE(pow(solve[0]-0.5,2)<0.0001);
+	ASSERT_TRUE(pow(solve[0]-0.5,2)<0.001);
 }
