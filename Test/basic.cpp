@@ -48,7 +48,17 @@ void test_init(unsigned int threads,int population){
 	EXPECT_EQ(1,gen.ParamCount());
 }
 TEST(AbstractGenetic,InitSync){test_init(1,10);}
-TEST(AbstractGenetic,InitAsync){test_init(2,10);}
+TEST(AbstractGenetic,InitAsync2){test_init(2,10);}
+TEST(AbstractGenetic,InitAsync3){test_init(3,10);}
+TEST(AbstractGenetic,InitAsync4){test_init(4,10);}
+TEST(AbstractGenetic,InitSync_){test_init(1,5);}
+TEST(AbstractGenetic,InitAsync2_){test_init(2,5);}
+TEST(AbstractGenetic,InitAsync3_){test_init(3,5);}
+TEST(AbstractGenetic,InitAsync4_){test_init(4,5);}
+TEST(AbstractGenetic,InitSync__){test_init(1,2);}
+TEST(AbstractGenetic,InitAsync2__){test_init(2,2);}
+TEST(AbstractGenetic,InitAsync3__){test_init(3,2);}
+TEST(AbstractGenetic,InitAsync4__){test_init(4,2);}
 TEST(AbstractGenetic,Throwing){
 	GeneticTest gen(optimality);
 	ASSERT_ANY_THROW(gen.Parameters(0));
@@ -91,8 +101,18 @@ void test_iterate(unsigned int threads,int population,unsigned int iterations){
 		EXPECT_EQ(0,gen.ParamMaxDeviation()[0]);
 	}
 }
-TEST(AbstractGenetic,RunSync){test_iterate(1,10,100);}
-TEST(AbstractGenetic,RunAsync){test_iterate(2,10,100);}
+TEST(AbstractGenetic,ItSync){test_iterate(1,10,100);}
+TEST(AbstractGenetic,ItAsync2){test_iterate(2,10,100);}
+TEST(AbstractGenetic,ItAsync3){test_iterate(3,10,100);}
+TEST(AbstractGenetic,ItAsync4){test_iterate(4,10,100);}
+TEST(AbstractGenetic,ItSync_){test_iterate(1,5,5);}
+TEST(AbstractGenetic,ItAsync2_){test_iterate(2,5,5);}
+TEST(AbstractGenetic,ItAsync3_){test_iterate(3,5,5);}
+TEST(AbstractGenetic,ItAsync4_){test_iterate(4,5,5);}
+TEST(AbstractGenetic,ItSync__){test_iterate(1,2,5);}
+TEST(AbstractGenetic,ItAsync2__){test_iterate(2,2,5);}
+TEST(AbstractGenetic,ItAsync3__){test_iterate(3,2,5);}
+TEST(AbstractGenetic,ItAsync4__){test_iterate(4,2,5);}
 class GeneticTestWithMutations:public AbstractGenetic{
 public:
 	GeneticTestWithMutations(shared_ptr<IOptimalityFunction> optimality):AbstractGenetic(optimality){}
