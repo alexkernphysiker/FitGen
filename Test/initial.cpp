@@ -110,6 +110,18 @@ TEST(GenerateUniform,Add){
 		ASSERT_THROW(I.Add(2,1),GeneticException);
 	}
 }
+TEST(GenerateUniform,AddSharedPtr){
+	for(int count=1;count<n;count++){
+		auto I=make_shared<GenerateUniform>();
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(I.get(),(I<<make_pair<double,double>(i,2*n-i)).get());
+		EXPECT_EQ(count,I->Count());
+		for(int i=0;i<count;i++){
+			EXPECT_EQ(i,I->Min(i));
+			EXPECT_EQ(2*n-i,I->Max(i));
+		}
+	}
+}
 TEST(GenerateUniform,Generate){
 	for(int count=1;count<n;count++){
 		GenerateUniform I;
@@ -142,6 +154,18 @@ TEST(GenerateByGauss,Add){
 		ASSERT_THROW(I.Sigma(count),GeneticException);
 		ASSERT_THROW(I.Mean(-1),GeneticException);
 		ASSERT_THROW(I.Sigma(-1),GeneticException);
+	}
+}
+TEST(GenerateByGauss,AddSharedPtr){
+	for(int count=1;count<n;count++){
+		auto I=make_shared<GenerateByGauss>();
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(I.get(),(I<<make_pair<double,double>(i,2*n-i)).get());
+		EXPECT_EQ(count,I->Count());
+		for(int i=0;i<count;i++){
+			EXPECT_EQ(i,I->Mean(i));
+			EXPECT_EQ(2*n-i,I->Sigma(i));
+		}
 	}
 }
 TEST(GenerateByGauss,Generate){
