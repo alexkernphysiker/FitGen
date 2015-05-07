@@ -85,8 +85,11 @@ void test_iterate(unsigned int threads,int population,unsigned int iterations){
 		EXPECT_EQ(i+1,gen.iteration_count());
 		EXPECT_EQ(true,gen.ConcentratedInOnePoint());
 		EXPECT_EQ(0,gen[0]);
-		for(int i=0;i<population;i++)
+		for(int i=0;i<population;i++){
 			EXPECT_EQ(0,gen.Parameters(i)[0]);
+			if(i>0)
+				ASSERT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
+		}
 		EXPECT_EQ(true,gen.ConcentratedInOnePoint());
 		EXPECT_EQ(true,gen.AbsoluteOptimalityExitCondition(0));
 		EXPECT_EQ(true,gen.RelativeOptimalityExitCondition(0));
@@ -151,4 +154,25 @@ TEST(AbstractGenetic,FilterSetting){
 	for(int j=0;j<10;j++)gen.Iterate();
 	for(int i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
+}
+TEST(AbstractGenetic,Infinite){
+	auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(-1.0,1.0));});
+	auto opt=make_shared<OptimalityFunction>([](ParamSet&P){
+		double res=P[0];
+		res*=res;
+		if(res<0.00001)return double(INFINITY);
+		return res;
+	});
+	GeneticTest gen(opt);
+	gen.Init(100,initial_uniform);
+	for(int i=0,n=gen.PopulationSize();i<n;i++)
+		ASSERT_TRUE(isfinite(gen.Parameters(i)[0]));
+	for(int j=0;j<30;j++){
+		gen.Iterate();
+		for(int i=0,n=gen.PopulationSize();i<n;i++){
+			ASSERT_TRUE(isfinite(gen.Optimality(i)));
+			if(i>0)
+				ASSERT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
+		}
+	}
 }
