@@ -39,3 +39,27 @@ TEST(point,Base){
 	}
 }
 
+TEST(FitPoints,Base){
+	FitPoints points;
+	EXPECT_EQ(0,points.count());
+	ASSERT_ANY_THROW(points[-1]);
+	ASSERT_ANY_THROW(points[0]);
+	point p1;
+	p1.X<<0;
+	EXPECT_EQ(&points,&(points<<p1));
+	EXPECT_EQ(1,points.count());
+	ASSERT_ANY_THROW(points[-1]);
+	ASSERT_ANY_THROW(points[1]);
+	EXPECT_EQ(p1.X[0],points[0].X[0]);
+	point p2;
+	p2.X<<0;
+	EXPECT_EQ(&points,&(points<<p2));
+	EXPECT_EQ(2,points.count());
+	ASSERT_ANY_THROW(points[-1]);
+	ASSERT_ANY_THROW(points[2]);
+	EXPECT_EQ(p1.X[0],points[0].X[0]);
+	EXPECT_EQ(p2.X[0],points[1].X[0]);
+	int c=0;
+	for(point&p:points)c++;
+	EXPECT_EQ(c,points.count());
+}
