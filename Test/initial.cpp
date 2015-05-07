@@ -73,6 +73,17 @@ TEST(InitialDistributions,Add){
 			EXPECT_EQ(Distrs[i].get(),&(I->operator[](i)));
 	}
 }
+TEST(InitialDistributions,Generate){
+	for(int count=1;count<5;count++){
+		InitialDistributions I;
+		for(int i=0;i<count;i++)I<<Distrs[i];
+		ParamSet P=I.Generate();
+		EXPECT_EQ(count,P.Count());
+		for(int i=0;i<count;i++)
+			EXPECT_EQ(true,(P[i]>=0)&&(P[i]<=10));
+	}
+}
+
 
 TEST(GenerateUniform,Create){
 	GenerateUniform I;
@@ -130,5 +141,18 @@ TEST(GenerateByGauss,Add){
 		ASSERT_ANY_THROW(I.Sigma(count));
 		ASSERT_ANY_THROW(I.Mean(-1));
 		ASSERT_ANY_THROW(I.Sigma(-1));
+	}
+}
+TEST(GenerateByGauss,Generate){
+	for(int count=1;count<n;count++){
+		GenerateByGauss I;
+		for(int i=0;i<count;i++)
+			I.Add(i,2*n-i);
+		for(int i=0;i<100;i++){
+			ParamSet P=I.Generate();
+			EXPECT_EQ(count,P.Count());
+			for(int c=0;c<count;c++)
+				ASSERT_TRUE(isfinite(P[c]));
+		}
 	}
 }
