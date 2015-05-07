@@ -29,7 +29,8 @@ TEST(point,Base){
 		EXPECT_EQ(P.WX[0],P2.WX[0]);
 	}
 	{
-		point P2=P;
+		point P2;
+		P2=P;
 		EXPECT_EQ(P.y,P2.y);
 		EXPECT_EQ(P.wy,P2.wy);
 		EXPECT_EQ(P.X.Count(),P2.X.Count());
@@ -38,7 +39,6 @@ TEST(point,Base){
 		EXPECT_EQ(P.WX[0],P2.WX[0]);
 	}
 }
-
 TEST(FitPoints,Base){
 	FitPoints points;
 	EXPECT_EQ(0,points.count());
@@ -62,4 +62,25 @@ TEST(FitPoints,Base){
 	int c=0;
 	for(point&p:points)c++;
 	EXPECT_EQ(c,points.count());
+}
+TEST(FitPoints,Operators){
+	auto points=make_shared<FitPoints>();
+	point p1;
+	EXPECT_EQ(points.get(),(points<<p1).get());
+	EXPECT_EQ(points.get(),(points<<make_pair(1.0,1.0)).get());
+}
+TEST(FitPoints,Select){
+	auto points=make_shared<FitPoints>();
+	points<<make_pair(0,0)<<make_pair(1,1)<<make_pair(2,2)<<make_pair(3,3)<<make_pair(3,3)<<make_pair(3,1)<<make_pair(1,3);
+	auto filter=[](ParamSet&X){return X[0]<2.5;};
+	auto y_filter=[](double y){return y<2.5;};
+	auto sel1=SelectFitPoints(points,make_shared<Filter>(filter));
+	for(point&p:*sel1)EXPECT_EQ(true,filter(p.X));
+	auto sel2=SelectFitPoints(points,y_filter);
+	for(point&p:*sel2)EXPECT_EQ(true,y_filter(p.y));
+	auto sel3=SelectFitPoints(points,make_shared<Filter>(filter),y_filter);
+	for(point&p:*sel3){
+		EXPECT_EQ(true,filter(p.X));
+		EXPECT_EQ(true,y_filter(p.y));
+	}
 }
