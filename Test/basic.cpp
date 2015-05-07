@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
-#include "testgen.h"
+#include <abstract.h>
+#include <genetic_exception.h>
 #include <math_h/randomfunc.h>
+#include "testgen.h"
 using namespace Genetic;
 using namespace std;
 TEST(OptimalityFunction,BaseTest){

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <filter.h>
+#include <genetic_exception.h>
 using namespace Genetic;
 using namespace std;
 TEST(Filter, BaseTest){

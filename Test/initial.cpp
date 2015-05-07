@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <initialconditions.h>
+#include <genetic_exception.h>
 #include <math_h/functions.h>
 using namespace Genetic;
 using namespace std;
