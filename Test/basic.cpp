@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <abstract.h>
+#include <initialconditions.h>
 #include <genetic_exception.h>
 #include <math_h/randomfunc.h>
 using namespace Genetic;
@@ -17,20 +18,8 @@ public:
 	GeneticTest(std::shared_ptr<Genetic::IOptimalityFunction> optimality):AbstractGenetic(optimality){}
 	virtual ~GeneticTest(){}
 };
-class Init:public IInitialConditions{
-private:
-	function<ParamSet()> m_func;
-public:
-	Init(function<ParamSet()>f){
-		m_func=f;
-	}
-	virtual ~Init(){}
-	virtual ParamSet Generate(){
-		return m_func();
-	}
-};
 auto optimality=make_shared<OptimalityFunction>([](ParamSet&p){return pow(p[0],2);});
-auto initial=make_shared<Init>([](){return ParamSet(0);});
+auto initial=make_shared<Initialiser>()<<[](){return 0;};
 void test_init(unsigned int threads,int population){
 	GeneticTest gen(optimality);
 	EXPECT_EQ(optimality.get(),gen.OptimalityCalculator().get());
@@ -124,7 +113,7 @@ protected:
 	virtual void mutations(ParamSet&P)override{P.Set(0,RandomUniformlyR(0.0,1.0));}
 };
 TEST(AbstractGenetic,FilterSettingFunc){
-	auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(0.0,1.0));});
+	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(0.0,1.0);};
 	auto filter=[](ParamSet&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(filter);
@@ -142,7 +131,7 @@ TEST(AbstractGenetic,FilterSettingFunc){
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,FilterSetting){
-	auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(0.0,1.0));});
+	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(0.0,1.0);};
 	auto filter=[](ParamSet&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(make_shared<Filter>(filter));
@@ -160,7 +149,7 @@ TEST(AbstractGenetic,FilterSetting){
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,Infinite){
-	auto initial_uniform=make_shared<Init>([](){return ParamSet(RandomUniformlyR(-1.0,1.0));});
+	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(-1.0,1.0);};
 	auto opt=make_shared<OptimalityFunction>([](ParamSet&P){
 		double res=P[0];
 		res*=res;
