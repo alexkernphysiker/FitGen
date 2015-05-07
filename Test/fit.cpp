@@ -145,4 +145,46 @@ TEST(OptimalityForPointsWithFuncError,Base){
 		EXPECT_EQ(1,coef_calls);
 	}
 }
-
+template<shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
+void test_optimality1(){
+	point p;
+	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
+	auto points=make_shared<FitPoints>();
+	p.X.Set(0,0);points<<p;p.X.Set(0,1);points<<p;p.X.Set(0,2);points<<p;
+	auto F=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 0;});
+	auto S=OptimalityAlgorithm(points,F);
+	EXPECT_NE(nullptr,S.get());
+	ParamSet P;
+	EXPECT_EQ(0,S->operator()(P));
+	auto F1=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 1;});
+	auto S1=OptimalityAlgorithm(points,F1);
+	EXPECT_NE(nullptr,S1.get());
+	EXPECT_EQ(true,S1->operator()(P)>0);
+}
+TEST(OptimalityForPoints,Algorithms){
+	test_optimality1<SumSquareDiff>();
+	test_optimality1<SumWeightedSquareDiff>();
+	test_optimality1<ChiSquare>();
+	test_optimality1<ChiSquareWithXError>();
+}
+template<shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
+void test_optimality2(){
+	point p;
+	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
+	auto points=make_shared<FitPoints>();
+	p.X.Set(0,0);points<<p;p.X.Set(0,1);points<<p;p.X.Set(0,2);points<<p;
+	auto F=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 0;});
+	auto E=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 0;});
+	auto S=OptimalityAlgorithm(points,F,E);
+	EXPECT_NE(nullptr,S.get());
+	ParamSet P;
+	EXPECT_EQ(0,S->operator()(P));
+	auto F1=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 1;});
+	auto S1=OptimalityAlgorithm(points,F1,E);
+	EXPECT_NE(nullptr,S1.get());
+	EXPECT_EQ(true,S1->operator()(P)>0);
+}
+TEST(OptimalityForPointsWithFuncError,Algorithms){
+	test_optimality2<ChiSquare>();
+	test_optimality2<ChiSquareWithXError>();
+}
