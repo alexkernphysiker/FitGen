@@ -16,7 +16,7 @@ namespace Genetic{
 			return M;
 		}
 		void SetMutationCoefficient(double val){
-			if(val<=0)
+			if(val<0)
 				throw GeneticException("DifferentialMutations: mutation coefficient should be a positive value");
 			M=val;
 		}
