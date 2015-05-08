@@ -64,10 +64,10 @@ namespace Genetic{
 	public:
 		AbsoluteMutations():FITGEN(),P(0){}
 		virtual ~AbsoluteMutations(){}
-		ParamSet AbsoluteMutationCoeficients(){
+		ParamSet AbsoluteMutationCoefficients(){
 			return M;
 		}
-		void SetAbsoluteMutationCoeficients(ParamSet p){
+		void SetAbsoluteMutationCoefficients(ParamSet p){
 			for(double v:p)
 				if(v<0)
 					throw GeneticException("AbsoluteMutations: mutation coefficient cannot be negative");
