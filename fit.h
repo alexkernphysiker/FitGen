@@ -3,7 +3,6 @@
 #include <functional>
 #include "abstract.h"
 #include "genetic.h"
-#include "genetic_exception.h"
 namespace Genetic{
 	using namespace std;
 	class IParamFunc{

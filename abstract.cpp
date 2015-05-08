@@ -65,7 +65,7 @@ namespace Genetic{
 	void AbstractGenetic::SetThreadCount(unsigned int threads_count){
 		Lock lock(m_mutex);
 		if(threads_count==0)
-			throw GeneticException("Cannot run genetic algorithm with zero threads");
+			throw GeneticException("Thread count cannot be zero");
 		threads=threads_count;
 	}
 	unsigned int AbstractGenetic::ThreadCount(){
@@ -74,9 +74,9 @@ namespace Genetic{
 	}
 	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions){
 		if(m_population.size()>0)
-			throw GeneticException("Fitting algorithm cannot be inited twice");
+			throw GeneticException("Genetic algorithm cannot be inited twice");
 		if(population_size<=0)
-			throw GeneticException("Fitting algorithm got incorrect parameters");
+			throw GeneticException("Polulation size must be a positive number");
 		auto add_to_population=[this,initial_conditions](int count){
 			for(int i=0;i<count;i++){
 				double s=INFINITY;
@@ -113,7 +113,7 @@ namespace Genetic{
 		int n=PopulationSize();
 		int par_cnt=ParamCount();
 		if(n==0)
-			throw GeneticException("Fitting algorithm cannot work with zero size of population");
+			throw GeneticException("Cannot perform the calculation when population size is zero");
 		vector<Point> tmp_population;
 		auto process_elements=[this,&tmp_population](int from,int to){
 			for(int i=from;i<=to;i++){
@@ -183,23 +183,23 @@ namespace Genetic{
 	}
 	int AbstractGenetic::ParamCount(){
 		if(m_population.size()==0)
-			throw GeneticException("Attempt to obtain unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		Lock lock(m_mutex);
 		return m_population[0].first.Count();
 	}
 	double AbstractGenetic::Optimality(int point_index){
 		if(m_population.size()==0)
-			throw GeneticException("Attempt to obtain unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if((point_index<0)|(point_index>=m_population.size()))
-			throw GeneticException("Point index out of range or no results were calculated");
+			throw GeneticException("Range check error when accessing an element in the population");
 		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
 	ParamSet& AbstractGenetic::Parameters(int point_index){
 		if(m_population.size()==0)
-			throw GeneticException("Attempt to obtain unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if((point_index<0)|(point_index>=m_population.size()))
-			throw GeneticException("Point index out of range or no results were calculated");
+			throw GeneticException("Range check error when accessing an element in the population");
 		Lock lock(m_mutex);
 		return m_population[point_index].first;
 	}
@@ -224,7 +224,7 @@ namespace Genetic{
 	
 	bool AbstractGenetic::ConcentratedInOnePoint(){
 		if(m_population.size()==0)
-			throw GeneticException("Attempt to obtain unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
 		if(Optimality(PopulationSize()-1)>Optimality())
@@ -236,9 +236,9 @@ namespace Genetic{
 	}
 	bool AbstractGenetic::AbsoluteOptimalityExitCondition(double accuracy){
 		if(m_population.size()==0)
-			throw GeneticException("Attempt to obtain unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
-			throw GeneticException("Wrong optimality exit condition.");
+			throw GeneticException("Cannot use negative accuracy parameter");
 		if(m_itercount==0)
 			return false;
 		if(accuracy==0)
@@ -247,9 +247,9 @@ namespace Genetic{
 	}
 	bool AbstractGenetic::RelativeOptimalityExitCondition(double accuracy){
 		if(m_population.size()==0)
-			throw GeneticException("Attempt to obtain unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
-			throw GeneticException("Wrong optimality exit condition.");
+			throw GeneticException("Cannot use negative accuracy parameter");
 		if(m_itercount==0)
 			return false;
 		if(accuracy==0)
@@ -259,22 +259,22 @@ namespace Genetic{
 	
 	AbstractGenetic::iterator AbstractGenetic::begin(){
 		if(m_population.size()==0)
-			throw GeneticException("Population size is zero. Attempt to get unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.begin();
 	}
 	AbstractGenetic::const_iterator AbstractGenetic::cbegin()const{
 		if(m_population.size()==0)
-			throw GeneticException("Population size is zero. Attempt to get unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.cbegin();
 	}
 	AbstractGenetic::iterator AbstractGenetic::end(){
 		if(m_population.size()==0)
-			throw GeneticException("Population size is zero. Attempt to get unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.end();
 	}
 	AbstractGenetic::const_iterator AbstractGenetic::cend() const{
 		if(m_population.size()==0)
-			throw GeneticException("Population size is zero. Attempt to get unexisting results");
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.cend();
 	}
 }

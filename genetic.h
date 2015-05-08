@@ -17,7 +17,7 @@ namespace Genetic{
 		}
 		void SetMutationCoefficient(double val){
 			if(val<=0)
-				throw new GeneticException("Invalid mutation coefficient value");
+				throw GeneticException("DifferentialMutations: mutation coefficient should be a positive value");
 			M=val;
 		}
 	protected:
@@ -41,7 +41,7 @@ namespace Genetic{
 		}
 		void SetCrossingProbability(double val){
 			if((val<0)||(val>1))
-				throw new GeneticException("Invalid crossing probability value");
+				throw GeneticException("Crossing: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -70,7 +70,7 @@ namespace Genetic{
 		void SetAbsoluteMutationCoeficients(ParamSet p){
 			for(double v:p)
 				if(v<0)
-					throw new GeneticException("Wrong random mutation coefficient. Cannot be negative");
+					throw GeneticException("AbsoluteMutations: mutation coefficient cannot be negative");
 			M=p;
 		}
 		double AbsoluteMutationsProbability(){
@@ -78,7 +78,7 @@ namespace Genetic{
 		}
 		void SetAbsoluteMutationsProbability(double val){
 			if((val<0)||(val>1))
-				throw new GeneticException("Invalid crossing probability value");
+				throw GeneticException("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -103,7 +103,7 @@ namespace Genetic{
 		void SetRelativeMutationCoefficients(ParamSet p){
 			for(double v:p)
 				if(v<0)
-					throw new GeneticException("Wrong random mutation coefficient. Cannot be negative");
+					throw GeneticException("RelativeMutations: mutation coefficient cannot be negative");
 				M=p;
 		}
 		double RelativeMutationsProbability(){
@@ -111,7 +111,7 @@ namespace Genetic{
 		}
 		void SetRelativeMutationsProbability(double val){
 			if((val<0)||(val>1))
-				throw new GeneticException("Invalid crossing probability value");
+				throw GeneticException("RelativeMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -131,7 +131,7 @@ namespace Genetic{
 		virtual ~ExactCopying(){}
 		void SetExactCopyingProbability(double value){
 			if((value<0)||(value>1))
-				throw;
+				throw GeneticException("ExactCopying: probability value should fit the condition 0<=P<=1");
 			P=value;
 		}
 		double ExactCopyingProbability(){

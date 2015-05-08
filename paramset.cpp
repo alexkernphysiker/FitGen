@@ -40,18 +40,14 @@ namespace Genetic{
 	}
 	double ParamSet::operator[](int i){
 		Lock lock(m_mutex);
-		if(i<0)
-			throw GeneticException("ParamSet: negative index for get operation");
-		if(i>=m_values.size())
-			throw GeneticException("ParamSet: index out of range for get operation");
+		if((i<0)||(i>=m_values.size()))
+			throw GeneticException("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
 	void ParamSet::Set(int i, double v){
 		Lock lock(m_mutex);
-		if(i<0)
-			throw GeneticException("ParamSet: negative index for set operation");
-		if(i>=m_values.size())
-			throw GeneticException("ParamSet: index out of range for set operation");
+		if((i<0)||(i>=m_values.size()))
+			throw GeneticException("Range check error when accessing ParamSet's element");
 		m_values[i]=v;
 	}
 	ParamSet &ParamSet::operator <<(double val){

@@ -10,10 +10,8 @@ namespace Genetic{
 		return *this;
 	}
 	generator Initialiser::operator[](int i){
-		if(i<0)
-			throw GeneticException("Initialiser: negative index");
-		if(i>=generators.size())
-			throw GeneticException("Initialiser: index out of range");
+		if((i<0)||(i>=generators.size()))
+			throw GeneticException("Range chack error when accessing Initialiser's element");
 		return generators[i];
 	}
 	int Initialiser::Count(){
@@ -52,10 +50,8 @@ namespace Genetic{
 		return ParamDistr.size();
 	}
 	Distrib &InitialDistributions::operator[](int i){
-		if(i<0)
-			throw GeneticException("InitialDistributions: negative index");
-		if(i>=ParamDistr.size())
-			throw GeneticException("InitialDistributions: index out of range");
+		if((i<0)||(i>=ParamDistr.size()))
+			throw GeneticException("Range check error when accessing InitialDistributions' element");
 		return *ParamDistr[i];
 	}
 	ParamSet InitialDistributions::Generate(){
@@ -75,10 +71,7 @@ namespace Genetic{
 	GenerateUniform::GenerateUniform(){}
 	GenerateUniform::~GenerateUniform(){}
 	int GenerateUniform::Count(){
-		int r = m_min.size();
-		if(r!=m_max.size())
-			throw GeneticException("ParamRangeUniform: unknown error. Min and max lists counts are different.");
-		return r;
+		return m_min.size();
 	}
 	GenerateUniform &GenerateUniform::Add(double min, double max){
 		if(min>max)
@@ -88,17 +81,13 @@ namespace Genetic{
 		return *this;
 	}
 	double GenerateUniform::Min(int i){
-		if(i<0)
-			throw GeneticException("ParamRangeUniform: negative index");
-		if(i>=m_min.size())
-			throw GeneticException("ParamRangeUniform: index out of range");
+		if((i<0)||(i>=m_min.size()))
+			throw GeneticException("Range check error when accessing GenerateUniform's element");
 		return m_min[i];
 	}
 	double GenerateUniform::Max(int i){
-		if(i<0)
-			throw GeneticException("ParamRangeUniform: negative index");
-		if(i>=m_max.size())
-			throw GeneticException("ParamRangeUniform: index out of range");
+		if((i<0)||(i>=m_max.size()))
+			throw GeneticException("Range check error when accessing GenerateUniform's element");
 		return m_max[i];
 	}
 	ParamSet GenerateUniform::Generate(){
@@ -111,10 +100,7 @@ namespace Genetic{
 	GenerateByGauss::GenerateByGauss(){}
 	GenerateByGauss::~GenerateByGauss(){}
 	int GenerateByGauss::Count(){
-		int r = m_mean.size();
-		if(r!=m_sig.size())
-			throw GeneticException("ParamGauss: unknown error. The sizes of private lists are different");
-		return r;
+		return m_mean.size();
 	}
 	GenerateByGauss &GenerateByGauss::Add(double mean, double sig){
 		m_mean.push_back(mean);
@@ -122,17 +108,13 @@ namespace Genetic{
 		return *this;
 	}
 	double GenerateByGauss::Mean(int i){
-		if(i<0)
-			throw GeneticException("ParamGauss: negative index");
-		if(i>=m_mean.size())
-			throw GeneticException("ParamGauss: index out of range");
+		if((i<0)||(i>=m_mean.size()))
+			throw GeneticException("Range check error when accessing GenerateByGauss's element");
 		return m_mean[i];
 	}
 	double GenerateByGauss::Sigma(int i){
-		if(i<0)
-			throw GeneticException("ParamGauss: negative index");
-		if(i>=m_sig.size())
-			throw GeneticException("ParamGauss: index out of range");
+		if((i<0)||(i>=m_sig.size()))
+			throw GeneticException("Range check error when accessing GenerateByGauss's element");
 		return m_sig[i];
 	}
 	ParamSet GenerateByGauss::Generate(){

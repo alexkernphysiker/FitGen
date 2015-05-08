@@ -46,8 +46,8 @@ namespace Genetic{
 		return src<<P;
 	}
 	FitPoints::Point& FitPoints::operator[](int i){
-		if(i<0)throw GeneticException("FitPoints: Range check error");
-		if(i>=count())throw GeneticException("FitPoints: Range check error");
+		if((i<0)||(i>=count()))
+			throw GeneticException("Range check error when getting an element from FitPoints");
 		return m_data[i];
 	}
 	FitPoints::iterator FitPoints::begin(){
@@ -84,10 +84,8 @@ namespace Genetic{
 			return res;
 	}
 	Distribution1D::Distribution1D(double min, double max, int bins):FitPoints(){
-		if(max<min)
-			throw GeneticException("Wrong distribution parameters");
-		if(bins<1)
-			throw GeneticException("Wrong distribution parameters");
+		if((max<min)||(bins<1))
+			throw GeneticException("Wrong constructor parameters for Distribution1D");
 		double binwidth=(max-min)/double(bins);
 		double halfwidth=binwidth/2.0;
 		for(double x=min+halfwidth;x<max;x+=binwidth){
