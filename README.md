@@ -69,7 +69,7 @@ Parameter number is obtained automatically.
 Tests
 =====
 
-The directory Test contains cmake project with unit tests that uses GoogleTest framework.
+The directory FitGen_tests contains cmake project with unit tests that uses GoogleTest framework.
 The GTEST_DIR environment variable must contain path to it's source code (You can download it from official site).
 It's subdirectory lib must contain also compiled linkable gtest and gtest_main libraries.
 You can compile this project and run the binary to see if you have broken some functions with your changes.
