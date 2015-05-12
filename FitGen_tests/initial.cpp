@@ -7,11 +7,11 @@ using namespace std;
 const int n=5;
 generator Funcs[]={[](){return 0;},[](){return 1;},[](){return 2;},[](){return 3;},[](){return 4;}};
 shared_ptr<Distrib> Distrs[]={
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,0,1);},0,10,0.1),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,1,1);},0,10,0.1),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,2,1);},0,10,0.1),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,3,1);},0,10,0.1),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,4,1);},0,10,0.1)
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,0,1);},0,10,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,1,1);},0,10,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,2,1);},0,10,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,3,1);},0,10,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,4,1);},0,10,10)
 };
 TEST(Initialiser,Create){
 	Initialiser I;
