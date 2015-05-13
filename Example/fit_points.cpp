@@ -29,8 +29,8 @@ int main(int argcnt, char **arg){
 		<<[](ParamSet&P){Foreground F;ParamSet X;return F(X<<P[2],P)<P[1]*5.0;}
 	);
 	auto initial=make_shared<GenerateByGauss>()
-		<<make_pair(10,10)<<make_pair(20,20)<<make_pair(-20,0)
-		<<make_pair(400,100)<<make_pair(5,1);
+		<<make_pair(100,100)<<make_pair(20,20)<<make_pair(-20,0)
+		<<make_pair(400,100)<<make_pair(5,1)<<make_pair(0,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_pair(0,0.01);
 	fit.Init(TotalFunc::ParamCount*15,initial);
