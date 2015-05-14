@@ -2,6 +2,7 @@
 bin
 build
 example*
+*test
 *cmake
 CMakeCache*
 CMakeFiles
