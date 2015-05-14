@@ -9,6 +9,7 @@ CMakeFiles
 *kdev*
 output*.txt
 .plotscript.gp
+*.cbp
 # Compiled Object files
 *.slo
 *.lo
