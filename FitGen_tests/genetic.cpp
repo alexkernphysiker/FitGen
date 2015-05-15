@@ -170,8 +170,17 @@ TEST(RelativeMutations,Size){
 		EXPECT_TRUE(P.Count()==count);
 	}
 }
+class TestMutations: public virtual AbstractGenetic{
+public:
+	TestMutations():AbstractGenetic(){}
+	virtual ~TestMutations(){}
+protected:
+	virtual void mutations(ParamSet &C)override{
+		C=parOnes(C.Count());
+	}
+};
 TEST(ExactCopying,Throws){
-	TestClass<ExactCopying<AbstractGenetic>> gen;
+	TestClass<ExactCopying<TestMutations>> gen;
 	double c=gen.ExactCopyingProbability();
 	EXPECT_THROW(gen.SetExactCopyingProbability(-1),GeneticException);
 	EXPECT_EQ(c,gen.ExactCopyingProbability());
@@ -184,12 +193,29 @@ TEST(ExactCopying,Throws){
 	EXPECT_THROW(gen.SetExactCopyingProbability(2),GeneticException);
 	EXPECT_EQ(1,gen.ExactCopyingProbability());
 }
-
 TEST(ExactCopying,Size){
 	for(int count=0;count<10;count++){
-		TestClass<Crossing<>> gen;
+		TestClass<ExactCopying<TestMutations>> gen;
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P);
 		EXPECT_TRUE(P.Count()==count);
 	}
+}
+TEST(ExactCopying,Check){
+		double S=0;
+		TestClass<ExactCopying<TestMutations>> gen;
+		for(double P=0;P<=1;P+=0.1){
+			gen.SetExactCopyingProbability(P);
+			Distribution<double> D(-0.5,1.5,2);
+			for(int i=0;i<10000;i++){
+				ParamSet P=ParamSet(0);
+				gen.MAKE_TEST(P);
+				D.AddValue(P[0]);
+			}
+			double P_exp=D.getY(0)/(D.getY(0)+D.getY(1));
+			double dP_exp=sqrt(D.getY(0))/(D.getY(0)+D.getY(1))+sqrt(D.getY(1))/pow(D.getY(0)+D.getY(1),2);
+			S+=pow((P-P_exp)/dP_exp,2);
+		}
+		S/=11.0;
+		EXPECT_TRUE(S<=2.0);
 }
