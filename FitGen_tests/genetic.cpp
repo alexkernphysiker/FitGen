@@ -207,7 +207,7 @@ TEST(ExactCopying,Check){
 		for(double P=0;P<=1;P+=0.1){
 			gen.SetExactCopyingProbability(P);
 			Distribution<double> D(-0.5,1.5,2);
-			for(int i=0;i<10000;i++){
+			for(int i=0;i<1000;i++){
 				ParamSet P=ParamSet(0);
 				gen.MAKE_TEST(P);
 				D.AddValue(P[0]);
