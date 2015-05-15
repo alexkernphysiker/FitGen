@@ -45,21 +45,21 @@ TEST(point,Base){
 TEST(FitPoints,Base){
 	FitPoints points;
 	EXPECT_EQ(0,points.count());
-	ASSERT_THROW(points[-1],GeneticException);
-	ASSERT_THROW(points[0],GeneticException);
+	EXPECT_THROW(points[-1],GeneticException);
+	EXPECT_THROW(points[0],GeneticException);
 	point p1;
 	p1.X<<0;
 	EXPECT_EQ(&points,&(points<<p1));
 	EXPECT_EQ(1,points.count());
-	ASSERT_THROW(points[-1],GeneticException);
-	ASSERT_THROW(points[1],GeneticException);
+	EXPECT_THROW(points[-1],GeneticException);
+	EXPECT_THROW(points[1],GeneticException);
 	EXPECT_EQ(p1.X[0],points[0].X[0]);
 	point p2;
 	p2.X<<0;
 	EXPECT_EQ(&points,&(points<<p2));
 	EXPECT_EQ(2,points.count());
-	ASSERT_THROW(points[-1],GeneticException);
-	ASSERT_THROW(points[2],GeneticException);
+	EXPECT_THROW(points[-1],GeneticException);
+	EXPECT_THROW(points[2],GeneticException);
 	EXPECT_EQ(p1.X[0],points[0].X[0]);
 	EXPECT_EQ(p2.X[0],points[1].X[0]);
 	int c=0;
@@ -96,9 +96,9 @@ TEST(Distribution1D,Base){
 	for(point&p:d)EXPECT_EQ(1,p.y);
 }
 TEST(Distribution1D,Throw){
-	ASSERT_THROW(Distribution1D(2,0,2),GeneticException);
-	ASSERT_THROW(Distribution1D(0,2,0),GeneticException);
-	ASSERT_THROW(Distribution1D(2,0,0),GeneticException);
+	EXPECT_THROW(Distribution1D(2,0,2),GeneticException);
+	EXPECT_THROW(Distribution1D(0,2,0),GeneticException);
+	EXPECT_THROW(Distribution1D(2,0,0),GeneticException);
 }
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();
@@ -212,10 +212,10 @@ TEST(Fit,Basetest){
 	fit.Init(20,Init);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate();
-	ASSERT_TRUE(fit.ParamCount()==2);
-	ASSERT_TRUE(fit.PopulationSize()==20);
-	ASSERT_TRUE(fit.Optimality()==0);
-	ASSERT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
+	EXPECT_TRUE(fit.ParamCount()==2);
+	EXPECT_TRUE(fit.PopulationSize()==20);
+	EXPECT_TRUE(fit.Optimality()==0);
+	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
 	EXPECT_EQ(1,fit[0]);
 	EXPECT_EQ(1,fit[1]);
 }
@@ -224,10 +224,10 @@ TEST(FitFunction,Basetest){
 	fit.Init(20,Init);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate();
-	ASSERT_TRUE(fit.ParamCount()==2);
-	ASSERT_TRUE(fit.PopulationSize()==20);
-	ASSERT_TRUE(fit.Optimality()==0);
-	ASSERT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
+	EXPECT_TRUE(fit.ParamCount()==2);
+	EXPECT_TRUE(fit.PopulationSize()==20);
+	EXPECT_TRUE(fit.Optimality()==0);
+	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
 	EXPECT_EQ(1,fit[0]);
 	EXPECT_EQ(1,fit[1]);
 }
@@ -237,10 +237,10 @@ TEST(FitFunctionWithError,Basetest){
 	fit.Init(20,Init);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate();
-	ASSERT_TRUE(fit.ParamCount()==2);
-	ASSERT_TRUE(fit.PopulationSize()==20);
-	ASSERT_TRUE(fit.Optimality()==0);
-	ASSERT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
+	EXPECT_TRUE(fit.ParamCount()==2);
+	EXPECT_TRUE(fit.PopulationSize()==20);
+	EXPECT_TRUE(fit.Optimality()==0);
+	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
 	EXPECT_EQ(1,fit[0]);
 	EXPECT_EQ(1,fit[1]);
 }

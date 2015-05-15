@@ -23,16 +23,16 @@ auto initial=make_shared<Initialiser>()<<[](){return 0;};
 void test_init(unsigned int threads,int population){
 	GeneticTest gen(optimality);
 	EXPECT_EQ(optimality.get(),gen.OptimalityCalculator().get());
-	ASSERT_THROW(gen.SetThreadCount(0),GeneticException);
+	EXPECT_THROW(gen.SetThreadCount(0),GeneticException);
 	gen.SetThreadCount(threads);
 	EXPECT_EQ(threads,gen.ThreadCount());
 	EXPECT_EQ(0,gen.PopulationSize());
-	ASSERT_THROW(gen.Init(0,initial),GeneticException);
-	ASSERT_THROW(gen.ParamCount(),GeneticException);
+	EXPECT_THROW(gen.Init(0,initial),GeneticException);
+	EXPECT_THROW(gen.ParamCount(),GeneticException);
 	EXPECT_EQ(0,gen.PopulationSize());
-	ASSERT_NO_THROW(gen.Init(population,initial));
+	EXPECT_NO_THROW(gen.Init(population,initial));
 	EXPECT_EQ(population,gen.PopulationSize());
-	ASSERT_THROW(gen.Init(population,initial),GeneticException);
+	EXPECT_THROW(gen.Init(population,initial),GeneticException);
 	EXPECT_EQ(population,gen.PopulationSize());
 	EXPECT_EQ(1,gen.ParamCount());
 }
@@ -50,22 +50,22 @@ TEST(AbstractGenetic,InitAsync3__){test_init(3,2);}
 TEST(AbstractGenetic,InitAsync4__){test_init(4,2);}
 TEST(AbstractGenetic,Throwing){
 	GeneticTest gen(optimality);
-	ASSERT_THROW(gen.Parameters(0),GeneticException);
-	ASSERT_THROW(gen.ConcentratedInOnePoint(),GeneticException);
-	ASSERT_THROW(gen.AbsoluteOptimalityExitCondition(1),GeneticException);
-	ASSERT_THROW(gen.RelativeOptimalityExitCondition(1),GeneticException);
-	ASSERT_THROW(gen.Iterate(),GeneticException);
-	ASSERT_THROW(gen.Optimality(0),GeneticException);
-	ASSERT_NO_THROW(gen.Init(2,initial));
-	ASSERT_THROW(gen.AbsoluteOptimalityExitCondition(-1),GeneticException);
-	ASSERT_THROW(gen.RelativeOptimalityExitCondition(-1),GeneticException);
-	ASSERT_THROW(gen.Optimality(-1),GeneticException);
-	ASSERT_NO_THROW(gen.Optimality(0));
-	ASSERT_NO_THROW(gen.Optimality(1));
-	ASSERT_THROW(gen.Optimality(2),GeneticException);
-	ASSERT_THROW(gen[-1],GeneticException);
-	ASSERT_NO_THROW(gen[0]);
-	ASSERT_THROW(gen[1],GeneticException);
+	EXPECT_THROW(gen.Parameters(0),GeneticException);
+	EXPECT_THROW(gen.ConcentratedInOnePoint(),GeneticException);
+	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(1),GeneticException);
+	EXPECT_THROW(gen.RelativeOptimalityExitCondition(1),GeneticException);
+	EXPECT_THROW(gen.Iterate(),GeneticException);
+	EXPECT_THROW(gen.Optimality(0),GeneticException);
+	EXPECT_NO_THROW(gen.Init(2,initial));
+	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(-1),GeneticException);
+	EXPECT_THROW(gen.RelativeOptimalityExitCondition(-1),GeneticException);
+	EXPECT_THROW(gen.Optimality(-1),GeneticException);
+	EXPECT_NO_THROW(gen.Optimality(0));
+	EXPECT_NO_THROW(gen.Optimality(1));
+	EXPECT_THROW(gen.Optimality(2),GeneticException);
+	EXPECT_THROW(gen[-1],GeneticException);
+	EXPECT_NO_THROW(gen[0]);
+	EXPECT_THROW(gen[1],GeneticException);
 }
 void test_iterate(unsigned int threads,int population,unsigned int iterations){
 	GeneticTest gen(optimality);
@@ -81,7 +81,7 @@ void test_iterate(unsigned int threads,int population,unsigned int iterations){
 		for(int i=0;i<population;i++){
 			EXPECT_EQ(0,gen.Parameters(i)[0]);
 			if(i>0)
-				ASSERT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
+				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
 		}
 		EXPECT_EQ(true,gen.ConcentratedInOnePoint());
 		EXPECT_EQ(true,gen.AbsoluteOptimalityExitCondition(0));
@@ -159,13 +159,13 @@ TEST(AbstractGenetic,Infinite){
 	GeneticTest gen(opt);
 	gen.Init(100,initial_uniform);
 	for(int i=0,n=gen.PopulationSize();i<n;i++)
-		ASSERT_TRUE(isfinite(gen.Parameters(i)[0]));
+		EXPECT_TRUE(isfinite(gen.Parameters(i)[0]));
 	for(int j=0;j<30;j++){
 		gen.Iterate();
 		for(int i=0,n=gen.PopulationSize();i<n;i++){
-			ASSERT_TRUE(isfinite(gen.Optimality(i)));
+			EXPECT_TRUE(isfinite(gen.Optimality(i)));
 			if(i>0)
-				ASSERT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
+				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
 		}
 	}
 }

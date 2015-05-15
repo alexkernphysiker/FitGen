@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(FitGenTest)
+add_definitions(-DUSE_RANDOM_DEVICE)
 include_directories(..)
 set(gtestlibs gtest gtest_main)
 set(files_to_test ../abstract.cpp ../filter.cpp ../genetic_exception.cpp ../initialconditions.cpp ../paramset.cpp ../fit.cpp)

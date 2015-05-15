@@ -28,8 +28,8 @@ TEST(Initialiser,Add){
 		int c=0;
 		for(auto i:I)c++;
 		EXPECT_EQ(c,count);
-		ASSERT_THROW(I[count](),GeneticException);
-		ASSERT_THROW(I[-1](),GeneticException);
+		EXPECT_THROW(I[count](),GeneticException);
+		EXPECT_THROW(I[-1](),GeneticException);
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<Initialiser>();
@@ -62,8 +62,8 @@ TEST(InitialDistributions,Add){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Distrs[i].get(),&I[i]);
-		ASSERT_THROW(I[count](),GeneticException);
-		ASSERT_THROW(I[-1](),GeneticException);
+		EXPECT_THROW(I[count](),GeneticException);
+		EXPECT_THROW(I[-1](),GeneticException);
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<InitialDistributions>();
@@ -100,14 +100,14 @@ TEST(GenerateUniform,Add){
 			EXPECT_EQ(i,I.Min(i));
 			EXPECT_EQ(2*n-i,I.Max(i));
 		}
-		ASSERT_THROW(I.Min(count),GeneticException);
-		ASSERT_THROW(I.Max(count),GeneticException);
-		ASSERT_THROW(I.Min(-1),GeneticException);
-		ASSERT_THROW(I.Max(-1),GeneticException);
+		EXPECT_THROW(I.Min(count),GeneticException);
+		EXPECT_THROW(I.Max(count),GeneticException);
+		EXPECT_THROW(I.Min(-1),GeneticException);
+		EXPECT_THROW(I.Max(-1),GeneticException);
 	}
 	{
 		GenerateUniform I;
-		ASSERT_THROW(I.Add(2,1),GeneticException);
+		EXPECT_THROW(I.Add(2,1),GeneticException);
 	}
 }
 TEST(GenerateUniform,AddSharedPtr){
@@ -131,7 +131,7 @@ TEST(GenerateUniform,Generate){
 			ParamSet P=I.Generate();
 			EXPECT_EQ(count,P.Count());
 			for(int c=0;c<count;c++)
-				ASSERT_TRUE((P[c]>=double(c))&&(P[c]<=double(2*n-c)));
+				EXPECT_TRUE((P[c]>=double(c))&&(P[c]<=double(2*n-c)));
 		}
 	}
 }
@@ -150,10 +150,10 @@ TEST(GenerateByGauss,Add){
 			EXPECT_EQ(i,I.Mean(i));
 			EXPECT_EQ(2*n-i,I.Sigma(i));
 		}
-		ASSERT_THROW(I.Mean(count),GeneticException);
-		ASSERT_THROW(I.Sigma(count),GeneticException);
-		ASSERT_THROW(I.Mean(-1),GeneticException);
-		ASSERT_THROW(I.Sigma(-1),GeneticException);
+		EXPECT_THROW(I.Mean(count),GeneticException);
+		EXPECT_THROW(I.Sigma(count),GeneticException);
+		EXPECT_THROW(I.Mean(-1),GeneticException);
+		EXPECT_THROW(I.Sigma(-1),GeneticException);
 	}
 }
 TEST(GenerateByGauss,AddSharedPtr){
@@ -177,7 +177,7 @@ TEST(GenerateByGauss,Generate){
 			ParamSet P=I.Generate();
 			EXPECT_EQ(count,P.Count());
 			for(int c=0;c<count;c++)
-				ASSERT_TRUE(isfinite(P[c]));
+				EXPECT_TRUE(isfinite(P[c]));
 		}
 	}
 }

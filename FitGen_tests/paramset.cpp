@@ -110,8 +110,8 @@ TEST(ParamSet, Set){
 		}
 		ParamSet source;
 		for(int i=0;i<count;i++)source<<data[i];
-		ASSERT_THROW(source.Set(-1,0.0),GeneticException);
-		ASSERT_THROW(source.Set(source.Count(),0.0),GeneticException);
+		EXPECT_THROW(source.Set(-1,0.0),GeneticException);
+		EXPECT_THROW(source.Set(source.Count(),0.0),GeneticException);
 	}
 }
 TEST(ParamSet,ParEQ){
