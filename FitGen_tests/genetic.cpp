@@ -42,17 +42,24 @@ TEST(DifferentialMutations,Zeros){
 	}
 }
 TEST(DifferentialMutations,Upper){
-	for(int count=0;count<10;count++){
+	for(int count=0;count<5;count++){
 		TestClass<DifferentialMutations<>> gen;
 		auto init=make_shared<Initialiser>();
 		for(int i=0; i<count;i++)
-			init<<[](){return RandomUniformlyR(-1,1);};
-		gen.Init(10,init);
-		ParamSet P=parZeros(count);
-		gen.MAKE_TEST(P);
-		EXPECT_TRUE(P.Count()==count);
-		for(double p:P)// Maximum A-B is 2.0
-			EXPECT_TRUE((p*p)<=(4.0*gen.MutationCoefficient()));
+			init<<[](){return RandomUniformlyR(-0.5,0.5);};
+		gen.Init(5,init);
+		for(gen.SetMutationCoefficient(0);
+			gen.MutationCoefficient()<=1;
+			gen.SetMutationCoefficient(gen.MutationCoefficient()+0.1)
+		)for(int i=0;i<50;i++){
+			ParamSet P=parZeros(count);
+			gen.MAKE_TEST(P);
+			EXPECT_TRUE(P.Count()==count);
+			for(double p:P){
+				EXPECT_TRUE(p<=gen.MutationCoefficient());
+				EXPECT_TRUE((-p)<=gen.MutationCoefficient());
+			}
+		}
 	}
 }
 TEST(Crossing,Throws){
