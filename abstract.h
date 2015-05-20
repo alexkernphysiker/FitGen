@@ -65,7 +65,7 @@ namespace Genetic{
 		int PopulationSize();
 		int ParamCount();
 		double Optimality(int point_index=0);
-		ParamSet& Parameters(int point_index=0);
+		ParamSet&Parameters(int point_index=0);
 		double operator[](int i);
 		ParamSet ParamAverage();
 		ParamSet ParamDispersion();

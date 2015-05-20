@@ -195,7 +195,7 @@ namespace Genetic{
 		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
-	ParamSet& AbstractGenetic::Parameters(int point_index){
+	ParamSet&AbstractGenetic::Parameters(int point_index){
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if((point_index<0)|(point_index>=m_population.size()))

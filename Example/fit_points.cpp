@@ -71,10 +71,9 @@ int main(int argcnt, char **arg){
 			Background bg_func;
 			Foreground fg_func;
 			for(double x=-70; x<=30; x+=0.5){
-				ParamSet X(x);
-				out<<x<<" "<<fit(X)<<"\n";
-				outbg<<x<<" "<<bg_func(X,fit.Parameters())<<"\n";
-				outfg<<x<<" "<<fg_func(X,fit.Parameters())<<"\n";
+				out<<x<<" "<<fit(ParamSet(x))<<"\n";
+				outbg<<x<<" "<<bg_func.F(ParamSet(x),fit.Parameters())<<"\n";
+				outfg<<x<<" "<<fg_func.F(ParamSet(x),fit.Parameters())<<"\n";
 			}
 			out.close();
 			outbg.close();

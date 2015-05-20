@@ -3,11 +3,11 @@
 #include "genetic_exception.h"
 using namespace std;
 namespace Genetic{
-	ParameterFunction::ParameterFunction(function<double(ParamSet &,ParamSet &)> f){
+	ParameterFunction::ParameterFunction(function<double(ParamSet&,ParamSet&)> f){
 		func=f;
 	}
 	ParameterFunction::~ParameterFunction(){}
-	double ParameterFunction::operator()(ParamSet& X, ParamSet& P){
+	double ParameterFunction::operator()(ParamSet&X, ParamSet&P){
 		return func(X,P);
 	}
 	
@@ -249,7 +249,7 @@ namespace Genetic{
 		else
 			return sqrt(2.0/dd);
 	}
-	ParamSet Parabolic::GetParamParabolicErrors(ParamSet delta){
+	ParamSet Parabolic::GetParamParabolicErrors(ParamSet&&delta){
 		ParamSet res;
 		for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
 			res<<GetParamParabolicError(delta[i],i);

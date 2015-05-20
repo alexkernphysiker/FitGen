@@ -9,14 +9,16 @@ namespace Genetic{
 	public:
 		virtual ~IParamFunc(){}
 		virtual double operator()(ParamSet&X,ParamSet&P)=0;
+		inline double F(ParamSet&&X,ParamSet&P){return operator()(X,P);}
+		inline double F(ParamSet&&X,ParamSet&&P){return operator()(X,P);}
 	};
 	class ParameterFunction:public IParamFunc{
 	public:
-		ParameterFunction(function<double(ParamSet &,ParamSet &)> f);
+		ParameterFunction(function<double(ParamSet&,ParamSet&)> f);
 		virtual ~ParameterFunction();
 		virtual double operator()(ParamSet&X,ParamSet&P) override;
 	private:
-		function<double(ParamSet &,ParamSet &)> func;
+		function<double(ParamSet&,ParamSet&)> func;
 	};
 	
 	class FitPoints{
@@ -111,7 +113,7 @@ namespace Genetic{
 	public:
 		virtual ~Parabolic();
 		double GetParamParabolicError(double delta,int i);
-		ParamSet GetParamParabolicErrors(ParamSet delta);
+		ParamSet GetParamParabolicErrors(ParamSet&&delta);
 	};
 	shared_ptr<IOptimalityFunction> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
@@ -137,7 +139,7 @@ namespace Genetic{
 			function<double(ParamSet &,ParamSet &)> f
 		):Fit(points,make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
-		double operator()(ParamSet X){
+		double operator()(ParamSet&&X){
 			return m_func->operator()(X,AbstractGenetic::Parameters());
 		}
 	};
