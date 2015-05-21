@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <random>
 #include <fit.h>
 #include <initialconditions.h>
 #include <math_h/functions.h>
@@ -12,17 +13,15 @@ int main(int argcnt, char **arg){
 	int count=500;
 	auto distribution=make_shared<Distribution1D>(left,right,int(right-left)*bins);
 	printf("Filling...\n");
+	default_random_engine r;
+	normal_distribution<double> gauss((right+left)/2.0,(right-left)/10.0);
 	for(int i=0;i<count;i++)
-		distribution->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
+		distribution->Fill(gauss(r));
 	printf("Prepare fitting...\n");
 	Fit<DifferentialMutations<>,ChiSquareWithXError>
 		fit(distribution,[](ParamSet&&X,ParamSet&&P){return Gaussian(X[0],P[0],P[1])*P[2];});
 	fit.SetFilter([](ParamSet&&P){return (P[1]>0)&&(P[2]>0);});
-	fit.Init(30,make_shared<Initialiser>()
-		<<[left,right](){return RandomUniformlyR(left,right);}
-		<<[left,right](){return RandomUniformlyR(0.0,right-left);}
-		<<[count,bins](){return RandomGauss(double(count/bins),double(count/bins));}
-	);
+	fit.Init(30,make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,2.0*count/bins));
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
 	printf("Fitting...\n");

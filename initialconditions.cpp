@@ -1,5 +1,4 @@
 #include "initialconditions.h"
-#include "math_h/randomfunc.h"
 #include "genetic_exception.h"
 namespace Genetic{
 	using namespace std;
@@ -92,8 +91,10 @@ namespace Genetic{
 	}
 	ParamSet GenerateUniform::Generate(){
 		ParamSet res;
-		for(int i=0; i<Count();i++)
-			res<<RandomUniformlyR(m_min[i],m_max[i]);
+		for(int i=0; i<Count();i++){
+			uniform_real_distribution<double> D(m_min[i],m_max[i]);
+			res<<D(G);
+		}
 		return res;
 	}
 	
@@ -119,8 +120,10 @@ namespace Genetic{
 	}
 	ParamSet GenerateByGauss::Generate(){
 		ParamSet res;
-		for(int i=0; i<Count();i++)
-			res<<RandomGauss(m_sig[i],m_mean[i]);
+		for(int i=0; i<Count();i++){
+			normal_distribution<double> D(m_mean[i],m_sig[i]);
+			res<<D(G);
+		}
 		return res;
 	}
 }

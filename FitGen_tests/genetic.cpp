@@ -4,6 +4,7 @@
 #include <genetic_exception.h>
 using namespace Genetic;
 using namespace std;
+std::default_random_engine G2;
 template<class GENETIC>
 class TestClass:public virtual GENETIC{
 public:
@@ -42,11 +43,12 @@ TEST(DifferentialMutations,Zeros){
 	}
 }
 TEST(DifferentialMutations,Upper){
+	std::uniform_real_distribution<double> distr(-0.5,0.5);
 	for(int count=0;count<5;count++){
 		TestClass<DifferentialMutations<>> gen;
 		auto init=make_shared<Initialiser>();
 		for(int i=0; i<count;i++)
-			init<<[](){return RandomUniformlyR(-0.5,0.5);};
+			init<<[&distr](){return distr(G2);};
 		gen.Init(5,init);
 		for(gen.SetMutationCoefficient(0);
 			gen.MutationCoefficient()<=1;

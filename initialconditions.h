@@ -1,5 +1,6 @@
 #ifndef ___DnoQpUEN
 #define ___DnoQpUEN
+#include <random>
 #include <functional>
 #include "abstract.h"
 #include "math_h/randomfunc.h"
@@ -23,6 +24,7 @@ namespace Genetic{
 		const_iterator cend() const;
 	private:
 		vector<generator> generators;
+		std::default_random_engine G;
 	};
 	shared_ptr<Initialiser> operator<<(shared_ptr<Initialiser> init, generator gen);
 	
@@ -51,6 +53,7 @@ namespace Genetic{
 	private:
 		vector<double> m_min;
 		vector<double> m_max;
+		std::default_random_engine G;
 	};
 	class GenerateByGauss:public IInitialConditions{
 	public:
@@ -64,6 +67,7 @@ namespace Genetic{
 	private:
 		vector<double> m_mean;
 		vector<double> m_sig;
+		std::default_random_engine G;
 	};
 	inline shared_ptr<GenerateByGauss> operator<<(shared_ptr<GenerateByGauss> G, pair<double,double> value){
 		G->Add(value.first,value.second);

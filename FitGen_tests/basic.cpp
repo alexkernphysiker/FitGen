@@ -104,15 +104,18 @@ TEST(AbstractGenetic,ItSync__){test_iterate(1,2,5);}
 TEST(AbstractGenetic,ItAsync2__){test_iterate(2,2,5);}
 TEST(AbstractGenetic,ItAsync3__){test_iterate(3,2,5);}
 TEST(AbstractGenetic,ItAsync4__){test_iterate(4,2,5);}
+std::default_random_engine G;
+std::uniform_real_distribution<double> distr(0,1);
+std::uniform_real_distribution<double> distr2(-1,1);
 class GeneticTestWithMutations:public AbstractGenetic{
 public:
 	GeneticTestWithMutations(shared_ptr<IOptimalityFunction> optimality):AbstractGenetic(optimality){}
 	virtual ~GeneticTestWithMutations(){}
 protected:
-	virtual void mutations(ParamSet&P)override{P.Set(0,RandomUniformlyR(0.0,1.0));}
+	virtual void mutations(ParamSet&P)override{P.Set(0,distr(G));}
 };
 TEST(AbstractGenetic,FilterSettingFunc){
-	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(0.0,1.0);};
+	auto initial_uniform=make_shared<Initialiser>()<<[](){return distr(G);};
 	auto filter=[](ParamSet&&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(filter);
@@ -130,7 +133,7 @@ TEST(AbstractGenetic,FilterSettingFunc){
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,FilterSetting){
-	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(0.0,1.0);};
+	auto initial_uniform=make_shared<Initialiser>()<<[](){return distr(G);};
 	auto filter=[](ParamSet&&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(make_shared<Filter>(filter));
@@ -148,7 +151,7 @@ TEST(AbstractGenetic,FilterSetting){
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,Infinite){
-	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(-1.0,1.0);};
+	auto initial_uniform=make_shared<Initialiser>()<<[](){return distr2(G);};
 	auto opt=make_shared<OptimalityFunction>([](ParamSet&&P){
 		double res=P[0];
 		res*=res;
