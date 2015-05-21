@@ -139,9 +139,7 @@ namespace Genetic{
 			function<double(ParamSet&&,ParamSet&&)> f
 		):Fit(points,make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
-		double operator()(ParamSet&&X){
-			return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());
-		}
+		double operator()(ParamSet&&X){return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());}
 	};
 	template<class GENETIC,class FUNC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
@@ -178,13 +176,11 @@ namespace Genetic{
 		}
 		FitFunctionWithError(
 			shared_ptr<FitPoints> points,
-			function<double(ParamSet &,ParamSet &)> f,
-			function<double(ParamSet &,ParamSet &)> e
+			function<double(ParamSet&&,ParamSet&&)> f,
+			function<double(ParamSet&&,ParamSet&&)> e
 		):FitFunctionWithError(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e)){}
 		virtual ~FitFunctionWithError(){}
-		double operator()(ParamSet X){
-			return m_func->operator()(X,AbstractGenetic::Parameters());
-		}
+		double operator()(ParamSet&&X){return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());}
 	};
 }
 #endif
