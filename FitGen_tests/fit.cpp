@@ -190,13 +190,29 @@ TEST(OptimalityForPointsWithFuncError,Algorithms){
 }
 class ParabolicTest:public virtual Parabolic{
 public:
-    ParabolicTest():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&&P){return P[0]*P[0];})),Parabolic(){}
+    ParabolicTest():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&&P){
+		double res=0;
+		for(double p:P)res+=p*p;
+		return res;
+	})),Parabolic(){}
     virtual ~ParabolicTest(){}
 };
 TEST(Parabolic,Base){
 	ParabolicTest gen;
 	gen.Init(1,make_shared<Initialiser>()<<[](){return 0.0;});
 	EXPECT_EQ(1,gen.GetParamParabolicErrors(0.01)[0]);
+}
+TEST(Parabolic,BaseTest){
+	for(int count=1;count<10;count++){
+		ParabolicTest gen;
+		auto init=make_shared<Initialiser>();
+		for(int i=0;i<count;i++)
+			init<<[](){return 0.0;};
+		gen.Init(1,init);
+		ParamSet P=gen.GetParamParabolicErrors(parEq(count,0.01));
+		ASSERT_EQ(count,P.Count());
+		for(double p:P)EXPECT_EQ(1,p);
+	}
 }
 typedef Add<Mul<Arg<0>,Par<0>>,Par<1>> Fit_Func;
 typedef Const<1> Fit_Func_err;
