@@ -51,7 +51,7 @@ namespace Genetic{
 				auto X=AbstractGenetic::Parameters(RandomUniformlyI(0,AbstractGenetic::PopulationSize()-1));
 				FITGEN::mutations(X);
 				for(int i=0; i<C.Count();i++)
-					if(rand()%2==1)
+					if(RandomUniformlyR<double>(0,1)<0.5)
 						C.Set(i,X[i]);
 			}
 		}
