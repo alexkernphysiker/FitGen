@@ -3,12 +3,12 @@
 #include "genetic_exception.h"
 using namespace std;
 namespace Genetic{
-	ParameterFunction::ParameterFunction(function<double(ParamSet&,ParamSet&)> f){
+	ParameterFunction::ParameterFunction(function<double(ParamSet&&,ParamSet&&)> f){
 		func=f;
 	}
 	ParameterFunction::~ParameterFunction(){}
-	double ParameterFunction::operator()(ParamSet&X, ParamSet&P){
-		return func(X,P);
+	double ParameterFunction::operator()(ParamSet&&X, ParamSet&&P){
+		return func(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));
 	}
 	
 	FitPoints::Point::Point(){}
@@ -65,7 +65,7 @@ namespace Genetic{
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point p:(*src))
-			if(condition->operator()(p.X))
+			if(condition->operator()(static_cast<ParamSet&&>(p.X)))
 				res<<p;
 			return res;
 	}
@@ -79,7 +79,7 @@ namespace Genetic{
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point p:(*src))
-			if(condition->operator()(p.X)&&Ycond(p.y))
+			if(condition->operator()(static_cast<ParamSet&&>(p.X))&&Ycond(p.y))
 				res<<p;
 			return res;
 	}
@@ -117,7 +117,7 @@ namespace Genetic{
 		S=s;
 	}
 	OptimalityForPoints::~OptimalityForPoints(){}
-	double OptimalityForPoints::operator()(ParamSet& P){
+	double OptimalityForPoints::operator()(ParamSet&&P){
 		double res=0;
 		for(FitPoints::Point p:*points)
 			res+=S(p,P,*func);
@@ -128,7 +128,7 @@ namespace Genetic{
 			return 1.0;
 		};
 		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
-			return pow(p.y-F(p.X,P),2);
+			return pow(p.y-F(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P)),2);
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
@@ -141,7 +141,7 @@ namespace Genetic{
 			return 1.0/z;
 		};
 		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
-			return pow(p.y-F(p.X,P),2)*p.wy;
+			return pow(p.y-F(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P)),2)*p.wy;
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
@@ -153,7 +153,7 @@ namespace Genetic{
 			return 1.0/z;
 		};
 		OptimalityForPoints::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F){
-			return pow((p.y-F(p.X,P))/p.wy,2);
+			return pow((p.y-F(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P)))/p.wy,2);
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
@@ -171,9 +171,9 @@ namespace Genetic{
 				ParamSet x2=p.X;
 				x1.Set(j,p.X[j]+p.WX[j]);
 				x2.Set(j,p.X[j]-p.WX[j]);
-				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
+				w+=pow(0.5*(F(static_cast<ParamSet&&>(x1),static_cast<ParamSet&&>(P))-F(static_cast<ParamSet&&>(x2),static_cast<ParamSet&&>(P))),2);
 			}
-			return pow((p.y-F(p.X,P)),2)/w;
+			return pow((p.y-F(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P))),2)/w;
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
@@ -191,7 +191,7 @@ namespace Genetic{
 		S=s;
 	}
 	OptimalityForPointsWithFuncError::~OptimalityForPointsWithFuncError(){}
-	double OptimalityForPointsWithFuncError::operator()(ParamSet& P){
+	double OptimalityForPointsWithFuncError::operator()(ParamSet&&P){
 		double res=0;
 		for(FitPoints::Point p:*points)
 			res+=S(p,P,*func,*error);
@@ -205,7 +205,7 @@ namespace Genetic{
 			return 1.0/z;
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F,IParamFunc&E){
-			return pow((p.y-F(p.X,P))/(p.wy+E(p.X,P)),2);
+			return pow((p.y-F(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P)))/(p.wy+E(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P))),2);
 		};
 		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
 	}
@@ -217,15 +217,15 @@ namespace Genetic{
 			return 1.0/z;
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](FitPoints::Point&p,ParamSet&P,IParamFunc&F,IParamFunc&E){
-			double w=pow(p.wy+E(p.X,P),2);
+			double w=pow(p.wy+E(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P)),2);
 			for(int j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
 				ParamSet x1=p.X;
 				ParamSet x2=p.X;
 				x1.Set(j,p.X[j]+p.WX[j]);
 				x2.Set(j,p.X[j]-p.WX[j]);
-				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
+				w+=pow(0.5*(F(static_cast<ParamSet&&>(x1),static_cast<ParamSet&&>(P))-F(static_cast<ParamSet&&>(x2),static_cast<ParamSet&&>(P))),2);
 			}
-			return pow((p.y-F(p.X,P)),2)/w;
+			return pow((p.y-F(static_cast<ParamSet&&>(p.X),static_cast<ParamSet&&>(P))),2)/w;
 		};
 		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
 	}
@@ -239,8 +239,8 @@ namespace Genetic{
 		ParamSet be=ab;
 		ab.Set(i,ab[i]+delta);
 		be.Set(i,be[i]-delta);
-		double sa=OptimalityCalculator()->operator()(ab);
-		double sb=OptimalityCalculator()->operator()(be);
+		double sa=OptimalityCalculator()->operator()(static_cast<ParamSet&&>(ab));
+		double sb=OptimalityCalculator()->operator()(static_cast<ParamSet&&>(be));
 		double da=(sa-s)/delta;
 		double db=(s-sb)/delta;
 		double dd=(da-db)/delta;

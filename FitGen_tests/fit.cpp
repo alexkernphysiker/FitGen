@@ -8,9 +8,8 @@ using namespace std;
 TEST(ParameterFunction,Basic){
 	int c=0;
 	double res=2;
-	ParameterFunction F([&c,&res](ParamSet&,ParamSet&){c++;return res;});
-	ParamSet X,P;
-	EXPECT_EQ(res,F(X,P));
+	ParameterFunction F([&c,&res](ParamSet&&,ParamSet&&){c++;return res;});
+	EXPECT_EQ(res,F(ParamSet(),ParamSet()));
 	EXPECT_EQ(1,c);
 }
 typedef FitPoints::Point point;
@@ -75,15 +74,15 @@ TEST(FitPoints,Operators){
 TEST(FitPoints,Select){
 	auto points=make_shared<FitPoints>();
 	points<<make_pair(0,0)<<make_pair(1,1)<<make_pair(2,2)<<make_pair(3,3)<<make_pair(3,3)<<make_pair(3,1)<<make_pair(1,3);
-	auto filter=[](ParamSet&X){return X[0]<2.5;};
+	auto filter=[](ParamSet&&X){return X[0]<2.5;};
 	auto y_filter=[](double y){return y<2.5;};
 	auto sel1=SelectFitPoints(points,make_shared<Filter>(filter));
-	for(point&p:*sel1)EXPECT_EQ(true,filter(p.X));
+	for(point&p:*sel1)EXPECT_EQ(true,filter(static_cast<ParamSet&&>(p.X)));
 	auto sel2=SelectFitPoints(points,y_filter);
 	for(point&p:*sel2)EXPECT_EQ(true,y_filter(p.y));
 	auto sel3=SelectFitPoints(points,make_shared<Filter>(filter),y_filter);
 	for(point&p:*sel3){
-		EXPECT_EQ(true,filter(p.X));
+		EXPECT_EQ(true,filter(static_cast<ParamSet&&>(p.X)));
 		EXPECT_EQ(true,y_filter(p.y));
 	}
 }
@@ -103,21 +102,20 @@ TEST(Distribution1D,Throw){
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();
 	int func_calls=0;
-	auto f=[&func_calls](ParamSet&,ParamSet&){func_calls++;return 0.0;};
+	auto f=[&func_calls](ParamSet&&,ParamSet&&){func_calls++;return 0.0;};
 	int summand_calls=0;
 	auto s=[&summand_calls](FitPoints::Point&,ParamSet&,IParamFunc&){summand_calls++;return 1.0;};
 	int coef_calls=0;
 	auto c=[&coef_calls](ParamSet&,IParamFunc&){coef_calls++;return 1.0;};
 	OptimalityForPoints S(points,make_shared<ParameterFunction>(f),c,s);
-	ParamSet P;
-	EXPECT_EQ(0,S(P));
+	EXPECT_EQ(0,S(ParamSet()));
 	EXPECT_EQ(0,func_calls);
 	EXPECT_EQ(points->count(),summand_calls);
 	EXPECT_EQ(1,coef_calls);
 	for(int count=1;count<5;count++){
 		func_calls=summand_calls=coef_calls=0;
 		points<<make_pair(0,0);
-		EXPECT_EQ(count,S(P));
+		EXPECT_EQ(count,S(ParamSet()));
 		EXPECT_EQ(0,func_calls);
 		EXPECT_EQ(points->count(),summand_calls);
 		EXPECT_EQ(1,coef_calls);
@@ -126,23 +124,22 @@ TEST(OptimalityForPoints,Base){
 TEST(OptimalityForPointsWithFuncError,Base){
 	auto points=make_shared<FitPoints>();
 	int func_calls=0;
-	auto f=[&func_calls](ParamSet&,ParamSet&){func_calls++;return 0.0;};
+	auto f=[&func_calls](ParamSet&&,ParamSet&&){func_calls++;return 0.0;};
 	int err_calls=0;
-	auto e=[&err_calls](ParamSet&,ParamSet&){err_calls++;return 0.0;};
+	auto e=[&err_calls](ParamSet&&,ParamSet&&){err_calls++;return 0.0;};
 	int summand_calls=0;
 	auto s=[&summand_calls](FitPoints::Point&,ParamSet&,IParamFunc&,IParamFunc&){summand_calls++;return 1.0;};
 	int coef_calls=0;
 	auto c=[&coef_calls](ParamSet&,IParamFunc&,IParamFunc&){coef_calls++;return 1.0;};
 	OptimalityForPointsWithFuncError S(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e),c,s);
-	ParamSet P;
-	EXPECT_EQ(0,S(P));
+	EXPECT_EQ(0,S(ParamSet()));
 	EXPECT_EQ(0,func_calls);
 	EXPECT_EQ(points->count(),summand_calls);
 	EXPECT_EQ(1,coef_calls);
 	for(int count=1;count<5;count++){
 		func_calls=summand_calls=coef_calls=0;
 		points<<make_pair(0,0);
-		EXPECT_EQ(count,S(P));
+		EXPECT_EQ(count,S(ParamSet()));
 		EXPECT_EQ(0,func_calls);
 		EXPECT_EQ(points->count(),summand_calls);
 		EXPECT_EQ(1,coef_calls);
@@ -154,17 +151,16 @@ void test_optimality1(double v=INFINITY){
 	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
 	auto points=make_shared<FitPoints>();
 	p.X.Set(0,0);points<<p;p.X.Set(0,1);points<<p;p.X.Set(0,2);points<<p;
-	auto F=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 0;});
+	auto F=make_shared<ParameterFunction>([](ParamSet&&,ParamSet&&){return 0;});
 	auto S=OptimalityAlgorithm(points,F);
 	EXPECT_NE(nullptr,S.get());
-	ParamSet P;
-	EXPECT_EQ(0,S->operator()(P));
-	auto F1=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 1;});
+	EXPECT_EQ(0,S->operator()(ParamSet()));
+	auto F1=make_shared<ParameterFunction>([](ParamSet&&,ParamSet&&){return 1;});
 	auto S1=OptimalityAlgorithm(points,F1);
 	EXPECT_NE(nullptr,S1.get());
-	EXPECT_EQ(true,S1->operator()(P)>0);
+	EXPECT_EQ(true,S1->operator()(ParamSet())>0);
 	if(isfinite(v))
-		EXPECT_EQ(v,S1->operator()(P));
+		EXPECT_EQ(v,S1->operator()(ParamSet()));
 }
 TEST(OptimalityForPoints,Algorithms){
 	test_optimality1<SumSquareDiff>(3);
@@ -178,16 +174,15 @@ void test_optimality2(){
 	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
 	auto points=make_shared<FitPoints>();
 	p.X.Set(0,0);points<<p;p.X.Set(0,1);points<<p;p.X.Set(0,2);points<<p;
-	auto F=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 0;});
-	auto E=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 0;});
+	auto F=make_shared<ParameterFunction>([](ParamSet&&,ParamSet&&){return 0;});
+	auto E=make_shared<ParameterFunction>([](ParamSet&&,ParamSet&&){return 0;});
 	auto S=OptimalityAlgorithm(points,F,E);
 	EXPECT_NE(nullptr,S.get());
-	ParamSet P;
-	EXPECT_EQ(0,S->operator()(P));
-	auto F1=make_shared<ParameterFunction>([](ParamSet&,ParamSet&){return 1;});
+	EXPECT_EQ(0,S->operator()(ParamSet()));
+	auto F1=make_shared<ParameterFunction>([](ParamSet&&,ParamSet&&){return 1;});
 	auto S1=OptimalityAlgorithm(points,F1,E);
 	EXPECT_NE(nullptr,S1.get());
-	EXPECT_EQ(true,S1->operator()(P)>0);
+	EXPECT_EQ(true,S1->operator()(ParamSet())>0);
 }
 TEST(OptimalityForPointsWithFuncError,Algorithms){
 	test_optimality2<ChiSquare>();
@@ -195,7 +190,7 @@ TEST(OptimalityForPointsWithFuncError,Algorithms){
 }
 class ParabolicTest:public virtual Parabolic{
 public:
-    ParabolicTest():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&P){return P[0]*P[0];})),Parabolic(){}
+    ParabolicTest():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&&P){return P[0]*P[0];})),Parabolic(){}
     virtual ~ParabolicTest(){}
 };
 TEST(Parabolic,Base){

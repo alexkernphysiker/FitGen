@@ -4,11 +4,11 @@
 using namespace Genetic;
 using namespace std;
 TEST(Filter, BaseTest){
-	Filter must_be_false([](ParamSet&){return false;});
-	Filter must_be_true([](ParamSet&){return true;});
+	Filter must_be_false([](ParamSet&&){return false;});
+	Filter must_be_true([](ParamSet&&){return true;});
 	ParamSet p;
-	EXPECT_EQ(false,must_be_false(p));
-	EXPECT_EQ(true,must_be_true(p));
+	EXPECT_EQ(false,must_be_false(static_cast<ParamSet&&>(p)));
+	EXPECT_EQ(true,must_be_true(static_cast<ParamSet&&>(p)));
 }
 TEST(Above,BasicTest){
 	for(int count=0;count<10;count++){
@@ -16,19 +16,19 @@ TEST(Above,BasicTest){
 		{Above tester;
 			for(int i=0;i<count;i++){
 				EXPECT_EQ(&tester,&(tester<<1));
-				EXPECT_EQ(false,tester(Check));
+				EXPECT_EQ(false,tester(static_cast<ParamSet&&>(Check)));
 			}
 		}
 		{Above tester;
 			for(int i=0;i<count;i++){
 				EXPECT_EQ(&tester,&(tester<<-1));
-				EXPECT_EQ(true,tester(Check));
+				EXPECT_EQ(true,tester(static_cast<ParamSet&&>(Check)));
 			}
 		}
 		{Above tester;double c=1;
 			for(int i=0;i<count;i++){
 				EXPECT_EQ(&tester,&(tester<<c));
-				EXPECT_EQ(false,tester(Check));
+				EXPECT_EQ(false,tester(static_cast<ParamSet&&>(Check)));
 				c=-c;
 			}
 		}
@@ -40,19 +40,19 @@ TEST(Below,BasicTest){
 		{Below tester;
 			for(int i=0;i<count;i++){
 				EXPECT_EQ(&tester,&(tester<<-1));
-				EXPECT_EQ(false,tester(Check));
+				EXPECT_EQ(false,tester(static_cast<ParamSet&&>(Check)));
 			}
 		}
 		{Below tester;
 			for(int i=0;i<count;i++){
 				EXPECT_EQ(&tester,&(tester<<1));
-				EXPECT_EQ(true,tester(Check));
+				EXPECT_EQ(true,tester(static_cast<ParamSet&&>(Check)));
 			}
 		}
 		{Below tester;double c=-1;
 			for(int i=0;i<count;i++){
 				EXPECT_EQ(&tester,&(tester<<c));
-				EXPECT_EQ(false,tester(Check));
+				EXPECT_EQ(false,tester(static_cast<ParamSet&&>(Check)));
 				c=-c;
 			}
 		}
@@ -60,11 +60,11 @@ TEST(Below,BasicTest){
 }
 const int n=5;
 shared_ptr<Filter> filters[]={
-	make_shared<Filter>([](ParamSet&){return true;}),
-	make_shared<Filter>([](ParamSet&){return true;}),
-	make_shared<Filter>([](ParamSet&){return true;}),
-	make_shared<Filter>([](ParamSet&){return true;}),
-	make_shared<Filter>([](ParamSet&){return true;})
+	make_shared<Filter>([](ParamSet&&){return true;}),
+	make_shared<Filter>([](ParamSet&&){return true;}),
+	make_shared<Filter>([](ParamSet&&){return true;}),
+	make_shared<Filter>([](ParamSet&&){return true;}),
+	make_shared<Filter>([](ParamSet&&){return true;})
 };
 template<class FilterMulti>void test_multi(){
 	for(int count=0;count<n;count++){
@@ -83,7 +83,7 @@ TEST(Or,Add){test_multi<Or>();}
 template<class FilterMulti>void test_add(){
 	auto I=make_shared<FilterMulti>();
 	EXPECT_EQ(0,I->Count());
-	auto filter=[](ParamSet&){return true;};
+	auto filter=[](ParamSet&&){return true;};
 	EXPECT_EQ(I.get(),&(I->Add(filter)));
 	EXPECT_EQ(1,I->Count());
 	EXPECT_EQ(I.get(),(I<<filter).get());
@@ -99,21 +99,21 @@ private:
 public:
 	ConstFilter(bool v):value(v){}
 	virtual ~ConstFilter(){}
-	virtual bool operator()(ParamSet&P)override{return value;}
+	virtual bool operator()(ParamSet&&P)override{return value;}
 };
 #define TRUE make_shared<ConstFilter>(true)
 #define FALSE make_shared<ConstFilter>(false)
 TEST(And,Work){
 	ParamSet P;
-	EXPECT_EQ(true,(make_shared<And>()<<TRUE<<TRUE)->operator()(P));
-	EXPECT_EQ(false,(make_shared<And>()<<FALSE<<TRUE)->operator()(P));
-	EXPECT_EQ(false,(make_shared<And>()<<TRUE<<FALSE)->operator()(P));
-	EXPECT_EQ(false,(make_shared<And>()<<FALSE<<FALSE)->operator()(P));
+	EXPECT_EQ(true,(make_shared<And>()<<TRUE<<TRUE)->operator()(static_cast<ParamSet&&>(P)));
+	EXPECT_EQ(false,(make_shared<And>()<<FALSE<<TRUE)->operator()(static_cast<ParamSet&&>(P)));
+	EXPECT_EQ(false,(make_shared<And>()<<TRUE<<FALSE)->operator()(static_cast<ParamSet&&>(P)));
+	EXPECT_EQ(false,(make_shared<And>()<<FALSE<<FALSE)->operator()(static_cast<ParamSet&&>(P)));
 }
 TEST(Or,Work){
 	ParamSet P;
-	EXPECT_EQ(true,(make_shared<Or>()<<TRUE<<TRUE)->operator()(P));
-	EXPECT_EQ(true,(make_shared<Or>()<<FALSE<<TRUE)->operator()(P));
-	EXPECT_EQ(true,(make_shared<Or>()<<TRUE<<FALSE)->operator()(P));
-	EXPECT_EQ(false,(make_shared<Or>()<<FALSE<<FALSE)->operator()(P));
+	EXPECT_EQ(true,(make_shared<Or>()<<TRUE<<TRUE)->operator()(static_cast<ParamSet&&>(P)));
+	EXPECT_EQ(true,(make_shared<Or>()<<FALSE<<TRUE)->operator()(static_cast<ParamSet&&>(P)));
+	EXPECT_EQ(true,(make_shared<Or>()<<TRUE<<FALSE)->operator()(static_cast<ParamSet&&>(P)));
+	EXPECT_EQ(false,(make_shared<Or>()<<FALSE<<FALSE)->operator()(static_cast<ParamSet&&>(P)));
 }

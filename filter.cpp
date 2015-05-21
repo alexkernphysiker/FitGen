@@ -4,7 +4,7 @@ namespace Genetic{
 	using namespace std;
 	Above::Above(){}
 	Above::Above(ParamSet v):m_data(v){}
-	bool Above::operator()(ParamSet&P){
+	bool Above::operator()(ParamSet&&P){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
@@ -21,7 +21,7 @@ namespace Genetic{
 	
 	Below::Below(){}
 	Below::Below(ParamSet v):m_data(v){}
-	bool Below::operator()(ParamSet&P){
+	bool Below::operator()(ParamSet&&P){
 		bool res=true;
 		int index=0;
 		for(auto value:m_data){
@@ -49,7 +49,7 @@ namespace Genetic{
 		m_data.push_back(val);
 		return *this;
 	}
-	AbstractFilterMulti& AbstractFilterMulti::Add(function<bool(ParamSet&)> condition){
+	AbstractFilterMulti& AbstractFilterMulti::Add(function<bool(ParamSet&&)> condition){
 		m_data.push_back(make_shared<Filter>(condition));
 		return *this;
 	}
@@ -57,20 +57,20 @@ namespace Genetic{
 		filter->Add(value);
 		return filter;
 	}
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,function<bool(ParamSet&)> condition){
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,function<bool(ParamSet&&)> condition){
 		filter->Add(condition);
 		return filter;
 	}
 	AbstractFilterMulti::~AbstractFilterMulti(){}
-	bool And::operator()(ParamSet&P){
+	bool And::operator()(ParamSet&&P){
 		for(auto f: m_data)
-			if(!f->operator()(P))
+			if(!f->operator()(static_cast<ParamSet&&>(P)))
 				return false;
 		return true;
 	}
-	bool Or::operator()(ParamSet&P){
+	bool Or::operator()(ParamSet&&P){
 		for(auto f: m_data)
-			if(f->operator()(P))
+			if(f->operator()(static_cast<ParamSet&&>(P)))
 				return true;
 		return false;
 	}

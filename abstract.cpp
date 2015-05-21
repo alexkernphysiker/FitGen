@@ -6,19 +6,19 @@
 #include "math_h/sigma.h"
 using namespace std;
 namespace Genetic{
-	Filter::Filter(function<bool(ParamSet&)> c){
+	Filter::Filter(function<bool(ParamSet&&)> c){
 		condition=c;
 	}
 	Filter::~Filter(){}
-	bool Filter::operator()(ParamSet& P){
-		return condition(P);
+	bool Filter::operator()(ParamSet&&P){
+		return condition(static_cast<ParamSet&&>(P));
 	}
-	OptimalityFunction::OptimalityFunction(function<double(ParamSet&)> f){
+	OptimalityFunction::OptimalityFunction(function<double(ParamSet&&)> f){
 		func=f;
 	}
 	OptimalityFunction::~OptimalityFunction(){}
-	double OptimalityFunction::operator()(ParamSet& P){
-		return func(P);
+	double OptimalityFunction::operator()(ParamSet&&P){
+		return func(static_cast<ParamSet&&>(P));
 	}
 	
 	typedef lock_guard<mutex> Lock;
@@ -29,7 +29,7 @@ namespace Genetic{
 	inline ParamSet CreateNew(Create create,Condition condition){
 		while(true){//ToDo: this may be a problem source
 			ParamSet res=create();
-			if(condition(res))return res;
+			if(condition(static_cast<ParamSet&&>(res)))return res;
 		}
 	}
 	AbstractGenetic::AbstractGenetic(){
@@ -37,7 +37,7 @@ namespace Genetic{
 		if(threads==0)
 			threads=1;
 		m_itercount=0;
-		m_filter=make_shared<Filter>([](ParamSet&){return true;});
+		m_filter=make_shared<Filter>([](ParamSet&&){return true;});
 	}
 	AbstractGenetic::AbstractGenetic(
 		shared_ptr<IOptimalityFunction> optimality
@@ -53,13 +53,13 @@ namespace Genetic{
 		Lock lock(m_mutex);
 		m_filter=filter;
 	}
-	void AbstractGenetic::SetFilter(function<bool(ParamSet&)> f){
+	void AbstractGenetic::SetFilter(function<bool(ParamSet&&)> f){
 		Lock lock(m_mutex);
 		m_filter=make_shared<Filter>(f);
 	}
 	void AbstractGenetic::RemoveFilter(){
 		Lock lock(m_mutex);
-		m_filter=make_shared<Filter>([](ParamSet&){return true;});
+		m_filter=make_shared<Filter>([](ParamSet&&){return true;});
 	}
 	
 	void AbstractGenetic::SetThreadCount(unsigned int threads_count){
@@ -82,9 +82,9 @@ namespace Genetic{
 				double s=INFINITY;
 				ParamSet new_param=CreateNew(
 					[initial_conditions](){return initial_conditions->Generate();},
-					[this,&s](ParamSet&p){
-						if(!(m_filter->operator()(p)))return false;
-						s=m_optimality->operator()(p);
+					[this,&s](ParamSet&&p){
+						if(!(m_filter->operator()(static_cast<ParamSet&&>(p))))return false;
+						s=m_optimality->operator()(static_cast<ParamSet&&>(p));
 						return isfinite(s)!=0;
 					}
 				);
@@ -128,9 +128,9 @@ namespace Genetic{
 						mutations(p);
 						return p;
 					},
-					[this,&s](ParamSet&p){
-						if(!(m_filter->operator()(p)))return false;
-						s=m_optimality->operator()(p);
+					[this,&s](ParamSet&&p){
+						if(!(m_filter->operator()(static_cast<ParamSet&&>(p))))return false;
+						s=m_optimality->operator()(static_cast<ParamSet&&>(p));
 						return isfinite(s)!=0;
 					}
 				);
@@ -195,13 +195,13 @@ namespace Genetic{
 		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
-	ParamSet&AbstractGenetic::Parameters(int point_index){
+	ParamSet&&AbstractGenetic::Parameters(int point_index){
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw GeneticException("Range check error when accessing an element in the population");
 		Lock lock(m_mutex);
-		return m_population[point_index].first;
+		return static_cast<ParamSet&&>(m_population[point_index].first);
 	}
 	double AbstractGenetic::operator [](int i){
 		if((i<0)|(i>=ParamCount()))
@@ -209,17 +209,17 @@ namespace Genetic{
 		Lock lock(m_mutex);
 		return m_population[0].first[i];
 	}
-	ParamSet AbstractGenetic::ParamAverage(){
+	ParamSet&&AbstractGenetic::ParamAverage(){
 		Lock lock(m_mutex);
-		return m_avr;
+		return static_cast<ParamSet&&>(m_avr);
 	}
-	ParamSet AbstractGenetic::ParamDispersion(){
+	ParamSet&&AbstractGenetic::ParamDispersion(){
 		Lock lock(m_mutex);
-		return m_disp;
+		return static_cast<ParamSet&&>(m_disp);
 	}
-	ParamSet AbstractGenetic::ParamMaxDeviation(){
+	ParamSet&&AbstractGenetic::ParamMaxDeviation(){
 		Lock lock(m_mutex);
-		return m_max_dev;
+		return static_cast<ParamSet&&>(m_max_dev);
 	}
 	
 	bool AbstractGenetic::ConcentratedInOnePoint(){

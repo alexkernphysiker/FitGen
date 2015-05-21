@@ -26,7 +26,7 @@ int main(int argcnt, char **arg){
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<(make_shared<Below>()<<INFINITY<<5)
-		<<[](ParamSet&P){Foreground F;ParamSet X;return F(X<<P[2],P)<P[1]*5.0;}
+		<<[](ParamSet&&P){Foreground F;return F.F(ParamSet(P[2]),P)<P[1]*5.0;}
 	);
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(100,100)<<make_pair(20,20)<<make_pair(-20,0)
@@ -72,8 +72,8 @@ int main(int argcnt, char **arg){
 			Foreground fg_func;
 			for(double x=-70; x<=30; x+=0.5){
 				out<<x<<" "<<fit(ParamSet(x))<<"\n";
-				outbg<<x<<" "<<bg_func.F(ParamSet(x),fit.Parameters())<<"\n";
-				outfg<<x<<" "<<fg_func.F(ParamSet(x),fit.Parameters())<<"\n";
+				outbg<<x<<" "<<bg_func(ParamSet(x),fit.Parameters())<<"\n";
+				outfg<<x<<" "<<fg_func(ParamSet(x),fit.Parameters())<<"\n";
 			}
 			out.close();
 			outbg.close();

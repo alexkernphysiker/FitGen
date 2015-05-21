@@ -15,8 +15,9 @@ int main(int argcnt, char **arg){
 	for(int i=0;i<count;i++)
 		distribution->Fill(RandomGauss((right-left)/10.0)+(right+left)/2.0);
 	printf("Prepare fitting...\n");
-	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,[](ParamSet&X,ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];});
-	fit.SetFilter([](ParamSet& P){return (P[1]>0)&&(P[2]>0);});
+	Fit<DifferentialMutations<>,ChiSquareWithXError>
+		fit(distribution,[](ParamSet&&X,ParamSet&&P){return Gaussian(X[0],P[0],P[1])*P[2];});
+	fit.SetFilter([](ParamSet&&P){return (P[1]>0)&&(P[2]>0);});
 	fit.Init(30,make_shared<Initialiser>()
 		<<[left,right](){return RandomUniformlyR(left,right);}
 		<<[left,right](){return RandomUniformlyR(0.0,right-left);}

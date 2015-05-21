@@ -17,28 +17,28 @@ namespace Genetic{
 	class IParamCheck{
 	public:
 		virtual ~IParamCheck(){}
-		virtual bool operator()(ParamSet&P)=0;
+		virtual bool operator()(ParamSet&&P)=0;
 	};
 	class Filter:public IParamCheck{
 	public:
-		Filter(function<bool(ParamSet&)> c);
+		Filter(function<bool(ParamSet&&)> c);
 		virtual ~Filter();
-		virtual bool operator()(ParamSet&P)override;
+		virtual bool operator()(ParamSet&&P)override;
 	private:
-		function<bool(ParamSet&)> condition;
+		function<bool(ParamSet&&)> condition;
 	};
 	class IOptimalityFunction{
 	public:
 		virtual ~IOptimalityFunction(){}
-		virtual double operator()(ParamSet&P)=0;
+		virtual double operator()(ParamSet&&P)=0;
 	};
 	class OptimalityFunction:public IOptimalityFunction{
 	public:
-		OptimalityFunction(function<double(ParamSet&)> f);
+		OptimalityFunction(function<double(ParamSet&&)> f);
 		virtual ~OptimalityFunction();
-		virtual double operator()(ParamSet& P)override;
+		virtual double operator()(ParamSet&&P)override;
 	private:
-		function<double(ParamSet&)> func;
+		function<double(ParamSet&&)> func;
 	};
 	
 	class AbstractGenetic{
@@ -50,7 +50,7 @@ namespace Genetic{
 		
 		shared_ptr<IOptimalityFunction> OptimalityCalculator();
 		void SetFilter(shared_ptr<IParamCheck> filter);
-		void SetFilter(function<bool(ParamSet&)>);
+		void SetFilter(function<bool(ParamSet&&)>);
 		void RemoveFilter();
 		
 		void SetThreadCount(unsigned int threads_count);
@@ -65,11 +65,11 @@ namespace Genetic{
 		int PopulationSize();
 		int ParamCount();
 		double Optimality(int point_index=0);
-		ParamSet&Parameters(int point_index=0);
+		ParamSet&&Parameters(int point_index=0);
 		double operator[](int i);
-		ParamSet ParamAverage();
-		ParamSet ParamDispersion();
-		ParamSet ParamMaxDeviation();
+		ParamSet&&ParamAverage();
+		ParamSet&&ParamDispersion();
+		ParamSet&&ParamMaxDeviation();
 		
 		bool ConcentratedInOnePoint();
 		bool AbsoluteOptimalityExitCondition(double accuracy);

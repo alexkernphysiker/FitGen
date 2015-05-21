@@ -6,11 +6,10 @@
 using namespace Genetic;
 using namespace std;
 TEST(OptimalityFunction,BaseTest){
-	auto f=[](ParamSet&p){return pow(p[0],2);};
+	auto f=[](ParamSet&&p){return pow(p[0],2);};
 	OptimalityFunction F(f);
 	for(double x=-1;x<=1;x+=0.1){
-		ParamSet X(x);
-		EXPECT_EQ(f(X),F(X));
+		EXPECT_EQ(f(ParamSet(x)),F(ParamSet(x)));
 	}
 }
 class GeneticTest:public Genetic::AbstractGenetic{
@@ -18,7 +17,7 @@ public:
 	GeneticTest(std::shared_ptr<Genetic::IOptimalityFunction> optimality):AbstractGenetic(optimality){}
 	virtual ~GeneticTest(){}
 };
-auto optimality=make_shared<OptimalityFunction>([](ParamSet&p){return pow(p[0],2);});
+auto optimality=make_shared<OptimalityFunction>([](ParamSet&&p){return pow(p[0],2);});
 auto initial=make_shared<Initialiser>()<<[](){return 0;};
 void test_init(unsigned int threads,int population){
 	GeneticTest gen(optimality);
@@ -114,7 +113,7 @@ protected:
 };
 TEST(AbstractGenetic,FilterSettingFunc){
 	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(0.0,1.0);};
-	auto filter=[](ParamSet&P){return P[0]>0.5;};
+	auto filter=[](ParamSet&&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(filter);
 	gen.Init(100,initial_uniform);
@@ -132,7 +131,7 @@ TEST(AbstractGenetic,FilterSettingFunc){
 }
 TEST(AbstractGenetic,FilterSetting){
 	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(0.0,1.0);};
-	auto filter=[](ParamSet&P){return P[0]>0.5;};
+	auto filter=[](ParamSet&&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(make_shared<Filter>(filter));
 	gen.Init(100,initial_uniform);
@@ -150,7 +149,7 @@ TEST(AbstractGenetic,FilterSetting){
 }
 TEST(AbstractGenetic,Infinite){
 	auto initial_uniform=make_shared<Initialiser>()<<[](){return RandomUniformlyR(-1.0,1.0);};
-	auto opt=make_shared<OptimalityFunction>([](ParamSet&P){
+	auto opt=make_shared<OptimalityFunction>([](ParamSet&&P){
 		double res=P[0];
 		res*=res;
 		if(res<0.00001)return double(INFINITY);

@@ -7,7 +7,7 @@ using namespace std;
 template<class GENETIC>
 class TestClass:public virtual GENETIC{
 public:
-	TestClass():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&){return 0;})),GENETIC(){}
+	TestClass():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&&){return 0;})),GENETIC(){}
 	virtual ~TestClass(){}
 	void MAKE_TEST(ParamSet&P){
 		GENETIC::mutations(P);
