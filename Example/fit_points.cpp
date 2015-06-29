@@ -33,10 +33,13 @@ int main(int argcnt, char **arg){
 		<<make_pair(400,100)<<make_pair(5,1)<<make_pair(0,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_pair(0,0.01);
-	fit.Init(TotalFunc::ParamCount*15,initial);
+	fit.Init(TotalFunc::ParamCount*20,initial);
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
-	while(!fit.AbsoluteOptimalityExitCondition(0.000001)){
+	while(!(
+		fit.AbsoluteOptimalityExitCondition(0.000001)&&
+		fit.RelativeParametersDispersionExitCondition(parEq(TotalFunc::ParamCount,0.01))
+	)){
 		fit.Iterate();
 		printf("Iteration count: %i; %f <= chi^2 <= %f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
