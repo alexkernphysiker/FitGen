@@ -75,6 +75,7 @@ namespace Genetic{
 		bool AbsoluteOptimalityExitCondition(double accuracy);
 		bool RelativeOptimalityExitCondition(double accuracy);
 		bool ParametersDispersionExitCondition(ParamSet&&max_disp);
+		bool RelativeParametersDispersionExitCondition(ParamSet&&max_disp);
 		
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;

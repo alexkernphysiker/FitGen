@@ -265,9 +265,31 @@ namespace Genetic{
 			throw GeneticException("There number of parameters of GA is less than number of maximum dispersion exit conditions");
 		for(int i=0;i<max_disp.Count();i++){
 			double m=max_disp[i];
-			if(isfinite(m))
+			if(isfinite(m)){
+				if(m<0)
+					throw GeneticException("Dispersion value cannot be negative");
 				if(m<m_disp[i])
 					return false;
+			}
+		}
+		return true;
+	}
+	bool AbstractGenetic::RelativeParametersDispersionExitCondition(ParamSet&& max_disp){
+		if(m_population.size()==0)
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
+		if(m_itercount==0)
+			return false;
+		if(max_disp.Count()>m_disp.Count())
+			throw GeneticException("There number of parameters of GA is less than number of maximum dispersion exit conditions");
+		for(int i=0;i<max_disp.Count();i++){
+			double m=max_disp[i];
+			if(isfinite(m)){
+				if(m<0)
+					throw GeneticException("Dispersion value cannot be negative");
+				m*=m;
+				if(m<pow(m_disp[i]/m_population[0].first[i],2))
+					return false;
+			}
 		}
 		return true;
 	}

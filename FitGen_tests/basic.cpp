@@ -55,12 +55,18 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_THROW(gen.RelativeOptimalityExitCondition(1),GeneticException);
 	EXPECT_THROW(gen.Iterate(),GeneticException);
 	EXPECT_THROW(gen.ParametersDispersionExitCondition(static_cast<ParamSet&&>(ParamSet()<<0)),GeneticException);
+	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(static_cast<ParamSet&&>(ParamSet()<<0)),GeneticException);
 	EXPECT_THROW(gen.Optimality(0),GeneticException);
 	EXPECT_NO_THROW(gen.Init(2,initial));
 	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(-1),GeneticException);
 	EXPECT_THROW(gen.RelativeOptimalityExitCondition(-1),GeneticException);
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parZeros(1)));
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parOnes(1)));
+	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parZeros(1)));
+	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parOnes(1)));
+	//Here this behaviour is undefined
+	//EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
+	//EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
 	EXPECT_THROW(gen.Optimality(-1),GeneticException);
 	EXPECT_NO_THROW(gen.Optimality(0));
 	EXPECT_NO_THROW(gen.Optimality(1));
@@ -68,12 +74,16 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_THROW(gen[-1],GeneticException);
 	EXPECT_NO_THROW(gen[0]);
 	EXPECT_THROW(gen[1],GeneticException);
+	gen.Iterate();
+	EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
+	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
 }
 void test_iterate(unsigned int threads,int population,unsigned int iterations){
 	GeneticTest gen(optimality);
 	gen.SetThreadCount(threads);
 	gen.Init(population,initial);
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parOnes(1)));
+	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parOnes(1)));
 	for(unsigned int i=0;i<iterations;i++){
 		gen.Iterate();
 		EXPECT_EQ(population,gen.PopulationSize());
@@ -96,6 +106,8 @@ void test_iterate(unsigned int threads,int population,unsigned int iterations){
 		EXPECT_EQ(0,gen.ParamMaxDeviation()[0]);
 		EXPECT_TRUE(gen.ParametersDispersionExitCondition(parEq(c,INFINITY)));
 		EXPECT_TRUE(gen.ParametersDispersionExitCondition(parOnes(c)));
+		EXPECT_TRUE(gen.RelativeParametersDispersionExitCondition(parEq(c,INFINITY)));
+		EXPECT_TRUE(gen.RelativeParametersDispersionExitCondition(parOnes(c)));
 	}
 }
 TEST(AbstractGenetic,ItSync){test_iterate(1,10,100);}
