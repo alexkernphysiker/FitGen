@@ -30,12 +30,13 @@ git submodule update
 
 and add path to it's directory to your include paths.
 If you have your own cmake project, you can use this library by adding add_subdirectory instruction.
-You can add define USE_RANDOM_DEVICE in the whole your project including this library for using random device instead of pseudorandom number generator.
 
 
 
 Examples
 ========
+
+The examples require gnuplot to be installed for drawing plots of fitting functions.
 
 Example/equation.cpp - example of using genetic algorithm for solving equation.
 
@@ -69,4 +70,5 @@ Parameter number is obtained automatically.
 Tests
 =====
 
-The directory FitGen_tests contains cmake project with unit tests that uses GoogleTest framework.
+The directory FitGen_tests contains cmake project with unit tests.
+The tests require GoogleTest framework to be installed
