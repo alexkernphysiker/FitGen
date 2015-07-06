@@ -1,3 +1,5 @@
+// this file is distributed under 
+// GPL v 3.0 license
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
 #include <functional>

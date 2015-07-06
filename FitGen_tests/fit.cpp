@@ -1,3 +1,5 @@
+// this file is distributed under 
+// GPL v 3.0 license
 #include <gtest/gtest.h>
 #include <fit.h>
 #include <initialconditions.h>
