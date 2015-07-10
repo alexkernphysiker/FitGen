@@ -42,6 +42,7 @@ Example/equation.cpp - example of using genetic algorithm for solving equation.
 
 Example/fit_distribution.cpp and Example/fit_points.cpp - examples of using genetic algorithm for fitting points with function.
 
+For plotting the results, the examples require gnuplot installed
 
 
 Header files
@@ -60,7 +61,7 @@ filter.h - classes that provide conditions on fitted parameters acting like a fi
 
 equation.h - template classes and functions providing solving equations using classes declared in other header files.
 
-fit.h - classes needed for fitting algorithms.
+fit.h - classes needed for fitting algorithms. Contains also classes for plotting 1D fitting results with gnuplot.
 
 paramfunc.h - template classes providing parametric functions for fitting algorithm. 
 Mechanism of inheriting template classes allows to construct complicated ones. 

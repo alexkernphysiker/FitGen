@@ -106,7 +106,6 @@ namespace Genetic{
 				p.wy=sqrt(p.y);
 			}
 	}
-	
 	OptimalityForPoints::OptimalityForPoints(
 		std::shared_ptr< FitPoints > p, 
 		shared_ptr<IParamFunc> f,
@@ -256,5 +255,14 @@ namespace Genetic{
 		for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
 			res<<GetParamParabolicError(delta[i],i);
 		return res;
+	}
+	PlotPoints1D::PlotPoints1D():Plot<double>(){}
+	PlotPoints1D::~PlotPoints1D(){}
+	PlotPoints1D& PlotPoints1D::Points(string name,shared_ptr<FitPoints> points,unsigned int param_index){
+		OutputPlot(name,[points,param_index](ofstream&out){
+			for(auto p:*points)
+				out<<p.X[param_index]<<" "<<p.y<<" "<<p.WX[param_index]<<" "<<p.wy<<"\n";
+		},"using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars");
+		return *this;
 	}
 }

@@ -6,7 +6,7 @@
 #include <paramfunc.h>
 #include <filter.h>
 #include <initialconditions.h>
-const int background_polynom_power=6;
+const int background_polynom_power=5;
 using namespace std;
 using namespace Genetic;
 typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
@@ -58,48 +58,11 @@ int main(int argcnt, char **arg){
 	for(double p:fit.ParamDispersion())
 		printf("\t%f",p);
 	printf("\n");
-	{//plot calculation results
-		ofstream data;
-		data.open("output.data.txt");
-		if(data.is_open()){
-			for(auto p:(*points_to_fit))
-				data<<p.X[0]<<" "<<p.y<<" "<<p.WX[0]<<" "<<p.wy<<"\n";
-			data.close();
-		}
-		ofstream out;
-		ofstream outbg;
-		ofstream outfg;
-		out.open("output.txt");
-		outbg.open("output.bg.txt");
-		outfg.open("output.fg.txt");
-		if(out.is_open()&&outbg.is_open()&&outfg.is_open()){
-			Background bg_func;
-			Foreground fg_func;
-			for(double x=-70; x<=30; x+=0.5){
-				out<<x<<" "<<fit(ParamSet(x))<<"\n";
-				outbg<<x<<" "<<bg_func(ParamSet(x),fit.Parameters())<<"\n";
-				outfg<<x<<" "<<fg_func(ParamSet(x),fit.Parameters())<<"\n";
-			}
-			out.close();
-			outbg.close();
-			outfg.close();
-		}
-		ofstream script;
-		script.open(".plotscript.gp");
-		if(script.is_open()){
-			script << "plot ";
-			script << "\"output.data.txt\" using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars title \"data\"";
-			script << ",\\\n";
-			script << "\"output.txt\" w l title \"total fit\"";
-			script << ",\\\n";
-			script << "\"output.fg.txt\" w l title \"foreground\"";
-			script << ",\\\n";
-			script << "\"output.bg.txt\" w l title \"background\"";
-			script << "\n";
-			script << "\npause -1";
-			script.close();
-		}
-		system("gnuplot .plotscript.gp");
-	}
+	Plotter::Instance().SetOutput(".");
+#define range -80.0,40.0,0.5
+	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,range)
+	.ParamFunc("Foreground",Foreground(),fit,range).ParamFunc("Background",Background(),fit,range);
+#undef range
+	printf("Plot saved.\n");
 	return 0;
 }

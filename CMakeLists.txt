@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(FitGen)
 set(CMAKE_CXX_FLAGS "-pthread -std=gnu++11")
-add_library(FitGen SHARED abstract.cpp genetic_exception.cpp fit.cpp filter.cpp paramset.cpp initialconditions.cpp)
+add_library(FitGen SHARED abstract.cpp genetic_exception.cpp fit.cpp math_h/gnuplot/gnuplot.cpp filter.cpp paramset.cpp initialconditions.cpp)
 include_directories(.)
 add_executable(examplefitpoints Example/fit_points.cpp)
 target_link_libraries(examplefitpoints FitGen)

@@ -3,6 +3,7 @@
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
 #include <functional>
+#include "math_h/gnuplot/gnuplot.h"
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic{
@@ -183,6 +184,30 @@ namespace Genetic{
 		):FitFunctionWithError(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e)){}
 		virtual ~FitFunctionWithError(){}
 		double operator()(ParamSet&&X){return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());}
+	};
+	class PlotPoints1D:public Plot<double>{
+	public:
+		PlotPoints1D();
+		virtual ~PlotPoints1D();
+		PlotPoints1D& Points(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0);
+	};
+	template<class FIT>
+	class PlotFit1D:public PlotPoints1D{
+	public:
+		PlotFit1D():PlotPoints1D(){}
+		virtual ~PlotFit1D(){}
+		PlotFit1D& Points(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0){
+			PlotPoints1D::Points(name,points,param_index);
+			return *this;
+		}
+		PlotFit1D& Fit(std::string name,FIT&fit,double from,double to,double step){
+			Plot<double>::Line(name,[&fit](double x){return fit(ParamSet(x));},from,to,step);
+			return *this;
+		}
+		PlotFit1D& ParamFunc(std::string name,IParamFunc&&func,FIT&fit,double from,double to,double step){
+			Plot<double>::Line(name,[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},from,to,step);
+			return *this;
+		}
 	};
 }
 #endif

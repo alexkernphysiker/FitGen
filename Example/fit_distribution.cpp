@@ -10,7 +10,7 @@ int main(int argcnt, char **arg){
 	double left=0;
 	double right=10;
 	unsigned int bins=2;
-	int count=500;
+	int count=1000;
 	auto distribution=make_shared<Distribution1D>(left,right,int(right-left)*bins);
 	printf("Filling...\n");
 	default_random_engine r;
@@ -36,33 +36,9 @@ int main(int argcnt, char **arg){
 	for(double p:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.01)))
 		printf("\t%f",p);
 	printf("\n");
-	{//plot calculation results
-		ofstream data;
-		data.open("output.data.txt");
-		if(data.is_open()){
-			for(auto p:*distribution)
-				data<<p.X[0]<<" "<<p.y<<" "<<p.WX[0]<<" "<<p.wy<<"\n";
-			data.close();
-		}
-		ofstream out;
-		out.open("output.txt");
-		if(out.is_open()){
-			for(double x=0; x<=10; x+=0.1)
-				out<<x<<" "<<fit(ParamSet(x))<<"\n";
-			out.close();
-		}
-		ofstream script;
-		script.open(".plotscript.gp");
-		if(script.is_open()){
-			script << "plot ";
-			script << "\"output.data.txt\" using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars title \"data\"";
-			script << ",\\\n";
-			script << "\"output.txt\" w l title \"total fit\"";
-			script << "\n";
-			script << "\npause -1";
-			script.close();
-		}
-		system("gnuplot .plotscript.gp");
-	}
+	Plotter::Instance().SetOutput(".");
+	PlotFit1D<decltype(fit)>().Points("Generated distribution",distribution)
+		.Fit("Fit distribution",fit,0,10,0.1)<<"set xlabel 'parameter value'\nset ylabel 'counts'";
+	printf("Plot saved.\n");
 	return 0;
 }
