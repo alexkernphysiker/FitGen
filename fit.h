@@ -17,13 +17,14 @@ namespace Genetic{
 		inline double F(ParamSet&X,ParamSet&&P){return operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));}
 		inline double F(ParamSet&X,ParamSet&P){return operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));}
 	};
+	typedef function<double(ParamSet&&,ParamSet&&)> paramFunc;
 	class ParameterFunction:public IParamFunc{
 	public:
-		ParameterFunction(function<double(ParamSet&&,ParamSet&&)> f);
+		ParameterFunction(paramFunc f);
 		virtual ~ParameterFunction();
 		virtual double operator()(ParamSet&&X,ParamSet&&P) override;
 	private:
-		function<double(ParamSet&&,ParamSet&&)> func;
+		paramFunc func;
 	};
 	
 	class FitPoints{
@@ -138,10 +139,7 @@ namespace Genetic{
 		):AbstractGenetic(OptimalityAlgorithm(points,f)){
 			m_func=f;
 		}
-		Fit(
-			shared_ptr<FitPoints> points,
-			function<double(ParamSet&&,ParamSet&&)> f
-		):Fit(points,make_shared<ParameterFunction>(f)){}
+		Fit(shared_ptr<FitPoints> points, paramFunc f):Fit(points,make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
 		double operator()(ParamSet&&X){return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());}
 	};
@@ -178,11 +176,8 @@ namespace Genetic{
 			:AbstractGenetic(OptimalityAlgorithm(points,f,e)),GENETIC(),Parabolic(){
 			m_func=f;
 		}
-		FitFunctionWithError(
-			shared_ptr<FitPoints> points,
-			function<double(ParamSet&&,ParamSet&&)> f,
-			function<double(ParamSet&&,ParamSet&&)> e
-		):FitFunctionWithError(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e)){}
+		FitFunctionWithError(shared_ptr<FitPoints> points,paramFunc f,paramFunc e):
+			FitFunctionWithError(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e)){}
 		virtual ~FitFunctionWithError(){}
 		double operator()(ParamSet&&X){return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());}
 	};
@@ -218,6 +213,11 @@ namespace Genetic{
 			return *this;
 		}
 		PlotFit1D& ParamFunc(std::string name,IParamFunc&&func,FIT&fit,double step=0.1){
+			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
+			Plot<double>::Line(name,[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
+			return *this;
+		}
+		PlotFit1D& ParamFunc(std::string name,paramFunc func,FIT&fit,double step=0.1){
 			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(name,[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
 			return *this;
