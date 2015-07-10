@@ -7,15 +7,16 @@ example*
 CMakeCache*
 CMakeFiles
 *kdev*
-output*.txt
-.plotscript.gp
+*.txt
+*.png
+*.gnuplot
 *.cbp
-# Compiled Object files
+
+# Compiled files
 *.slo
 *.lo
 *.o
 *.obj
-# Compiled libraries
 *.so
 *.so.*
 *.lai
@@ -24,9 +25,11 @@ output*.txt
 # for windows
 *.dll
 *.exe
+
 # make
 Makefile
 Makefile*.*
+
 #tex
 *.dvi
 *.bak
