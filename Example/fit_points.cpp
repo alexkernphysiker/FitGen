@@ -59,10 +59,8 @@ int main(int argcnt, char **arg){
 		printf("\t%f",p);
 	printf("\n");
 	Plotter::Instance().SetOutput(".");
-#define range -80.0,40.0,0.5
-	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,range)
-	.ParamFunc("Foreground",Foreground(),fit,range).ParamFunc("Background",Background(),fit,range);
-#undef range
+	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,0.5)
+	.ParamFunc("Foreground",Foreground(),fit,0.5).ParamFunc("Background",Background(),fit,0.5);
 	printf("Plot saved.\n");
 	return 0;
 }

@@ -37,8 +37,7 @@ int main(int argcnt, char **arg){
 		printf("\t%f",p);
 	printf("\n");
 	Plotter::Instance().SetOutput(".");
-	PlotFit1D<decltype(fit)>().Points("Generated distribution",distribution)
-		.Fit("Fit distribution",fit,0,10,0.1)<<"set xlabel 'parameter value'\nset ylabel 'counts'";
+	PlotFit1D<decltype(fit)>().Points("Generated distribution",distribution).Fit("Fit distribution",fit)<<"set xlabel 'parameter value'\nset ylabel 'counts'";
 	printf("Plot saved.\n");
 	return 0;
 }

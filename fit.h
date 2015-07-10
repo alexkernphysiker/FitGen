@@ -4,6 +4,7 @@
 #define ____lrEPWamH___
 #include <functional>
 #include "math_h/gnuplot/gnuplot.h"
+#include "genetic_exception.h"
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic{
@@ -193,19 +194,32 @@ namespace Genetic{
 	};
 	template<class FIT>
 	class PlotFit1D:public PlotPoints1D{
+	private:
+		double min,max;
 	public:
-		PlotFit1D():PlotPoints1D(){}
+		PlotFit1D():PlotPoints1D(){
+			min=+INFINITY;
+			max=-INFINITY;
+		}
 		virtual ~PlotFit1D(){}
 		PlotFit1D& Points(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0){
 			PlotPoints1D::Points(name,points,param_index);
+			for(FitPoints::Point p:*points){
+				if(p.X[param_index]<min)
+					min=p.X[param_index];
+				if(p.X[param_index]>max)
+					max=p.X[param_index];
+			}
 			return *this;
 		}
-		PlotFit1D& Fit(std::string name,FIT&fit,double from,double to,double step){
-			Plot<double>::Line(name,[&fit](double x){return fit(ParamSet(x));},from,to,step);
+		PlotFit1D& Fit(std::string name,FIT&fit,double step=0.1){
+			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
+			Plot<double>::Line(name,[&fit](double x){return fit(ParamSet(x));},min,max,step);
 			return *this;
 		}
-		PlotFit1D& ParamFunc(std::string name,IParamFunc&&func,FIT&fit,double from,double to,double step){
-			Plot<double>::Line(name,[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},from,to,step);
+		PlotFit1D& ParamFunc(std::string name,IParamFunc&&func,FIT&fit,double step=0.1){
+			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
+			Plot<double>::Line(name,[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
 			return *this;
 		}
 	};
