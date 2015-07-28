@@ -58,7 +58,7 @@ int main(int argcnt, char **arg){
 	for(double p:fit.ParamDispersion())
 		printf("\t%f",p);
 	printf("\n");
-	Plotter::Instance().SetOutput(".");
+	Plotter::Instance().SetOutput(".","points");
 	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,0.5)
 	.ParamFunc("Foreground",Foreground(),fit,0.5).ParamFunc("Background",Background(),fit,0.5);
 	printf("Plot saved.\n");
