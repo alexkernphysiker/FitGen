@@ -187,6 +187,7 @@ namespace Genetic{
 		PlotPoints1D();
 		virtual ~PlotPoints1D();
 		PlotPoints1D& Points(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0);
+		PlotPoints1D& PointsWithoutErrors(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0);
 	};
 	template<class FIT>
 	class PlotFit1D:public PlotPoints1D{
@@ -200,6 +201,16 @@ namespace Genetic{
 		virtual ~PlotFit1D(){}
 		PlotFit1D& Points(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0){
 			PlotPoints1D::Points(name,points,param_index);
+			for(FitPoints::Point p:*points){
+				if(p.X[param_index]<min)
+					min=p.X[param_index];
+				if(p.X[param_index]>max)
+					max=p.X[param_index];
+			}
+			return *this;
+		}
+		PlotFit1D& PointsWithoutErrors(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0){
+			PlotPoints1D::PointsWithoutErrors(name,points,param_index);
 			for(FitPoints::Point p:*points){
 				if(p.X[param_index]<min)
 					min=p.X[param_index];

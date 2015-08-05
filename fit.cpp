@@ -265,4 +265,12 @@ namespace Genetic{
 		},"using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars");
 		return *this;
 	}
+	PlotPoints1D& PlotPoints1D::PointsWithoutErrors(string name, shared_ptr< FitPoints > points, unsigned int param_index){
+		OutputPlot(name,[points,param_index](ofstream&out){
+			for(auto p:*points)
+				out<<p.X[param_index]<<" "<<p.y<<" "<<p.WX[param_index]<<" "<<p.wy<<"\n";
+		},"using 1:2");
+		return *this;
+	}
+
 }
