@@ -146,6 +146,7 @@ namespace Genetic{
 	template<class GENETIC,class FUNC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
 	public:
+		typedef FUNC functype;
 		FitFunction(shared_ptr<FitPoints> points):Fit<GENETIC,OptimalityAlgorithm>(make_shared<FUNC>()),
 			AbstractGenetic(OptimalityAlgorithm(points,make_shared<FUNC>())){}
 		virtual ~FitFunction(){}
