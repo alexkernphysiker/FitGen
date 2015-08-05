@@ -10,7 +10,7 @@ const int background_polynom_power=5;
 using namespace std;
 using namespace Genetic;
 typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
-typedef PolynomFunc<0,3,background_polynom_power> Background;
+typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
 
 double X[]={-67.5,-62.5,-57.5,-52.5,-47.5,-42.5,-37.5,-32.5,-27.5,
