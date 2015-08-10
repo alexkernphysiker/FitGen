@@ -12,7 +12,7 @@
 #include "paramset.h"
 namespace Genetic{
 	using namespace std;
-	typedef default_random_engine RANDOM;
+	typedef mt19937 RANDOM;
 	class IInitialConditions{
 	public:
 		virtual ~IInitialConditions(){}
