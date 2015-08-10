@@ -7,14 +7,16 @@
 #include <memory>
 #include <utility>
 #include <functional>
+#include <random>
 #include <math.h>
 #include "paramset.h"
 namespace Genetic{
 	using namespace std;
+	typedef default_random_engine RANDOM;
 	class IInitialConditions{
 	public:
 		virtual ~IInitialConditions(){}
-		virtual ParamSet Generate()=0;
+		virtual ParamSet Generate(RANDOM&)=0;
 	};
 	class IParamCheck{
 	public:
@@ -57,11 +59,11 @@ namespace Genetic{
 		
 		void SetThreadCount(unsigned int threads_count);
 		unsigned int ThreadCount();
-		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions);
+		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 	protected:
-		virtual void mutations(ParamSet&);
+		virtual void mutations(ParamSet&,RANDOM&);
 	public:
-		void Iterate();
+		void Iterate(RANDOM&random);
 		
 		unsigned long int iteration_count();
 		int PopulationSize();

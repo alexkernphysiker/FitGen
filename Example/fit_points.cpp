@@ -23,6 +23,7 @@ double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.816
 	10.7944, 10.679, 11.4741, 11.4566, 12.0048, 12.1155, 13.117, 14.1408, 14.3717, 15.0141};
 
 int main(int argcnt, char **arg){
+	RANDOM engine;
 	auto points_to_fit=FitPointsXdXYdY(0,19,X,dX,Y,dY);
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
@@ -35,14 +36,14 @@ int main(int argcnt, char **arg){
 		<<make_pair(400,100)<<make_pair(5,1)<<make_pair(0,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_pair(0,0.01);
-	fit.Init(TotalFunc::ParamCount*20,initial);
+	fit.Init(TotalFunc::ParamCount*20,initial,engine);
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
 	while(!(
 		fit.AbsoluteOptimalityExitCondition(0.000001)&&
 		fit.RelativeParametersDispersionExitCondition(parEq(TotalFunc::ParamCount,0.01))
 	)){
-		fit.Iterate();
+		fit.Iterate(engine);
 		printf("Iteration count: %i; %f <= chi^2 <= %f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
 	printf("\nParameters:\n");

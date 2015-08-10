@@ -5,6 +5,7 @@
 #include <initialconditions.h>
 #include <paramfunc.h>
 #include <genetic_exception.h>
+#include "engine.h"
 using namespace Genetic;
 using namespace std;
 TEST(ParameterFunction,Basic){
@@ -201,19 +202,20 @@ public:
 };
 TEST(Parabolic,Base){
 	ParabolicTest gen;
-	gen.Init(1,make_shared<Initialiser>()<<[](){return 0.0;});
-	EXPECT_EQ(1,gen.GetParamParabolicErrors(0.01)[0]);
+	gen.Init(1,make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(-0.0001,0.0001),engine);
+	EXPECT_TRUE(pow(gen.GetParamParabolicErrors(0.01)[0]-1.0,2)<0.0001);
 }
 TEST(Parabolic,BaseTest){
 	for(int count=1;count<10;count++){
 		ParabolicTest gen;
-		auto init=make_shared<Initialiser>();
+		auto init=make_shared<InitialDistributions>();
 		for(int i=0;i<count;i++)
-			init<<[](){return 0.0;};
-		gen.Init(1,init);
+			init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
+		gen.Init(1,init,engine);
 		ParamSet P=gen.GetParamParabolicErrors(parEq(count,0.01));
 		ASSERT_EQ(count,P.Count());
-		for(double p:P)EXPECT_EQ(1,p);
+		for(double p:P)
+			EXPECT_TRUE(pow(p-1.0,2)<0.0001);
 	}
 }
 typedef Add<Mul<Arg<0>,Par<0>>,Par<1>> Fit_Func;
@@ -222,9 +224,9 @@ auto Points=make_shared<FitPoints>()<<make_pair(0,1)<<make_pair(1,2)<<make_pair(
 auto Init=make_shared<GenerateUniform>()<<make_pair(0,2)<<make_pair(0,2);
 TEST(Fit,Basetest){
 	Fit<DifferentialMutations<>,SumSquareDiff> fit(Points,make_shared<Fit_Func>());
-	fit.Init(20,Init);
+	fit.Init(20,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
-		fit.Iterate();
+		fit.Iterate(engine);
 	EXPECT_TRUE(fit.ParamCount()==2);
 	EXPECT_TRUE(fit.PopulationSize()==20);
 	EXPECT_TRUE(fit.Optimality()==0);
@@ -234,9 +236,9 @@ TEST(Fit,Basetest){
 }
 TEST(FitFunction,Basetest){
 	FitFunction<DifferentialMutations<>,Fit_Func,SumSquareDiff> fit(Points);
-	fit.Init(20,Init);
+	fit.Init(20,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
-		fit.Iterate();
+		fit.Iterate(engine);
 	EXPECT_TRUE(fit.ParamCount()==2);
 	EXPECT_TRUE(fit.PopulationSize()==20);
 	EXPECT_TRUE(fit.Optimality()==0);
@@ -247,9 +249,9 @@ TEST(FitFunction,Basetest){
 TEST(FitFunctionWithError,Basetest){
 	for(auto&p:*Points)p.wy=1;
 	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,make_shared<Fit_Func>(),make_shared<Fit_Func_err>());
-	fit.Init(20,Init);
+	fit.Init(20,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
-		fit.Iterate();
+		fit.Iterate(engine);
 	EXPECT_TRUE(fit.ParamCount()==2);
 	EXPECT_TRUE(fit.PopulationSize()==20);
 	EXPECT_TRUE(fit.Optimality()==0);

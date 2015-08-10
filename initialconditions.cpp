@@ -4,43 +4,6 @@
 #include "genetic_exception.h"
 namespace Genetic{
 	using namespace std;
-	Initialiser::Initialiser(){}
-	Initialiser::~Initialiser(){}
-	Initialiser& Initialiser::operator<<(generator gen){
-		generators.push_back(gen);
-		return *this;
-	}
-	generator Initialiser::operator[](int i){
-		if((i<0)||(i>=generators.size()))
-			throw GeneticException("Range chack error when accessing Initialiser's element");
-		return generators[i];
-	}
-	int Initialiser::Count(){
-		return generators.size();
-	}
-	ParamSet Initialiser::Generate(){
-		ParamSet res;
-		for(int i=0;i<Count();i++)
-			res<<operator[](i)();
-		return res;
-	}
-	Initialiser::iterator Initialiser::begin(){
-		return generators.begin();
-	}
-	Initialiser::const_iterator Initialiser::cbegin() const{
-		return  generators.cbegin();
-	}
-	Initialiser::iterator Initialiser::end(){
-		return generators.end();
-	}
-	Initialiser::const_iterator Initialiser::cend() const{
-		return generators.cend();
-	}
-	shared_ptr< Initialiser > operator<<(shared_ptr< Initialiser > init, generator gen){
-		init->operator<<(gen);
-		return init;
-	}
-	
 	InitialDistributions::InitialDistributions(){}
 	InitialDistributions::~InitialDistributions(){}
 	InitialDistributions& InitialDistributions::operator<<(shared_ptr<Distrib> distr){
@@ -55,10 +18,10 @@ namespace Genetic{
 			throw GeneticException("Range check error when accessing InitialDistributions' element");
 		return *ParamDistr[i];
 	}
-	ParamSet InitialDistributions::Generate(){
+	ParamSet InitialDistributions::Generate(RANDOM&R){
 		ParamSet res;
 		for(int i=0;i<Count();i++)
-			res<<operator[](i)();
+			res<<operator[](i)(R);
 		return res;
 	}
 	shared_ptr<InitialDistributions> operator<<(
@@ -91,11 +54,11 @@ namespace Genetic{
 			throw GeneticException("Range check error when accessing GenerateUniform's element");
 		return m_max[i];
 	}
-	ParamSet GenerateUniform::Generate(){
+	ParamSet GenerateUniform::Generate(RANDOM&R){
 		ParamSet res;
 		for(int i=0; i<Count();i++){
 			uniform_real_distribution<double> D(m_min[i],m_max[i]);
-			res<<D(G);
+			res<<D(R);
 		}
 		return res;
 	}
@@ -120,11 +83,11 @@ namespace Genetic{
 			throw GeneticException("Range check error when accessing GenerateByGauss's element");
 		return m_sig[i];
 	}
-	ParamSet GenerateByGauss::Generate(){
+	ParamSet GenerateByGauss::Generate(RANDOM&R){
 		ParamSet res;
 		for(int i=0; i<Count();i++){
 			normal_distribution<double> D(m_mean[i],m_sig[i]);
-			res<<D(G);
+			res<<D(R);
 		}
 		return res;
 	}

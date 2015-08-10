@@ -4,6 +4,7 @@
 #include <genetic.h>
 #include <initialconditions.h>
 #include <genetic_exception.h>
+#include "engine.h"
 using namespace Genetic;
 using namespace std;
 std::default_random_engine G2;
@@ -12,8 +13,8 @@ class TestClass:public virtual GENETIC{
 public:
 	TestClass():AbstractGenetic(make_shared<OptimalityFunction>([](ParamSet&&){return 0;})),GENETIC(){}
 	virtual ~TestClass(){}
-	void MAKE_TEST(ParamSet&P){
-		GENETIC::mutations(P);
+	void MAKE_TEST(ParamSet&P,RANDOM&R){
+		GENETIC::mutations(P,R);
 	}
 };
 TEST(DifferentialMutations, Throws){
@@ -33,31 +34,30 @@ TEST(DifferentialMutations, Throws){
 TEST(DifferentialMutations,Zeros){
 	for(int count=0;count<10;count++){
 		TestClass<DifferentialMutations<>> gen;
-		auto init=make_shared<Initialiser>();
+		auto init=make_shared<InitialDistributions>();
 		for(int i=0; i<count;i++)
-			init<<[](){return 0;};
-		gen.Init(10,init);
+			init<<make_shared<RandomValueGenerator<double>>(0,0.001);
+		gen.Init(10,init,engine);
 		ParamSet P=parZeros(count);
-		gen.MAKE_TEST(P);
+		gen.MAKE_TEST(P,engine);
 		EXPECT_TRUE(P.Count()==count);
 		for(double p:P)
-			EXPECT_TRUE(p==0);
+			EXPECT_TRUE(pow(p,2)<0.0001);
 	}
 }
 TEST(DifferentialMutations,Upper){
-	std::uniform_real_distribution<double> distr(-0.5,0.5);
 	for(int count=0;count<5;count++){
 		TestClass<DifferentialMutations<>> gen;
-		auto init=make_shared<Initialiser>();
+		auto init=make_shared<InitialDistributions>();
 		for(int i=0; i<count;i++)
-			init<<[&distr](){return distr(G2);};
-		gen.Init(5,init);
+			init<<make_shared<RandomValueGenerator<double>>(-0.5,0.5);
+		gen.Init(5,init,engine);
 		for(gen.SetMutationCoefficient(0);
 			gen.MutationCoefficient()<=1;
 			gen.SetMutationCoefficient(gen.MutationCoefficient()+0.1)
 		)for(int i=0;i<50;i++){
 			ParamSet P=parZeros(count);
-			gen.MAKE_TEST(P);
+			gen.MAKE_TEST(P,engine);
 			EXPECT_TRUE(P.Count()==count);
 			for(double p:P){
 				EXPECT_TRUE(p<=gen.MutationCoefficient());
@@ -83,13 +83,13 @@ TEST(Crossing,Throws){
 TEST(Crossing,No){
 	for(int count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
-		auto init=make_shared<Initialiser>();
+		auto init=make_shared<InitialDistributions>();
 		for(int i=0; i<count;i++)
-			init<<[](){return 1;};
-		gen.Init(10,init);
+			init<<make_shared<RandomValueGenerator<double>>(-0.5,0.5);
+		gen.Init(10,init,engine);
 		gen.SetCrossingProbability(0);
 		ParamSet P=parZeros(count);
-		gen.MAKE_TEST(P);
+		gen.MAKE_TEST(P,engine);
 		EXPECT_TRUE(P.Count()==count);
 		for(double p:P)
 			EXPECT_TRUE(p==0);
@@ -98,16 +98,16 @@ TEST(Crossing,No){
 TEST(Crossing,Yes){
 	for(int count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
-		auto init=make_shared<Initialiser>();
+		auto init=make_shared<InitialDistributions>();
 		for(int i=0; i<count;i++)
-			init<<[](){return 1;};
-		gen.Init(10,init);
+			init<<make_shared<RandomValueGenerator<double>>(0.9,1.0);
+		gen.Init(10,init,engine);
 		gen.SetCrossingProbability(1);
 		ParamSet P=parZeros(count);
-		gen.MAKE_TEST(P);
+		gen.MAKE_TEST(P,engine);
 		EXPECT_TRUE(P.Count()==count);
 		for(double p:P)
-			EXPECT_TRUE((p==0)||(p==1));
+			EXPECT_TRUE((p==0)||((p>=0.9)&&(p<=1.0)));
 	}
 }
 TEST(AbsoluteMutations,Throws){
@@ -138,7 +138,7 @@ TEST(AbsoluteMutations,Size){
 	for(int count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
 		ParamSet P=parZeros(count);
-		gen.MAKE_TEST(P);
+		gen.MAKE_TEST(P,engine);
 		EXPECT_TRUE(P.Count()==count);
 	}
 }
@@ -170,7 +170,7 @@ TEST(RelativeMutations,Size){
 	for(int count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
 		ParamSet P=parZeros(count);
-		gen.MAKE_TEST(P);
+		gen.MAKE_TEST(P,engine);
 		EXPECT_TRUE(P.Count()==count);
 	}
 }
@@ -179,7 +179,7 @@ public:
 	TestMutations():AbstractGenetic(){}
 	virtual ~TestMutations(){}
 protected:
-	virtual void mutations(ParamSet &C)override{
+	virtual void mutations(ParamSet &C,RANDOM&)override{
 		C=parOnes(C.Count());
 	}
 };
@@ -201,7 +201,7 @@ TEST(ExactCopying,Size){
 	for(int count=0;count<10;count++){
 		TestClass<ExactCopying<TestMutations>> gen;
 		ParamSet P=parZeros(count);
-		gen.MAKE_TEST(P);
+		gen.MAKE_TEST(P,engine);
 		EXPECT_TRUE(P.Count()==count);
 	}
 }
@@ -213,7 +213,7 @@ TEST(ExactCopying,Check){
 			Distribution<double> D(-0.5,1.5,2);
 			for(int i=0;i<1000;i++){
 				ParamSet P=ParamSet(0);
-				gen.MAKE_TEST(P);
+				gen.MAKE_TEST(P,engine);
 				D.AddValue(P[0]);
 			}
 			double P_exp=D.getY(0)/(D.getY(0)+D.getY(1));

@@ -74,16 +74,16 @@ namespace Genetic{
 		Lock lock(m_mutex);
 		return threads;
 	}
-	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions){
+	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
 		if(m_population.size()>0)
 			throw GeneticException("Genetic algorithm cannot be inited twice");
 		if(population_size<=0)
 			throw GeneticException("Polulation size must be a positive number");
-		auto add_to_population=[this,initial_conditions](int count){
+		auto add_to_population=[this,initial_conditions,&random](int count){
 			for(int i=0;i<count;i++){
 				double s=INFINITY;
 				ParamSet new_param=CreateNew(
-					[initial_conditions](){return initial_conditions->Generate();},
+					[initial_conditions,&random](){return initial_conditions->Generate(random);},
 					[this,&s](ParamSet&&p){
 						if(!(m_filter->operator()(static_cast<ParamSet&&>(p))))return false;
 						s=m_optimality->operator()(static_cast<ParamSet&&>(p));
@@ -110,14 +110,14 @@ namespace Genetic{
 			m_itercount=0;
 		}
 	}
-	void AbstractGenetic::mutations(ParamSet&){}
-	void AbstractGenetic::Iterate(){
+	void AbstractGenetic::mutations(ParamSet&,RANDOM&){}
+	void AbstractGenetic::Iterate(RANDOM&random){
 		int n=PopulationSize();
 		int par_cnt=ParamCount();
 		if(n==0)
 			throw GeneticException("Cannot perform the calculation when population size is zero");
 		vector<Point> tmp_population;
-		auto process_elements=[this,&tmp_population](int from,int to){
+		auto process_elements=[this,&tmp_population,&random](int from,int to){
 			for(int i=from;i<=to;i++){
 				Point point;
 				{Lock lock(m_mutex);
@@ -125,9 +125,9 @@ namespace Genetic{
 				}
 				double s=INFINITY;
 				ParamSet new_param=CreateNew(
-					[this,&point](){
+					[this,&point,&random](){
 						ParamSet p=point.first;
-						mutations(p);
+						mutations(p,random);
 						return p;
 					},
 					[this,&s](ParamSet&&p){

@@ -11,7 +11,6 @@ namespace Genetic{
 	class DifferentialMutations: public virtual FITGEN{
 	private:
 		double M;
-		std::default_random_engine generator;
 	public:
 		DifferentialMutations():FITGEN(),M(0.5){}
 		virtual ~DifferentialMutations(){}
@@ -24,11 +23,11 @@ namespace Genetic{
 			M=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C)override{
-			FITGEN::mutations(C);
+		virtual void mutations(ParamSet &C,RANDOM&R)override{
+			FITGEN::mutations(C,R);
 			std::uniform_int_distribution<int> randomelement(0,AbstractGenetic::PopulationSize()-1);
-			auto A=AbstractGenetic::Parameters(randomelement(generator));
-			auto B=AbstractGenetic::Parameters(randomelement(generator));
+			auto A=AbstractGenetic::Parameters(randomelement(R));
+			auto B=AbstractGenetic::Parameters(randomelement(R));
 			for(int i=0; i<C.Count();i++)
 				C.Set(i,C[i]+M*(A[i]-B[i]));
 		}
@@ -37,7 +36,6 @@ namespace Genetic{
 	class Crossing:public virtual FITGEN{
 	private:
 		double P;
-		std::default_random_engine generator;
 	public:
 		Crossing():FITGEN(),P(0){}
 		virtual ~Crossing(){}
@@ -50,15 +48,15 @@ namespace Genetic{
 			P=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C)override{
-			FITGEN::mutations(C);
+		virtual void mutations(ParamSet &C,RANDOM&R)override{
+			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
-			if(Prob(generator)<P){
+			if(Prob(R)<P){
 				std::uniform_int_distribution<int> randomelement(0,AbstractGenetic::PopulationSize()-1);
-				auto X=AbstractGenetic::Parameters(randomelement(generator));
-				FITGEN::mutations(X);
+				auto X=AbstractGenetic::Parameters(randomelement(R));
+				FITGEN::mutations(X,R);
 				for(int i=0; i<C.Count();i++)
-					if(Prob(generator)<0.5)
+					if(Prob(R)<0.5)
 						C.Set(i,X[i]);
 			}
 		}
@@ -68,7 +66,6 @@ namespace Genetic{
 	private:
 		double P;
 		std::vector<std::normal_distribution<double>> distr;
-		std::default_random_engine generator;
 	public:
 		AbsoluteMutations():FITGEN(),P(0){}
 		virtual ~AbsoluteMutations(){}
@@ -95,12 +92,12 @@ namespace Genetic{
 			P=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C)override{
-			FITGEN::mutations(C);
+		virtual void mutations(ParamSet &C,RANDOM&R)override{
+			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
-			if(Prob(generator)<P)
+			if(Prob(R)<P)
 				for(int i=0;i<AbstractGenetic::ParamCount();i++)
-					C.Set(i,C[i]+distr[i](generator));
+					C.Set(i,C[i]+distr[i](R));
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
@@ -108,7 +105,6 @@ namespace Genetic{
 	private:
 		double P;
 		std::vector<std::normal_distribution<double>> distr;
-		std::default_random_engine generator;
 	public:
 		RelativeMutations():FITGEN(),P(0){}
 		virtual ~RelativeMutations(){}
@@ -135,19 +131,18 @@ namespace Genetic{
 			P=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C)override{
-			FITGEN::mutations(C);
+		virtual void mutations(ParamSet &C,RANDOM&R)override{
+			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
-			if(Prob(generator)<P)
+			if(Prob(R)<P)
 				for(int i=0;i<AbstractGenetic::ParamCount();i++)
-					C.Set(i,C[i]*(1+distr[i](generator)));
+					C.Set(i,C[i]*(1+distr[i](R)));
 		}
 	};
 	template<class FITGEN>
 	class ExactCopying:public virtual FITGEN{
 	private:
 		double P;
-		std::default_random_engine generator;
 	public:
 		ExactCopying():FITGEN(),P(0){}
 		virtual ~ExactCopying(){}
@@ -160,10 +155,10 @@ namespace Genetic{
 			return P;
 		}
 	protected:
-		virtual void mutations(ParamSet &C)override{
+		virtual void mutations(ParamSet &C,RANDOM&R)override{
 			std::uniform_real_distribution<double> Prob(0,1);
-			if(Prob(generator)>P)
-				FITGEN::mutations(C);
+			if(Prob(R)>P)
+				FITGEN::mutations(C,R);
 		}
 	};
 }
