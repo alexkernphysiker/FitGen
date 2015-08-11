@@ -83,7 +83,10 @@ namespace Genetic{
 			for(int i=0;i<count;i++){
 				double s=INFINITY;
 				ParamSet new_param=CreateNew(
-					[initial_conditions,&random](){return initial_conditions->Generate(random);},
+					[this,initial_conditions,&random](){
+						Lock lock(m_mutex);
+						return initial_conditions->Generate(random);
+					},
 					[this,&s](ParamSet&&p){
 						if(!(m_filter->operator()(static_cast<ParamSet&&>(p))))return false;
 						s=m_optimality->operator()(static_cast<ParamSet&&>(p));
