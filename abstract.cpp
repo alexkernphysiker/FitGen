@@ -273,12 +273,22 @@ namespace Genetic{
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.begin();
 	}
+	AbstractGenetic::const_iterator AbstractGenetic::begin()const{
+		if(m_population.size()==0)
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
+		return m_population[0].first.begin();
+	}
 	AbstractGenetic::const_iterator AbstractGenetic::cbegin()const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.cbegin();
 	}
 	AbstractGenetic::iterator AbstractGenetic::end(){
+		if(m_population.size()==0)
+			throw GeneticException("Cannot obtain any parameters when population size is zero");
+		return m_population[0].first.end();
+	}
+	AbstractGenetic::const_iterator AbstractGenetic::end() const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.end();

@@ -59,18 +59,12 @@ namespace Genetic{
 			m_values.push_back(v);
 		return *this;
 	}
-	ParamSet::iterator ParamSet::begin(){
-		return m_values.begin();
-	}
-	ParamSet::const_iterator ParamSet::cbegin()const{
-		return m_values.cbegin();
-	}
-	ParamSet::iterator ParamSet::end(){
-		return m_values.end();
-	}
-	ParamSet::const_iterator ParamSet::cend() const{
-		return m_values.cend();
-	}
+	ParamSet::iterator ParamSet::begin(){return m_values.begin();}
+	ParamSet::const_iterator ParamSet::begin()const{return m_values.begin();}
+	ParamSet::const_iterator ParamSet::cbegin()const{return m_values.cbegin();}
+	ParamSet::iterator ParamSet::end(){return m_values.end();}
+	ParamSet::const_iterator ParamSet::end() const{return m_values.end();}
+	ParamSet::const_iterator ParamSet::cend() const{return m_values.cend();}
 	ParamSet parEq(unsigned int cnt,double val){
 		ParamSet res;
 		for(unsigned int i=0;i<cnt;i++)

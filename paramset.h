@@ -26,8 +26,10 @@ namespace Genetic{
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;
 		iterator begin();
+		const_iterator begin()const;
 		const_iterator cbegin()const;
 		iterator end();
+		const_iterator end() const;
 		const_iterator cend() const;
 	protected:
 		mutex m_mutex;
