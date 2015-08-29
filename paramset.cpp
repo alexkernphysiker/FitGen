@@ -36,12 +36,8 @@ namespace Genetic{
 		return *this;
 	}
 	ParamSet::~ParamSet(){}
-	int ParamSet::Count(){
-		Lock lock(m_mutex);
-		return m_values.size();
-	}
-	double ParamSet::operator[](int i){
-		Lock lock(m_mutex);
+	int ParamSet::Count()const{return m_values.size();}
+	double ParamSet::operator[](int i)const{
 		if((i<0)||(i>=m_values.size()))
 			throw GeneticException("Range check error when accessing ParamSet's element");
 		return m_values[i];

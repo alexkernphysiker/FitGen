@@ -21,28 +21,28 @@ namespace Genetic{
 	class IParamCheck{
 	public:
 		virtual ~IParamCheck(){}
-		virtual bool operator()(ParamSet&&P)=0;
+		virtual bool operator()(const ParamSet&P)const=0;
 	};
 	class Filter:public IParamCheck{
 	public:
-		Filter(function<bool(ParamSet&&)> c);
+		Filter(function<bool(const ParamSet&)> c);
 		virtual ~Filter();
-		virtual bool operator()(ParamSet&&P)override;
+		virtual bool operator()(const ParamSet&P)const override;
 	private:
-		function<bool(ParamSet&&)> condition;
+		function<bool(const ParamSet&)> condition;
 	};
 	class IOptimalityFunction{
 	public:
 		virtual ~IOptimalityFunction(){}
-		virtual double operator()(ParamSet&&P)=0;
+		virtual double operator()(const ParamSet&P)const=0;
 	};
 	class OptimalityFunction:public IOptimalityFunction{
 	public:
-		OptimalityFunction(function<double(ParamSet&&)> f);
+		OptimalityFunction(function<double(const ParamSet&)> f);
 		virtual ~OptimalityFunction();
-		virtual double operator()(ParamSet&&P)override;
+		virtual double operator()(const ParamSet&P)const override;
 	private:
-		function<double(ParamSet&&)> func;
+		function<double(const ParamSet&)> func;
 	};
 	
 	class AbstractGenetic{
@@ -52,34 +52,35 @@ namespace Genetic{
 	public:
 		virtual ~AbstractGenetic();
 		
-		shared_ptr<IOptimalityFunction> OptimalityCalculator();
+		shared_ptr<IOptimalityFunction> OptimalityCalculator()const;
 		void SetFilter(shared_ptr<IParamCheck> filter);
-		void SetFilter(function<bool(ParamSet&&)>);
+		void SetFilter(function<bool(const ParamSet&)>);
 		void RemoveFilter();
 		
 		void SetThreadCount(unsigned int threads_count);
-		unsigned int ThreadCount();
+		unsigned int ThreadCount()const;
+		
 		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 	protected:
 		virtual void mutations(ParamSet&,RANDOM&);
 	public:
 		void Iterate(RANDOM&random);
 		
-		unsigned long int iteration_count();
-		int PopulationSize();
-		int ParamCount();
-		double Optimality(int point_index=0);
-		ParamSet&&Parameters(int point_index=0);
-		double operator[](int i);
-		ParamSet&&ParamAverage();
-		ParamSet&&ParamDispersion();
-		ParamSet&&ParamMaxDeviation();
+		unsigned long int iteration_count()const;
+		int PopulationSize()const;
+		int ParamCount()const;
+		double Optimality(int point_index=0)const;
+		ParamSet&&Parameters(int point_index=0)const;
+		double operator[](int i)const;
+		ParamSet&&ParamAverage()const;
+		ParamSet&&ParamDispersion()const;
+		ParamSet&&ParamMaxDeviation()const;
 		
-		bool ConcentratedInOnePoint();
-		bool AbsoluteOptimalityExitCondition(double accuracy);
-		bool RelativeOptimalityExitCondition(double accuracy);
-		bool ParametersDispersionExitCondition(ParamSet&&max_disp);
-		bool RelativeParametersDispersionExitCondition(ParamSet&&max_disp);
+		bool ConcentratedInOnePoint()const;
+		bool AbsoluteOptimalityExitCondition(double accuracy)const;
+		bool RelativeOptimalityExitCondition(double accuracy)const;
+		bool ParametersDispersionExitCondition(ParamSet&&max_disp)const;
+		bool RelativeParametersDispersionExitCondition(ParamSet&&max_disp)const;
 		
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;

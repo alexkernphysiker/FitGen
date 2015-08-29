@@ -8,20 +8,14 @@
 #include "math_h/sigma.h"
 using namespace std;
 namespace Genetic{
-	Filter::Filter(function<bool(ParamSet&&)> c){
+	Filter::Filter(function<bool(const ParamSet&)> c){
 		condition=c;
 	}
 	Filter::~Filter(){}
-	bool Filter::operator()(ParamSet&&P){
-		return condition(static_cast<ParamSet&&>(P));
-	}
-	OptimalityFunction::OptimalityFunction(function<double(ParamSet&&)> f){
-		func=f;
-	}
+	bool Filter::operator()(const ParamSet&P)const{return condition(P);}
+	OptimalityFunction::OptimalityFunction(function<double(const ParamSet&)> f){func=f;}
 	OptimalityFunction::~OptimalityFunction(){}
-	double OptimalityFunction::operator()(ParamSet&&P){
-		return func(static_cast<ParamSet&&>(P));
-	}
+	double OptimalityFunction::operator()(const ParamSet&P)const{return func(P);}
 	
 	typedef lock_guard<mutex> Lock;
 	typedef pair<ParamSet,double> Point;
@@ -31,7 +25,7 @@ namespace Genetic{
 	inline ParamSet CreateNew(Create create,Condition condition){
 		while(true){//ToDo: this may be a problem source
 			ParamSet res=create();
-			if(condition(static_cast<ParamSet&&>(res)))return res;
+			if(condition(res))return res;
 		}
 	}
 	AbstractGenetic::AbstractGenetic(){
@@ -39,7 +33,7 @@ namespace Genetic{
 		if(threads==0)
 			threads=1;
 		m_itercount=0;
-		m_filter=make_shared<Filter>([](ParamSet&&){return true;});
+		m_filter=make_shared<Filter>([](const ParamSet&){return true;});
 	}
 	AbstractGenetic::AbstractGenetic(
 		shared_ptr<IOptimalityFunction> optimality
@@ -47,21 +41,18 @@ namespace Genetic{
 		m_optimality=optimality;
 	}
 	AbstractGenetic::~AbstractGenetic(){}
-	shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator(){
-		Lock lock(m_mutex);
-		return m_optimality;
-	}
+	shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator()const{return m_optimality;}
 	void AbstractGenetic::SetFilter(shared_ptr<IParamCheck> filter){
 		Lock lock(m_mutex);
 		m_filter=filter;
 	}
-	void AbstractGenetic::SetFilter(function<bool(ParamSet&&)> f){
+	void AbstractGenetic::SetFilter(function<bool(const ParamSet&)> f){
 		Lock lock(m_mutex);
 		m_filter=make_shared<Filter>(f);
 	}
 	void AbstractGenetic::RemoveFilter(){
 		Lock lock(m_mutex);
-		m_filter=make_shared<Filter>([](ParamSet&&){return true;});
+		m_filter=make_shared<Filter>([](const ParamSet&){return true;});
 	}
 	
 	void AbstractGenetic::SetThreadCount(unsigned int threads_count){
@@ -70,10 +61,7 @@ namespace Genetic{
 			throw GeneticException("Thread count cannot be zero");
 		threads=threads_count;
 	}
-	unsigned int AbstractGenetic::ThreadCount(){
-		Lock lock(m_mutex);
-		return threads;
-	}
+	unsigned int AbstractGenetic::ThreadCount()const{return threads;}
 	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
 		if(m_population.size()>0)
 			throw GeneticException("Genetic algorithm cannot be inited twice");
@@ -87,9 +75,9 @@ namespace Genetic{
 						Lock lock(m_mutex);
 						return initial_conditions->Generate(random);
 					},
-					[this,&s](ParamSet&&p){
-						if(!(m_filter->operator()(static_cast<ParamSet&&>(p))))return false;
-						s=m_optimality->operator()(static_cast<ParamSet&&>(p));
+					[this,&s](const ParamSet&p){
+						if(!(m_filter->operator()(p)))return false;
+						s=m_optimality->operator()(p);
 						return isfinite(s)!=0;
 					}
 				);
@@ -133,9 +121,9 @@ namespace Genetic{
 						mutations(p,random);
 						return p;
 					},
-					[this,&s](ParamSet&&p){
-						if(!(m_filter->operator()(static_cast<ParamSet&&>(p))))return false;
-						s=m_optimality->operator()(static_cast<ParamSet&&>(p));
+					[this,&s](const ParamSet&p){
+						if(!(m_filter->operator()(p)))return false;
+						s=m_optimality->operator()(p);
 						return isfinite(s)!=0;
 					}
 				);
@@ -178,56 +166,37 @@ namespace Genetic{
 			m_itercount++;
 		}
 	}
-	unsigned long int AbstractGenetic::iteration_count(){
-		Lock lock(m_mutex);
-		return m_itercount;
-	}
-	int AbstractGenetic::PopulationSize(){
-		Lock lock(m_mutex);
-		return m_population.size();
-	}
-	int AbstractGenetic::ParamCount(){
+	unsigned long int AbstractGenetic::iteration_count()const{return m_itercount;}
+	int AbstractGenetic::PopulationSize()const{return m_population.size();}
+	int AbstractGenetic::ParamCount()const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
-		Lock lock(m_mutex);
 		return m_population[0].first.Count();
 	}
-	double AbstractGenetic::Optimality(int point_index){
+	double AbstractGenetic::Optimality(int point_index)const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw GeneticException("Range check error when accessing an element in the population");
-		Lock lock(m_mutex);
 		return m_population[point_index].second;
 	}
-	ParamSet&&AbstractGenetic::Parameters(int point_index){
+	ParamSet&&AbstractGenetic::Parameters(int point_index)const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if((point_index<0)|(point_index>=m_population.size()))
 			throw GeneticException("Range check error when accessing an element in the population");
-		Lock lock(m_mutex);
-		return static_cast<ParamSet&&>(m_population[point_index].first);
+		return const_cast<ParamSet&&>(m_population[point_index].first);
 	}
-	double AbstractGenetic::operator [](int i){
+	double AbstractGenetic::operator [](int i)const{
 		if((i<0)|(i>=ParamCount()))
 			throw GeneticException("Parameter index out of range");
-		Lock lock(m_mutex);
 		return m_population[0].first[i];
 	}
-	ParamSet&&AbstractGenetic::ParamAverage(){
-		Lock lock(m_mutex);
-		return static_cast<ParamSet&&>(m_avr);
-	}
-	ParamSet&&AbstractGenetic::ParamDispersion(){
-		Lock lock(m_mutex);
-		return static_cast<ParamSet&&>(m_disp);
-	}
-	ParamSet&&AbstractGenetic::ParamMaxDeviation(){
-		Lock lock(m_mutex);
-		return static_cast<ParamSet&&>(m_max_dev);
-	}
+	ParamSet&&AbstractGenetic::ParamAverage()const{return const_cast<ParamSet&&>(m_avr);}
+	ParamSet&&AbstractGenetic::ParamDispersion()const{return const_cast<ParamSet&&>(m_disp);}
+	ParamSet&&AbstractGenetic::ParamMaxDeviation()const{return const_cast<ParamSet&&>(m_max_dev);}
 	
-	bool AbstractGenetic::ConcentratedInOnePoint(){
+	bool AbstractGenetic::ConcentratedInOnePoint()const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
@@ -235,11 +204,11 @@ namespace Genetic{
 		if(Optimality(PopulationSize()-1)>Optimality())
 			return false;
 		bool res=true;
-		for(auto v:m_max_dev)
-			res&=(v==0);
+		for(int i=0,n=m_max_dev.Count();i<n;i++)
+			res&=(m_max_dev[i]==0);
 		return res;
 	}
-	bool AbstractGenetic::AbsoluteOptimalityExitCondition(double accuracy){
+	bool AbstractGenetic::AbsoluteOptimalityExitCondition(double accuracy)const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
@@ -250,7 +219,7 @@ namespace Genetic{
 			return Optimality(PopulationSize()-1)==Optimality();
 		return (Optimality(PopulationSize()-1)-Optimality())<=accuracy;
 	}
-	bool AbstractGenetic::RelativeOptimalityExitCondition(double accuracy){
+	bool AbstractGenetic::RelativeOptimalityExitCondition(double accuracy)const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
@@ -261,7 +230,7 @@ namespace Genetic{
 			return Optimality(PopulationSize()-1)==Optimality();
 		return Optimality(PopulationSize()-1)<=(Optimality()*(1.0+accuracy));
 	}
-	bool AbstractGenetic::ParametersDispersionExitCondition(ParamSet&& max_disp){
+	bool AbstractGenetic::ParametersDispersionExitCondition(ParamSet&& max_disp)const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
@@ -279,7 +248,7 @@ namespace Genetic{
 		}
 		return true;
 	}
-	bool AbstractGenetic::RelativeParametersDispersionExitCondition(ParamSet&& max_disp){
+	bool AbstractGenetic::RelativeParametersDispersionExitCondition(ParamSet&& max_disp)const{
 		if(m_population.size()==0)
 			throw GeneticException("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)

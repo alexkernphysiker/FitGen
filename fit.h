@@ -12,17 +12,14 @@ namespace Genetic{
 	class IParamFunc{
 	public:
 		virtual ~IParamFunc(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P)=0;
-		inline double F(ParamSet&&X,ParamSet&P){return operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));}
-		inline double F(ParamSet&X,ParamSet&&P){return operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));}
-		inline double F(ParamSet&X,ParamSet&P){return operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const=0;
 	};
-	typedef function<double(ParamSet&&,ParamSet&&)> paramFunc;
+	typedef function<double(const ParamSet&,const ParamSet&)> paramFunc;
 	class ParameterFunction:public IParamFunc{
 	public:
 		ParameterFunction(paramFunc f);
 		virtual ~ParameterFunction();
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override;
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override;
 	private:
 		paramFunc func;
 	};
@@ -41,8 +38,8 @@ namespace Genetic{
 		FitPoints();
 		virtual ~FitPoints();
 		FitPoints &operator<<(Point point);
-		Point &operator[](int i);
-		int count();
+		Point&&operator[](int i)const;
+		int count()const;
 		typedef vector<Point>::iterator iterator;
 		typedef vector<Point>::const_iterator const_iterator;
 		iterator begin();
@@ -103,11 +100,11 @@ namespace Genetic{
 	
 	class OptimalityForPoints:public IOptimalityFunction{
 	public:
-		typedef function<double(ParamSet&,IParamFunc&)> Coefficient;
-		typedef function<double(FitPoints::Point&,ParamSet&,IParamFunc&)> Summand;
+		typedef function<double(const ParamSet&,const IParamFunc&)> Coefficient;
+		typedef function<double(const FitPoints::Point&,const ParamSet&,const IParamFunc&)> Summand;
 		OptimalityForPoints(shared_ptr<FitPoints> p, shared_ptr<IParamFunc> f,Coefficient c,Summand s);
 		virtual ~OptimalityForPoints();
-		virtual double operator()(ParamSet&&P)override;
+		virtual double operator()(const ParamSet&P)const override;
 	protected:
 		shared_ptr<FitPoints> points;
 		shared_ptr<IParamFunc> func;
@@ -119,8 +116,8 @@ namespace Genetic{
 		Parabolic();
 	public:
 		virtual ~Parabolic();
-		double GetParamParabolicError(double delta,int i);
-		ParamSet GetParamParabolicErrors(ParamSet&&delta);
+		double GetParamParabolicError(double delta,int i)const;
+		ParamSet GetParamParabolicErrors(ParamSet&&delta)const;
 	};
 	shared_ptr<IOptimalityFunction> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
 	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
@@ -156,11 +153,11 @@ namespace Genetic{
 	
 	class OptimalityForPointsWithFuncError:public IOptimalityFunction{
 	public:
-		typedef function<double(ParamSet&,IParamFunc&,IParamFunc&)> Coefficient;
-		typedef function<double(FitPoints::Point&,ParamSet&,IParamFunc&,IParamFunc&)> Summand;
+		typedef function<double(const ParamSet&,const IParamFunc&,const IParamFunc&)> Coefficient;
+		typedef function<double(const FitPoints::Point&,const ParamSet&,const IParamFunc&,const IParamFunc&)> Summand;
 		OptimalityForPointsWithFuncError(shared_ptr<FitPoints> p,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e,Coefficient c,Summand s);
 		virtual ~OptimalityForPointsWithFuncError();
-		virtual double operator()(ParamSet&&P)override;
+		virtual double operator()(const ParamSet&P)const override;
 	protected:
 		shared_ptr<FitPoints> points;
 		shared_ptr<IParamFunc> func;

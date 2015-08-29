@@ -8,8 +8,8 @@
 #include "engine.h"
 using namespace Genetic;
 using namespace std;
-double testfunc(ParamSet&&X){return X[0]*X[0]-X[0];}
-double zero(ParamSet&&){return 0;}
+double testfunc(const ParamSet&X){return X[0]*X[0]-X[0];}
+double zero(const ParamSet&){return 0;}
 auto init=make_shared<GenerateUniform>()<<make_pair(0.5,1);
 auto filter=make_shared<And>()<<(make_shared<Above>()<<0.4)<<(make_shared<Below>()<<1.5);
 TEST(Equation,OneArg){

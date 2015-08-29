@@ -5,13 +5,13 @@
 namespace Genetic{
 	using namespace std;
 	Above::Above(){}
-	Above::Above(ParamSet v):m_data(v){}
-	bool Above::operator()(ParamSet&&P){
+	Above::Above(ParamSet&&v):m_data(v){}
+	bool Above::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
-		for(auto value:m_data){
-			if(isfinite(value))
-				res&=(P[index]>=value);
+		for(int i=0,n=m_data.Count();i<n;i++){
+			if(isfinite(m_data[i]))
+				res&=(P[index]>=m_data[i]);
 			index++;
 		}
 		return res;
@@ -22,13 +22,13 @@ namespace Genetic{
 	}
 	
 	Below::Below(){}
-	Below::Below(ParamSet v):m_data(v){}
-	bool Below::operator()(ParamSet&&P){
+	Below::Below(ParamSet&&v):m_data(v){}
+	bool Below::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
-		for(auto value:m_data){
-			if(isfinite(value))
-				res&=(P[index]<=value);
+		for(int i=0,n=m_data.Count();i<n;i++){
+			if(isfinite(m_data[i]))
+				res&=(P[index]<=m_data[i]);
 			index++;
 		}
 		return res;
@@ -38,10 +38,8 @@ namespace Genetic{
 		return *this;
 	}
 	
-	int AbstractFilterMulti::Count(){
-		return m_data.size();
-	}
-	IParamCheck &AbstractFilterMulti::Get(int i){
+	int AbstractFilterMulti::Count()const{return m_data.size();}
+	IParamCheck &AbstractFilterMulti::Get(int i)const{
 		if((i>=0)&(i<m_data.size()))
 			return *m_data[i];
 		else
@@ -51,7 +49,7 @@ namespace Genetic{
 		m_data.push_back(val);
 		return *this;
 	}
-	AbstractFilterMulti& AbstractFilterMulti::Add(function<bool(ParamSet&&)> condition){
+	AbstractFilterMulti& AbstractFilterMulti::Add(function<bool(const ParamSet&)> condition){
 		m_data.push_back(make_shared<Filter>(condition));
 		return *this;
 	}
@@ -59,20 +57,20 @@ namespace Genetic{
 		filter->Add(value);
 		return filter;
 	}
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,function<bool(ParamSet&&)> condition){
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,function<bool(const ParamSet&)> condition){
 		filter->Add(condition);
 		return filter;
 	}
 	AbstractFilterMulti::~AbstractFilterMulti(){}
-	bool And::operator()(ParamSet&&P){
+	bool And::operator()(const ParamSet&P)const{
 		for(auto f: m_data)
-			if(!f->operator()(static_cast<ParamSet&&>(P)))
+			if(!f->operator()(P))
 				return false;
 		return true;
 	}
-	bool Or::operator()(ParamSet&&P){
+	bool Or::operator()(const ParamSet&P)const{
 		for(auto f: m_data)
-			if(f->operator()(static_cast<ParamSet&&>(P)))
+			if(f->operator()(P))
 				return true;
 		return false;
 	}

@@ -18,10 +18,10 @@ namespace Genetic{
 		ParamSet(double x,double y,double z,double zz, double zzz, double zzzz);
 		~ParamSet();
 		ParamSet &operator=(const ParamSet &source);
-		double operator[](int i);
+		double operator[](int i)const;
 		ParamSet &operator<<(double val);
 		ParamSet &operator<<(ParamSet val);
-		int Count();
+		int Count()const;
 		void Set(int i,double v);
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;

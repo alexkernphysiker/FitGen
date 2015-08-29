@@ -9,9 +9,9 @@ namespace Genetic{
 	class Above:public IParamCheck{
 	public:
 		Above();
-		Above(ParamSet v);
+		Above(ParamSet&&v);
 		virtual ~Above(){}
-		virtual bool operator()(ParamSet&&P)override;
+		virtual bool operator()(const ParamSet&P)const override;
 		Above &operator<<(double value);
 	private:
 		ParamSet m_data;
@@ -19,9 +19,9 @@ namespace Genetic{
 	class Below:public IParamCheck{
 	public:
 		Below();
-		Below(ParamSet v);
+		Below(ParamSet&&v);
 		virtual ~Below(){}
-		virtual bool operator()(ParamSet&&P)override;
+		virtual bool operator()(const ParamSet&P)const override;
 		Below &operator<<(double value);
 	private:
 		ParamSet m_data;
@@ -35,26 +35,26 @@ namespace Genetic{
 	class AbstractFilterMulti:public IParamCheck{
 	public:
 		virtual ~AbstractFilterMulti();
-		int Count();
-		IParamCheck &Get(int i);
+		int Count()const;
+		IParamCheck &Get(int i)const;
 		AbstractFilterMulti &Add(shared_ptr<IParamCheck> val);
-		AbstractFilterMulti &Add(function<bool(ParamSet&&)> condition);
+		AbstractFilterMulti &Add(function<bool(const ParamSet&)> condition);
 	protected:
 		vector<shared_ptr<IParamCheck>> m_data;
 	};
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,shared_ptr<IParamCheck> value);
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,function<bool(ParamSet&&)> condition);
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti>filter,shared_ptr<IParamCheck> value);
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti>filter,function<bool(const ParamSet&)> condition);
 	class And:public AbstractFilterMulti{
 	public:
 		And(){}
 		virtual ~And(){}
-		virtual bool operator()(ParamSet&&P)override;
+		virtual bool operator()(const ParamSet&P)const override;
 	};
 	class Or:public AbstractFilterMulti{
 	public:
 		Or(){}
 		virtual ~Or(){}
-		virtual bool operator()(ParamSet&&P)override;
+		virtual bool operator()(const ParamSet&P)const override;
 	};
 }
 #endif

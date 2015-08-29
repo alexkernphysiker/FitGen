@@ -9,7 +9,7 @@
 using namespace Genetic;
 using namespace std;
 TEST(OptimalityFunction,BaseTest){
-	auto f=[](ParamSet&&p){return pow(p[0],2);};
+	auto f=[](const ParamSet&p){return pow(p[0],2);};
 	OptimalityFunction F(f);
 	for(double x=-1;x<=1;x+=0.1){
 		EXPECT_EQ(f(ParamSet(x)),F(ParamSet(x)));
@@ -20,7 +20,7 @@ public:
 	GeneticTest(std::shared_ptr<Genetic::IOptimalityFunction> optimality):AbstractGenetic(optimality){}
 	virtual ~GeneticTest(){}
 };
-auto optimality=make_shared<OptimalityFunction>([](ParamSet&&p){return pow(p[0],2);});
+auto optimality=make_shared<OptimalityFunction>([](const ParamSet&p){return pow(p[0],2);});
 auto initial=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,0.001);
 void test_init(unsigned int threads,int population){
 	GeneticTest gen(optimality);
@@ -57,8 +57,8 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(1),GeneticException);
 	EXPECT_THROW(gen.RelativeOptimalityExitCondition(1),GeneticException);
 	EXPECT_THROW(gen.Iterate(engine),GeneticException);
-	EXPECT_THROW(gen.ParametersDispersionExitCondition(static_cast<ParamSet&&>(ParamSet()<<0)),GeneticException);
-	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(static_cast<ParamSet&&>(ParamSet()<<0)),GeneticException);
+	EXPECT_THROW(gen.ParametersDispersionExitCondition(ParamSet(0)),GeneticException);
+	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(ParamSet(0)),GeneticException);
 	EXPECT_THROW(gen.Optimality(0),GeneticException);
 	EXPECT_NO_THROW(gen.Init(2,initial,engine));
 	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(-1),GeneticException);
@@ -132,7 +132,7 @@ protected:
 };
 TEST(AbstractGenetic,FilterSettingFunc){
 	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,1);
-	auto filter=[](ParamSet&&P){return P[0]>0.5;};
+	auto filter=[](const ParamSet&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(filter);
 	gen.Init(100,initial_uniform,engine);
@@ -150,7 +150,7 @@ TEST(AbstractGenetic,FilterSettingFunc){
 }
 TEST(AbstractGenetic,FilterSetting){
 	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(-1,1);
-	auto filter=[](ParamSet&&P){return P[0]>0.5;};
+	auto filter=[](const ParamSet&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(make_shared<Filter>(filter));
 	gen.Init(100,initial_uniform,engine);
@@ -168,7 +168,7 @@ TEST(AbstractGenetic,FilterSetting){
 }
 TEST(AbstractGenetic,Infinite){
 	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,1);
-	auto opt=make_shared<OptimalityFunction>([](ParamSet&&P){
+	auto opt=make_shared<OptimalityFunction>([](const ParamSet&P){
 		double res=P[0];
 		res*=res;
 		if(res<0.00001)return double(INFINITY);
@@ -176,7 +176,7 @@ TEST(AbstractGenetic,Infinite){
 	});
 	GeneticTest gen(opt);
 	gen.Init(100,initial_uniform,engine);
-	EXPECT_FALSE(gen.ParametersDispersionExitCondition(static_cast<ParamSet&&>(ParamSet()<<0)));
+	EXPECT_FALSE(gen.ParametersDispersionExitCondition(ParamSet(0)));
 	for(int i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_TRUE(isfinite(gen.Parameters(i)[0]));
 	for(int j=0;j<30;j++){

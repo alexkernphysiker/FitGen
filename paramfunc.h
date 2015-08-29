@@ -22,7 +22,7 @@ namespace Genetic{
 	public:
 		Const(){}
 		virtual ~Const(){}
-		virtual double operator()(ParamSet&&,ParamSet&&) override{
+		virtual double operator()(const ParamSet&,const ParamSet&)const override{
 			return double(value);
 		}
 		enum{ParamCount=0,ArgCount=0};
@@ -32,7 +32,7 @@ namespace Genetic{
 	public:
 		Arg(){}
 		virtual ~Arg(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&) override{
+		virtual double operator()(const ParamSet&X,const ParamSet&)const override{
 			return X[x_index];
 		}
 		enum{ParamCount=0,ArgCount=x_index+1};
@@ -42,7 +42,7 @@ namespace Genetic{
 	public:
 		Par(){}
 		virtual ~Par(){}
-		virtual double operator()(ParamSet&&,ParamSet&&P) override{
+		virtual double operator()(const ParamSet&,const ParamSet&P)const override{
 			return P[p_index];
 		}
 		enum{ParamCount=p_index+1,ArgCount=0};
@@ -52,7 +52,7 @@ namespace Genetic{
 	public:
 		PolynomFunc(){}
 		virtual ~PolynomFunc(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return Polynom<power,double,ParamSet,p_index>(X[x_index],P);
 		}
 		enum{ParamCount=p_index+power+1,ArgCount=x_index+1};
@@ -61,8 +61,8 @@ namespace Genetic{
 	class Func:public virtual FUNC{
 		public:Func():FUNC(){}
 		virtual ~Func(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return func(FUNC::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return func(FUNC::operator()(X,P));
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
@@ -70,9 +70,8 @@ namespace Genetic{
 	class Func2:public virtual FUNC1,public virtual FUNC2{
 		public:Func2():FUNC1(),FUNC2(){}
 		virtual ~Func2(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return func(FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P));
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
@@ -83,10 +82,8 @@ namespace Genetic{
 	class Func3:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3{
 		public:Func3():FUNC1(),FUNC2(),FUNC3(){}
 		virtual ~Func3(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return func(FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC3::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P));
 		}
 		enum{
 			ParamCount=max3<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount>::val,
@@ -97,11 +94,9 @@ namespace Genetic{
 	class Func4:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4{
 		public:Func4():FUNC1(),FUNC2(),FUNC3(),FUNC4(){}
 		virtual ~Func4(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return func(FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC3::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC4::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),
+						FUNC4::operator()(X,P));
 		}
 		enum{
 			ParamCount=max4<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount>::val,
@@ -112,12 +107,9 @@ namespace Genetic{
 	class Func5:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4,public virtual FUNC5{
 		public:Func5():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(){}
 		virtual ~Func5(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return func(FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC3::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC4::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC5::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),
+						FUNC4::operator()(X,P),FUNC5::operator()(X,P));
 		}
 		enum{
 			ParamCount=max5<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount,FUNC5::ParamCount>::val,
@@ -128,13 +120,9 @@ namespace Genetic{
 	class Func6:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
 		public:Func6():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(),FUNC6(){}
 		virtual ~Func6(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return func(FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC3::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC4::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC5::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-						FUNC6::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),
+						FUNC4::operator()(X,P),FUNC5::operator()(X,P),FUNC6::operator()(X,P));
 		}
 		enum{
 			ParamCount=max6<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
@@ -145,10 +133,10 @@ namespace Genetic{
 	class ArgShift:public virtual FUNC{
 	public:
 		ArgShift():FUNC(){}virtual ~ArgShift(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			ParamSet x=X;
 			x.Set(x_index,x[x_index]+P[p_index]);
-			return FUNC::operator()(static_cast<ParamSet&&>(x),static_cast<ParamSet&&>(P));
+			return FUNC::operator()((x),(P));
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
@@ -157,10 +145,10 @@ namespace Genetic{
 	public:
 		ArgScale():FUNC(){}
 		virtual ~ArgScale(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			ParamSet x=X;
 			x.Set(x_index,x[x_index]*P[p_index]);
-			return FUNC::operator()(static_cast<ParamSet&&>(x),static_cast<ParamSet&&>(P));
+			return FUNC::operator()((x),(P));
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
@@ -169,8 +157,8 @@ namespace Genetic{
 	public:
 		Minus():FUNC(){}
 		virtual ~Minus(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return -FUNC::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return -FUNC::operator()((X),(P));
 		}
 		enum{
 			ParamCount=FUNC::ParamCount,
@@ -182,9 +170,8 @@ namespace Genetic{
 	public:
 		Add():FUNC1(),FUNC2(){}
 		virtual ~Add(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P))
-				+FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
@@ -196,9 +183,8 @@ namespace Genetic{
 	public:
 		Sub():FUNC1(),FUNC2(){}
 		virtual ~Sub(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P))
-				-FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))-FUNC2::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
@@ -210,9 +196,8 @@ namespace Genetic{
 	public:
 		Mul():FUNC1(),FUNC2(){}
 		virtual ~Mul(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P))
-				*FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
@@ -224,9 +209,8 @@ namespace Genetic{
 	public:
 		Div():FUNC1(),FUNC2(){}
 		virtual ~Div(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P))
-				/FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P));
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))/FUNC2::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,
@@ -238,11 +222,8 @@ namespace Genetic{
 	public:
 		Power():FUNC1(),FUNC2(){}
 		virtual ~Power(){}
-		virtual double operator()(ParamSet&&X,ParamSet&&P) override{
-			return pow(
-				FUNC1::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P)),
-				FUNC2::operator()(static_cast<ParamSet&&>(X),static_cast<ParamSet&&>(P))
-			);
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return pow(FUNC1::operator()((X),(P)),FUNC2::operator()((X),(P)));
 		}
 		enum{
 			ParamCount=max2<FUNC1::ParamCount,FUNC2::ParamCount>::val,

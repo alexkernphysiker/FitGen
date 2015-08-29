@@ -18,9 +18,8 @@ int main(int argcnt, char **arg){
 	for(int i=0;i<count;i++)
 		distribution->Fill(gauss(engine));
 	printf("Prepare fitting...\n");
-	Fit<DifferentialMutations<>,ChiSquareWithXError>
-		fit(distribution,[](ParamSet&&X,ParamSet&&P){return Gaussian(X[0],P[0],P[1])*P[2];});
-	fit.SetFilter([](ParamSet&&P){return (P[1]>0)&&(P[2]>0);});
+	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,[](const ParamSet&X,const ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];});
+	fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
 	fit.Init(30,make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,2.0*count/bins),engine);
 	printf("Parameter count: %i\n",fit.ParamCount());
 	printf("Population size: %i\n",fit.PopulationSize());
