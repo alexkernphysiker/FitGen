@@ -40,13 +40,29 @@ namespace Genetic{
 		src->operator<<(p);
 		return src;
 	}
-	shared_ptr< FitPoints > operator<<(shared_ptr<FitPoints> src, pair<double,double> p){
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,double> p){
 		FitPoints::Point P;
 		P.X<<p.first;
 		P.y=p.second;
 		P.wy=1;
 		return src<<P;
 	}
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,pair<double,double>> p){
+		FitPoints::Point P;
+		P.X<<p.first;
+		P.y=p.second.first;
+		P.wy=p.second.second;
+		return src<<P;
+	}
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<pair<double,double>,pair<double,double>> p){
+		FitPoints::Point P;
+		P.X<<p.first.first;
+		P.WX<<p.first.second;
+		P.y=p.second.first;
+		P.wy=p.second.second;
+		return src<<P;
+	}
+	
 	FitPoints::Point& FitPoints::operator[](int i){
 		if((i<0)||(i>=count()))
 			throw GeneticException("Range check error when getting an element from FitPoints");

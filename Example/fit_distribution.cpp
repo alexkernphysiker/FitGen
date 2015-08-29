@@ -10,7 +10,7 @@ int main(int argcnt, char **arg){
 	double left=0;
 	double right=10;
 	unsigned int bins=2;
-	int count=1000;
+	int count=5000;
 	auto distribution=make_shared<Distribution1D>(left,right,int(right-left)*bins);
 	printf("Filling...\n");
 	RANDOM engine;

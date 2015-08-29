@@ -12,19 +12,29 @@ using namespace Genetic;
 typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
 typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
-
-double X[]={-67.5,-62.5,-57.5,-52.5,-47.5,-42.5,-37.5,-32.5,-27.5,
-	-22.5,-17.5,-12.5,-7.5,-2.5,2.5,7.5,12.5,17.5,22.5,27.5};
-double dX[]={2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,
-	2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5};
-double Y[]={179.355, 223.078, 211.644, 220.101, 214.429, 241.046, 237.26, 230.127, 258.658, 290.287, 307.54, 317.218,
-	365.392, 371.688, 406.558, 413.209, 455.075, 495.286, 497.253, 511.347};
-double dY[]={12.4159, 13.178, 11.8098, 11.4024, 10.555, 10.7758, 10.3217,  9.81692, 10.1093, 10.5735,
-	10.7944, 10.679, 11.4741, 11.4566, 12.0048, 12.1155, 13.117, 14.1408, 14.3717, 15.0141};
-
 int main(int argcnt, char **arg){
 	RANDOM engine;
-	auto points_to_fit=FitPointsXdXYdY(0,19,X,dX,Y,dY);
+	auto points_to_fit=make_shared<FitPoints>()
+		<<make_pair(make_pair(-67.5,2.5),make_pair(179.4,12.5))
+		<<make_pair(make_pair(-62.5,2.5),make_pair(223.1,13.))
+		<<make_pair(make_pair(-57.5,2.5),make_pair(221.6,12.))
+		<<make_pair(make_pair(-52.5,2.5),make_pair(220.1,11.5))
+		<<make_pair(make_pair(-47.5,2.5),make_pair(214.4,10.5))
+		<<make_pair(make_pair(-42.5,2.5),make_pair(241.0,10.5))
+		<<make_pair(make_pair(-37.5,2.5),make_pair(237.3,10.5))
+		<<make_pair(make_pair(-32.5,2.5),make_pair(230.1,10.))
+		<<make_pair(make_pair(-27.5,2.5),make_pair(258.7,10.))
+		<<make_pair(make_pair(-22.5,2.5),make_pair(290.3,10.5))
+		<<make_pair(make_pair(-17.5,2.5),make_pair(307.5,11.))
+		<<make_pair(make_pair(-12.5,2.5),make_pair(317.2,10.5))
+		<<make_pair(make_pair(-07.5,2.5),make_pair(365.4,11.5))
+		<<make_pair(make_pair(-02.5,2.5),make_pair(371.7,11.5))
+		<<make_pair(make_pair( 02.5,2.5),make_pair(406.6,12.))
+		<<make_pair(make_pair( 07.5,2.5),make_pair(413.2,12.))
+		<<make_pair(make_pair( 12.5,2.5),make_pair(455.1,13.))
+		<<make_pair(make_pair( 17.5,2.5),make_pair(495.3,14.))
+		<<make_pair(make_pair( 22.5,2.5),make_pair(497.3,14.5))
+		<<make_pair(make_pair( 27.5,2.5),make_pair(511.4,15.));
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
@@ -47,21 +57,17 @@ int main(int argcnt, char **arg){
 		printf("Iteration count: %i; %f <= chi^2 <= %f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
 	}
 	printf("\nParameters:\n");
-	for(double p:fit)
-		printf("\t%f",p);
+	for(double p:fit)printf("\t%f",p);
 	printf("\nErrors:\n");
-	for(double p:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.01)))
-		printf("\t%f",p);
+	for(double p:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.01)))printf("\t%f",p);
 	printf("\nAverage:\n");
-	for(double p:fit.ParamAverage())
-		printf("\t%f",p);
+	for(double p:fit.ParamAverage())printf("\t%f",p);
 	printf("\nDispersion:\n");
-	for(double p:fit.ParamDispersion())
-		printf("\t%f",p);
+	for(double p:fit.ParamDispersion())printf("\t%f",p);
 	printf("\n");
 	Plotter::Instance().SetOutput(".","points");
 	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,0.5)
-	.ParamFunc("Foreground",Foreground(),fit,0.5).ParamFunc("Background",Background(),fit,0.5);
+		.ParamFunc("Foreground",Foreground(),fit,0.5).ParamFunc("Background",Background(),fit,0.5);
 	printf("Plot saved.\n");
 	return 0;
 }

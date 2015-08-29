@@ -54,6 +54,8 @@ namespace Genetic{
 	};
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,FitPoints::Point p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,pair<double,double> p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,pair<double,pair<double,double>> p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,pair<pair<double,double>,pair<double,double>> p);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,function<bool(double)> Ycond);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition,function<bool(double)> Ycond);
