@@ -35,8 +35,8 @@ namespace Genetic{
 	class AbstractFilterMulti:public IParamCheck{
 	public:
 		virtual ~AbstractFilterMulti();
-		int Count()const;
-		IParamCheck &Get(int i)const;
+		size_t Count()const;
+		IParamCheck &Get(size_t i)const;
 		AbstractFilterMulti &Add(shared_ptr<IParamCheck> val);
 		AbstractFilterMulti &Add(function<bool(const ParamSet&)> condition);
 	protected:

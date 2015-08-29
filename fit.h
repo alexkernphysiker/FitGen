@@ -140,7 +140,7 @@ namespace Genetic{
 		}
 		Fit(shared_ptr<FitPoints> points, paramFunc f):Fit(points,make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
-		double operator()(ParamSet&&X){return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());}
+		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
 	};
 	template<class GENETIC,class FUNC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
@@ -179,14 +179,14 @@ namespace Genetic{
 		FitFunctionWithError(shared_ptr<FitPoints> points,paramFunc f,paramFunc e):
 			FitFunctionWithError(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e)){}
 		virtual ~FitFunctionWithError(){}
-		double operator()(ParamSet&&X){return m_func->operator()(static_cast<ParamSet&&>(X),AbstractGenetic::Parameters());}
+		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
 	};
 	class PlotPoints1D:public Plot<double>{
 	public:
 		PlotPoints1D();
 		virtual ~PlotPoints1D();
-		PlotPoints1D& Points(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0);
-		PlotPoints1D& PointsWithoutErrors(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0);
+		PlotPoints1D& Points(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0);
+		PlotPoints1D& PointsWithoutErrors(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0);
 	};
 	template<class FIT>
 	class PlotFit1D:public PlotPoints1D{
@@ -198,8 +198,8 @@ namespace Genetic{
 			max=-INFINITY;
 		}
 		virtual ~PlotFit1D(){}
-		PlotFit1D& Points(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0){
-			PlotPoints1D::Points(name,points,param_index);
+		PlotFit1D& Points(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0){
+			PlotPoints1D::Points(static_cast<std::string&&>(name),points,param_index);
 			for(FitPoints::Point p:*points){
 				if(p.X[param_index]<min)
 					min=p.X[param_index];
@@ -208,8 +208,8 @@ namespace Genetic{
 			}
 			return *this;
 		}
-		PlotFit1D& PointsWithoutErrors(std::string name,shared_ptr<FitPoints> points,unsigned int param_index=0){
-			PlotPoints1D::PointsWithoutErrors(name,points,param_index);
+		PlotFit1D& PointsWithoutErrors(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0){
+			PlotPoints1D::PointsWithoutErrors(static_cast<std::string&&>(name),points,param_index);
 			for(FitPoints::Point p:*points){
 				if(p.X[param_index]<min)
 					min=p.X[param_index];
@@ -218,19 +218,19 @@ namespace Genetic{
 			}
 			return *this;
 		}
-		PlotFit1D& Fit(std::string name,FIT&fit,double step=0.1){
+		PlotFit1D& Fit(std::string&&name,const FIT&fit,double step){
 			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
-			Plot<double>::Line(name,[&fit](double x){return fit(ParamSet(x));},min,max,step);
+			Plot<double>::Line(static_cast<std::string&&>(name),[&fit](double x){return fit(ParamSet(x));},min,max,step);
 			return *this;
 		}
-		PlotFit1D& ParamFunc(std::string name,IParamFunc&&func,FIT&fit,double step=0.1){
+		PlotFit1D& ParamFunc(std::string&&name,IParamFunc&&func,const FIT&fit,double step){
 			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
-			Plot<double>::Line(name,[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
+			Plot<double>::Line(static_cast<std::string&&>(name),[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
 			return *this;
 		}
-		PlotFit1D& ParamFunc(std::string name,paramFunc func,FIT&fit,double step=0.1){
+		PlotFit1D& ParamFunc(std::string&&name,paramFunc func,const FIT&fit,double step){
 			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
-			Plot<double>::Line(name,[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
+			Plot<double>::Line(static_cast<std::string&&>(name),[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
 			return *this;
 		}
 	};

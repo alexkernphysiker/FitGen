@@ -38,9 +38,9 @@ namespace Genetic{
 		return *this;
 	}
 	
-	int AbstractFilterMulti::Count()const{return m_data.size();}
-	IParamCheck &AbstractFilterMulti::Get(int i)const{
-		if((i>=0)&(i<m_data.size()))
+	size_t AbstractFilterMulti::Count()const{return m_data.size();}
+	IParamCheck &AbstractFilterMulti::Get(size_t i)const{
+		if(i<m_data.size())
 			return *m_data[i];
 		else
 			throw GeneticException("Range check error when getting an element from filter set");
