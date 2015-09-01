@@ -4,7 +4,6 @@
 #define ____EuiGhCCk
 #include <exception>
 #include <string>
-#include <functional>
 class GeneticException:public std::exception{
 public:
 	GeneticException(std::string msg);
