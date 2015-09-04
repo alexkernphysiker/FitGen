@@ -2,7 +2,7 @@
 // GPL v 3.0 license
 #include <math.h>
 #include "fit.h"
-#include "genetic_exception.h"
+#include "math_h/exception_math_h.h"
 using namespace std;
 namespace Genetic{
 	ParameterFunction::ParameterFunction(function<double(const ParamSet&,const ParamSet&)> f){func=f;}
@@ -59,7 +59,7 @@ namespace Genetic{
 	
 	FitPoints::Point&&FitPoints::operator[](int i)const{
 		if((i<0)||(i>=count()))
-			throw GeneticException("Range check error when getting an element from FitPoints");
+			throw math_h_error<FitPoints>("Range check error when getting an element from FitPoints");
 		return const_cast<Point&&>(m_data[i]);
 	}
 	FitPoints::iterator FitPoints::begin(){
@@ -97,7 +97,7 @@ namespace Genetic{
 	}
 	Distribution1D::Distribution1D(double min, double max, int bins):FitPoints(){
 		if((max<min)||(bins<1))
-			throw GeneticException("Wrong constructor parameters for Distribution1D");
+			throw math_h_error<Distribution1D>("Wrong constructor parameters for Distribution1D");
 		double binwidth=(max-min)/double(bins);
 		double halfwidth=binwidth/2.0;
 		for(double x=min+halfwidth;x<max;x+=binwidth){
@@ -160,7 +160,7 @@ namespace Genetic{
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
-				throw GeneticException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
@@ -172,7 +172,7 @@ namespace Genetic{
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
-				throw GeneticException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
@@ -212,7 +212,7 @@ namespace Genetic{
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
-				throw GeneticException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F,const IParamFunc&E){
@@ -224,7 +224,7 @@ namespace Genetic{
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
-				throw GeneticException("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F,const IParamFunc&E){
@@ -244,7 +244,7 @@ namespace Genetic{
 	Parabolic::~Parabolic(){}
 	double Parabolic::GetParamParabolicError(double delta, int i)const{
 		if(delta<=0)
-			throw new GeneticException("Error in parabolic error calculation: delta cannot be zero or negative");
+			throw new math_h_error<Parabolic>("Error in parabolic error calculation: delta cannot be zero or negative");
 		double s=Optimality();
 		ParamSet ab=Parameters();
 		ParamSet be=ab;

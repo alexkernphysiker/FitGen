@@ -2,7 +2,7 @@
 // GPL v 3.0 license
 #include <gtest/gtest.h>
 #include <paramset.h>
-#include <genetic_exception.h>
+#include <math_h/exception_math_h.h>
 using namespace Genetic;
 using namespace std;
 TEST(ParamSet, Constructor0){
@@ -112,8 +112,8 @@ TEST(ParamSet, Set){
 		}
 		ParamSet source;
 		for(int i=0;i<count;i++)source<<data[i];
-		EXPECT_THROW(source.Set(-1,0.0),GeneticException);
-		EXPECT_THROW(source.Set(source.Count(),0.0),GeneticException);
+		EXPECT_THROW(source.Set(-1,0.0),math_h_error<ParamSet>);
+		EXPECT_THROW(source.Set(source.Count(),0.0),math_h_error<ParamSet>);
 	}
 }
 TEST(ParamSet,ParEQ){

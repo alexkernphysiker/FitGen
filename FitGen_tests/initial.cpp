@@ -2,7 +2,7 @@
 // GPL v 3.0 license
 #include <gtest/gtest.h>
 #include <initialconditions.h>
-#include <genetic_exception.h>
+#include <math_h/exception_math_h.h>
 #include <math_h/functions.h>
 using namespace Genetic;
 using namespace std;
@@ -27,8 +27,8 @@ TEST(InitialDistributions,Add){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Distrs[i].get(),&I[i]);
-		EXPECT_THROW(I[count](engine),GeneticException);
-		EXPECT_THROW(I[-1](engine),GeneticException);
+		EXPECT_THROW(I[count](engine),math_h_error<InitialDistributions>);
+		EXPECT_THROW(I[-1](engine),math_h_error<InitialDistributions>);
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<InitialDistributions>();
@@ -65,14 +65,14 @@ TEST(GenerateUniform,Add){
 			EXPECT_EQ(i,I.Min(i));
 			EXPECT_EQ(2*n-i,I.Max(i));
 		}
-		EXPECT_THROW(I.Min(count),GeneticException);
-		EXPECT_THROW(I.Max(count),GeneticException);
-		EXPECT_THROW(I.Min(-1),GeneticException);
-		EXPECT_THROW(I.Max(-1),GeneticException);
+		EXPECT_THROW(I.Min(count),math_h_error<GenerateUniform>);
+		EXPECT_THROW(I.Max(count),math_h_error<GenerateUniform>);
+		EXPECT_THROW(I.Min(-1),math_h_error<GenerateUniform>);
+		EXPECT_THROW(I.Max(-1),math_h_error<GenerateUniform>);
 	}
 	{
 		GenerateUniform I;
-		EXPECT_THROW(I.Add(2,1),GeneticException);
+		EXPECT_THROW(I.Add(2,1),math_h_error<GenerateUniform>);
 	}
 }
 TEST(GenerateUniform,AddSharedPtr){
@@ -115,10 +115,10 @@ TEST(GenerateByGauss,Add){
 			EXPECT_EQ(i,I.Mean(i));
 			EXPECT_EQ(2*n-i,I.Sigma(i));
 		}
-		EXPECT_THROW(I.Mean(count),GeneticException);
-		EXPECT_THROW(I.Sigma(count),GeneticException);
-		EXPECT_THROW(I.Mean(-1),GeneticException);
-		EXPECT_THROW(I.Sigma(-1),GeneticException);
+		EXPECT_THROW(I.Mean(count),math_h_error<GenerateByGauss>);
+		EXPECT_THROW(I.Sigma(count),math_h_error<GenerateByGauss>);
+		EXPECT_THROW(I.Mean(-1),math_h_error<GenerateByGauss>);
+		EXPECT_THROW(I.Sigma(-1),math_h_error<GenerateByGauss>);
 	}
 }
 TEST(GenerateByGauss,AddSharedPtr){

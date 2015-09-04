@@ -1,7 +1,7 @@
 // this file is distributed under 
 // GPL v 3.0 license
 #include "initialconditions.h"
-#include "genetic_exception.h"
+#include "math_h/exception_math_h.h"
 namespace Genetic{
 	using namespace std;
 	InitialDistributions::InitialDistributions(){}
@@ -15,7 +15,7 @@ namespace Genetic{
 	}
 	Distrib &InitialDistributions::operator[](int i){
 		if((i<0)||(i>=ParamDistr.size()))
-			throw GeneticException("Range check error when accessing InitialDistributions' element");
+			throw math_h_error<InitialDistributions>("Range check error when accessing InitialDistributions' element");
 		return *ParamDistr[i];
 	}
 	ParamSet InitialDistributions::Generate(RANDOM&R){
@@ -39,19 +39,19 @@ namespace Genetic{
 	}
 	GenerateUniform &GenerateUniform::Add(double min, double max){
 		if(min>max)
-			throw GeneticException("ParamRangeUniform: Max<Min");
+			throw math_h_error<GenerateUniform>("ParamRangeUniform: Max<Min");
 		m_min.push_back(min);
 		m_max.push_back(max);
 		return *this;
 	}
 	double GenerateUniform::Min(int i){
 		if((i<0)||(i>=m_min.size()))
-			throw GeneticException("Range check error when accessing GenerateUniform's element");
+			throw math_h_error<GenerateUniform>("Range check error when accessing GenerateUniform's element");
 		return m_min[i];
 	}
 	double GenerateUniform::Max(int i){
 		if((i<0)||(i>=m_max.size()))
-			throw GeneticException("Range check error when accessing GenerateUniform's element");
+			throw math_h_error<GenerateUniform>("Range check error when accessing GenerateUniform's element");
 		return m_max[i];
 	}
 	ParamSet GenerateUniform::Generate(RANDOM&R){
@@ -75,12 +75,12 @@ namespace Genetic{
 	}
 	double GenerateByGauss::Mean(int i){
 		if((i<0)||(i>=m_mean.size()))
-			throw GeneticException("Range check error when accessing GenerateByGauss's element");
+			throw math_h_error<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
 		return m_mean[i];
 	}
 	double GenerateByGauss::Sigma(int i){
 		if((i<0)||(i>=m_sig.size()))
-			throw GeneticException("Range check error when accessing GenerateByGauss's element");
+			throw math_h_error<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
 		return m_sig[i];
 	}
 	ParamSet GenerateByGauss::Generate(RANDOM&R){

@@ -4,7 +4,7 @@
 #include <equation.h>
 #include <initialconditions.h>
 #include <filter.h>
-#include <genetic_exception.h>
+#include <math_h/exception_math_h.h>
 #include "engine.h"
 using namespace Genetic;
 using namespace std;

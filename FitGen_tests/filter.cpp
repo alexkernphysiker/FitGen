@@ -2,7 +2,7 @@
 // GPL v 3.0 license
 #include <gtest/gtest.h>
 #include <filter.h>
-#include <genetic_exception.h>
+#include <math_h/exception_math_h.h>
 using namespace Genetic;
 using namespace std;
 TEST(Filter, BaseTest){
@@ -76,8 +76,8 @@ template<class FilterMulti>void test_multi(){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(filters[i].get(),&I.Get(i));
-		EXPECT_THROW(I.Get(count),GeneticException);
-		EXPECT_THROW(I.Get(-1),GeneticException);
+		EXPECT_THROW(I.Get(count),math_h_error<AbstractFilterMulti>);
+		EXPECT_THROW(I.Get(-1),math_h_error<AbstractFilterMulti>);
 	}
 }
 TEST(And,Add){test_multi<And>();}

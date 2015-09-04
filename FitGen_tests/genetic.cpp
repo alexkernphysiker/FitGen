@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include <genetic.h>
 #include <initialconditions.h>
-#include <genetic_exception.h>
+#include <math_h/exception_math_h.h>
 #include "engine.h"
 using namespace Genetic;
 using namespace std;
@@ -20,7 +20,7 @@ public:
 TEST(DifferentialMutations, Throws){
 	TestClass<DifferentialMutations<>> gen;
 	double c=gen.MutationCoefficient();
-	EXPECT_THROW(gen.SetMutationCoefficient(-1),GeneticException);
+	EXPECT_THROW(gen.SetMutationCoefficient(-1),math_h_error<DifferentialMutations<>>);
 	EXPECT_EQ(c,gen.MutationCoefficient());
 	EXPECT_NO_THROW(gen.SetMutationCoefficient(0));
 	EXPECT_EQ(0,gen.MutationCoefficient());
@@ -69,7 +69,7 @@ TEST(DifferentialMutations,Upper){
 TEST(Crossing,Throws){
 	TestClass<Crossing<>> gen;
 	double c=gen.CrossingProbability();
-	EXPECT_THROW(gen.SetCrossingProbability(-1),GeneticException);
+	EXPECT_THROW(gen.SetCrossingProbability(-1),math_h_error<Crossing<>>);
 	EXPECT_EQ(c,gen.CrossingProbability());
 	EXPECT_NO_THROW(gen.SetCrossingProbability(0));
 	EXPECT_EQ(0,gen.CrossingProbability());
@@ -77,7 +77,7 @@ TEST(Crossing,Throws){
 	EXPECT_EQ(0.5,gen.CrossingProbability());
 	EXPECT_NO_THROW(gen.SetCrossingProbability(1));
 	EXPECT_EQ(1,gen.CrossingProbability());
-	EXPECT_THROW(gen.SetCrossingProbability(2),GeneticException);
+	EXPECT_THROW(gen.SetCrossingProbability(2),math_h_error<Crossing<>>);
 	EXPECT_EQ(1,gen.CrossingProbability());
 }
 TEST(Crossing,No){
@@ -113,7 +113,7 @@ TEST(Crossing,Yes){
 TEST(AbsoluteMutations,Throws){
 	TestClass<AbsoluteMutations<>> gen;
 	double c=gen.AbsoluteMutationsProbability();
-	EXPECT_THROW(gen.SetAbsoluteMutationsProbability(-1),GeneticException);
+	EXPECT_THROW(gen.SetAbsoluteMutationsProbability(-1),math_h_error<AbsoluteMutations<>>);
 	EXPECT_EQ(c,gen.AbsoluteMutationsProbability());
 	EXPECT_NO_THROW(gen.SetAbsoluteMutationsProbability(0));
 	EXPECT_EQ(0,gen.AbsoluteMutationsProbability());
@@ -121,10 +121,10 @@ TEST(AbsoluteMutations,Throws){
 	EXPECT_EQ(0.5,gen.AbsoluteMutationsProbability());
 	EXPECT_NO_THROW(gen.SetAbsoluteMutationsProbability(1));
 	EXPECT_EQ(1,gen.AbsoluteMutationsProbability());
-	EXPECT_THROW(gen.SetAbsoluteMutationsProbability(2),GeneticException);
+	EXPECT_THROW(gen.SetAbsoluteMutationsProbability(2),math_h_error<AbsoluteMutations<>>);
 	EXPECT_EQ(1,gen.AbsoluteMutationsProbability());
 	EXPECT_EQ(0,gen.AbsoluteMutationCoefficients().Count());
-	EXPECT_THROW(gen.SetAbsoluteMutationCoefficients(ParamSet(-1)),GeneticException);
+	EXPECT_THROW(gen.SetAbsoluteMutationCoefficients(ParamSet(-1)),math_h_error<AbsoluteMutations<>>);
 	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients(0));
 	EXPECT_EQ(0,gen.AbsoluteMutationCoefficients()[0]);
 	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients(0.5));
@@ -145,7 +145,7 @@ TEST(AbsoluteMutations,Size){
 TEST(RelativeMutations,Throws){
 	TestClass<RelativeMutations<>> gen;
 	double c=gen.RelativeMutationsProbability();
-	EXPECT_THROW(gen.SetRelativeMutationsProbability(-1),GeneticException);
+	EXPECT_THROW(gen.SetRelativeMutationsProbability(-1),math_h_error<RelativeMutations<>>);
 	EXPECT_EQ(c,gen.RelativeMutationsProbability());
 	EXPECT_NO_THROW(gen.SetRelativeMutationsProbability(0));
 	EXPECT_EQ(0,gen.RelativeMutationsProbability());
@@ -153,10 +153,10 @@ TEST(RelativeMutations,Throws){
 	EXPECT_EQ(0.5,gen.RelativeMutationsProbability());
 	EXPECT_NO_THROW(gen.SetRelativeMutationsProbability(1));
 	EXPECT_EQ(1,gen.RelativeMutationsProbability());
-	EXPECT_THROW(gen.SetRelativeMutationsProbability(2),GeneticException);
+	EXPECT_THROW(gen.SetRelativeMutationsProbability(2),math_h_error<RelativeMutations<>>);
 	EXPECT_EQ(1,gen.RelativeMutationsProbability());
 	EXPECT_EQ(0,gen.RelativeMutationCoefficients().Count());
-	EXPECT_THROW(gen.SetRelativeMutationCoefficients(ParamSet(-1)),GeneticException);
+	EXPECT_THROW(gen.SetRelativeMutationCoefficients(ParamSet(-1)),math_h_error<RelativeMutations<>>);
 	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients(0));
 	EXPECT_EQ(0,gen.RelativeMutationCoefficients()[0]);
 	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients(0.5));
@@ -186,7 +186,7 @@ protected:
 TEST(ExactCopying,Throws){
 	TestClass<ExactCopying<TestMutations>> gen;
 	double c=gen.ExactCopyingProbability();
-	EXPECT_THROW(gen.SetExactCopyingProbability(-1),GeneticException);
+	EXPECT_THROW(gen.SetExactCopyingProbability(-1),math_h_error<ExactCopying<TestMutations>>);
 	EXPECT_EQ(c,gen.ExactCopyingProbability());
 	EXPECT_NO_THROW(gen.SetExactCopyingProbability(0));
 	EXPECT_EQ(0,gen.ExactCopyingProbability());
@@ -194,7 +194,7 @@ TEST(ExactCopying,Throws){
 	EXPECT_EQ(0.5,gen.ExactCopyingProbability());
 	EXPECT_NO_THROW(gen.SetExactCopyingProbability(1));
 	EXPECT_EQ(1,gen.ExactCopyingProbability());
-	EXPECT_THROW(gen.SetExactCopyingProbability(2),GeneticException);
+	EXPECT_THROW(gen.SetExactCopyingProbability(2),math_h_error<ExactCopying<TestMutations>>);
 	EXPECT_EQ(1,gen.ExactCopyingProbability());
 }
 TEST(ExactCopying,Size){

@@ -4,7 +4,7 @@
 #define RGCFVQNCAQKWQXFU
 #include <random>
 #include "abstract.h"
-#include "genetic_exception.h"
+#include "math_h/exception_math_h.h"
 namespace Genetic{
 	using namespace std;
 	template<class FITGEN=AbstractGenetic>
@@ -19,7 +19,7 @@ namespace Genetic{
 		}
 		void SetMutationCoefficient(double val){
 			if(val<0)
-				throw GeneticException("DifferentialMutations: mutation coefficient should be a positive value");
+				throw math_h_error<DifferentialMutations>("DifferentialMutations: mutation coefficient should be a positive value");
 			M=val;
 		}
 	protected:
@@ -44,7 +44,7 @@ namespace Genetic{
 		}
 		void SetCrossingProbability(double val){
 			if((val<0)||(val>1))
-				throw GeneticException("Crossing: probability value should fit the condition 0<=P<=1");
+				throw math_h_error<Crossing>("Crossing: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -79,7 +79,7 @@ namespace Genetic{
 			distr.clear();
 			for(double v:p){
 				if(v<0)
-					throw GeneticException("AbsoluteMutations: mutation coefficient cannot be negative");
+					throw math_h_error<AbsoluteMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
 				distr.push_back(std::normal_distribution<double>(0,v));
 			}
 		}
@@ -88,7 +88,7 @@ namespace Genetic{
 		}
 		void SetAbsoluteMutationsProbability(double val){
 			if((val<0)||(val>1))
-				throw GeneticException("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
+				throw math_h_error<AbsoluteMutations>("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -118,7 +118,7 @@ namespace Genetic{
 			distr.clear();
 			for(double v:p){
 				if(v<0)
-					throw GeneticException("AbsoluteMutations: mutation coefficient cannot be negative");
+					throw math_h_error<RelativeMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
 				distr.push_back(std::normal_distribution<double>(0,v));
 			}
 		}
@@ -127,7 +127,7 @@ namespace Genetic{
 		}
 		void SetRelativeMutationsProbability(double val){
 			if((val<0)||(val>1))
-				throw GeneticException("RelativeMutations: probability value should fit the condition 0<=P<=1");
+				throw math_h_error<RelativeMutations>("RelativeMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -148,7 +148,7 @@ namespace Genetic{
 		virtual ~ExactCopying(){}
 		void SetExactCopyingProbability(double value){
 			if((value<0)||(value>1))
-				throw GeneticException("ExactCopying: probability value should fit the condition 0<=P<=1");
+				throw math_h_error<ExactCopying>("ExactCopying: probability value should fit the condition 0<=P<=1");
 			P=value;
 		}
 		double ExactCopyingProbability(){

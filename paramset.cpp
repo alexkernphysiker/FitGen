@@ -1,7 +1,7 @@
 // this file is distributed under 
 // GPL v 3.0 license
 #include "paramset.h"
-#include "genetic_exception.h"
+#include "math_h/exception_math_h.h"
 namespace Genetic{
 	using namespace std;
 	typedef lock_guard<mutex> Lock;
@@ -39,13 +39,13 @@ namespace Genetic{
 	int ParamSet::Count()const{return m_values.size();}
 	double ParamSet::operator[](int i)const{
 		if((i<0)||(i>=m_values.size()))
-			throw GeneticException("Range check error when accessing ParamSet's element");
+			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
 	void ParamSet::Set(int i, double v){
 		Lock lock(m_mutex);
 		if((i<0)||(i>=m_values.size()))
-			throw GeneticException("Range check error when accessing ParamSet's element");
+			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
 		m_values[i]=v;
 	}
 	ParamSet &ParamSet::operator <<(double val){

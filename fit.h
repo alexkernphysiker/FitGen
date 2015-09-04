@@ -4,7 +4,7 @@
 #define ____lrEPWamH___
 #include <functional>
 #include "math_h/gnuplot/gnuplot.h"
-#include "genetic_exception.h"
+#include "math_h/exception_math_h.h"
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic{
@@ -219,17 +219,17 @@ namespace Genetic{
 			return *this;
 		}
 		PlotFit1D& Fit(std::string&&name,const FIT&fit,double step){
-			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
+			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(static_cast<std::string&&>(name),[&fit](double x){return fit(ParamSet(x));},min,max,step);
 			return *this;
 		}
 		PlotFit1D& ParamFunc(std::string&&name,IParamFunc&&func,const FIT&fit,double step){
-			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
+			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(static_cast<std::string&&>(name),[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
 			return *this;
 		}
 		PlotFit1D& ParamFunc(std::string&&name,paramFunc func,const FIT&fit,double step){
-			if(max<min)throw GeneticException("No FitPoints instance initialized the ranges on the plot");
+			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(static_cast<std::string&&>(name),[&func,&fit](double x){return func(ParamSet(x),fit.Parameters());},min,max,step);
 			return *this;
 		}

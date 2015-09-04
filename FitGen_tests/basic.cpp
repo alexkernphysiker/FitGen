@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include <abstract.h>
 #include <initialconditions.h>
-#include <genetic_exception.h>
+#include <math_h/exception_math_h.h>
 #include <math_h/randomfunc.h>
 #include "engine.h"
 using namespace Genetic;
@@ -25,16 +25,16 @@ auto initial=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerat
 void test_init(unsigned int threads,int population){
 	GeneticTest gen(optimality);
 	EXPECT_EQ(optimality.get(),gen.OptimalityCalculator().get());
-	EXPECT_THROW(gen.SetThreadCount(0),GeneticException);
+	EXPECT_THROW(gen.SetThreadCount(0),math_h_error<AbstractGenetic>);
 	gen.SetThreadCount(threads);
 	EXPECT_EQ(threads,gen.ThreadCount());
 	EXPECT_EQ(0,gen.PopulationSize());
-	EXPECT_THROW(gen.Init(0,initial,engine),GeneticException);
-	EXPECT_THROW(gen.ParamCount(),GeneticException);
+	EXPECT_THROW(gen.Init(0,initial,engine),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.ParamCount(),math_h_error<AbstractGenetic>);
 	EXPECT_EQ(0,gen.PopulationSize());
 	EXPECT_NO_THROW(gen.Init(population,initial,engine));
 	EXPECT_EQ(population,gen.PopulationSize());
-	EXPECT_THROW(gen.Init(population,initial,engine),GeneticException);
+	EXPECT_THROW(gen.Init(population,initial,engine),math_h_error<AbstractGenetic>);
 	EXPECT_EQ(population,gen.PopulationSize());
 	EXPECT_EQ(1,gen.ParamCount());
 }
@@ -52,17 +52,17 @@ TEST(AbstractGenetic,InitAsync3__){test_init(3,2);}
 TEST(AbstractGenetic,InitAsync4__){test_init(4,2);}
 TEST(AbstractGenetic,Throwing){
 	GeneticTest gen(optimality);
-	EXPECT_THROW(gen.Parameters(0),GeneticException);
-	EXPECT_THROW(gen.ConcentratedInOnePoint(),GeneticException);
-	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(1),GeneticException);
-	EXPECT_THROW(gen.RelativeOptimalityExitCondition(1),GeneticException);
-	EXPECT_THROW(gen.Iterate(engine),GeneticException);
-	EXPECT_THROW(gen.ParametersDispersionExitCondition(ParamSet(0)),GeneticException);
-	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(ParamSet(0)),GeneticException);
-	EXPECT_THROW(gen.Optimality(0),GeneticException);
+	EXPECT_THROW(gen.Parameters(0),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.ConcentratedInOnePoint(),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(1),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.RelativeOptimalityExitCondition(1),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.Iterate(engine),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.ParametersDispersionExitCondition(ParamSet(0)),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(ParamSet(0)),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.Optimality(0),math_h_error<AbstractGenetic>);
 	EXPECT_NO_THROW(gen.Init(2,initial,engine));
-	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(-1),GeneticException);
-	EXPECT_THROW(gen.RelativeOptimalityExitCondition(-1),GeneticException);
+	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(-1),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.RelativeOptimalityExitCondition(-1),math_h_error<AbstractGenetic>);
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parZeros(1)));
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parOnes(1)));
 	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parZeros(1)));
@@ -70,16 +70,16 @@ TEST(AbstractGenetic,Throwing){
 	//Here this behaviour is undefined
 	//EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
 	//EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
-	EXPECT_THROW(gen.Optimality(-1),GeneticException);
+	EXPECT_THROW(gen.Optimality(-1),math_h_error<AbstractGenetic>);
 	EXPECT_NO_THROW(gen.Optimality(0));
 	EXPECT_NO_THROW(gen.Optimality(1));
-	EXPECT_THROW(gen.Optimality(2),GeneticException);
-	EXPECT_THROW(gen[-1],GeneticException);
+	EXPECT_THROW(gen.Optimality(2),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen[-1],math_h_error<AbstractGenetic>);
 	EXPECT_NO_THROW(gen[0]);
-	EXPECT_THROW(gen[1],GeneticException);
+	EXPECT_THROW(gen[1],math_h_error<AbstractGenetic>);
 	gen.Iterate(engine);
-	EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
-	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
+	EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),math_h_error<AbstractGenetic>);
 }
 #define EXPECT_CLOSE(A,B) EXPECT_TRUE(pow((A)-(B),2)<0.0001);
 void test_iterate(unsigned int threads,int population,unsigned int iterations){

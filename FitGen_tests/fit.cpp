@@ -4,7 +4,7 @@
 #include <fit.h>
 #include <initialconditions.h>
 #include <paramfunc.h>
-#include <genetic_exception.h>
+#include <math_h/exception_math_h.h>
 #include "engine.h"
 using namespace Genetic;
 using namespace std;
@@ -47,21 +47,21 @@ TEST(point,Base){
 TEST(FitPoints,Base){
 	FitPoints points;
 	EXPECT_EQ(0,points.count());
-	EXPECT_THROW(points[-1],GeneticException);
-	EXPECT_THROW(points[0],GeneticException);
+	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
+	EXPECT_THROW(points[0],math_h_error<FitPoints>);
 	point p1;
 	p1.X<<0;
 	EXPECT_EQ(&points,&(points<<p1));
 	EXPECT_EQ(1,points.count());
-	EXPECT_THROW(points[-1],GeneticException);
-	EXPECT_THROW(points[1],GeneticException);
+	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
+	EXPECT_THROW(points[1],math_h_error<FitPoints>);
 	EXPECT_EQ(p1.X[0],points[0].X[0]);
 	point p2;
 	p2.X<<0;
 	EXPECT_EQ(&points,&(points<<p2));
 	EXPECT_EQ(2,points.count());
-	EXPECT_THROW(points[-1],GeneticException);
-	EXPECT_THROW(points[2],GeneticException);
+	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
+	EXPECT_THROW(points[2],math_h_error<FitPoints>);
 	EXPECT_EQ(p1.X[0],points[0].X[0]);
 	EXPECT_EQ(p2.X[0],points[1].X[0]);
 	int c=0;
@@ -98,9 +98,9 @@ TEST(Distribution1D,Base){
 	for(point&p:d)EXPECT_EQ(1,p.y);
 }
 TEST(Distribution1D,Throw){
-	EXPECT_THROW(Distribution1D(2,0,2),GeneticException);
-	EXPECT_THROW(Distribution1D(0,2,0),GeneticException);
-	EXPECT_THROW(Distribution1D(2,0,0),GeneticException);
+	EXPECT_THROW(Distribution1D(2,0,2),math_h_error<Distribution1D>);
+	EXPECT_THROW(Distribution1D(0,2,0),math_h_error<Distribution1D>);
+	EXPECT_THROW(Distribution1D(2,0,0),math_h_error<Distribution1D>);
 }
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();

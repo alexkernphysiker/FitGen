@@ -1,7 +1,7 @@
 // this file is distributed under 
 // GPL v 3.0 license
 #include "filter.h"
-#include "genetic_exception.h"
+#include "math_h/exception_math_h.h"
 namespace Genetic{
 	using namespace std;
 	Above::Above(){}
@@ -43,7 +43,7 @@ namespace Genetic{
 		if(i<m_data.size())
 			return *m_data[i];
 		else
-			throw GeneticException("Range check error when getting an element from filter set");
+			throw math_h_error<AbstractFilterMulti>("Range check error when getting an element from filter set");
 	}
 	AbstractFilterMulti &AbstractFilterMulti::Add(std::shared_ptr<IParamCheck> val){
 		m_data.push_back(val);
