@@ -67,9 +67,6 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parOnes(1)));
 	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parZeros(1)));
 	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parOnes(1)));
-	//Here this behaviour is undefined
-	//EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
-	//EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),GeneticException);
 	EXPECT_THROW(gen.Optimality(-1),math_h_error<AbstractGenetic>);
 	EXPECT_NO_THROW(gen.Optimality(0));
 	EXPECT_NO_THROW(gen.Optimality(1));
