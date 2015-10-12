@@ -32,10 +32,10 @@ TEST(DifferentialMutations, Throws){
 	EXPECT_EQ(2,gen.MutationCoefficient());
 }
 TEST(DifferentialMutations,Zeros){
-	for(int count=0;count<10;count++){
+	for(size_t count=0;count<10;count++){
 		TestClass<DifferentialMutations<>> gen;
 		auto init=make_shared<InitialDistributions>();
-		for(int i=0; i<count;i++)
+		for(size_t i=0; i<count;i++)
 			init<<make_shared<RandomValueGenerator<double>>(0,0.001);
 		gen.Init(10,init,engine);
 		ParamSet P=parZeros(count);
@@ -46,16 +46,16 @@ TEST(DifferentialMutations,Zeros){
 	}
 }
 TEST(DifferentialMutations,Upper){
-	for(int count=0;count<5;count++){
+	for(size_t count=0;count<5;count++){
 		TestClass<DifferentialMutations<>> gen;
 		auto init=make_shared<InitialDistributions>();
-		for(int i=0; i<count;i++)
+		for(size_t i=0; i<count;i++)
 			init<<make_shared<RandomValueGenerator<double>>(-0.5,0.5);
 		gen.Init(5,init,engine);
 		for(gen.SetMutationCoefficient(0);
 			gen.MutationCoefficient()<=1;
 			gen.SetMutationCoefficient(gen.MutationCoefficient()+0.1)
-		)for(int i=0;i<50;i++){
+		)for(size_t i=0;i<50;i++){
 			ParamSet P=parZeros(count);
 			gen.MAKE_TEST(P,engine);
 			EXPECT_TRUE(P.Count()==count);
@@ -81,10 +81,10 @@ TEST(Crossing,Throws){
 	EXPECT_EQ(1,gen.CrossingProbability());
 }
 TEST(Crossing,No){
-	for(int count=0;count<10;count++){
+	for(size_t count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
 		auto init=make_shared<InitialDistributions>();
-		for(int i=0; i<count;i++)
+		for(size_t i=0; i<count;i++)
 			init<<make_shared<RandomValueGenerator<double>>(-0.5,0.5);
 		gen.Init(10,init,engine);
 		gen.SetCrossingProbability(0);
@@ -96,10 +96,10 @@ TEST(Crossing,No){
 	}
 }
 TEST(Crossing,Yes){
-	for(int count=0;count<10;count++){
+	for(size_t count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
 		auto init=make_shared<InitialDistributions>();
-		for(int i=0; i<count;i++)
+		for(size_t i=0; i<count;i++)
 			init<<make_shared<RandomValueGenerator<double>>(0.9,1.0);
 		gen.Init(10,init,engine);
 		gen.SetCrossingProbability(1);
@@ -135,7 +135,7 @@ TEST(AbsoluteMutations,Throws){
 	EXPECT_EQ(2,gen.AbsoluteMutationCoefficients()[0]);
 }
 TEST(AbsoluteMutations,Size){
-	for(int count=0;count<10;count++){
+	for(size_t count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
@@ -167,7 +167,7 @@ TEST(RelativeMutations,Throws){
 	EXPECT_EQ(2,gen.RelativeMutationCoefficients()[0]);
 }
 TEST(RelativeMutations,Size){
-	for(int count=0;count<10;count++){
+	for(size_t count=0;count<10;count++){
 		TestClass<Crossing<>> gen;
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
@@ -198,7 +198,7 @@ TEST(ExactCopying,Throws){
 	EXPECT_EQ(1,gen.ExactCopyingProbability());
 }
 TEST(ExactCopying,Size){
-	for(int count=0;count<10;count++){
+	for(size_t count=0;count<10;count++){
 		TestClass<ExactCopying<TestMutations>> gen;
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);

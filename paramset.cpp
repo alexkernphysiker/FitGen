@@ -36,15 +36,15 @@ namespace Genetic{
 		return *this;
 	}
 	ParamSet::~ParamSet(){}
-	int ParamSet::Count()const{return m_values.size();}
-	double ParamSet::operator[](int i)const{
-		if((i<0)||(i>=m_values.size()))
+	size_t ParamSet::Count()const{return m_values.size();}
+	double ParamSet::operator[](size_t i)const{
+		if(i>=m_values.size())
 			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
-	void ParamSet::Set(int i, double v){
+	void ParamSet::Set(size_t i, double v){
 		Lock lock(m_mutex);
-		if((i<0)||(i>=m_values.size()))
+		if(i>=m_values.size())
 			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
 		m_values[i]=v;
 	}
@@ -65,9 +65,9 @@ namespace Genetic{
 	ParamSet::iterator ParamSet::end(){return m_values.end();}
 	ParamSet::const_iterator ParamSet::end() const{return m_values.end();}
 	ParamSet::const_iterator ParamSet::cend() const{return m_values.cend();}
-	ParamSet parEq(unsigned int cnt,double val){
+	ParamSet parEq(size_t cnt,double val){
 		ParamSet res;
-		for(unsigned int i=0;i<cnt;i++)
+		for(size_t i=0;i<cnt;i++)
 			res<<val;
 		return res;
 	}

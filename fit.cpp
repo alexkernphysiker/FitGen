@@ -177,7 +177,7 @@ namespace Genetic{
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
 			double w=pow(p.wy,2);
-			for(int j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
+			for(size_t j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
 				ParamSet x1=p.X;
 				ParamSet x2=p.X;
 				x1.Set(j,p.X[j]+p.WX[j]);
@@ -229,7 +229,7 @@ namespace Genetic{
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F,const IParamFunc&E){
 			double w=pow(p.wy+E(p.X,P),2);
-			for(int j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
+			for(size_t j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
 				ParamSet x1=p.X;
 				ParamSet x2=p.X;
 				x1.Set(j,p.X[j]+p.WX[j]);

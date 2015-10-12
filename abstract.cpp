@@ -29,9 +29,7 @@ namespace Genetic{
 		}
 	}
 	AbstractGenetic::AbstractGenetic(){
-		threads=thread::hardware_concurrency();
-		if(threads==0)
-			threads=1;
+		threads=1;
 		m_itercount=0;
 		m_filter=make_shared<Filter>([](const ParamSet&){return true;});
 	}
@@ -55,20 +53,20 @@ namespace Genetic{
 		m_filter=make_shared<Filter>([](const ParamSet&){return true;});
 	}
 	
-	void AbstractGenetic::SetThreadCount(unsigned int threads_count){
+	void AbstractGenetic::SetThreadCount(size_t threads_count){
 		Lock lock(m_mutex);
 		if(threads_count==0)
 			throw math_h_error<AbstractGenetic>("Thread count cannot be zero");
 		threads=threads_count;
 	}
-	unsigned int AbstractGenetic::ThreadCount()const{return threads;}
-	void AbstractGenetic::Init(int population_size, shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
+	size_t AbstractGenetic::ThreadCount()const{return threads;}
+	void AbstractGenetic::Init(size_t population_size, shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
 		if(m_population.size()>0)
 			throw math_h_error<AbstractGenetic>("Genetic algorithm cannot be inited twice");
 		if(population_size<=0)
 			throw math_h_error<AbstractGenetic>("Polulation size must be a positive number");
-		auto add_to_population=[this,initial_conditions,&random](int count){
-			for(int i=0;i<count;i++){
+		auto add_to_population=[this,initial_conditions,&random](size_t count){
+			for(size_t i=0;i<count;i++){
 				double s=INFINITY;
 				ParamSet new_param=CreateNew(
 					[this,initial_conditions,&random](){
@@ -88,10 +86,10 @@ namespace Genetic{
 			}
 		};
 		{
-			int piece_size=population_size/threads;
-			int rest=population_size%threads;
+			size_t piece_size=population_size/threads;
+			size_t rest=population_size%threads;
 			vector<shared_ptr<thread>> thread_vector;
-			for(int i=1;i<threads;i++)
+			for(size_t i=1;i<threads;i++)
 				thread_vector.push_back(make_shared<thread>(add_to_population,piece_size));
 			add_to_population(piece_size+rest);
 			for(auto thr:thread_vector)
@@ -103,13 +101,13 @@ namespace Genetic{
 	}
 	void AbstractGenetic::mutations(ParamSet&,RANDOM&){}
 	void AbstractGenetic::Iterate(RANDOM&random){
-		int n=PopulationSize();
-		int par_cnt=ParamCount();
+		size_t n=PopulationSize();
+		size_t par_cnt=ParamCount();
 		if(n==0)
 			throw math_h_error<AbstractGenetic>("Cannot perform the calculation when population size is zero");
 		vector<Point> tmp_population;
-		auto process_elements=[this,&tmp_population,&random](int from,int to){
-			for(int i=from;i<=to;i++){
+		auto process_elements=[this,&tmp_population,&random](size_t from,size_t to){
+			for(size_t i=from;i<=to;i++){
 				Point point;
 				{Lock lock(m_mutex);
 					point=m_population[i];
@@ -135,9 +133,9 @@ namespace Genetic{
 			}
 		};
 		{
-			int piece_size=n/threads;
+			size_t piece_size=n/threads;
 			vector<shared_ptr<thread>> thread_vector;
-			for(int i=1;i<threads;i++)
+			for(size_t i=1;i<threads;i++)
 				thread_vector.push_back(make_shared<thread>(process_elements,(i-1)*piece_size,(i*piece_size)-1));
 			process_elements((threads-1)*piece_size,n-1);
 			for(auto thr:thread_vector)
@@ -147,9 +145,9 @@ namespace Genetic{
 			Sigma<double> disp[par_cnt];
 			m_max_dev=parZeros(par_cnt);
 			m_population.clear();
-			for(int i=0; i<n;i++){
+			for(size_t i=0; i<n;i++){
 				m_population.push_back(tmp_population[i]);
-				for(int j=0;j<par_cnt;j++){
+				for(size_t j=0;j<par_cnt;j++){
 					disp[j].AddValue(tmp_population[i].first[j]);
 					double dev=tmp_population[i].first[j]-tmp_population[0].first[j];
 					if(dev<0)dev=-dev;
@@ -159,42 +157,52 @@ namespace Genetic{
 			}
 			m_avr=ParamSet();
 			m_disp=ParamSet();
-			for(int j=0;j<par_cnt;j++){
+			for(size_t j=0;j<par_cnt;j++){
 				m_avr<<disp[j].getAverage();
 				m_disp<<disp[j].getSigma();
 			}
 			m_itercount++;
 		}
 	}
-	unsigned long int AbstractGenetic::iteration_count()const{return m_itercount;}
-	int AbstractGenetic::PopulationSize()const{return m_population.size();}
-	int AbstractGenetic::ParamCount()const{
+	unsigned long int AbstractGenetic::iteration_count()const{
+		return m_itercount;
+	}
+	size_t AbstractGenetic::PopulationSize()const{
+		return m_population.size();
+	}
+	size_t AbstractGenetic::ParamCount()const{
 		if(m_population.size()==0)
 			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.Count();
 	}
-	double AbstractGenetic::Optimality(int point_index)const{
+	double AbstractGenetic::Optimality(size_t point_index)const{
 		if(m_population.size()==0)
 			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-		if((point_index<0)|(point_index>=m_population.size()))
+		if(point_index>=m_population.size())
 			throw math_h_error<AbstractGenetic>("Range check error when accessing an element in the population");
 		return m_population[point_index].second;
 	}
-	ParamSet&&AbstractGenetic::Parameters(int point_index)const{
+	ParamSet&&AbstractGenetic::Parameters(size_t point_index)const{
 		if(m_population.size()==0)
 			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-		if((point_index<0)|(point_index>=m_population.size()))
+		if(point_index>=m_population.size())
 			throw math_h_error<AbstractGenetic>("Range check error when accessing an element in the population");
 		return const_cast<ParamSet&&>(m_population[point_index].first);
 	}
-	double AbstractGenetic::operator [](int i)const{
-		if((i<0)|(i>=ParamCount()))
+	double AbstractGenetic::operator [](size_t i)const{
+		if(i>=ParamCount())
 			throw math_h_error<AbstractGenetic>("Parameter index out of range");
 		return m_population[0].first[i];
 	}
-	ParamSet&&AbstractGenetic::ParamAverage()const{return const_cast<ParamSet&&>(m_avr);}
-	ParamSet&&AbstractGenetic::ParamDispersion()const{return const_cast<ParamSet&&>(m_disp);}
-	ParamSet&&AbstractGenetic::ParamMaxDeviation()const{return const_cast<ParamSet&&>(m_max_dev);}
+	ParamSet&&AbstractGenetic::ParamAverage()const{
+		return const_cast<ParamSet&&>(m_avr);
+	}
+	ParamSet&&AbstractGenetic::ParamDispersion()const{
+		return const_cast<ParamSet&&>(m_disp);
+	}
+	ParamSet&&AbstractGenetic::ParamMaxDeviation()const{
+		return const_cast<ParamSet&&>(m_max_dev);
+	}
 	
 	bool AbstractGenetic::ConcentratedInOnePoint()const{
 		if(m_population.size()==0)
@@ -204,7 +212,7 @@ namespace Genetic{
 		if(Optimality(PopulationSize()-1)>Optimality())
 			return false;
 		bool res=true;
-		for(int i=0,n=m_max_dev.Count();i<n;i++)
+		for(size_t i=0,n=m_max_dev.Count();i<n;i++)
 			res&=(m_max_dev[i]==0);
 		return res;
 	}
@@ -237,7 +245,7 @@ namespace Genetic{
 			return false;
 		if(max_disp.Count()>m_disp.Count())
 			throw math_h_error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
-		for(int i=0;i<max_disp.Count();i++){
+		for(size_t i=0;i<max_disp.Count();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)
@@ -255,7 +263,7 @@ namespace Genetic{
 			return false;
 		if(max_disp.Count()>m_disp.Count())
 			throw math_h_error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
-		for(int i=0;i<max_disp.Count();i++){
+		for(size_t i=0;i<max_disp.Count();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)

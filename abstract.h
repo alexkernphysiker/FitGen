@@ -57,21 +57,21 @@ namespace Genetic{
 		void SetFilter(function<bool(const ParamSet&)>);
 		void RemoveFilter();
 		
-		void SetThreadCount(unsigned int threads_count);
-		unsigned int ThreadCount()const;
+		void SetThreadCount(size_t threads_count);
+		size_t ThreadCount()const;
 		
-		void Init(int population_size,shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
+		void Init(size_t population_size,shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 	protected:
 		virtual void mutations(ParamSet&,RANDOM&);
 	public:
 		void Iterate(RANDOM&random);
 		
 		unsigned long int iteration_count()const;
-		int PopulationSize()const;
-		int ParamCount()const;
-		double Optimality(int point_index=0)const;
-		ParamSet&&Parameters(int point_index=0)const;
-		double operator[](int i)const;
+		size_t PopulationSize()const;
+		size_t ParamCount()const;
+		double Optimality(size_t point_index=0)const;
+		ParamSet&&Parameters(size_t point_index=0)const;
+		double operator[](size_t i)const;
 		ParamSet&&ParamAverage()const;
 		ParamSet&&ParamDispersion()const;
 		ParamSet&&ParamMaxDeviation()const;
@@ -100,7 +100,7 @@ namespace Genetic{
 		ParamSet m_disp;
 		ParamSet m_max_dev;
 		unsigned long int m_itercount;
-		unsigned int threads;
+		size_t threads;
 	};
 }
 #endif
