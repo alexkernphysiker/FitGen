@@ -22,7 +22,7 @@ public:
 };
 auto optimality=make_shared<OptimalityFunction>([](const ParamSet&p){return pow(p[0],2);});
 auto initial=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,0.001);
-void test_init(unsigned int threads,int population){
+void test_init(size_t threads,size_t population){
 	GeneticTest gen(optimality);
 	EXPECT_EQ(optimality.get(),gen.OptimalityCalculator().get());
 	EXPECT_THROW(gen.SetThreadCount(0),math_h_error<AbstractGenetic>);
@@ -82,25 +82,25 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),math_h_error<AbstractGenetic>);
 }
 #define EXPECT_CLOSE(A,B) EXPECT_TRUE(pow((A)-(B),2)<0.0001);
-void test_iterate(unsigned int threads,int population,unsigned int iterations){
+void test_iterate(size_t threads,size_t population,size_t iterations){
 	GeneticTest gen(optimality);
 	gen.SetThreadCount(threads);
 	gen.Init(population,initial,engine);
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parOnes(1)));
 	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parOnes(1)));
-	for(unsigned int i=0;i<iterations;i++){
+	for(size_t i=0;i<iterations;i++){
 		gen.Iterate(engine);
 		EXPECT_EQ(population,gen.PopulationSize());
 		EXPECT_EQ(1,gen.ParamCount());
 		EXPECT_EQ(i+1,gen.iteration_count());
 		EXPECT_CLOSE(gen[0],0);
-		for(int i=0;i<population;i++){
+		for(size_t i=0;i<population;i++){
 			EXPECT_CLOSE(0,gen.Parameters(i)[0]);
 			if(i>0)
 				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
 		}
 		EXPECT_EQ(true,gen.AbsoluteOptimalityExitCondition(0.001));
-		int c=0;for(auto p:gen)c++;
+		size_t c=0;for(auto p:gen)c++;
 		EXPECT_EQ(c,gen.ParamCount());
 		EXPECT_CLOSE(0,gen.ParamAverage()[0]);
 		EXPECT_CLOSE(0,gen.ParamDispersion()[0]);
@@ -136,16 +136,16 @@ TEST(AbstractGenetic,FilterSettingFunc){
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(filter);
 	gen.Init(100,initial_uniform,engine);
-	for(int i=0,n=gen.PopulationSize();i<n;i++)
+	for(size_t i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_EQ(true,filter(gen.Parameters(i)));
-	for(int j=0;j<10;j++){
+	for(size_t j=0;j<10;j++){
 		gen.Iterate(engine);
-		for(int i=0,n=gen.PopulationSize();i<n;i++)
+		for(size_t i=0,n=gen.PopulationSize();i<n;i++)
 			EXPECT_EQ(true,filter(gen.Parameters(i)));
 	}
 	gen.RemoveFilter();
-	for(int j=0;j<10;j++)gen.Iterate(engine);
-	for(int i=0,n=gen.PopulationSize();i<n;i++)
+	for(size_t j=0;j<10;j++)gen.Iterate(engine);
+	for(size_t i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,FilterSetting){
@@ -154,16 +154,16 @@ TEST(AbstractGenetic,FilterSetting){
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(make_shared<Filter>(filter));
 	gen.Init(100,initial_uniform,engine);
-	for(int i=0,n=gen.PopulationSize();i<n;i++)
+	for(size_t i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_EQ(true,filter(gen.Parameters(i)));
-	for(int j=0;j<10;j++){
+	for(size_t j=0;j<10;j++){
 		gen.Iterate(engine);
 		for(int i=0,n=gen.PopulationSize();i<n;i++)
 			EXPECT_EQ(true,filter(gen.Parameters(i)));
 	}
 	gen.RemoveFilter();
-	for(int j=0;j<10;j++)gen.Iterate(engine);
-	for(int i=0,n=gen.PopulationSize();i<n;i++)
+	for(size_t j=0;j<10;j++)gen.Iterate(engine);
+	for(size_t i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,Infinite){
@@ -177,11 +177,11 @@ TEST(AbstractGenetic,Infinite){
 	GeneticTest gen(opt);
 	gen.Init(100,initial_uniform,engine);
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(ParamSet(0)));
-	for(int i=0,n=gen.PopulationSize();i<n;i++)
+	for(size_t i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_TRUE(isfinite(gen.Parameters(i)[0]));
-	for(int j=0;j<30;j++){
+	for(size_t j=0;j<30;j++){
 		gen.Iterate(engine);
-		for(int i=0,n=gen.PopulationSize();i<n;i++){
+		for(size_t i=0,n=gen.PopulationSize();i<n;i++){
 			EXPECT_TRUE(isfinite(gen.Optimality(i)));
 			if(i>0)
 				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
