@@ -65,6 +65,8 @@ namespace Genetic{
 			throw math_h_error<AbstractGenetic>("Genetic algorithm cannot be inited twice");
 		if(population_size<=0)
 			throw math_h_error<AbstractGenetic>("Polulation size must be a positive number");
+		if(ThreadCount()>population_size)
+			SetThreadCount(population_size);
 		auto add_to_population=[this,initial_conditions,&random](size_t count){
 			for(size_t i=0;i<count;i++){
 				double s=INFINITY;
@@ -105,6 +107,8 @@ namespace Genetic{
 		size_t par_cnt=ParamCount();
 		if(n==0)
 			throw math_h_error<AbstractGenetic>("Cannot perform the calculation when population size is zero");
+		if(ThreadCount()>n)
+			SetThreadCount(n);
 		vector<Point> tmp_population;
 		auto process_elements=[this,&tmp_population,&random](size_t from,size_t to){
 			for(size_t i=from;i<=to;i++){
