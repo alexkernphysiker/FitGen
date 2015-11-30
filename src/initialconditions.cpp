@@ -1,5 +1,6 @@
 // this file is distributed under 
 // GPL v 3.0 license
+#include <randomfunc.h>
 #include <exception_math_h.h>
 #include <initialconditions.h>
 namespace Genetic{

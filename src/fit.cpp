@@ -1,6 +1,7 @@
 // this file is distributed under 
 // GPL v 3.0 license
 #include <math.h>
+#include <gnuplot_wrap.h>
 #include <exception_math_h.h>
 #include <fit.h>
 using namespace std;

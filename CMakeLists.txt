@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
+project(FitGen)
 set(CMAKE_CXX_FLAGS "-pthread -std=gnu++11 -fPIC")
 include_directories(include)
 include_directories(math_h/include)
