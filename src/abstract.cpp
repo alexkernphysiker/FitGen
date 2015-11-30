@@ -2,10 +2,10 @@
 // GPL v 3.0 license
 #include <thread>
 #include <math.h>
-#include "abstract.h"
-#include "math_h/exception_math_h.h"
-#include "math_h/interpolate.h"
-#include "math_h/sigma.h"
+#include <exception_math_h.h>
+#include <interpolate.h>
+#include <sigma.h>
+#include <abstract.h>
 using namespace std;
 namespace Genetic{
 	Filter::Filter(function<bool(const ParamSet&)> c){

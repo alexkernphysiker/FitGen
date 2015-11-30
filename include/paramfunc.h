@@ -3,8 +3,8 @@
 #ifndef ____mVYpymgQ
 #define ____mVYpymgQ
 #include <math.h>
+#include <functions.h>
 #include "fit.h"
-#include "math_h/functions.h"
 namespace Genetic{
 	using namespace std;
 	template<int a,int b>

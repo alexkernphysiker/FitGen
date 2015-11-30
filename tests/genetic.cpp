@@ -2,8 +2,8 @@
 // GPL v 3.0 license
 #include <gtest/gtest.h>
 #include <genetic.h>
+#include <exception_math_h.h>
 #include <initialconditions.h>
-#include <math_h/exception_math_h.h>
 #include "engine.h"
 using namespace Genetic;
 using namespace std;

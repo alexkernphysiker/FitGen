@@ -1,8 +1,8 @@
 // this file is distributed under 
 // GPL v 3.0 license
 #include <math.h>
-#include "fit.h"
-#include "math_h/exception_math_h.h"
+#include <exception_math_h.h>
+#include <fit.h>
 using namespace std;
 namespace Genetic{
 	ParameterFunction::ParameterFunction(function<double(const ParamSet&,const ParamSet&)> f){func=f;}

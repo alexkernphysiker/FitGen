@@ -1,8 +1,8 @@
 // this file is distributed under 
 // GPL v 3.0 license
 #include <gtest/gtest.h>
+#include <exception_math_h.h>
 #include <filter.h>
-#include <math_h/exception_math_h.h>
 using namespace Genetic;
 using namespace std;
 TEST(Filter, BaseTest){

@@ -4,8 +4,8 @@
 #define ___DnoQpUEN
 #include <random>
 #include <functional>
+#include <randomfunc.h>
 #include "abstract.h"
-#include "math_h/randomfunc.h"
 namespace Genetic{
 	using namespace std;
 	typedef RandomValueGenerator<double> Distrib;
