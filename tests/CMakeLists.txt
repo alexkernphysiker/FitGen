@@ -1,0 +1,7 @@
+find_package(GTest REQUIRED)
+set(CMAKE_CXX_FLAGS "-fprofile-arcs -ftest-coverage -g -Wall -pthread -std=gnu++11")
+set(gtestlibs gtest gtest_main)
+enable_testing()
+add_executable(fg_test paramset.cpp basic.cpp initial.cpp filter.cpp genetic.cpp fit.cpp equation.cpp)
+target_link_libraries(fg_test FitGen ${gtestlibs})
+add_test(fg_test fg_test)

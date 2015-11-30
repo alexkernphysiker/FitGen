@@ -1,0 +1,6 @@
+add_executable(examplefitpoints fit_points.cpp)
+target_link_libraries(examplefitpoints FitGen)
+add_executable(examplefitdistribution fit_distribution.cpp)
+target_link_libraries(examplefitdistribution FitGen)
+add_executable(exampleequation equation.cpp)
+target_link_libraries(exampleequation FitGen)
