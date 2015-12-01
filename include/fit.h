@@ -104,6 +104,7 @@ namespace Genetic{
 		OptimalityForPoints(shared_ptr<FitPoints> p, shared_ptr<IParamFunc> f,Coefficient c,Summand s);
 		virtual ~OptimalityForPoints();
 		virtual double operator()(const ParamSet&P)const override;
+		shared_ptr<FitPoints> Points()const;
 	protected:
 		shared_ptr<FitPoints> points;
 		shared_ptr<IParamFunc> func;
@@ -118,11 +119,11 @@ namespace Genetic{
 		double GetParamParabolicError(double delta,int i)const;
 		ParamSet GetParamParabolicErrors(ParamSet&&delta)const;
 	};
-	shared_ptr<IOptimalityFunction> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
-	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
+	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
+	template<class GENETIC,shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class Fit:public virtual GENETIC,public virtual Parabolic{
 	private:
 		shared_ptr<IParamFunc> m_func;
@@ -141,8 +142,9 @@ namespace Genetic{
 		virtual ~Fit(){}
 		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
 		shared_ptr<IParamFunc> Func()const{return m_func;}
+		shared_ptr<FitPoints> Points()const{return dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();}
 	};
-	template<class GENETIC,class FUNC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
+	template<class GENETIC,class FUNC,shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
 	public:
 		typedef FUNC functype;
@@ -159,6 +161,7 @@ namespace Genetic{
 		OptimalityForPointsWithFuncError(shared_ptr<FitPoints> p,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e,Coefficient c,Summand s);
 		virtual ~OptimalityForPointsWithFuncError();
 		virtual double operator()(const ParamSet&P)const override;
+		shared_ptr<FitPoints> Points()const;
 	protected:
 		shared_ptr<FitPoints> points;
 		shared_ptr<IParamFunc> func;
@@ -166,9 +169,9 @@ namespace Genetic{
 		Coefficient C;
 		Summand S;
 	};
-	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
-	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
-	template<class GENETIC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
+	shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
+	shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e);
+	template<class GENETIC,shared_ptr<OptimalityForPointsWithFuncError> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
 	class FitFunctionWithError:public virtual GENETIC,public virtual Parabolic{
 	private:
 		shared_ptr<IParamFunc> m_func;
@@ -181,13 +184,14 @@ namespace Genetic{
 			FitFunctionWithError(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e)){}
 		virtual ~FitFunctionWithError(){}
 		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
+		shared_ptr<FitPoints> Points()const{return dynamic_pointer_cast<OptimalityForPointsWithFuncError>(AbstractGenetic::OptimalityCalculator())->Points();}
 	};
 	class PlotPoints1D:public Plot<double>{
 	public:
 		PlotPoints1D();
 		virtual ~PlotPoints1D();
-		PlotPoints1D& Points(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0);
-		PlotPoints1D& PointsWithoutErrors(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0);
+		PlotPoints1D& Points(std::string&&name,shared_ptr<FitPoints> points,size_t param_index=0);
+		PlotPoints1D& PointsWithoutErrors(std::string&&name,shared_ptr<FitPoints> points,size_t param_index=0);
 	};
 	template<class FIT>
 	class PlotFit1D:public PlotPoints1D{
@@ -199,7 +203,7 @@ namespace Genetic{
 			max=-INFINITY;
 		}
 		virtual ~PlotFit1D(){}
-		PlotFit1D& Points(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0){
+		PlotFit1D& Points(std::string&&name,shared_ptr<FitPoints> points,size_t param_index=0){
 			PlotPoints1D::Points(static_cast<std::string&&>(name),points,param_index);
 			for(FitPoints::Point p:*points){
 				if(p.X[param_index]<min)
@@ -209,7 +213,7 @@ namespace Genetic{
 			}
 			return *this;
 		}
-		PlotFit1D& PointsWithoutErrors(std::string&&name,shared_ptr<FitPoints> points,unsigned int param_index=0){
+		PlotFit1D& PointsWithoutErrors(std::string&&name,shared_ptr<FitPoints> points,size_t param_index=0){
 			PlotPoints1D::PointsWithoutErrors(static_cast<std::string&&>(name),points,param_index);
 			for(FitPoints::Point p:*points){
 				if(p.X[param_index]<min)
@@ -220,6 +224,12 @@ namespace Genetic{
 			return *this;
 		}
 		PlotFit1D& Fit(std::string&&name,const FIT&fit,double step){
+			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
+			Plot<double>::Line(static_cast<std::string&&>(name),[&fit](double x){return fit(ParamSet(x));},min,max,step);
+			return *this;
+		}
+		PlotFit1D& Fit(std::string&&name,std::string&&name_func,const FIT&fit,double step){
+			Points(static_cast<std::string&&>(name_func),fit.Points(),0);
 			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(static_cast<std::string&&>(name),[&fit](double x){return fit(ParamSet(x));},min,max,step);
 			return *this;

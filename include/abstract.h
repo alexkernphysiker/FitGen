@@ -51,8 +51,8 @@ namespace Genetic{
 		AbstractGenetic(shared_ptr<IOptimalityFunction> optimality);
 	public:
 		virtual ~AbstractGenetic();
-		
 		shared_ptr<IOptimalityFunction> OptimalityCalculator()const;
+		
 		AbstractGenetic&SetFilter(shared_ptr<IParamCheck> filter);
 		AbstractGenetic&SetFilter(function<bool(const ParamSet&)>);
 		AbstractGenetic&RemoveFilter();

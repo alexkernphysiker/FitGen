@@ -129,13 +129,14 @@ namespace Genetic{
 		S=s;
 	}
 	OptimalityForPoints::~OptimalityForPoints(){}
+	shared_ptr<FitPoints> OptimalityForPoints::Points()const{return points;}
 	double OptimalityForPoints::operator()(const ParamSet&P)const{
 		double res=0;
 		for(FitPoints::Point p:*points)
 			res+=S(p,P,*func);
 		return res*C(P,*func);
 	}
-	shared_ptr<IOptimalityFunction> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[](const ParamSet&,const IParamFunc&){
 			return 1.0;
 		};
@@ -145,7 +146,7 @@ namespace Genetic{
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
 	
-	shared_ptr<IOptimalityFunction> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&,const IParamFunc&){
 			double z=0;
 			for(FitPoints::Point p:*points)
@@ -157,7 +158,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -169,7 +170,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -203,13 +204,14 @@ namespace Genetic{
 		S=s;
 	}
 	OptimalityForPointsWithFuncError::~OptimalityForPointsWithFuncError(){}
+	shared_ptr< FitPoints > OptimalityForPointsWithFuncError::Points()const{return points;}
 	double OptimalityForPointsWithFuncError::operator()(const ParamSet&P)const{
 		double res=0;
 		for(FitPoints::Point p:*points)
 			res+=S(p,P,*func,*error);
 		return res*C(P,*func,*error);
 	}
-	shared_ptr<IOptimalityFunction> ChiSquare(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+	shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -221,7 +223,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
 	}
-	shared_ptr<IOptimalityFunction> ChiSquareWithXError(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+	shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->count()-P.Count();
 			if(z<=0)
@@ -269,14 +271,14 @@ namespace Genetic{
 	}
 	PlotPoints1D::PlotPoints1D():Plot<double>(){}
 	PlotPoints1D::~PlotPoints1D(){}
-	PlotPoints1D&PlotPoints1D::Points(string&&name,shared_ptr<FitPoints> points,unsigned int param_index){
+	PlotPoints1D&PlotPoints1D::Points(string&&name,shared_ptr<FitPoints> points,size_t param_index){
 		OutputPlot(static_cast<std::string&&>(name),[points,param_index](ofstream&out){
 			for(auto p:*points)
 				out<<p.X[param_index]<<" "<<p.y<<" "<<p.WX[param_index]<<" "<<p.wy<<"\n";
 		},"using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars");
 		return *this;
 	}
-	PlotPoints1D&PlotPoints1D::PointsWithoutErrors(string&&name,shared_ptr<FitPoints> points, unsigned int param_index){
+	PlotPoints1D&PlotPoints1D::PointsWithoutErrors(string&&name,shared_ptr<FitPoints> points, size_t param_index){
 		OutputPlot(static_cast<std::string&&>(name),[points,param_index](ofstream&out){
 			for(auto p:*points)
 				out<<p.X[param_index]<<" "<<p.y<<"\n";
