@@ -102,5 +102,9 @@ namespace Genetic{
 		unsigned long int m_itercount;
 		size_t threads;
 	};
+	inline void Find(AbstractGenetic&fit,RANDOM&engine){
+		while(!fit.ConcentratedInOnePoint())
+			fit.Iterate(engine);
+	}
 }
 #endif
