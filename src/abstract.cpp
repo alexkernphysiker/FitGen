@@ -40,27 +40,31 @@ namespace Genetic{
 	}
 	AbstractGenetic::~AbstractGenetic(){}
 	shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator()const{return m_optimality;}
-	void AbstractGenetic::SetFilter(shared_ptr<IParamCheck> filter){
+	AbstractGenetic&AbstractGenetic::SetFilter(shared_ptr<IParamCheck> filter){
 		Lock lock(m_mutex);
 		m_filter=filter;
+		return *this;
 	}
-	void AbstractGenetic::SetFilter(function<bool(const ParamSet&)> f){
+	AbstractGenetic&AbstractGenetic::SetFilter(function<bool(const ParamSet&)> f){
 		Lock lock(m_mutex);
 		m_filter=make_shared<Filter>(f);
+		return *this;
 	}
-	void AbstractGenetic::RemoveFilter(){
+	AbstractGenetic&AbstractGenetic::RemoveFilter(){
 		Lock lock(m_mutex);
 		m_filter=make_shared<Filter>([](const ParamSet&){return true;});
+		return *this;
 	}
 	
-	void AbstractGenetic::SetThreadCount(size_t threads_count){
+	AbstractGenetic&AbstractGenetic::SetThreadCount(size_t threads_count){
 		Lock lock(m_mutex);
 		if(threads_count==0)
 			throw math_h_error<AbstractGenetic>("Thread count cannot be zero");
 		threads=threads_count;
+		return *this;
 	}
 	size_t AbstractGenetic::ThreadCount()const{return threads;}
-	void AbstractGenetic::Init(size_t population_size, shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
+	AbstractGenetic&AbstractGenetic::Init(size_t population_size, shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
 		if(m_population.size()>0)
 			throw math_h_error<AbstractGenetic>("Genetic algorithm cannot be inited twice");
 		if(population_size<=0)
@@ -100,6 +104,7 @@ namespace Genetic{
 		{Lock lock(m_mutex);
 			m_itercount=0;
 		}
+		return *this;
 	}
 	void AbstractGenetic::mutations(ParamSet&,RANDOM&){}
 	void AbstractGenetic::Iterate(RANDOM&random){

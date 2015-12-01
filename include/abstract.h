@@ -53,14 +53,14 @@ namespace Genetic{
 		virtual ~AbstractGenetic();
 		
 		shared_ptr<IOptimalityFunction> OptimalityCalculator()const;
-		void SetFilter(shared_ptr<IParamCheck> filter);
-		void SetFilter(function<bool(const ParamSet&)>);
-		void RemoveFilter();
+		AbstractGenetic&SetFilter(shared_ptr<IParamCheck> filter);
+		AbstractGenetic&SetFilter(function<bool(const ParamSet&)>);
+		AbstractGenetic&RemoveFilter();
 		
-		void SetThreadCount(size_t threads_count);
+		AbstractGenetic&SetThreadCount(size_t threads_count);
 		size_t ThreadCount()const;
 		
-		void Init(size_t population_size,shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
+		AbstractGenetic&Init(size_t population_size,shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 	protected:
 		virtual void mutations(ParamSet&,RANDOM&);
 	public:
