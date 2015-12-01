@@ -1,5 +1,5 @@
 // this file is distributed under 
-// GPL v 3.0 license
+// MIT license
 #include <gtest/gtest.h>
 #include <paramset.h>
 #include <exception_math_h.h>
