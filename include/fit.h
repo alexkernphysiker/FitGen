@@ -140,6 +140,7 @@ namespace Genetic{
 		Fit(shared_ptr<FitPoints> points, paramFunc f):Fit(points,make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
 		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
+		shared_ptr<IParamFunc> Func()const{return m_func;}
 	};
 	template<class GENETIC,class FUNC,shared_ptr<IOptimalityFunction> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
