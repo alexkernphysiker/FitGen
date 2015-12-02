@@ -229,7 +229,7 @@ namespace Genetic{
 			return *this;
 		}
 		PlotFit1D& Fit(std::string&&name,std::string&&name_func,const FIT&fit,double step){
-			PlotPoints1D::Points(static_cast<std::string&&>(name_func),fit.Points());
+			Points(static_cast<std::string&&>(name_func),fit.Points());
 			Plot<double>::Line(static_cast<std::string&&>(name),[&fit](double x){return fit(ParamSet(x));},min,max,step);
 			return *this;
 		}
