@@ -229,8 +229,7 @@ namespace Genetic{
 			return *this;
 		}
 		PlotFit1D& Fit(std::string&&name,std::string&&name_func,const FIT&fit,double step){
-			Points(static_cast<std::string&&>(name_func),fit.Points(),0);
-			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
+			PlotPoints1D::Points(static_cast<std::string&&>(name_func),fit.Points());
 			Plot<double>::Line(static_cast<std::string&&>(name),[&fit](double x){return fit(ParamSet(x));},min,max,step);
 			return *this;
 		}
