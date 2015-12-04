@@ -255,9 +255,7 @@ namespace Genetic{
 		be.Set(i,be[i]-delta);
 		double sa=OptimalityCalculator()->operator()(ab);
 		double sb=OptimalityCalculator()->operator()(be);
-		double da=(sa-s)/delta;
-		double db=(s-sb)/delta;
-		double dd=(da-db)/delta;
+		double dd=(sa-2.0*s+sb)/pow(delta,2);
 		if(dd<=0)
 			return INFINITY;
 		else
