@@ -3,7 +3,7 @@
 #ifndef RGCFVQNCAQKWQXFU
 #define RGCFVQNCAQKWQXFU
 #include <random>
-#include "../math_h/include/exception_math_h.h"
+#include "../math_h/include/math_h/exception_math_h.h"
 #include "abstract.h"
 namespace Genetic{
 	using namespace std;

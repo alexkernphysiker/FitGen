@@ -3,7 +3,7 @@
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
 #include <functional>
-#include "../math_h/include/gnuplot_wrap.h"
+#include <gnuplot_wrap.h>
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic{

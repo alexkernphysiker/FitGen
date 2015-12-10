@@ -1,7 +1,7 @@
 // this file is distributed under 
 // MIT license
-#include <randomfunc.h>
-#include <exception_math_h.h>
+#include <math_h/randomfunc.h>
+#include <math_h/exception_math_h.h>
 #include <initialconditions.h>
 namespace Genetic{
 	using namespace std;

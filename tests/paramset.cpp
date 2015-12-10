@@ -2,7 +2,7 @@
 // MIT license
 #include <gtest/gtest.h>
 #include <paramset.h>
-#include <exception_math_h.h>
+#include <math_h/exception_math_h.h>
 using namespace Genetic;
 using namespace std;
 TEST(ParamSet, Constructor0){

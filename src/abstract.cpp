@@ -2,9 +2,9 @@
 // MIT license
 #include <thread>
 #include <math.h>
-#include <exception_math_h.h>
-#include <interpolate.h>
-#include <sigma.h>
+#include <math_h/exception_math_h.h>
+#include <math_h/interpolate.h>
+#include <math_h/sigma.h>
 #include <abstract.h>
 using namespace std;
 namespace Genetic{

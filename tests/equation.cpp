@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include <equation.h>
 #include <initialconditions.h>
-#include <exception_math_h.h>
+#include <math_h/exception_math_h.h>
 #include <filter.h>
 #include "engine.h"
 using namespace Genetic;

@@ -2,7 +2,7 @@
 // MIT license
 #include <math.h>
 #include <gnuplot_wrap.h>
-#include <exception_math_h.h>
+#include <math_h/exception_math_h.h>
 #include <fit.h>
 using namespace std;
 namespace Genetic{

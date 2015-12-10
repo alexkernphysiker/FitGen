@@ -1,6 +1,6 @@
 // this file is distributed under 
 // MIT license
-#include <exception_math_h.h>
+#include <math_h/exception_math_h.h>
 #include <filter.h>
 namespace Genetic{
 	using namespace std;

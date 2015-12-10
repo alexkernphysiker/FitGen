@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-#include <functions.h>
+#include <math_h/functions.h>
 #include <fit.h>
 #include <initialconditions.h>
 using namespace std;
