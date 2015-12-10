@@ -2,6 +2,6 @@
 // MIT license
 #ifndef fXBBNXhW
 #define fXBBNXhW
-#include <abstract.h>
+#include <Genetic/abstract.h>
 extern Genetic::RANDOM engine;
 #endif 

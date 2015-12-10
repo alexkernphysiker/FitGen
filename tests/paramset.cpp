@@ -1,8 +1,8 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <paramset.h>
 #include <math_h/exception_math_h.h>
+#include <Genetic/paramset.h>
 using namespace Genetic;
 using namespace std;
 TEST(ParamSet, Constructor0){

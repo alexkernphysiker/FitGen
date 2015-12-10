@@ -2,8 +2,8 @@
 // MIT license
 #include <iostream>
 #include <fstream>
-#include <equation.h>
-#include <initialconditions.h>
+#include <Genetic/equation.h>
+#include <Genetic/initialconditions.h>
 using namespace std;
 using namespace Genetic;
 int main(int argcnt, char **arg){

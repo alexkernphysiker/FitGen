@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include <math_h/exception_math_h.h>
 #include <math_h/functions.h>
-#include <initialconditions.h>
+#include <Genetic/initialconditions.h>
 using namespace Genetic;
 using namespace std;
 const int n=5;

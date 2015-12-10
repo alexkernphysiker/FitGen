@@ -1,9 +1,9 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <genetic.h>
 #include <math_h/exception_math_h.h>
-#include <initialconditions.h>
+#include <Genetic/genetic.h>
+#include <Genetic/initialconditions.h>
 #include "engine.h"
 using namespace Genetic;
 using namespace std;

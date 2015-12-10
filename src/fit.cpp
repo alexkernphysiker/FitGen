@@ -3,7 +3,7 @@
 #include <math.h>
 #include <gnuplot_wrap.h>
 #include <math_h/exception_math_h.h>
-#include <fit.h>
+#include <Genetic/fit.h>
 using namespace std;
 namespace Genetic{
 	ParameterFunction::ParameterFunction(function<double(const ParamSet&,const ParamSet&)> f){func=f;}

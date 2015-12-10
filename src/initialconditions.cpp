@@ -2,7 +2,7 @@
 // MIT license
 #include <math_h/randomfunc.h>
 #include <math_h/exception_math_h.h>
-#include <initialconditions.h>
+#include <Genetic/initialconditions.h>
 namespace Genetic{
 	using namespace std;
 	InitialDistributions::InitialDistributions(){}

@@ -5,7 +5,7 @@
 #include <math_h/exception_math_h.h>
 #include <math_h/interpolate.h>
 #include <math_h/sigma.h>
-#include <abstract.h>
+#include <Genetic/abstract.h>
 using namespace std;
 namespace Genetic{
 	Filter::Filter(function<bool(const ParamSet&)> c){

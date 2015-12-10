@@ -1,10 +1,10 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <equation.h>
-#include <initialconditions.h>
 #include <math_h/exception_math_h.h>
-#include <filter.h>
+#include <Genetic/equation.h>
+#include <Genetic/initialconditions.h>
+#include <Genetic/filter.h>
 #include "engine.h"
 using namespace Genetic;
 using namespace std;

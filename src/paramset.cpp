@@ -1,7 +1,7 @@
 // this file is distributed under 
 // MIT license
 #include <math_h/exception_math_h.h>
-#include <paramset.h>
+#include <Genetic/paramset.h>
 namespace Genetic{
 	using namespace std;
 	typedef lock_guard<mutex> Lock;

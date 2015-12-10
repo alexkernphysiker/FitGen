@@ -2,7 +2,7 @@
 // MIT license
 #include <gtest/gtest.h>
 #include <math_h/exception_math_h.h>
-#include <filter.h>
+#include <Genetic/filter.h>
 using namespace Genetic;
 using namespace std;
 TEST(Filter, BaseTest){

@@ -2,10 +2,10 @@
 // MIT license
 #include <iostream>
 #include <fstream>
-#include <fit.h>
-#include <paramfunc.h>
-#include <filter.h>
-#include <initialconditions.h>
+#include <Genetic/fit.h>
+#include <Genetic/paramfunc.h>
+#include <Genetic/filter.h>
+#include <Genetic/initialconditions.h>
 const int background_polynom_power=5;
 using namespace std;
 using namespace Genetic;

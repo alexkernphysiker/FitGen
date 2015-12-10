@@ -1,10 +1,10 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <fit.h>
-#include <initialconditions.h>
 #include <math_h/exception_math_h.h>
-#include <paramfunc.h>
+#include <Genetic/fit.h>
+#include <Genetic/initialconditions.h>
+#include <Genetic/paramfunc.h>
 #include "engine.h"
 using namespace Genetic;
 using namespace std;

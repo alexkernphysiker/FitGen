@@ -4,8 +4,8 @@
 #include <fstream>
 #include <random>
 #include <math_h/functions.h>
-#include <fit.h>
-#include <initialconditions.h>
+#include <Genetic/fit.h>
+#include <Genetic/initialconditions.h>
 using namespace std;
 using namespace Genetic;
 int main(int argcnt, char **arg){
