@@ -3,10 +3,17 @@
 #ifndef ____mVYpymgQ
 #define ____mVYpymgQ
 #include <math.h>
+#include <functional>
 #include "../math_h/functions.h"
-#include "fit.h"
 namespace Genetic{
 	using namespace std;
+	class IParamFunc{
+	public:
+		virtual ~IParamFunc(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const=0;
+	};
+	typedef function<double(const ParamSet&,const ParamSet&)> paramFunc;
+	
 	template<int a,int b>
 	struct max2{enum{val=(a>b)?a:b};};
 	template<int a,int b,int c>

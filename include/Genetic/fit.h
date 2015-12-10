@@ -6,14 +6,9 @@
 #include "../gnuplot_wrap.h"
 #include "abstract.h"
 #include "genetic.h"
+#include "paramfunc.h"
 namespace Genetic{
 	using namespace std;
-	class IParamFunc{
-	public:
-		virtual ~IParamFunc(){}
-		virtual double operator()(const ParamSet&X,const ParamSet&P)const=0;
-	};
-	typedef function<double(const ParamSet&,const ParamSet&)> paramFunc;
 	class ParameterFunction:public IParamFunc{
 	public:
 		ParameterFunction(paramFunc f);

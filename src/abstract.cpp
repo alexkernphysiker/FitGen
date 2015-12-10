@@ -23,7 +23,8 @@ namespace Genetic{
 	bool operator<(Point a,Point b){return a.second<b.second;}
 	template<class Create,class Condition>
 	inline ParamSet CreateNew(Create create,Condition condition){
-		while(true){//ToDo: this may be a problem source
+		//ToDo: this may be a problem source
+		while(true){
 			ParamSet res=create();
 			if(condition(res))return res;
 		}
