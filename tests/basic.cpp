@@ -97,7 +97,11 @@ void test_iterate(size_t threads,size_t population,size_t iterations){
 				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
 		}
 		EXPECT_EQ(true,gen.AbsoluteOptimalityExitCondition(0.001));
-		size_t c=0;for(auto p:gen)c++;
+		size_t c=0;
+		for(auto p:gen){
+			EXPECT_TRUE(isfinite(p));
+			c++;
+		}
 		EXPECT_EQ(c,gen.ParamCount());
 		EXPECT_CLOSE(0,gen.ParamAverage()[0]);
 		EXPECT_CLOSE(0,gen.ParamDispersion()[0]);

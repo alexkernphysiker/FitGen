@@ -101,7 +101,7 @@ private:
 public:
 	ConstFilter(bool v):value(v){}
 	virtual ~ConstFilter(){}
-	virtual bool operator()(const ParamSet&P)const override{return value;}
+	virtual bool operator()(const ParamSet&)const override{return value;}
 };
 #define TRUE make_shared<ConstFilter>(true)
 #define FALSE make_shared<ConstFilter>(false)

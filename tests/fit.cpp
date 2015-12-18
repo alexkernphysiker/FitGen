@@ -65,7 +65,10 @@ TEST(FitPoints,Base){
 	EXPECT_EQ(p1.X[0],points[0].X[0]);
 	EXPECT_EQ(p2.X[0],points[1].X[0]);
 	int c=0;
-	for(point&p:points)c++;
+	for(point&p:points){
+		EXPECT_EQ(1,p.X.Count());
+		c++;
+	}
 	EXPECT_EQ(c,points.count());
 }
 TEST(FitPoints,Operators){
