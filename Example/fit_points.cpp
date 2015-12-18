@@ -11,7 +11,7 @@ using namespace Genetic;
 typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
 typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
-int main(int argcnt, char **arg){
+int main(){
 	RANDOM engine;
 	auto points_to_fit=make_shared<FitPoints>()
 		<<make_pair(make_pair(-67.5,2.5),make_pair(179.4,12.5))
@@ -46,27 +46,26 @@ int main(int argcnt, char **arg){
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_pair(0,0.01);
 	fit.Init(TotalFunc::ParamCount*20,initial,engine);
-	printf("Parameter count: %i\n",fit.ParamCount());
-	printf("Population size: %i\n",fit.PopulationSize());
+	cout<<"Population:"<<fit.PopulationSize()<<endl;
+	cout<<"Parameters:"<<fit.ParamCount()<<endl;
 	while(!(
 		fit.AbsoluteOptimalityExitCondition(0.000001)&&
 		fit.RelativeParametersDispersionExitCondition(parEq(TotalFunc::ParamCount,0.01))
 	)){
 		fit.Iterate(engine);
-		printf("Iteration count: %i; %f <= chi^2 <= %f         \r",fit.iteration_count(),fit.Optimality(),fit.Optimality(fit.PopulationSize()-1));
+		cout<<fit.iteration_count()<<" iterations; "<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
 	}
-	printf("\nParameters:\n");
-	for(double p:fit)printf("\t%f",p);
-	printf("\nErrors:\n");
-	for(double p:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.01)))printf("\t%f",p);
-	printf("\nAverage:\n");
-	for(double p:fit.ParamAverage())printf("\t%f",p);
-	printf("\nDispersion:\n");
-	for(double p:fit.ParamDispersion())printf("\t%f",p);
-	printf("\n");
+	cout<<endl<<"Fit parameters:"<<endl;
+	for(double x:fit)cout<<x<<"\t";
+	cout<<endl<<"Fit parameters errors:"<<endl;
+	for(double x:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001)))cout<<x<<"\t";
+	cout<<endl<<"Fit parameters average:"<<endl;
+	for(double x:fit.ParamAverage())cout<<x<<"\t";
+	cout<<endl<<"Fit parameters dispersions:"<<endl;
+	for(double x:fit.ParamDispersion())cout<<x<<"\t";
+	cout<<endl;
 	Plotter::Instance().SetOutput(".","points");
 	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,0.5)
 		.ParamFunc("Foreground",Foreground(),fit,0.5).ParamFunc("Background",Background(),fit,0.5);
-	printf("Plot saved.\n");
 	return 0;
 }
