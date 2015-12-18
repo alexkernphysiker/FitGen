@@ -5,6 +5,7 @@
 #include <math.h>
 #include <functional>
 #include "../math_h/functions.h"
+#include "paramset.h"
 namespace Genetic{
 	using namespace std;
 	class IParamFunc{
