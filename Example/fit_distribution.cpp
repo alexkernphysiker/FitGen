@@ -34,6 +34,7 @@ int main(){
 	for(double x:fit.ParamDispersion())cout<<x<<"\t";
 	cout<<endl;
 	Plotter::Instance().SetOutput(".","distribution");
-	PlotFit1D<decltype(fit)>().Fit("Fit distribution","Generated distribution",fit,0.1)<<"set xlabel 'argument value'\nset ylabel 'counts'";
+	PlotFit1D<decltype(fit)>().Fit("Fit distribution","Generated distribution",fit,0.1)
+		<<"set xlabel 'argument value'"<<"set ylabel 'counts'";
 	return 0;
 }
