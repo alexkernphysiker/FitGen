@@ -4,6 +4,7 @@
 #define PUWJZCZDMORMZODA
 #include <vector>
 #include <mutex>
+#include <iostream>
 namespace Genetic{
 	using namespace std;
 	class ParamSet{
@@ -43,6 +44,8 @@ namespace Genetic{
 			res<<(x[i]);
 		return res;
 	}
+	ostream&operator<<(ostream&str,const ParamSet&P);
+	istream&operator>>(istream&str,ParamSet&P);
 	ParamSet parEq(size_t cnt,double val);
 	inline ParamSet parZeros(size_t cnt){
 		return parEq(cnt,0);

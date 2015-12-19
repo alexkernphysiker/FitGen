@@ -65,6 +65,18 @@ namespace Genetic{
 	ParamSet::iterator ParamSet::end(){return m_values.end();}
 	ParamSet::const_iterator ParamSet::end() const{return m_values.end();}
 	ParamSet::const_iterator ParamSet::cend() const{return m_values.cend();}
+	
+	ostream& operator<<(ostream& str, const ParamSet& P){
+		for(double x:P)str<<x<<"t";
+		str<<endl;
+		return str;
+	}
+	istream& operator>>(istream& str, ParamSet& P){
+		double x;
+		while(str>>x)P<<x;
+		return str;
+	}
+	
 	ParamSet parEq(size_t cnt,double val){
 		ParamSet res;
 		for(size_t i=0;i<cnt;i++)
