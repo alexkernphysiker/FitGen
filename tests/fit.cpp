@@ -156,7 +156,7 @@ void test_optimality1(double v=INFINITY){
 	point p;
 	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
 	auto points=make_shared<FitPoints>();
-	p.X.Set(0,0);points<<p;p.X.Set(0,1);points<<p;p.X.Set(0,2);points<<p;
+	p.X[0]=0;points<<p;p.X[0]=1;points<<p;p.X[0]=2;points<<p;
 	auto F=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
 	auto S=OptimalityAlgorithm(points,F);
 	EXPECT_NE(nullptr,S.get());
@@ -179,7 +179,7 @@ void test_optimality2(){
 	point p;
 	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
 	auto points=make_shared<FitPoints>();
-	p.X.Set(0,0);points<<p;p.X.Set(0,1);points<<p;p.X.Set(0,2);points<<p;
+	p.X[0]=0;points<<p;p.X[0]=1;points<<p;p.X[0]=2;points<<p;
 	auto F=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
 	auto E=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
 	auto S=OptimalityAlgorithm(points,F,E);
@@ -252,11 +252,11 @@ TEST(FitFunction,Basetest){
 TEST(FitFunctionWithError,Basetest){
 	for(auto&p:*Points)p.wy=1;
 	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,make_shared<Fit_Func>(),make_shared<Fit_Func_err>());
-	fit.Init(20,Init,engine);
+	fit.Init(30,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate(engine);
 	EXPECT_TRUE(fit.ParamCount()==2);
-	EXPECT_TRUE(fit.PopulationSize()==20);
+	EXPECT_TRUE(fit.PopulationSize()==30);
 	EXPECT_TRUE(fit.Optimality()==0);
 	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
 	EXPECT_EQ(1,fit[0]);

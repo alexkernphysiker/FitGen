@@ -182,8 +182,8 @@ namespace Genetic{
 			for(size_t j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
 				ParamSet x1=p.X;
 				ParamSet x2=p.X;
-				x1.Set(j,p.X[j]+p.WX[j]);
-				x2.Set(j,p.X[j]-p.WX[j]);
+				x1[j]+=p.WX[j];
+				x2[j]-=p.WX[j];
 				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
 			}
 			return pow((p.y-F(p.X,P)),2)/w;
@@ -235,8 +235,8 @@ namespace Genetic{
 			for(size_t j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
 				ParamSet x1=p.X;
 				ParamSet x2=p.X;
-				x1.Set(j,p.X[j]+p.WX[j]);
-				x2.Set(j,p.X[j]-p.WX[j]);
+				x1[j]+=p.WX[j];
+				x2[j]-=p.WX[j];
 				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
 			}
 			return pow((p.y-F(p.X,P)),2)/w;
@@ -251,8 +251,8 @@ namespace Genetic{
 		double s=Optimality();
 		ParamSet ab=Parameters();
 		ParamSet be=ab;
-		ab.Set(i,ab[i]+delta);
-		be.Set(i,be[i]-delta);
+		ab[i]+=delta;
+		be[i]-=delta;
 		double sa=OptimalityCalculator()->operator()(ab);
 		double sb=OptimalityCalculator()->operator()(be);
 		double dd=(sa-2.0*s+sb)/pow(delta,2);

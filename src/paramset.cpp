@@ -42,11 +42,10 @@ namespace Genetic{
 			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
-	void ParamSet::Set(size_t i, double v){
-		Lock lock(m_mutex);
+	double& ParamSet::operator[](size_t i){
 		if(i>=m_values.size())
 			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
-		m_values[i]=v;
+		return m_values[i];
 	}
 	ParamSet &ParamSet::operator <<(double val){
 		Lock lock(m_mutex);

@@ -18,12 +18,14 @@ namespace Genetic{
 		ParamSet(double x,double y,double z,double zz, double zzz);
 		ParamSet(double x,double y,double z,double zz, double zzz, double zzzz);
 		~ParamSet();
+
 		ParamSet &operator=(const ParamSet &source);
 		double operator[](size_t i)const;
+		double&operator[](size_t i);
 		ParamSet &operator<<(double val);
 		ParamSet &operator<<(ParamSet val);
 		size_t Count()const;
-		void Set(size_t i,double v);
+
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;
 		iterator begin();
@@ -47,12 +49,8 @@ namespace Genetic{
 	ostream&operator<<(ostream&str,const ParamSet&P);
 	istream&operator>>(istream&str,ParamSet&P);
 	ParamSet parEq(size_t cnt,double val);
-	inline ParamSet parZeros(size_t cnt){
-		return parEq(cnt,0);
-	}
-	inline ParamSet parOnes(size_t cnt){
-		return parEq(cnt,1);
-	}
+	inline ParamSet parZeros(size_t cnt){return parEq(cnt,0);}
+	inline ParamSet parOnes(size_t cnt){return parEq(cnt,1);}
 };
 
 #endif

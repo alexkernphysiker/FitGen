@@ -162,7 +162,7 @@ namespace Genetic{
 					double dev=tmp_population[i].first[j]-tmp_population[0].first[j];
 					if(dev<0)dev=-dev;
 					if(dev>m_max_dev[j])
-						m_max_dev.Set(j,dev);
+						m_max_dev[j]=j;
 				}
 			}
 			m_avr=ParamSet();
