@@ -66,8 +66,7 @@ namespace Genetic{
 	ParamSet::const_iterator ParamSet::cend() const{return m_values.cend();}
 	
 	ostream& operator<<(ostream& str, const ParamSet& P){
-		for(double x:P)str<<x<<"t";
-		str<<endl;
+		for(double x:P)str<<x<<"\t";
 		return str;
 	}
 	istream& operator>>(istream& str, ParamSet& P){

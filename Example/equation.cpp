@@ -16,7 +16,6 @@ int main(){
 	cout<<"Parameters:"<<solution.ParamCount()<<endl;
 	Find(solution,engine);
 	cout<<endl<<"Solution:"<<endl;
-	for(double x:solution)cout<<x<<"\t";
-	cout<<endl;
+	cout<<solution<<endl;
 	return 0;
 }

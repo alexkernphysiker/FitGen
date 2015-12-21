@@ -55,15 +55,12 @@ int main(){
 		fit.Iterate(engine);
 		cout<<fit.iteration_count()<<" iterations; "<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
 	}
-	cout<<endl<<"Fit parameters:"<<endl;
-	for(double x:fit)cout<<x<<"\t";
-	cout<<endl<<"Fit parameters errors:"<<endl;
-	for(double x:fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001)))cout<<x<<"\t";
-	cout<<endl<<"Fit parameters average:"<<endl;
-	for(double x:fit.ParamAverage())cout<<x<<"\t";
-	cout<<endl<<"Fit parameters dispersions:"<<endl;
-	for(double x:fit.ParamDispersion())cout<<x<<"\t";
 	cout<<endl;
+	cout<<"Fit parameters:"<<endl<<fit<<endl;
+	cout<<"Fit parameters errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
+	cout<<"Fit parameters averages:"<<endl<<fit.ParamAverage()<<endl;
+	cout<<"Fit parameters dispersions:"<<endl<<fit.ParamDispersion()<<endl;
+
 	Plotter::Instance().SetOutput(".","points");
 	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,0.5)
 		.ParamFunc("Foreground",Foreground(),fit,0.5).ParamFunc("Background",Background(),fit,0.5);

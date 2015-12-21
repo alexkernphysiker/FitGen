@@ -28,11 +28,9 @@ int main(){
 		fit.Iterate(engine);
 		cout<<fit.iteration_count()<<" iterations; "<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
 	}
-	cout<<endl<<"Fit parameters:"<<endl;
-	for(double x:fit)cout<<x<<"\t";
-	cout<<endl<<"Fit parameters dispersions:"<<endl;
-	for(double x:fit.ParamDispersion())cout<<x<<"\t";
 	cout<<endl;
+	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
+	cout<<"Fit parameters dispersion:"<<endl<<fit.ParamDispersion()<<endl;
 	Plotter::Instance().SetOutput(".","distribution");
 	PlotFit1D<decltype(fit)>().Fit("Fit distribution","Generated distribution",fit,0.1)
 		<<"set xlabel 'argument value'"<<"set ylabel 'counts'";

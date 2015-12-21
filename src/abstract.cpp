@@ -316,4 +316,7 @@ namespace Genetic{
 			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.cend();
 	}
+	ostream& operator<<(ostream& str, const AbstractGenetic& P){
+		return str<<P.Parameters();
+	}
 }
