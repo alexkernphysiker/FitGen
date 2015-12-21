@@ -9,7 +9,7 @@ namespace Genetic{
 	bool Above::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
-		for(int i=0,n=m_data.Count();i<n;i++){
+		for(int i=0,n=m_data.size();i<n;i++){
 			if(isfinite(m_data[i]))
 				res&=(P[index]>=m_data[i]);
 			index++;
@@ -26,7 +26,7 @@ namespace Genetic{
 	bool Below::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
-		for(int i=0,n=m_data.Count();i<n;i++){
+		for(int i=0,n=m_data.size();i<n;i++){
 			if(isfinite(m_data[i]))
 				res&=(P[index]<=m_data[i]);
 			index++;

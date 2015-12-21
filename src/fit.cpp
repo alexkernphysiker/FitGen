@@ -160,7 +160,7 @@ namespace Genetic{
 	}
 	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
-			double z=points->count()-P.Count();
+			double z=points->count()-P.size();
 			if(z<=0)
 				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
@@ -172,14 +172,14 @@ namespace Genetic{
 	}
 	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
-			double z=points->count()-P.Count();
+			double z=points->count()-P.size();
 			if(z<=0)
 				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
 			double w=pow(p.wy,2);
-			for(size_t j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
+			for(size_t j=0; (j<p.X.size())&&(j<p.WX.size());j++){
 				ParamSet x1=p.X;
 				ParamSet x2=p.X;
 				x1[j]+=p.WX[j];
@@ -213,7 +213,7 @@ namespace Genetic{
 	}
 	shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
-			double z=points->count()-P.Count();
+			double z=points->count()-P.size();
 			if(z<=0)
 				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
@@ -225,14 +225,14 @@ namespace Genetic{
 	}
 	shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
-			double z=points->count()-P.Count();
+			double z=points->count()-P.size();
 			if(z<=0)
 				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F,const IParamFunc&E){
 			double w=pow(p.wy+E(p.X,P),2);
-			for(size_t j=0; (j<p.X.Count())&&(j<p.WX.Count());j++){
+			for(size_t j=0; (j<p.X.size())&&(j<p.WX.size());j++){
 				ParamSet x1=p.X;
 				ParamSet x2=p.X;
 				x1[j]+=p.WX[j];

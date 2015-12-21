@@ -40,7 +40,7 @@ TEST(DifferentialMutations,Zeros){
 		gen.Init(10,init,engine);
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
-		EXPECT_TRUE(P.Count()==count);
+		EXPECT_TRUE(P.size()==count);
 		for(double p:P)
 			EXPECT_TRUE(pow(p,2)<0.0001);
 	}
@@ -58,7 +58,7 @@ TEST(DifferentialMutations,Upper){
 		)for(size_t i=0;i<50;i++){
 			ParamSet P=parZeros(count);
 			gen.MAKE_TEST(P,engine);
-			EXPECT_TRUE(P.Count()==count);
+			EXPECT_TRUE(P.size()==count);
 			for(double p:P){
 				EXPECT_TRUE(p<=gen.MutationCoefficient());
 				EXPECT_TRUE((-p)<=gen.MutationCoefficient());
@@ -90,7 +90,7 @@ TEST(Crossing,No){
 		gen.SetCrossingProbability(0);
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
-		EXPECT_TRUE(P.Count()==count);
+		EXPECT_TRUE(P.size()==count);
 		for(double p:P)
 			EXPECT_TRUE(p==0);
 	}
@@ -105,7 +105,7 @@ TEST(Crossing,Yes){
 		gen.SetCrossingProbability(1);
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
-		EXPECT_TRUE(P.Count()==count);
+		EXPECT_TRUE(P.size()==count);
 		for(double p:P)
 			EXPECT_TRUE((p==0)||((p>=0.9)&&(p<=1.0)));
 	}
@@ -123,7 +123,7 @@ TEST(AbsoluteMutations,Throws){
 	EXPECT_EQ(1,gen.AbsoluteMutationsProbability());
 	EXPECT_THROW(gen.SetAbsoluteMutationsProbability(2),math_h_error<AbsoluteMutations<>>);
 	EXPECT_EQ(1,gen.AbsoluteMutationsProbability());
-	EXPECT_EQ(0,gen.AbsoluteMutationCoefficients().Count());
+	EXPECT_EQ(0,gen.AbsoluteMutationCoefficients().size());
 	EXPECT_THROW(gen.SetAbsoluteMutationCoefficients(ParamSet(-1)),math_h_error<AbsoluteMutations<>>);
 	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients(0));
 	EXPECT_EQ(0,gen.AbsoluteMutationCoefficients()[0]);
@@ -139,7 +139,7 @@ TEST(AbsoluteMutations,Size){
 		TestClass<Crossing<>> gen;
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
-		EXPECT_TRUE(P.Count()==count);
+		EXPECT_TRUE(P.size()==count);
 	}
 }
 TEST(RelativeMutations,Throws){
@@ -155,7 +155,7 @@ TEST(RelativeMutations,Throws){
 	EXPECT_EQ(1,gen.RelativeMutationsProbability());
 	EXPECT_THROW(gen.SetRelativeMutationsProbability(2),math_h_error<RelativeMutations<>>);
 	EXPECT_EQ(1,gen.RelativeMutationsProbability());
-	EXPECT_EQ(0,gen.RelativeMutationCoefficients().Count());
+	EXPECT_EQ(0,gen.RelativeMutationCoefficients().size());
 	EXPECT_THROW(gen.SetRelativeMutationCoefficients(ParamSet(-1)),math_h_error<RelativeMutations<>>);
 	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients(0));
 	EXPECT_EQ(0,gen.RelativeMutationCoefficients()[0]);
@@ -171,7 +171,7 @@ TEST(RelativeMutations,Size){
 		TestClass<Crossing<>> gen;
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
-		EXPECT_TRUE(P.Count()==count);
+		EXPECT_TRUE(P.size()==count);
 	}
 }
 class TestMutations: public virtual AbstractGenetic{
@@ -180,7 +180,7 @@ public:
 	virtual ~TestMutations(){}
 protected:
 	virtual void mutations(ParamSet &C,RANDOM&)override{
-		C=parOnes(C.Count());
+		C=parOnes(C.size());
 	}
 };
 TEST(ExactCopying,Throws){
@@ -202,7 +202,7 @@ TEST(ExactCopying,Size){
 		TestClass<ExactCopying<TestMutations>> gen;
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
-		EXPECT_TRUE(P.Count()==count);
+		EXPECT_TRUE(P.size()==count);
 	}
 }
 TEST(ExactCopying,Check){

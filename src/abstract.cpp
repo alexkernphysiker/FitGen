@@ -183,7 +183,7 @@ namespace Genetic{
 	size_t AbstractGenetic::ParamCount()const{
 		if(m_population.size()==0)
 			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-		return m_population[0].first.Count();
+		return m_population[0].first.size();
 	}
 	double AbstractGenetic::Optimality(size_t point_index)const{
 		if(m_population.size()==0)
@@ -222,7 +222,7 @@ namespace Genetic{
 		if(Optimality(PopulationSize()-1)>Optimality())
 			return false;
 		bool res=true;
-		for(size_t i=0,n=m_max_dev.Count();i<n;i++)
+		for(size_t i=0,n=m_max_dev.size();i<n;i++)
 			res&=(m_max_dev[i]==0);
 		return res;
 	}
@@ -253,9 +253,9 @@ namespace Genetic{
 			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
-		if(max_disp.Count()>m_disp.Count())
+		if(max_disp.size()>m_disp.size())
 			throw math_h_error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
-		for(size_t i=0;i<max_disp.Count();i++){
+		for(size_t i=0;i<max_disp.size();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)
@@ -271,9 +271,9 @@ namespace Genetic{
 			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
-		if(max_disp.Count()>m_disp.Count())
+		if(max_disp.size()>m_disp.size())
 			throw math_h_error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
-		for(size_t i=0;i<max_disp.Count();i++){
+		for(size_t i=0;i<max_disp.size();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)

@@ -44,7 +44,7 @@ TEST(InitialDistributions,Generate){
 		InitialDistributions I;
 		for(int i=0;i<count;i++)I<<Distrs[i];
 		ParamSet P=I.Generate(engine);
-		EXPECT_EQ(count,P.Count());
+		EXPECT_EQ(count,P.size());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(true,(P[i]>=0)&&(P[i]<=10));
 	}
@@ -94,7 +94,7 @@ TEST(GenerateUniform,Generate){
 			I.Add(i,2*n-i);
 		for(int i=0;i<100;i++){
 			ParamSet P=I.Generate(engine);
-			EXPECT_EQ(count,P.Count());
+			EXPECT_EQ(count,P.size());
 			for(int c=0;c<count;c++)
 				EXPECT_TRUE((P[c]>=double(c))&&(P[c]<=double(2*n-c)));
 		}
@@ -140,7 +140,7 @@ TEST(GenerateByGauss,Generate){
 			I.Add(i,2*n-i);
 		for(int i=0;i<100;i++){
 			ParamSet P=I.Generate(engine);
-			EXPECT_EQ(count,P.Count());
+			EXPECT_EQ(count,P.size());
 			for(int c=0;c<count;c++)
 				EXPECT_TRUE(isfinite(P[c]));
 		}

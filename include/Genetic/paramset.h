@@ -24,7 +24,7 @@ namespace Genetic{
 		double&operator[](size_t i);
 		ParamSet &operator<<(double val);
 		ParamSet &operator<<(ParamSet val);
-		size_t Count()const;
+		size_t size()const;
 
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;

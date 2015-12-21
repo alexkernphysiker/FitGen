@@ -18,8 +18,8 @@ TEST(ParameterFunction,Basic){
 typedef FitPoints::Point point;
 TEST(point,Base){
 	point P;
-	EXPECT_EQ(0,P.X.Count());
-	EXPECT_EQ(0,P.WX.Count());
+	EXPECT_EQ(0,P.X.size());
+	EXPECT_EQ(0,P.WX.size());
 	P.y=1;
 	P.wy=1;
 	P.X<<1;
@@ -28,9 +28,9 @@ TEST(point,Base){
 		point P2(P);
 		EXPECT_EQ(P.y,P2.y);
 		EXPECT_EQ(P.wy,P2.wy);
-		EXPECT_EQ(P.X.Count(),P2.X.Count());
+		EXPECT_EQ(P.X.size(),P2.X.size());
 		EXPECT_EQ(P.X[0],P2.X[0]);
-		EXPECT_EQ(P.WX.Count(),P2.WX.Count());
+		EXPECT_EQ(P.WX.size(),P2.WX.size());
 		EXPECT_EQ(P.WX[0],P2.WX[0]);
 	}
 	{
@@ -38,9 +38,9 @@ TEST(point,Base){
 		P2=P;
 		EXPECT_EQ(P.y,P2.y);
 		EXPECT_EQ(P.wy,P2.wy);
-		EXPECT_EQ(P.X.Count(),P2.X.Count());
+		EXPECT_EQ(P.X.size(),P2.X.size());
 		EXPECT_EQ(P.X[0],P2.X[0]);
-		EXPECT_EQ(P.WX.Count(),P2.WX.Count());
+		EXPECT_EQ(P.WX.size(),P2.WX.size());
 		EXPECT_EQ(P.WX[0],P2.WX[0]);
 	}
 }
@@ -66,7 +66,7 @@ TEST(FitPoints,Base){
 	EXPECT_EQ(p2.X[0],points[1].X[0]);
 	int c=0;
 	for(point&p:points){
-		EXPECT_EQ(1,p.X.Count());
+		EXPECT_EQ(1,p.X.size());
 		c++;
 	}
 	EXPECT_EQ(c,points.count());
@@ -198,7 +198,7 @@ class ParabolicTest:public virtual Parabolic{
 public:
     ParabolicTest():AbstractGenetic(make_shared<OptimalityFunction>([](const ParamSet&P){
 		double res=0;
-		for(int i=0,n=P.Count();i<n;i++)res+=pow(P[i],2);
+		for(int i=0,n=P.size();i<n;i++)res+=pow(P[i],2);
 		return res;
 	})),Parabolic(){}
     virtual ~ParabolicTest(){}
@@ -216,7 +216,7 @@ TEST(Parabolic,BaseTest){
 			init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
 		gen.Init(1,init,engine);
 		ParamSet P=gen.GetParamParabolicErrors(parEq(count,0.01));
-		ASSERT_EQ(count,P.Count());
+		ASSERT_EQ(count,P.size());
 		for(double p:P)
 			EXPECT_TRUE(pow(p-1.0,2)<0.0001);
 	}

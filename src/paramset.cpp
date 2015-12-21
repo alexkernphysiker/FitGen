@@ -36,7 +36,7 @@ namespace Genetic{
 		return *this;
 	}
 	ParamSet::~ParamSet(){}
-	size_t ParamSet::Count()const{return m_values.size();}
+	size_t ParamSet::size()const{return m_values.size();}
 	double ParamSet::operator[](size_t i)const{
 		if(i>=m_values.size())
 			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
