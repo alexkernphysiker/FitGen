@@ -38,7 +38,7 @@ int main(){
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<(make_shared<Below>()<<INFINITY<<5)
-		<<[](const ParamSet&P){Foreground F;return F(ParamSet(P[2]),P)<P[1]*5.0;}
+		<<[](const ParamSet&P){Foreground F;return F({P[2]},P)<P[1]*5.0;}
 	);
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(100,100)<<make_pair(20,20)<<make_pair(-20,0)

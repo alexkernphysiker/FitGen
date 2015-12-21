@@ -2,6 +2,7 @@
 // MIT license
 #ifndef PUWJZCZDMORMZODA
 #define PUWJZCZDMORMZODA
+#include <list>
 #include <vector>
 #include <mutex>
 #include <iostream>
@@ -10,21 +11,32 @@ namespace Genetic{
 	class ParamSet{
 	public:
 		ParamSet();
-		ParamSet(const ParamSet &source);
-		ParamSet(double x);
-		ParamSet(double x,double y);
-		ParamSet(double x,double y,double z);
-		ParamSet(double x,double y,double z,double zz);
-		ParamSet(double x,double y,double z,double zz, double zzz);
-		ParamSet(double x,double y,double z,double zz, double zzz, double zzzz);
+		ParamSet(const initializer_list<double>&source);
+		ParamSet(initializer_list<double>&&source);
+		ParamSet(const vector<double> &source);
+		ParamSet(vector<double>&&source);
+		ParamSet(const ParamSet&source);
+		ParamSet(ParamSet&&source);
 		~ParamSet();
-
-		ParamSet &operator=(const ParamSet &source);
+		
+		ParamSet&operator<<(double p);
+		ParamSet&operator<<(const initializer_list<double>&source);
+		ParamSet&operator<<(initializer_list<double>&&source);
+		ParamSet&operator<<(const vector<double>&V);
+		ParamSet&operator<<(vector<double>&&V);
+		ParamSet&operator<<(const ParamSet&P);
+		ParamSet&operator<<(ParamSet&&P);
+		
+		ParamSet&operator=(const initializer_list<double>&source);
+		ParamSet&operator=(initializer_list<double>&&source);
+		ParamSet&operator=(const vector<double>&V);
+		ParamSet&operator=(vector<double>&&V);
+		ParamSet&operator=(const ParamSet&P);
+		ParamSet&operator=(ParamSet&&P);
+		
+		size_t size()const;
 		double operator[](size_t i)const;
 		double&operator[](size_t i);
-		ParamSet &operator<<(double val);
-		ParamSet &operator<<(ParamSet val);
-		size_t size()const;
 
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;

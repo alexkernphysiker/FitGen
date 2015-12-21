@@ -124,14 +124,14 @@ TEST(AbsoluteMutations,Throws){
 	EXPECT_THROW(gen.SetAbsoluteMutationsProbability(2),math_h_error<AbsoluteMutations<>>);
 	EXPECT_EQ(1,gen.AbsoluteMutationsProbability());
 	EXPECT_EQ(0,gen.AbsoluteMutationCoefficients().size());
-	EXPECT_THROW(gen.SetAbsoluteMutationCoefficients(ParamSet(-1)),math_h_error<AbsoluteMutations<>>);
-	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients(0));
+	EXPECT_THROW(gen.SetAbsoluteMutationCoefficients({-1}),math_h_error<AbsoluteMutations<>>);
+	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({0}));
 	EXPECT_EQ(0,gen.AbsoluteMutationCoefficients()[0]);
-	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients(0.5));
+	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({0.5}));
 	EXPECT_EQ(0.5,gen.AbsoluteMutationCoefficients()[0]);
-	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients(1));
+	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({1}));
 	EXPECT_EQ(1,gen.AbsoluteMutationCoefficients()[0]);
-	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients(2));
+	EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({2}));
 	EXPECT_EQ(2,gen.AbsoluteMutationCoefficients()[0]);
 }
 TEST(AbsoluteMutations,Size){
@@ -156,14 +156,14 @@ TEST(RelativeMutations,Throws){
 	EXPECT_THROW(gen.SetRelativeMutationsProbability(2),math_h_error<RelativeMutations<>>);
 	EXPECT_EQ(1,gen.RelativeMutationsProbability());
 	EXPECT_EQ(0,gen.RelativeMutationCoefficients().size());
-	EXPECT_THROW(gen.SetRelativeMutationCoefficients(ParamSet(-1)),math_h_error<RelativeMutations<>>);
-	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients(0));
+	EXPECT_THROW(gen.SetRelativeMutationCoefficients({-1}),math_h_error<RelativeMutations<>>);
+	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({0}));
 	EXPECT_EQ(0,gen.RelativeMutationCoefficients()[0]);
-	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients(0.5));
+	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({0.5}));
 	EXPECT_EQ(0.5,gen.RelativeMutationCoefficients()[0]);
-	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients(1));
+	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({1}));
 	EXPECT_EQ(1,gen.RelativeMutationCoefficients()[0]);
-	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients(2));
+	EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({2}));
 	EXPECT_EQ(2,gen.RelativeMutationCoefficients()[0]);
 }
 TEST(RelativeMutations,Size){
@@ -212,7 +212,7 @@ TEST(ExactCopying,Check){
 			gen.SetExactCopyingProbability(P);
 			Distribution<double> D(-0.5,1.5,2);
 			for(int i=0;i<1000;i++){
-				ParamSet P=ParamSet(0);
+				ParamSet P{0};
 				gen.MAKE_TEST(P,engine);
 				D.AddValue(P[0]);
 			}

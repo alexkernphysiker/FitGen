@@ -206,7 +206,7 @@ public:
 TEST(Parabolic,Base){
 	ParabolicTest gen;
 	gen.Init(1,make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(-0.0001,0.0001),engine);
-	EXPECT_TRUE(pow(gen.GetParamParabolicErrors(0.01)[0]-1.0,2)<0.0001);
+	EXPECT_TRUE(pow(gen.GetParamParabolicErrors({0.01})[0]-1.0,2)<0.0001);
 }
 TEST(Parabolic,BaseTest){
 	for(int count=1;count<10;count++){

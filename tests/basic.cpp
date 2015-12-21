@@ -12,7 +12,7 @@ TEST(OptimalityFunction,BaseTest){
 	auto f=[](const ParamSet&p){return pow(p[0],2);};
 	OptimalityFunction F(f);
 	for(double x=-1;x<=1;x+=0.1){
-		EXPECT_EQ(f(ParamSet(x)),F(ParamSet(x)));
+		EXPECT_EQ(f({x}),F({x}));
 	}
 }
 class GeneticTest:public Genetic::AbstractGenetic{
@@ -57,8 +57,8 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(1),math_h_error<AbstractGenetic>);
 	EXPECT_THROW(gen.RelativeOptimalityExitCondition(1),math_h_error<AbstractGenetic>);
 	EXPECT_THROW(gen.Iterate(engine),math_h_error<AbstractGenetic>);
-	EXPECT_THROW(gen.ParametersDispersionExitCondition(ParamSet(0)),math_h_error<AbstractGenetic>);
-	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(ParamSet(0)),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.ParametersDispersionExitCondition({0}),math_h_error<AbstractGenetic>);
+	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition({0}),math_h_error<AbstractGenetic>);
 	EXPECT_THROW(gen.Optimality(0),math_h_error<AbstractGenetic>);
 	EXPECT_NO_THROW(gen.Init(2,initial,engine));
 	EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(-1),math_h_error<AbstractGenetic>);
@@ -177,7 +177,7 @@ TEST(AbstractGenetic,Infinite){
 	});
 	GeneticTest gen(opt);
 	gen.Init(100,initial_uniform,engine);
-	EXPECT_FALSE(gen.ParametersDispersionExitCondition(ParamSet(0)));
+	EXPECT_FALSE(gen.ParametersDispersionExitCondition({0}));
 	for(size_t i=0,n=gen.PopulationSize();i<n;i++)
 		EXPECT_TRUE(isfinite(gen.Parameters(i)[0]));
 	for(size_t j=0;j<30;j++){
