@@ -34,7 +34,25 @@ namespace Genetic{
 	FitPoints::FitPoints(){}
 	FitPoints::~FitPoints(){}
 	size_t FitPoints::size()const{return m_data.size();}
+	size_t FitPoints::dimensions() const{
+		if(size()==0)
+			throw math_h_error<FitPoints>("No dimensions in empty FitPoints");
+		return m_data[0].X().size();
+	}
+	ParamSet& FitPoints::min() const{return const_cast<ParamSet&>(m_min);}
+	ParamSet& FitPoints::max() const{return const_cast<ParamSet&>(m_max);}
 	FitPoints& FitPoints::operator<<(Point&&point){
+		if(size()>0){
+			if(point.X().size()!=dimensions())
+				throw math_h_error<FitPoints>("This point has different dimensions");
+			for(size_t i=0;i<dimensions();i++){
+				if(point.X()[i]<m_min[i])m_min[i]=point.X()[i];
+				if(point.X()[i]>m_max[i])m_max[i]=point.X()[i];
+			}
+		}else{
+			m_min=point.X();
+			m_max=point.X();
+		}
 		m_data.push_back(point);
 		return *this;
 	}

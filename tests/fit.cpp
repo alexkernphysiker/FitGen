@@ -33,6 +33,18 @@ TEST(point,Base){
 		EXPECT_EQ(P.WX()[0],P2.WX()[0]);
 	}
 }
+TEST(FitPoints,sizemismatch){
+	EXPECT_THROW(FitPoints()<<Point({1},1)<<Point({1,1},1),math_h_error<FitPoints>);
+	EXPECT_NO_THROW(FitPoints()<<Point({1},1)<<Point({1},1));
+}
+TEST(FitPoints,simple_min_max){
+	FitPoints points;
+	points<<Point({1},1)<<Point({3},1)<<Point({0},1);
+	EXPECT_EQ(1,points.min().size());
+	EXPECT_EQ(1,points.max().size());
+	EXPECT_EQ(0,points.min()[0]);
+	EXPECT_EQ(3,points.max()[0]);
+}
 TEST(FitPoints,Base){
 	FitPoints points;
 	EXPECT_EQ(0,points.size());

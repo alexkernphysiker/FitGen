@@ -45,6 +45,9 @@ namespace Genetic{
 		FitPoints&operator<<(Point&&point);
 		Point&&operator[](size_t i)const;
 		size_t size()const;
+		size_t dimensions()const;
+		ParamSet&min()const;
+		ParamSet&max()const;
 		typedef vector<Point>::iterator iterator;
 		typedef vector<Point>::const_iterator const_iterator;
 		iterator begin();
@@ -53,6 +56,7 @@ namespace Genetic{
 		const_iterator cend() const;
 	private:
 		vector<Point> m_data;
+		ParamSet m_min,m_max;
 	};
 	typedef FitPoints::Point Point;
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,Point&&p);
