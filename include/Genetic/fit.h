@@ -17,11 +17,10 @@ namespace Genetic{
 	private:
 		paramFunc func;
 	};
-	
 	class FitPoints{
 	public:
-		struct Point{
-			Point();
+		class Point{
+		public:
 			Point(const Point &src);
 			Point(const ParamSet&x,double y_);
 			Point(const ParamSet&x,double y_,double wy_);
@@ -29,11 +28,17 @@ namespace Genetic{
 			Point(ParamSet&&x,double y_);
 			Point(ParamSet&&x,double y_,double wy_);
 			Point(ParamSet&&x,ParamSet&&wx,double y_,double wy_);
-			Point &operator=(const Point &src);
-			ParamSet X;
-			ParamSet WX;
-			double y;
-			double wy;
+			ParamSet&X()const;
+			ParamSet&WX()const;
+			double y()const;
+			double wy()const;
+			double&Y();
+			double&WY();
+		private:
+			ParamSet __X;
+			ParamSet __WX;
+			double __y;
+			double __wy;
 		};
 		FitPoints();
 		virtual ~FitPoints();
@@ -191,20 +196,20 @@ namespace Genetic{
 		PlotFit1D& Points(std::string&&name,shared_ptr<FitPoints> points,size_t param_index=0){
 			PlotPoints1D::Points(static_cast<std::string&&>(name),points,param_index);
 			for(FitPoints::Point p:*points){
-				if(p.X[param_index]<min)
-					min=p.X[param_index];
-				if(p.X[param_index]>max)
-					max=p.X[param_index];
+				if(p.X()[param_index]<min)
+					min=p.X()[param_index];
+				if(p.X()[param_index]>max)
+					max=p.X()[param_index];
 			}
 			return *this;
 		}
 		PlotFit1D& PointsWithoutErrors(std::string&&name,shared_ptr<FitPoints> points,size_t param_index=0){
 			PlotPoints1D::PointsWithoutErrors(static_cast<std::string&&>(name),points,param_index);
 			for(FitPoints::Point p:*points){
-				if(p.X[param_index]<min)
-					min=p.X[param_index];
-				if(p.X[param_index]>max)
-					max=p.X[param_index];
+				if(p.X()[param_index]<min)
+					min=p.X()[param_index];
+				if(p.X()[param_index]>max)
+					max=p.X()[param_index];
 			}
 			return *this;
 		}
