@@ -56,10 +56,8 @@ int main(){
 		cout<<fit.iteration_count()<<" iterations; "<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
 	}
 	cout<<endl;
-	cout<<"Fit parameters:"<<endl<<fit<<endl;
-	cout<<"Fit parameters errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
-	cout<<"Fit parameters averages:"<<endl<<fit.ParamAverage()<<endl;
-	cout<<"Fit parameters dispersions:"<<endl<<fit.ParamDispersion()<<endl;
+	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
+	cout<<"Errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
 
 	Plotter::Instance().SetOutput(".","points");
 	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,0.5)
