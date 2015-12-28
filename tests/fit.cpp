@@ -49,21 +49,17 @@ TEST(FitPoints,Base){
 	EXPECT_EQ(0,points.count());
 	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
 	EXPECT_THROW(points[0],math_h_error<FitPoints>);
-	point p1;
-	p1.X<<0;
-	EXPECT_EQ(&points,&(points<<p1));
+	EXPECT_EQ(&points,&(points<<FitPoints::Point({0},0)));
 	EXPECT_EQ(1,points.count());
 	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
 	EXPECT_THROW(points[1],math_h_error<FitPoints>);
-	EXPECT_EQ(p1.X[0],points[0].X[0]);
-	point p2;
-	p2.X<<0;
-	EXPECT_EQ(&points,&(points<<p2));
+	EXPECT_EQ(0,points[0].X[0]);
+	EXPECT_EQ(&points,&(points<<FitPoints::Point({1},0)));
 	EXPECT_EQ(2,points.count());
 	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
 	EXPECT_THROW(points[2],math_h_error<FitPoints>);
-	EXPECT_EQ(p1.X[0],points[0].X[0]);
-	EXPECT_EQ(p2.X[0],points[1].X[0]);
+	EXPECT_EQ(0,points[0].X[0]);
+	EXPECT_EQ(1,points[1].X[0]);
 	int c=0;
 	for(point&p:points){
 		EXPECT_EQ(1,p.X.size());
@@ -73,8 +69,7 @@ TEST(FitPoints,Base){
 }
 TEST(FitPoints,Operators){
 	auto points=make_shared<FitPoints>();
-	point p1;
-	EXPECT_EQ(points.get(),(points<<p1).get());
+	EXPECT_EQ(points.get(),(points<<FitPoints::Point()).get());
 	EXPECT_EQ(points.get(),(points<<make_pair(1.0,1.0)).get());
 }
 TEST(FitPoints,Select){
@@ -153,10 +148,10 @@ TEST(OptimalityForPointsWithFuncError,Base){
 }
 template<shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 void test_optimality1(double v=INFINITY){
-	point p;
-	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
-	auto points=make_shared<FitPoints>();
-	p.X[0]=0;points<<p;p.X[0]=1;points<<p;p.X[0]=2;points<<p;
+	auto points=make_shared<FitPoints>()
+		<<FitPoints::Point({0},{1},0,1)
+		<<FitPoints::Point({1},{1},0,1)
+		<<FitPoints::Point({2},{1},0,1);
 	auto F=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
 	auto S=OptimalityAlgorithm(points,F);
 	EXPECT_NE(nullptr,S.get());
@@ -176,10 +171,10 @@ TEST(OptimalityForPoints,Algorithms){
 }
 template<shared_ptr<OptimalityForPointsWithFuncError> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
 void test_optimality2(){
-	point p;
-	p.X<<0;p.WX<<1;p.y=0;p.wy=1;
-	auto points=make_shared<FitPoints>();
-	p.X[0]=0;points<<p;p.X[0]=1;points<<p;p.X[0]=2;points<<p;
+	auto points=make_shared<FitPoints>()
+		<<FitPoints::Point({0},{1},0,1)
+		<<FitPoints::Point({1},{1},0,1)
+		<<FitPoints::Point({2},{1},0,1);
 	auto F=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
 	auto E=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
 	auto S=OptimalityAlgorithm(points,F,E);

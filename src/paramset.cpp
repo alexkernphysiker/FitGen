@@ -56,6 +56,7 @@ namespace Genetic{
 			throw math_h_error<ParamSet>("Attempt to take a value from empty paramset");
 		p=m_values[m_values.size()-1];
 		m_values.pop_back();
+		return *this;
 	}
 	
 	ParamSet& ParamSet::operator=(const initializer_list< double >& source){

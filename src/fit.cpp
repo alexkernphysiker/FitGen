@@ -11,6 +11,9 @@ namespace Genetic{
 	double ParameterFunction::operator()(const ParamSet&X,const ParamSet&P)const{return func(X,P);}
 	
 	FitPoints::Point::Point(){}
+	FitPoints::Point::Point(ParamSet&&x,double y_):X(x),y(y_),wy(1.0){}
+	FitPoints::Point::Point(ParamSet&&x,double y_, double wy_):X(x),y(y_),wy(wy_){}
+	FitPoints::Point::Point(ParamSet&&x,ParamSet&& wx, double y_, double wy_):X(x),WX(wx),y(y_),wy(wy_){}
 	FitPoints::Point::Point(const Point& src){
 		X=src.X;
 		WX=src.WX;
@@ -27,37 +30,17 @@ namespace Genetic{
 	FitPoints::FitPoints(){}
 	FitPoints::~FitPoints(){}
 	int FitPoints::count()const{return m_data.size();}
-	FitPoints& FitPoints::operator<<(Point point){
+	FitPoints& FitPoints::operator<<(Point&&point){
 		m_data.push_back(point);
 		return *this;
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src, FitPoints::Point p){
-		src->operator<<(p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,FitPoints::Point&&p){
+		src->operator<<(static_cast<FitPoints::Point&&>(p));
 		return src;
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,double> p){
-		FitPoints::Point P;
-		P.X<<p.first;
-		P.y=p.second;
-		P.wy=1;
-		return src<<P;
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,double>&&p){
+		return src<<FitPoints::Point({p.first},p.second);
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,pair<double,double>> p){
-		FitPoints::Point P;
-		P.X<<p.first;
-		P.y=p.second.first;
-		P.wy=p.second.second;
-		return src<<P;
-	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<pair<double,double>,pair<double,double>> p){
-		FitPoints::Point P;
-		P.X<<p.first.first;
-		P.WX<<p.first.second;
-		P.y=p.second.first;
-		P.wy=p.second.second;
-		return src<<P;
-	}
-	
 	FitPoints::Point&&FitPoints::operator[](int i)const{
 		if((i<0)||(i>=count()))
 			throw math_h_error<FitPoints>("Range check error when getting an element from FitPoints");
@@ -77,23 +60,23 @@ namespace Genetic{
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::Point p:(*src))
+		for(FitPoints::Point&p:(*src))
 			if(condition->operator()(static_cast<ParamSet&&>(p.X)))
-				res<<p;
+				res<<static_cast<FitPoints::Point&&>(p);
 		return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::Point p:(*src))
+		for(FitPoints::Point&p:(*src))
 			if(Ycond(p.y))
-				res<<p;
+				res<<static_cast<FitPoints::Point&&>(p);
 		return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::Point p:(*src))
+		for(FitPoints::Point&p:(*src))
 			if(condition->operator()(static_cast<ParamSet&&>(p.X))&&Ycond(p.y))
-				res<<p;
+				res<<static_cast<FitPoints::Point&&>(p);
 		return res;
 	}
 	Distribution1D::Distribution1D(double min, double max, int bins):FitPoints(){
@@ -101,14 +84,8 @@ namespace Genetic{
 			throw math_h_error<Distribution1D>("Wrong constructor parameters for Distribution1D");
 		double binwidth=(max-min)/double(bins);
 		double halfwidth=binwidth/2.0;
-		for(double x=min+halfwidth;x<max;x+=binwidth){
-			Point P;
-			P.X<<x;
-			P.WX<<halfwidth;
-			P.y=0;
-			P.wy=1;
-			operator<<(P);
-		}
+		for(double x=min+halfwidth;x<max;x+=binwidth)
+			operator<<(Point({x},{halfwidth},0.,1.));
 	}
 	void Distribution1D::Fill(double x){
 		for(Point&p:(*this))
