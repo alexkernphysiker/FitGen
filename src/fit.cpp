@@ -56,13 +56,18 @@ namespace Genetic{
 		m_data.push_back(point);
 		return *this;
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,FitPoints::Point&&p){
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,Point&&p){
 		src->operator<<(static_cast<FitPoints::Point&&>(p));
 		return src;
 	}
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,double>&&p){
 		return src<<FitPoints::Point({p.first},p.second);
 	}
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, shared_ptr<FitPoints> data){
+		for(Point&P:(*data))src<<static_cast<Point&&>(P);
+		return src;
+	}
+
 	FitPoints::Point&&FitPoints::operator[](size_t i)const{
 		if(i>=size())
 			throw math_h_error<FitPoints>("Range check error when getting an element from FitPoints");

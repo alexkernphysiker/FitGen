@@ -61,6 +61,7 @@ namespace Genetic{
 	typedef FitPoints::Point Point;
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,Point&&p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,pair<double,double>&&p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,shared_ptr<FitPoints>data);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,function<bool(double)> Ycond);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition,function<bool(double)> Ycond);
