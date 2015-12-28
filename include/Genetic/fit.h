@@ -48,6 +48,8 @@ namespace Genetic{
 		size_t dimensions()const;
 		ParamSet&min()const;
 		ParamSet&max()const;
+		double Ymin()const;
+		double Ymax()const;
 		typedef vector<Point>::iterator iterator;
 		typedef vector<Point>::const_iterator const_iterator;
 		iterator begin();
@@ -57,6 +59,7 @@ namespace Genetic{
 	private:
 		vector<Point> m_data;
 		ParamSet m_min,m_max;
+		double ymin,ymax;
 	};
 	typedef FitPoints::Point Point;
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,Point&&p);

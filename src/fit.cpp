@@ -39,8 +39,10 @@ namespace Genetic{
 			throw math_h_error<FitPoints>("No dimensions in empty FitPoints");
 		return m_data[0].X().size();
 	}
-	ParamSet& FitPoints::min() const{return const_cast<ParamSet&>(m_min);}
-	ParamSet& FitPoints::max() const{return const_cast<ParamSet&>(m_max);}
+	ParamSet&FitPoints::min()const{return const_cast<ParamSet&>(m_min);}
+	ParamSet&FitPoints::max()const{return const_cast<ParamSet&>(m_max);}
+	double FitPoints::Ymax() const{return ymax;}
+	double FitPoints::Ymin() const{return ymin;}
 	FitPoints& FitPoints::operator<<(Point&&point){
 		if(size()>0){
 			if(point.X().size()!=dimensions())
@@ -48,10 +50,12 @@ namespace Genetic{
 			for(size_t i=0;i<dimensions();i++){
 				if(point.X()[i]<m_min[i])m_min[i]=point.X()[i];
 				if(point.X()[i]>m_max[i])m_max[i]=point.X()[i];
+				if(point.y()<ymin)ymin=point.y();
+				if(point.y()>ymax)ymax=point.y();
 			}
 		}else{
-			m_min=point.X();
-			m_max=point.X();
+			m_min=m_max=point.X();
+			ymin=ymax=point.y();
 		}
 		m_data.push_back(point);
 		return *this;

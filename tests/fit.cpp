@@ -39,11 +39,13 @@ TEST(FitPoints,sizemismatch){
 }
 TEST(FitPoints,simple_min_max){
 	FitPoints points;
-	points<<Point({1},1)<<Point({3},1)<<Point({0},1);
+	points<<Point({1},5)<<Point({3},0)<<Point({0},1);
 	EXPECT_EQ(1,points.min().size());
 	EXPECT_EQ(1,points.max().size());
 	EXPECT_EQ(0,points.min()[0]);
 	EXPECT_EQ(3,points.max()[0]);
+	EXPECT_EQ(0,points.Ymin());
+	EXPECT_EQ(5,points.Ymax());
 }
 TEST(FitPoints,Base){
 	FitPoints points;
