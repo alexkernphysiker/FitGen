@@ -35,16 +35,16 @@ TEST(point,Base){
 }
 TEST(FitPoints,Base){
 	FitPoints points;
-	EXPECT_EQ(0,points.count());
+	EXPECT_EQ(0,points.size());
 	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
 	EXPECT_THROW(points[0],math_h_error<FitPoints>);
 	EXPECT_EQ(&points,&(points<<FitPoints::Point({0},0)));
-	EXPECT_EQ(1,points.count());
+	EXPECT_EQ(1,points.size());
 	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
 	EXPECT_THROW(points[1],math_h_error<FitPoints>);
 	EXPECT_EQ(0,points[0].X()[0]);
 	EXPECT_EQ(&points,&(points<<FitPoints::Point({1},0)));
-	EXPECT_EQ(2,points.count());
+	EXPECT_EQ(2,points.size());
 	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
 	EXPECT_THROW(points[2],math_h_error<FitPoints>);
 	EXPECT_EQ(0,points[0].X()[0]);
@@ -54,7 +54,7 @@ TEST(FitPoints,Base){
 		EXPECT_EQ(1,p.X().size());
 		c++;
 	}
-	EXPECT_EQ(c,points.count());
+	EXPECT_EQ(c,points.size());
 }
 TEST(FitPoints,Operators){
 	auto points=make_shared<FitPoints>();
@@ -78,7 +78,7 @@ TEST(FitPoints,Select){
 }
 TEST(Distribution1D,Base){
 	Distribution1D d(0,2,2);
-	EXPECT_EQ(2,d.count());
+	EXPECT_EQ(2,d.size());
 	for(point&p:d)EXPECT_EQ(0,p.y());
 	d.Fill(0.5);
 	d.Fill(1.5);
@@ -100,14 +100,14 @@ TEST(OptimalityForPoints,Base){
 	OptimalityForPoints S(points,make_shared<ParameterFunction>(f),c,s);
 	EXPECT_EQ(0,S(ParamSet()));
 	EXPECT_EQ(0,func_calls);
-	EXPECT_EQ(points->count(),summand_calls);
+	EXPECT_EQ(points->size(),summand_calls);
 	EXPECT_EQ(1,coef_calls);
 	for(int count=1;count<5;count++){
 		func_calls=summand_calls=coef_calls=0;
 		points<<make_pair(0,0);
 		EXPECT_EQ(count,S(ParamSet()));
 		EXPECT_EQ(0,func_calls);
-		EXPECT_EQ(points->count(),summand_calls);
+		EXPECT_EQ(points->size(),summand_calls);
 		EXPECT_EQ(1,coef_calls);
 	}
 }
@@ -124,14 +124,14 @@ TEST(OptimalityForPointsWithFuncError,Base){
 	OptimalityForPointsWithFuncError S(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e),c,s);
 	EXPECT_EQ(0,S(ParamSet()));
 	EXPECT_EQ(0,func_calls);
-	EXPECT_EQ(points->count(),summand_calls);
+	EXPECT_EQ(points->size(),summand_calls);
 	EXPECT_EQ(1,coef_calls);
 	for(int count=1;count<5;count++){
 		func_calls=summand_calls=coef_calls=0;
 		points<<make_pair(0,0);
 		EXPECT_EQ(count,S(ParamSet()));
 		EXPECT_EQ(0,func_calls);
-		EXPECT_EQ(points->count(),summand_calls);
+		EXPECT_EQ(points->size(),summand_calls);
 		EXPECT_EQ(1,coef_calls);
 	}
 }

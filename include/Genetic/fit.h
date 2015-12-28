@@ -43,8 +43,8 @@ namespace Genetic{
 		FitPoints();
 		virtual ~FitPoints();
 		FitPoints&operator<<(Point&&point);
-		Point&&operator[](int i)const;
-		int count()const;
+		Point&&operator[](size_t i)const;
+		size_t size()const;
 		typedef vector<Point>::iterator iterator;
 		typedef vector<Point>::const_iterator const_iterator;
 		iterator begin();
