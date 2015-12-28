@@ -50,6 +50,14 @@ namespace Genetic{
 	ParamSet& ParamSet::operator<<(const ParamSet&P){return operator<<(P.m_values);}
 	ParamSet& ParamSet::operator<<(ParamSet&&P){return operator<<(P);}
 	
+	ParamSet& ParamSet::operator>>(double& p){
+		Lock lock(m_mutex);
+		if(m_values.size()==0)
+			throw math_h_error<ParamSet>("Attempt to take a value from empty paramset");
+		p=m_values[m_values.size()-1];
+		m_values.pop_back();
+	}
+	
 	ParamSet& ParamSet::operator=(const initializer_list< double >& source){
 		Lock lock(m_mutex);
 		m_values.clear();
@@ -57,7 +65,7 @@ namespace Genetic{
 		return *this;
 	}
 	ParamSet& ParamSet::operator=(initializer_list<double>&&source){return operator=(source);}
-	ParamSet& ParamSet::operator=(const vector< double >&V){
+	ParamSet& ParamSet::operator=(const vector<double>&V){
 		Lock lock(m_mutex);
 		m_values.clear();
 		for(double p:V)m_values.push_back(p);

@@ -26,6 +26,7 @@ namespace Genetic{
 		ParamSet&operator<<(vector<double>&&V);
 		ParamSet&operator<<(const ParamSet&P);
 		ParamSet&operator<<(ParamSet&&P);
+		ParamSet&operator>>(double&p);
 		
 		ParamSet&operator=(const initializer_list<double>&source);
 		ParamSet&operator=(initializer_list<double>&&source);
