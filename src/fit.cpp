@@ -11,6 +11,9 @@ namespace Genetic{
 	double ParameterFunction::operator()(const ParamSet&X,const ParamSet&P)const{return func(X,P);}
 	
 	FitPoints::Point::Point(){}
+	FitPoints::Point::Point(const ParamSet&x,double y_):X(x),y(y_),wy(1.0){}
+	FitPoints::Point::Point(const ParamSet&x,double y_, double wy_):X(x),y(y_),wy(wy_){}
+	FitPoints::Point::Point(const ParamSet&x,const ParamSet&wx, double y_, double wy_):X(x),WX(wx),y(y_),wy(wy_){}
 	FitPoints::Point::Point(ParamSet&&x,double y_):X(x),y(y_),wy(1.0){}
 	FitPoints::Point::Point(ParamSet&&x,double y_, double wy_):X(x),y(y_),wy(wy_){}
 	FitPoints::Point::Point(ParamSet&&x,ParamSet&& wx, double y_, double wy_):X(x),WX(wx),y(y_),wy(wy_){}

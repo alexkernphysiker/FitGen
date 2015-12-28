@@ -23,6 +23,9 @@ namespace Genetic{
 		struct Point{
 			Point();
 			Point(const Point &src);
+			Point(const ParamSet&x,double y_);
+			Point(const ParamSet&x,double y_,double wy_);
+			Point(const ParamSet&x,const ParamSet&wx,double y_,double wy_);
 			Point(ParamSet&&x,double y_);
 			Point(ParamSet&&x,double y_,double wy_);
 			Point(ParamSet&&x,ParamSet&&wx,double y_,double wy_);
