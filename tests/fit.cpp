@@ -46,6 +46,14 @@ TEST(FitPoints,simple_min_max){
 	EXPECT_EQ(3,points.max()[0]);
 	EXPECT_EQ(0,points.Ymin());
 	EXPECT_EQ(5,points.Ymax());
+	EXPECT_EQ(1,points.dimensions());
+}
+TEST(FitPoints,dimensions){
+	EXPECT_THROW(FitPoints()<<Point({},1),math_h_error<FitPoints::Point>);
+	EXPECT_EQ(1,(FitPoints()<<Point({1},1)).dimensions());
+	EXPECT_EQ(2,(FitPoints()<<Point({1,1},1)).dimensions());
+	EXPECT_EQ(3,(FitPoints()<<Point({1,1,1},1)).dimensions());
+	EXPECT_EQ(4,(FitPoints()<<Point({1,1,1,1},1)).dimensions());
 }
 TEST(FitPoints,Base){
 	FitPoints points;
