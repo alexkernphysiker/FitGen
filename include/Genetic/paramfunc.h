@@ -186,6 +186,70 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
+	template<class FUNC1,class FUNC2,class FUNC3>
+	class Add3:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3{
+	public:
+		Add3():FUNC1(),FUNC2(),FUNC3(){}
+		virtual ~Add3(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P))+FUNC3::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max3<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount>::val,
+			ArgCount=max3<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount>::val
+		};
+	};
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4>
+	class Add4:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3, public virtual FUNC4{
+	public:
+		Add4():FUNC1(),FUNC2(),FUNC3(),FUNC4(){}
+		virtual ~Add4(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P))+FUNC3::operator()((X),(P))
+				+FUNC4::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max4<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
+				,FUNC4::ParamCount>::val,
+			ArgCount=max4<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
+				,FUNC4::ArgCount>::val
+		};
+	};
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5>
+	class Add5:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
+		,public virtual FUNC4,public virtual FUNC5{
+	public:
+		Add5():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(){}
+		virtual ~Add5(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P))+FUNC3::operator()((X),(P))
+				+FUNC4::operator()((X),(P))+FUNC5::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max5<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
+				,FUNC4::ParamCount,FUNC5::ParamCount>::val,
+			ArgCount=max5<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
+				,FUNC4::ArgCount,FUNC5::ArgCount>::val
+		};
+	};
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6>
+	class Add6:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
+		,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
+	public:
+		Add6():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(),FUNC6(){}
+		virtual ~Add6(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P))+FUNC3::operator()((X),(P))
+				+FUNC4::operator()((X),(P))+FUNC5::operator()((X),(P))+FUNC6::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max6<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
+				,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
+			ArgCount=max6<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
+				,FUNC4::ArgCount,FUNC5::ArgCount,FUNC6::ArgCount>::val
+		};
+	};
+	
 	template<class FUNC1,class FUNC2>
 	class Sub:public virtual FUNC1, public virtual FUNC2{
 	public:
@@ -212,6 +276,73 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
+	template<class FUNC1,class FUNC2,class FUNC3>
+	class Mul3:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3{
+	public:
+		Mul3():FUNC1(),FUNC2(),FUNC3(){}
+		virtual ~Mul3(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P))*FUNC3::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max3<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount>::val,
+			ArgCount=max3<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount>::val
+		};
+	};
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4>
+	class Mul4:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3, public virtual FUNC4{
+	public:
+		Mul4():FUNC1(),FUNC2(),FUNC3(),FUNC4(){}
+		virtual ~Mul4(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P))*FUNC3::operator()((X),(P))
+				*FUNC4::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max4<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
+				,FUNC4::ParamCount>::val,
+			ArgCount=max4<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
+				,FUNC4::ArgCount>::val
+		};
+	};
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5>
+	class Mul5:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
+		,public virtual FUNC4,public virtual FUNC5{
+	public:
+		Mul5():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(){}
+		virtual ~Mul5(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P))*FUNC3::operator()((X),(P))
+				*FUNC4::operator()((X),(P))*FUNC5::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max5<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
+				,FUNC4::ParamCount,FUNC5::ParamCount>::val,
+			ArgCount=max5<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
+				,FUNC4::ArgCount,FUNC5::ArgCount>::val
+		};
+	};
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6>
+	class Mul6:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
+		,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
+	public:
+		Mul6():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(),FUNC6(){}
+		virtual ~Mul6(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P))*FUNC3::operator()((X),(P))
+				*FUNC4::operator()((X),(P))*FUNC5::operator()((X),(P))*FUNC6::operator()((X),(P));
+		}
+		enum{
+			ParamCount=max6<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
+				,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
+			ArgCount=max6<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
+				,FUNC4::ArgCount,FUNC5::ArgCount,FUNC6::ArgCount>::val
+		};
+	};
+
+
+
+
 	template<class FUNC1,class FUNC2>
 	class Div:public virtual FUNC1, public virtual FUNC2{
 	public:
