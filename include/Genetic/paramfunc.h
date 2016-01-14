@@ -371,5 +371,72 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
+
+	template<class FUNC1>class Sqrt:public virtual FUNC1{
+	public:
+		Sqrt():FUNC1(){}
+		virtual ~Sqrt(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return sqrt(FUNC1::operator()((X),(P)));
+		}
+		enum{
+			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
+		};
+	};
+	template<class FUNC1>class Sqr:public virtual FUNC1{
+	public:
+		Sqr():FUNC1(){}
+		virtual ~Sqr(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return pow(FUNC1::operator()((X),(P)),2);
+		}
+		enum{
+			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
+		};
+	};
+	template<class FUNC1>class Pow3:public virtual FUNC1{
+	public:
+		Pow3():FUNC1(){}
+		virtual ~Pow3(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return pow(FUNC1::operator()((X),(P)),3);
+		}
+		enum{
+			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
+		};
+	};
+	template<class FUNC1>class Pow4:public virtual FUNC1{
+	public:
+		Pow4():FUNC1(){}
+		virtual ~Pow4(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return pow(FUNC1::operator()((X),(P)),4);
+		}
+		enum{
+			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
+		};
+	};
+	template<class FUNC1>class Pow5:public virtual FUNC1{
+	public:
+		Pow5():FUNC1(){}
+		virtual ~Pow5(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return pow(FUNC1::operator()((X),(P)),5);
+		}
+		enum{
+			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
+		};
+	};
+	template<class FUNC1>class Pow6:public virtual FUNC1{
+	public:
+		Pow6():FUNC1(){}
+		virtual ~Pow6(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
+			return pow(FUNC1::operator()((X),(P)),6);
+		}
+		enum{
+			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
+		};
+	};
 }
 #endif
