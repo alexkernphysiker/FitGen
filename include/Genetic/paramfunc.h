@@ -186,6 +186,7 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
+	template<class FUNC1,class FUNC2>class Add2:public Add<FUNC1,FUNC2>{};
 	template<class FUNC1,class FUNC2,class FUNC3>
 	class Add3:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3{
 	public:
@@ -276,6 +277,7 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
+	template<class FUNC1,class FUNC2>class Mul2:public Mul<FUNC1,FUNC2>{};
 	template<class FUNC1,class FUNC2,class FUNC3>
 	class Mul3:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3{
 	public:
