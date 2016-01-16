@@ -25,7 +25,8 @@ namespace Genetic{
 	struct max5{enum{val=(max4<a,b,c,d>::val>e)?max4<a,b,c,d>::val:e};};
 	template<int a,int b,int c,int d,int e,int f>
 	struct max6{enum{val=(max5<a,b,c,d,e>::val>f)?max5<a,b,c,d,e>::val:f};};
-	template<int value>
+	enum Recuring{first,second,third,fourth,fifth,sixth};
+	template<int value, Recuring recurring=first>
 	class Const:public virtual IParamFunc{
 	public:
 		Const(){}
@@ -35,7 +36,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=0,ArgCount=0};
 	};
-	template<int x_index>
+	template<int x_index, Recuring recurring=first>
 	class Arg:public virtual IParamFunc{
 	public:
 		Arg(){}
@@ -45,7 +46,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=0,ArgCount=x_index+1};
 	};
-	template<int p_index>
+	template<int p_index, Recuring recurring=first>
 	class Par:public virtual IParamFunc{
 	public:
 		Par(){}
@@ -55,7 +56,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=p_index+1,ArgCount=0};
 	};
-	template<int x_index,int p_index,unsigned int power>
+	template<int x_index,int p_index,unsigned int power, Recuring recurring=first>
 	class PolynomFunc:public virtual IParamFunc{
 	public:
 		PolynomFunc(){}
@@ -65,7 +66,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=p_index+power+1,ArgCount=x_index+1};
 	};
-	template<double (func)(double), class FUNC>
+	template<double (func)(double), class FUNC, Recuring recurring=first>
 	class Func:public virtual FUNC{
 		public:Func():FUNC(){}
 		virtual ~Func(){}
@@ -74,7 +75,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
-	template<double (func)(double,double), class FUNC1, class FUNC2>
+	template<double (func)(double,double), class FUNC1, class FUNC2, Recuring recurring=first>
 	class Func2:public virtual FUNC1,public virtual FUNC2{
 		public:Func2():FUNC1(),FUNC2(){}
 		virtual ~Func2(){}
@@ -86,7 +87,7 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double), class FUNC1, class FUNC2, class FUNC3>
+	template<double (func)(double,double,double), class FUNC1, class FUNC2, class FUNC3, Recuring recurring=first>
 	class Func3:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3{
 		public:Func3():FUNC1(),FUNC2(),FUNC3(){}
 		virtual ~Func3(){}
@@ -98,7 +99,7 @@ namespace Genetic{
 			ArgCount=max3<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4>
+	template<double (func)(double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, Recuring recurring=first>
 	class Func4:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4{
 		public:Func4():FUNC1(),FUNC2(),FUNC3(),FUNC4(){}
 		virtual ~Func4(){}
@@ -111,7 +112,7 @@ namespace Genetic{
 			ArgCount=max4<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount,FUNC4::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5>
+	template<double (func)(double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, Recuring recurring=first>
 	class Func5:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4,public virtual FUNC5{
 		public:Func5():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(){}
 		virtual ~Func5(){}
@@ -124,7 +125,7 @@ namespace Genetic{
 			ArgCount=max5<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount,FUNC4::ArgCount,FUNC5::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, class FUNC6>
+	template<double (func)(double,double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, class FUNC6, Recuring recurring=first>
 	class Func6:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
 		public:Func6():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(),FUNC6(){}
 		virtual ~Func6(){}
@@ -137,7 +138,7 @@ namespace Genetic{
 			ArgCount=max6<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount,FUNC4::ArgCount,FUNC5::ArgCount,FUNC6::ArgCount>::val
 		};
 	};
-	template<class FUNC,int x_index, int p_index>
+	template<class FUNC,int x_index, int p_index, Recuring recurring=first>
 	class ArgShift:public virtual FUNC{
 	public:
 		ArgShift():FUNC(){}virtual ~ArgShift(){}
@@ -148,7 +149,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
-	template<class FUNC,int x_index, int p_index>
+	template<class FUNC,int x_index, int p_index, Recuring recurring=first>
 	class ArgScale:public virtual FUNC{
 	public:
 		ArgScale():FUNC(){}
@@ -160,7 +161,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
-	template<class FUNC>
+	template<class FUNC, Recuring recurring=first>
 	class Minus:public virtual FUNC{
 	public:
 		Minus():FUNC(){}
@@ -173,7 +174,7 @@ namespace Genetic{
 			ArgCount=FUNC::ArgCount
 		};
 	};
-	template<class FUNC1,class FUNC2>
+	template<class FUNC1,class FUNC2, Recuring recurring=first>
 	class Add:public virtual FUNC1, public virtual FUNC2{
 	public:
 		Add():FUNC1(),FUNC2(){}
@@ -186,8 +187,8 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2>class Add2:public Add<FUNC1,FUNC2>{};
-	template<class FUNC1,class FUNC2,class FUNC3>
+	template<class FUNC1,class FUNC2, Recuring recurring=first>class Add2:public Add<FUNC1,FUNC2,recurring>{};
+	template<class FUNC1,class FUNC2,class FUNC3, Recuring recurring=first>
 	class Add3:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3{
 	public:
 		Add3():FUNC1(),FUNC2(),FUNC3(){}
@@ -200,7 +201,7 @@ namespace Genetic{
 			ArgCount=max3<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4>
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4, Recuring recurring=first>
 	class Add4:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3, public virtual FUNC4{
 	public:
 		Add4():FUNC1(),FUNC2(),FUNC3(),FUNC4(){}
@@ -216,7 +217,7 @@ namespace Genetic{
 				,FUNC4::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5>
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5, Recuring recurring=first>
 	class Add5:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
 		,public virtual FUNC4,public virtual FUNC5{
 	public:
@@ -233,7 +234,7 @@ namespace Genetic{
 				,FUNC4::ArgCount,FUNC5::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6>
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6, Recuring recurring=first>
 	class Add6:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
 		,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
 	public:
@@ -251,7 +252,7 @@ namespace Genetic{
 		};
 	};
 	
-	template<class FUNC1,class FUNC2>
+	template<class FUNC1,class FUNC2, Recuring recurring=first>
 	class Sub:public virtual FUNC1, public virtual FUNC2{
 	public:
 		Sub():FUNC1(),FUNC2(){}
@@ -264,7 +265,7 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2>
+	template<class FUNC1,class FUNC2, Recuring recurring=first>
 	class Mul:public virtual FUNC1, public virtual FUNC2{
 	public:
 		Mul():FUNC1(),FUNC2(){}
@@ -277,8 +278,8 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2>class Mul2:public Mul<FUNC1,FUNC2>{};
-	template<class FUNC1,class FUNC2,class FUNC3>
+	template<class FUNC1,class FUNC2, Recuring recurring=first>class Mul2:public Mul<FUNC1,FUNC2,recurring>{};
+	template<class FUNC1,class FUNC2,class FUNC3, Recuring recurring=first>
 	class Mul3:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3{
 	public:
 		Mul3():FUNC1(),FUNC2(),FUNC3(){}
@@ -291,7 +292,7 @@ namespace Genetic{
 			ArgCount=max3<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4>
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4, Recuring recurring=first>
 	class Mul4:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3, public virtual FUNC4{
 	public:
 		Mul4():FUNC1(),FUNC2(),FUNC3(),FUNC4(){}
@@ -307,7 +308,7 @@ namespace Genetic{
 				,FUNC4::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5>
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5, Recuring recurring=first>
 	class Mul5:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
 		,public virtual FUNC4,public virtual FUNC5{
 	public:
@@ -324,7 +325,7 @@ namespace Genetic{
 				,FUNC4::ArgCount,FUNC5::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6>
+	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6, Recuring recurring=first>
 	class Mul6:public virtual FUNC1, public virtual FUNC2, public virtual FUNC3
 		,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
 	public:
@@ -345,7 +346,7 @@ namespace Genetic{
 
 
 
-	template<class FUNC1,class FUNC2>
+	template<class FUNC1,class FUNC2, Recuring recurring=first>
 	class Div:public virtual FUNC1, public virtual FUNC2{
 	public:
 		Div():FUNC1(),FUNC2(){}
@@ -358,7 +359,7 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
-	template<class FUNC1,class FUNC2>
+	template<class FUNC1,class FUNC2, Recuring recurring=first>
 	class Power:public virtual FUNC1, public virtual FUNC2{
 	public:
 		Power():FUNC1(),FUNC2(){}
@@ -372,7 +373,8 @@ namespace Genetic{
 		};
 	};
 
-	template<class FUNC1>class Sqrt:public virtual FUNC1{
+	template<class FUNC1, Recuring recurring=first>
+	class Sqrt:public virtual FUNC1{
 	public:
 		Sqrt():FUNC1(){}
 		virtual ~Sqrt(){}
@@ -383,7 +385,8 @@ namespace Genetic{
 			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
 		};
 	};
-	template<class FUNC1>class Sqr:public virtual FUNC1{
+	template<class FUNC1, Recuring recurring=first>
+	class Sqr:public virtual FUNC1{
 	public:
 		Sqr():FUNC1(){}
 		virtual ~Sqr(){}
@@ -394,7 +397,8 @@ namespace Genetic{
 			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
 		};
 	};
-	template<class FUNC1>class Pow3:public virtual FUNC1{
+	template<class FUNC1, Recuring recurring=first>
+	class Pow3:public virtual FUNC1{
 	public:
 		Pow3():FUNC1(){}
 		virtual ~Pow3(){}
@@ -405,7 +409,8 @@ namespace Genetic{
 			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
 		};
 	};
-	template<class FUNC1>class Pow4:public virtual FUNC1{
+	template<class FUNC1, Recuring recurring=first>
+	class Pow4:public virtual FUNC1{
 	public:
 		Pow4():FUNC1(){}
 		virtual ~Pow4(){}
@@ -416,7 +421,8 @@ namespace Genetic{
 			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
 		};
 	};
-	template<class FUNC1>class Pow5:public virtual FUNC1{
+	template<class FUNC1, Recuring recurring=first>
+	class Pow5:public virtual FUNC1{
 	public:
 		Pow5():FUNC1(){}
 		virtual ~Pow5(){}
@@ -427,7 +433,8 @@ namespace Genetic{
 			ParamCount=FUNC1::ParamCount,ArgCount=FUNC1::ArgCount
 		};
 	};
-	template<class FUNC1>class Pow6:public virtual FUNC1{
+	template<class FUNC1, Recuring recurring=first>
+	class Pow6:public virtual FUNC1{
 	public:
 		Pow6():FUNC1(){}
 		virtual ~Pow6(){}
