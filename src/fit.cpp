@@ -291,4 +291,5 @@ namespace Genetic{
 		},"using 1:2");
 		return *this;
 	}
+	
 }
