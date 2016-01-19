@@ -4,6 +4,7 @@
 #define PUWJZCZDMORMZODA_sort
 #include <memory>
 #include "../math_h/error.h"
+#include "../gnuplot_wrap.h"
 #include "paramset.h"
 namespace Genetic{
 	using namespace std;
@@ -62,7 +63,7 @@ namespace Genetic{
 		}
 		AbstractPerBinSeparator&operator<<(ParamSet&&P){return operator<<(P);}
 	};
-
+	
 	class ParamsPerBins:public AbstractPerBinSeparator<vector<ParamSet>>{
 	public:
 		ParamsPerBins(size_t ind,const pair<double,double>&R,size_t cnt);
@@ -71,7 +72,7 @@ namespace Genetic{
 		virtual shared_ptr<vector<ParamSet>> CreateParamProcessor(size_t for_pos)override;
 		virtual void ProcessParams(vector<ParamSet>&proc,const ParamSet&P)override;
 	};
-
+	
 	template<unsigned int dimensions>
 	class ParamsPerBinsCounter:public AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>{
 	private:
@@ -96,8 +97,6 @@ namespace Genetic{
 			}
 		ParamsPerBinsCounter<dimensions>(vector<BinningParam>&binning):ParamsPerBinsCounter<dimensions>(binning){}
 	};
-	
-	
 	template<>
 	class ParamsPerBinsCounter<1>:public AbstractPerBinSeparator<unsigned long>{
 	public:
@@ -109,5 +108,37 @@ namespace Genetic{
 		virtual void ProcessParams(unsigned long&proc,const ParamSet&)override;
 	};
 	
+	typedef PlotPoints<double,vector<pair<double,double>>> PlotEngine;
+	class AbstractPlotStream{
+	protected:
+		AbstractPlotStream(string&&name,shared_ptr<PlotEngine>plot);
+		AbstractPlotStream(string&&name);
+		virtual ~AbstractPlotStream();
+	public:
+		AbstractPlotStream&operator<<(const ParamSet&P);
+		AbstractPlotStream&operator<<(ParamSet&&P);
+		shared_ptr<PlotEngine>Plot();
+	protected:
+		virtual void ProcessPoint(const ParamSet&P)=0;
+		string&&Name()const;
+	private:
+		string m_name;
+		shared_ptr<PlotEngine> m_plot;
+	};
+	class SimplePlotStream:public AbstractPlotStream{
+	public:
+		SimplePlotStream(string&& name,pair<size_t,size_t>&&indexes);
+		SimplePlotStream(string&& name,pair<size_t,size_t>&&indexes,shared_ptr<PlotEngine> plot);
+		virtual ~SimplePlotStream();
+		typedef function<double(double)> func;
+		SimplePlotStream&AddFunc(func f);
+	protected:
+		virtual void ProcessPoint(const ParamSet& P)override;
+	private:
+		pair<size_t,size_t> m_indexes;
+		vector<pair<double,double>> m_data;
+		pair<double,double> m_xrange;
+		vector<func> m_funcs;
+	};
 };
 #endif

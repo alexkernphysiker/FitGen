@@ -50,5 +50,43 @@ namespace Genetic{
 	ParamsPerBinsCounter<1>::ParamsPerBinsCounter(const vector<BinningParam>*binning):ParamsPerBinsCounter(*binning){}
 	shared_ptr<unsigned long> ParamsPerBinsCounter<1>::CreateParamProcessor(size_t){return make_shared<unsigned long>(0);}
 	void ParamsPerBinsCounter<1>::ProcessParams(long unsigned int& proc, const ParamSet&){proc++;}
+	
+	AbstractPlotStream::AbstractPlotStream(string&& name, shared_ptr<PlotEngine> plot){
+		m_plot=plot;
+		m_name=name;
+	}
+	AbstractPlotStream::AbstractPlotStream(string&& name):
+	AbstractPlotStream(static_cast<string&&>(name),make_shared<PlotEngine>()){}
+	string&&AbstractPlotStream::Name() const{return const_cast<string&&>(m_name);}
+	shared_ptr<PlotEngine> AbstractPlotStream::Plot(){return m_plot;}
+	AbstractPlotStream::~AbstractPlotStream(){}
+	AbstractPlotStream& AbstractPlotStream::operator<<(const ParamSet& P){
+		ProcessPoint(P);
+		return *this;
+	}
+	AbstractPlotStream& AbstractPlotStream::operator<<(ParamSet&& P){return operator<<(P);}
 
+	SimplePlotStream::SimplePlotStream(string&&name, pair<size_t,size_t>&&indexes,shared_ptr<PlotEngine>plot)
+		:AbstractPlotStream(static_cast<string&&>(name), plot){m_indexes=indexes;m_xrange=make_pair(+INFINITY,-INFINITY);}
+	SimplePlotStream::SimplePlotStream(std::string&& name,pair<size_t,size_t>&& indexes)
+		:AbstractPlotStream(static_cast<string&&>(name)){m_indexes=indexes;m_xrange=make_pair(+INFINITY,-INFINITY);}
+	SimplePlotStream& SimplePlotStream::AddFunc(SimplePlotStream::func f){
+		m_funcs.push_back(f);
+		return *this;
+	}
+	SimplePlotStream::~SimplePlotStream(){
+		if(m_data.size()>0)
+			Plot()->WithoutErrors(Name(),m_data);
+		size_t cnt=1;
+		for(func F:m_funcs){
+			Plot()->Line(Name()+" Line "+to_string(cnt),F,m_xrange.first,m_xrange.second,(m_xrange.second-m_xrange.first)/100.0);
+			cnt++;
+		}
+	}
+	void SimplePlotStream::ProcessPoint(const ParamSet& P){
+		auto p=make_pair(P[m_indexes.first],P[m_indexes.second]);
+		m_data.push_back(p);
+		if(m_xrange.first>p.first)m_xrange.first=p.first;
+		if(m_xrange.second<p.second)m_xrange.second=p.second;
+	}
 };
