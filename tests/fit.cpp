@@ -256,7 +256,7 @@ TEST(FitFunction,Basetest){
 	EXPECT_EQ(1,fit[1]);
 }
 TEST(FitFunctionWithError,Basetest){
-	for(auto&p:*Points)p.WY()=1;
+	for(auto&p:*Points)p.wy_modify()=1;
 	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,make_shared<Fit_Func>(),make_shared<Fit_Func_err>());
 	fit.Init(30,Init,engine);
 	while(!fit.ConcentratedInOnePoint())

@@ -32,8 +32,8 @@ namespace Genetic{
 			ParamSet&WX()const;
 			double y()const;
 			double wy()const;
-			double&Y();
-			double&WY();
+			double&y_modify();
+			double&wy_modify();
 		private:
 			ParamSet __X;
 			ParamSet __WX;

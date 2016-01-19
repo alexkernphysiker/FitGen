@@ -28,8 +28,8 @@ namespace Genetic{
 	ParamSet&FitPoints::Point::WX()const{return const_cast<ParamSet&>(__WX);}
 	double FitPoints::Point::y() const{return __y;}
 	double FitPoints::Point::wy() const{return __wy;}
-	double&FitPoints::Point::Y(){return __y;}
-	double&FitPoints::Point::WY(){return __wy;}
+	double&FitPoints::Point::y_modify(){return __y;}
+	double&FitPoints::Point::wy_modify(){return __wy;}
 	
 	FitPoints::FitPoints(){}
 	FitPoints::~FitPoints(){}
@@ -121,8 +121,8 @@ namespace Genetic{
 	void Distribution1D::Fill(double x){
 		for(Point&p:(*this))
 			if((x>=(p.X()[0]-p.WX()[0]))&&(x<(p.X()[0]+p.WX()[0]))){
-				p.Y()+=1.0;
-				p.WY()=sqrt(p.y());
+				p.y_modify()+=1.0;
+				p.wy_modify()=sqrt(p.y());
 			}
 	}
 	OptimalityForPoints::OptimalityForPoints(
