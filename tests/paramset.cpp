@@ -126,30 +126,3 @@ TEST(ParamSet,ParEQ){
 			EXPECT_EQ(val,P[i]);
 	}
 }
-TEST(BinningParam,Throwing){
-	EXPECT_NO_THROW(BinningParam(0,make_pair(0,1),1));
-	EXPECT_THROW(BinningParam(0,make_pair(0,1),0),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(0,0),0),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(1,0),0),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(0,0),1),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(1,0),1),math_h_error<BinningParam>);
-}
-TEST(BinningParam,Base){
-	BinningParam b(0,make_pair(0,1),10);
-	ASSERT_EQ(0,b.param_index());
-	ASSERT_EQ(10,b.count());
-	EXPECT_EQ(0.1,b.bin_width());
-	for(size_t i=0;i<10;i++)
-		EXPECT_TRUE(pow(double(i)/10+0.05-b.bin_center(i),2)<0.00000001);
-	size_t i=0;
-	ParamSet P={0.49};
-	EXPECT_EQ(true,b.FindBinIndex(P,i));
-	EXPECT_EQ(4,i);
-	P[0]=0.33;
-	EXPECT_EQ(true,b.FindBinIndex(P,i));
-	EXPECT_EQ(3,i);
-	P[0]=1.01;
-	EXPECT_EQ(false,b.FindBinIndex(P,i));
-	P[0]=-0.01;
-	EXPECT_EQ(false,b.FindBinIndex(P,i));
-}

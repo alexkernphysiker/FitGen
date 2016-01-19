@@ -64,23 +64,6 @@ namespace Genetic{
 	ParamSet parEq(size_t cnt,double val);
 	inline ParamSet parZeros(size_t cnt){return parEq(cnt,0);}
 	inline ParamSet parOnes(size_t cnt){return parEq(cnt,1);}
-	
-	class BinningParam{
-	public:
-		BinningParam(size_t ind,const pair<double,double>&R,size_t cnt);
-		BinningParam(size_t ind,pair<double,double>&&R,size_t cnt);
-		BinningParam(const BinningParam&source);
-		size_t param_index()const;
-		size_t count()const;
-		pair<double,double>&limits()const;
-		double bin_width()const;
-		double bin_center(size_t i)const;
-		bool FindBinIndex(const ParamSet& P,size_t&res)const;
-	private:
-		void CheckCorrectness()const;
-		size_t index,cnt;
-		pair<double,double> range;
-	};
 };
 
 #endif
