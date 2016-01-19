@@ -2,7 +2,7 @@
 // MIT license
 #include <math.h>
 #include <gnuplot_wrap.h>
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <Genetic/fit.h>
 using namespace std;
 namespace Genetic{
@@ -12,9 +12,9 @@ namespace Genetic{
 	
 	FitPoints::Point::Point(const ParamSet&x,const ParamSet&wx, double y_, double wy_){
 		if(x.size()==0)
-			throw math_h_error<Point>("Empty parameter set");
+			throw Error<Point>("Empty parameter set");
 		if(x.size()!=wx.size())
-			throw math_h_error<Point>("Point parameter weights size mismatch");
+			throw Error<Point>("Point parameter weights size mismatch");
 		__X=x;__WX=wx;
 		__y=y_;__wy=wy_;
 	}
@@ -36,7 +36,7 @@ namespace Genetic{
 	size_t FitPoints::size()const{return m_data.size();}
 	size_t FitPoints::dimensions() const{
 		if(size()==0)
-			throw math_h_error<FitPoints>("No dimensions in empty FitPoints");
+			throw Error<FitPoints>("No dimensions in empty FitPoints");
 		return m_data[0].X().size();
 	}
 	ParamSet&FitPoints::min()const{return const_cast<ParamSet&>(m_min);}
@@ -46,7 +46,7 @@ namespace Genetic{
 	FitPoints& FitPoints::operator<<(Point&&point){
 		if(size()>0){
 			if(point.X().size()!=dimensions())
-				throw math_h_error<FitPoints>("This point has different dimensions");
+				throw Error<FitPoints>("This point has different dimensions");
 			for(size_t i=0;i<dimensions();i++){
 				if(point.X()[i]<m_min[i])m_min[i]=point.X()[i];
 				if(point.X()[i]>m_max[i])m_max[i]=point.X()[i];
@@ -74,7 +74,7 @@ namespace Genetic{
 
 	FitPoints::Point&&FitPoints::operator[](size_t i)const{
 		if(i>=size())
-			throw math_h_error<FitPoints>("Range check error when getting an element from FitPoints");
+			throw Error<FitPoints>("Range check error when getting an element from FitPoints");
 		return const_cast<Point&&>(m_data[i]);
 	}
 	FitPoints::iterator FitPoints::begin(){
@@ -112,7 +112,7 @@ namespace Genetic{
 	}
 	Distribution1D::Distribution1D(double min, double max, int bins):FitPoints(){
 		if((max<min)||(bins<1))
-			throw math_h_error<Distribution1D>("Wrong constructor parameters for Distribution1D");
+			throw Error<Distribution1D>("Wrong constructor parameters for Distribution1D");
 		double binwidth=(max-min)/double(bins);
 		double halfwidth=binwidth/2.0;
 		for(double x=min+halfwidth;x<max;x+=binwidth)
@@ -170,7 +170,7 @@ namespace Genetic{
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
-				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw Error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
@@ -182,7 +182,7 @@ namespace Genetic{
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
-				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw Error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
@@ -223,7 +223,7 @@ namespace Genetic{
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
-				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw Error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F,const IParamFunc&E){
@@ -235,7 +235,7 @@ namespace Genetic{
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
-				throw math_h_error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+				throw Error<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
 			return 1.0/z;
 		};
 		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F,const IParamFunc&E){
@@ -255,7 +255,7 @@ namespace Genetic{
 	Parabolic::~Parabolic(){}
 	double Parabolic::GetParamParabolicError(double delta, int i)const{
 		if(delta<=0)
-			throw new math_h_error<Parabolic>("Error in parabolic error calculation: delta cannot be zero or negative");
+			throw new Error<Parabolic>("Error in parabolic error calculation: delta cannot be zero or negative");
 		double s=Optimality();
 		ParamSet ab=Parameters();
 		ParamSet be=ab;

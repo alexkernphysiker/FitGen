@@ -3,7 +3,7 @@
 #ifndef PUWJZCZDMORMZODA_sort
 #define PUWJZCZDMORMZODA_sort
 #include <memory>
-#include <math_h/exception_math_h.h>
+#include "../math_h/error.h"
 #include "paramset.h"
 namespace Genetic{
 	using namespace std;
@@ -49,12 +49,12 @@ namespace Genetic{
 		}
 	public:
 		ParamProcessor&operator[](size_t index)const{
-			if(m_data.size()==0)throw math_h_error<AbstractPerBinSeparator>("Not inited");
-			if(index>=count())throw math_h_error<AbstractPerBinSeparator>("Range check error");
+			if(m_data.size()==0)throw Error<AbstractPerBinSeparator>("Not inited");
+			if(index>=count())throw Error<AbstractPerBinSeparator>("Range check error");
 			return const_cast<ParamProcessor&>(*(m_data[index]));
 		}
 		AbstractPerBinSeparator&operator<<(const ParamSet&P){
-			if(m_data.size()==0)throw math_h_error<AbstractPerBinSeparator>("Not inited");
+			if(m_data.size()==0)throw Error<AbstractPerBinSeparator>("Not inited");
 			size_t index=0;
 			if(FindBinIndex(P,index))
 				ProcessParams(*(m_data[index]),P);

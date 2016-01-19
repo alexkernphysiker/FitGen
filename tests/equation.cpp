@@ -1,7 +1,7 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <Genetic/equation.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/filter.h>

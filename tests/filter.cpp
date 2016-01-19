@@ -1,7 +1,7 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <Genetic/filter.h>
 using namespace Genetic;
 using namespace std;
@@ -76,8 +76,8 @@ template<class FilterMulti>void test_multi(){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(filters[i].get(),&I.Get(i));
-		EXPECT_THROW(I.Get(count),math_h_error<AbstractFilterMulti>);
-		EXPECT_THROW(I.Get(-1),math_h_error<AbstractFilterMulti>);
+		EXPECT_THROW(I.Get(count),Error<AbstractFilterMulti>);
+		EXPECT_THROW(I.Get(-1),Error<AbstractFilterMulti>);
 	}
 }
 TEST(And,Add){test_multi<And>();}

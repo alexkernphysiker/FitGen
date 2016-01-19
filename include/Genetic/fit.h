@@ -222,7 +222,7 @@ namespace Genetic{
 			return *this;
 		}
 		PlotFit1D& Fit(std::string&&name,const FIT&fit,double step){
-			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
+			if(max<min)throw Error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(static_cast<std::string&&>(name),[&fit](double x){return fit({x});},min,max,step);
 			return *this;
 		}
@@ -232,12 +232,12 @@ namespace Genetic{
 			return *this;
 		}
 		PlotFit1D& ParamFunc(std::string&&name,IParamFunc&&func,const FIT&fit,double step){
-			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
+			if(max<min)throw Error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(static_cast<std::string&&>(name),[&func,&fit](double x){return func({x},fit.Parameters());},min,max,step);
 			return *this;
 		}
 		PlotFit1D& ParamFunc(std::string&&name,paramFunc func,const FIT&fit,double step){
-			if(max<min)throw math_h_error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
+			if(max<min)throw Error<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
 			Plot<double>::Line(static_cast<std::string&&>(name),[&func,&fit](double x){return func({x},fit.Parameters());},min,max,step);
 			return *this;
 		}

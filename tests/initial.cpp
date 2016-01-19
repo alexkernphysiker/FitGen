@@ -1,7 +1,7 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <math_h/functions.h>
 #include <Genetic/initialconditions.h>
 using namespace Genetic;
@@ -27,8 +27,8 @@ TEST(InitialDistributions,Add){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(Distrs[i].get(),&I[i]);
-		EXPECT_THROW(I[count](engine),math_h_error<InitialDistributions>);
-		EXPECT_THROW(I[-1](engine),math_h_error<InitialDistributions>);
+		EXPECT_THROW(I[count](engine),Error<InitialDistributions>);
+		EXPECT_THROW(I[-1](engine),Error<InitialDistributions>);
 	}
 	for(int count=1;count<n;count++){
 		auto I=make_shared<InitialDistributions>();
@@ -65,14 +65,14 @@ TEST(GenerateUniform,Add){
 			EXPECT_EQ(i,I.Min(i));
 			EXPECT_EQ(2*n-i,I.Max(i));
 		}
-		EXPECT_THROW(I.Min(count),math_h_error<GenerateUniform>);
-		EXPECT_THROW(I.Max(count),math_h_error<GenerateUniform>);
-		EXPECT_THROW(I.Min(-1),math_h_error<GenerateUniform>);
-		EXPECT_THROW(I.Max(-1),math_h_error<GenerateUniform>);
+		EXPECT_THROW(I.Min(count),Error<GenerateUniform>);
+		EXPECT_THROW(I.Max(count),Error<GenerateUniform>);
+		EXPECT_THROW(I.Min(-1),Error<GenerateUniform>);
+		EXPECT_THROW(I.Max(-1),Error<GenerateUniform>);
 	}
 	{
 		GenerateUniform I;
-		EXPECT_THROW(I.Add(2,1),math_h_error<GenerateUniform>);
+		EXPECT_THROW(I.Add(2,1),Error<GenerateUniform>);
 	}
 }
 TEST(GenerateUniform,AddSharedPtr){
@@ -115,10 +115,10 @@ TEST(GenerateByGauss,Add){
 			EXPECT_EQ(i,I.Mean(i));
 			EXPECT_EQ(2*n-i,I.Sigma(i));
 		}
-		EXPECT_THROW(I.Mean(count),math_h_error<GenerateByGauss>);
-		EXPECT_THROW(I.Sigma(count),math_h_error<GenerateByGauss>);
-		EXPECT_THROW(I.Mean(-1),math_h_error<GenerateByGauss>);
-		EXPECT_THROW(I.Sigma(-1),math_h_error<GenerateByGauss>);
+		EXPECT_THROW(I.Mean(count),Error<GenerateByGauss>);
+		EXPECT_THROW(I.Sigma(count),Error<GenerateByGauss>);
+		EXPECT_THROW(I.Mean(-1),Error<GenerateByGauss>);
+		EXPECT_THROW(I.Sigma(-1),Error<GenerateByGauss>);
 	}
 }
 TEST(GenerateByGauss,AddSharedPtr){

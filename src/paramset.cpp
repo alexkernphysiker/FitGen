@@ -1,6 +1,6 @@
 // this file is distributed under 
 // MIT license
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <Genetic/paramset.h>
 namespace Genetic{
 	using namespace std;
@@ -21,12 +21,12 @@ namespace Genetic{
 	size_t ParamSet::size()const{return m_values.size();}
 	double ParamSet::operator[](size_t i)const{
 		if(i>=m_values.size())
-			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
+			throw Error<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
 	double& ParamSet::operator[](size_t i){
 		if(i>=m_values.size())
-			throw math_h_error<ParamSet>("Range check error when accessing ParamSet's element");
+			throw Error<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
 
@@ -53,7 +53,7 @@ namespace Genetic{
 	ParamSet& ParamSet::operator>>(double& p){
 		Lock lock(m_mutex);
 		if(m_values.size()==0)
-			throw math_h_error<ParamSet>("Attempt to take a value from empty paramset");
+			throw Error<ParamSet>("Attempt to take a value from empty paramset");
 		p=m_values[m_values.size()-1];
 		m_values.pop_back();
 		return *this;

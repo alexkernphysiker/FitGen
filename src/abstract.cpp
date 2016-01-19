@@ -2,7 +2,7 @@
 // MIT license
 #include <thread>
 #include <math.h>
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <math_h/interpolate.h>
 #include <math_h/sigma.h>
 #include <Genetic/abstract.h>
@@ -60,16 +60,16 @@ namespace Genetic{
 	AbstractGenetic&AbstractGenetic::SetThreadCount(size_t threads_count){
 		Lock lock(m_mutex);
 		if(threads_count==0)
-			throw math_h_error<AbstractGenetic>("Thread count cannot be zero");
+			throw Error<AbstractGenetic>("Thread count cannot be zero");
 		threads=threads_count;
 		return *this;
 	}
 	size_t AbstractGenetic::ThreadCount()const{return threads;}
 	AbstractGenetic&AbstractGenetic::Init(size_t population_size, shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
 		if(m_population.size()>0)
-			throw math_h_error<AbstractGenetic>("Genetic algorithm cannot be inited twice");
+			throw Error<AbstractGenetic>("Genetic algorithm cannot be inited twice");
 		if(population_size<=0)
-			throw math_h_error<AbstractGenetic>("Polulation size must be a positive number");
+			throw Error<AbstractGenetic>("Polulation size must be a positive number");
 		if(ThreadCount()>population_size)
 			SetThreadCount(population_size);
 		auto add_to_population=[this,initial_conditions,&random](size_t count){
@@ -112,7 +112,7 @@ namespace Genetic{
 		size_t n=PopulationSize();
 		size_t par_cnt=ParamCount();
 		if(n==0)
-			throw math_h_error<AbstractGenetic>("Cannot perform the calculation when population size is zero");
+			throw Error<AbstractGenetic>("Cannot perform the calculation when population size is zero");
 		if(ThreadCount()>n)
 			SetThreadCount(n);
 		vector<Point> tmp_population;
@@ -182,26 +182,26 @@ namespace Genetic{
 	}
 	size_t AbstractGenetic::ParamCount()const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.size();
 	}
 	double AbstractGenetic::Optimality(size_t point_index)const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(point_index>=m_population.size())
-			throw math_h_error<AbstractGenetic>("Range check error when accessing an element in the population");
+			throw Error<AbstractGenetic>("Range check error when accessing an element in the population");
 		return m_population[point_index].second;
 	}
 	ParamSet&&AbstractGenetic::Parameters(size_t point_index)const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(point_index>=m_population.size())
-			throw math_h_error<AbstractGenetic>("Range check error when accessing an element in the population");
+			throw Error<AbstractGenetic>("Range check error when accessing an element in the population");
 		return const_cast<ParamSet&&>(m_population[point_index].first);
 	}
 	double AbstractGenetic::operator [](size_t i)const{
 		if(i>=ParamCount())
-			throw math_h_error<AbstractGenetic>("Parameter index out of range");
+			throw Error<AbstractGenetic>("Parameter index out of range");
 		return m_population[0].first[i];
 	}
 	ParamSet&&AbstractGenetic::ParamAverage()const{
@@ -216,7 +216,7 @@ namespace Genetic{
 	
 	bool AbstractGenetic::ConcentratedInOnePoint()const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
 		if(Optimality(PopulationSize()-1)>Optimality())
@@ -228,9 +228,9 @@ namespace Genetic{
 	}
 	bool AbstractGenetic::AbsoluteOptimalityExitCondition(double accuracy)const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
-			throw math_h_error<AbstractGenetic>("Cannot use negative accuracy parameter");
+			throw Error<AbstractGenetic>("Cannot use negative accuracy parameter");
 		if(m_itercount==0)
 			return false;
 		if(accuracy==0)
@@ -239,9 +239,9 @@ namespace Genetic{
 	}
 	bool AbstractGenetic::RelativeOptimalityExitCondition(double accuracy)const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
-			throw math_h_error<AbstractGenetic>("Cannot use negative accuracy parameter");
+			throw Error<AbstractGenetic>("Cannot use negative accuracy parameter");
 		if(m_itercount==0)
 			return false;
 		if(accuracy==0)
@@ -250,16 +250,16 @@ namespace Genetic{
 	}
 	bool AbstractGenetic::ParametersDispersionExitCondition(ParamSet&& max_disp)const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
 		if(max_disp.size()>m_disp.size())
-			throw math_h_error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
+			throw Error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
 		for(size_t i=0;i<max_disp.size();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)
-					throw math_h_error<AbstractGenetic>("Dispersion value cannot be negative");
+					throw Error<AbstractGenetic>("Dispersion value cannot be negative");
 				if(m<m_disp[i])
 					return false;
 			}
@@ -268,16 +268,16 @@ namespace Genetic{
 	}
 	bool AbstractGenetic::RelativeParametersDispersionExitCondition(ParamSet&& max_disp)const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
 		if(max_disp.size()>m_disp.size())
-			throw math_h_error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
+			throw Error<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
 		for(size_t i=0;i<max_disp.size();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)
-					throw math_h_error<AbstractGenetic>("Dispersion value cannot be negative");
+					throw Error<AbstractGenetic>("Dispersion value cannot be negative");
 				m*=m;
 				if(m<pow(m_disp[i]/m_population[0].first[i],2))
 					return false;
@@ -288,32 +288,32 @@ namespace Genetic{
 	
 	AbstractGenetic::iterator AbstractGenetic::begin(){
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.begin();
 	}
 	AbstractGenetic::const_iterator AbstractGenetic::begin()const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.begin();
 	}
 	AbstractGenetic::const_iterator AbstractGenetic::cbegin()const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.cbegin();
 	}
 	AbstractGenetic::iterator AbstractGenetic::end(){
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.end();
 	}
 	AbstractGenetic::const_iterator AbstractGenetic::end() const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.end();
 	}
 	AbstractGenetic::const_iterator AbstractGenetic::cend() const{
 		if(m_population.size()==0)
-			throw math_h_error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
+			throw Error<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.cend();
 	}
 	ostream& operator<<(ostream& str, const AbstractGenetic& P){

@@ -2,17 +2,17 @@
 // MIT license
 #include <math.h>
 #include <gtest/gtest.h>
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <Genetic/paramsort.h>
 using namespace Genetic;
 using namespace std;
 TEST(BinningParam,Throwing){
 	EXPECT_NO_THROW(BinningParam(0,make_pair(0,1),1));
-	EXPECT_THROW(BinningParam(0,make_pair(0,1),0),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(0,0),0),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(1,0),0),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(0,0),1),math_h_error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(1,0),1),math_h_error<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(0,1),0),Error<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(0,0),0),Error<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(1,0),0),Error<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(0,0),1),Error<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(1,0),1),Error<BinningParam>);
 }
 TEST(BinningParam,Base){
 	BinChecker b(0,make_pair(0,1),10);

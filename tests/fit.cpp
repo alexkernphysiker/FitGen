@@ -1,7 +1,7 @@
 // this file is distributed under 
 // MIT license
 #include <gtest/gtest.h>
-#include <math_h/exception_math_h.h>
+#include <math_h/error.h>
 #include <Genetic/fit.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/paramfunc.h>
@@ -34,7 +34,7 @@ TEST(point,Base){
 	}
 }
 TEST(FitPoints,sizemismatch){
-	EXPECT_THROW(FitPoints()<<Point({1},1)<<Point({1,1},1),math_h_error<FitPoints>);
+	EXPECT_THROW(FitPoints()<<Point({1},1)<<Point({1,1},1),Error<FitPoints>);
 	EXPECT_NO_THROW(FitPoints()<<Point({1},1)<<Point({1},1));
 }
 TEST(FitPoints,simple_min_max){
@@ -49,7 +49,7 @@ TEST(FitPoints,simple_min_max){
 	EXPECT_EQ(1,points.dimensions());
 }
 TEST(FitPoints,dimensions){
-	EXPECT_THROW(FitPoints()<<Point({},1),math_h_error<FitPoints::Point>);
+	EXPECT_THROW(FitPoints()<<Point({},1),Error<FitPoints::Point>);
 	EXPECT_EQ(1,(FitPoints()<<Point({1},1)).dimensions());
 	EXPECT_EQ(2,(FitPoints()<<Point({1,1},1)).dimensions());
 	EXPECT_EQ(3,(FitPoints()<<Point({1,1,1},1)).dimensions());
@@ -58,17 +58,17 @@ TEST(FitPoints,dimensions){
 TEST(FitPoints,Base){
 	FitPoints points;
 	EXPECT_EQ(0,points.size());
-	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
-	EXPECT_THROW(points[0],math_h_error<FitPoints>);
+	EXPECT_THROW(points[-1],Error<FitPoints>);
+	EXPECT_THROW(points[0],Error<FitPoints>);
 	EXPECT_EQ(&points,&(points<<FitPoints::Point({0},0)));
 	EXPECT_EQ(1,points.size());
-	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
-	EXPECT_THROW(points[1],math_h_error<FitPoints>);
+	EXPECT_THROW(points[-1],Error<FitPoints>);
+	EXPECT_THROW(points[1],Error<FitPoints>);
 	EXPECT_EQ(0,points[0].X()[0]);
 	EXPECT_EQ(&points,&(points<<FitPoints::Point({1},0)));
 	EXPECT_EQ(2,points.size());
-	EXPECT_THROW(points[-1],math_h_error<FitPoints>);
-	EXPECT_THROW(points[2],math_h_error<FitPoints>);
+	EXPECT_THROW(points[-1],Error<FitPoints>);
+	EXPECT_THROW(points[2],Error<FitPoints>);
 	EXPECT_EQ(0,points[0].X()[0]);
 	EXPECT_EQ(1,points[1].X()[0]);
 	int c=0;
@@ -107,9 +107,9 @@ TEST(Distribution1D,Base){
 	for(point&p:d)EXPECT_EQ(1,p.y());
 }
 TEST(Distribution1D,Throw){
-	EXPECT_THROW(Distribution1D(2,0,2),math_h_error<Distribution1D>);
-	EXPECT_THROW(Distribution1D(0,2,0),math_h_error<Distribution1D>);
-	EXPECT_THROW(Distribution1D(2,0,0),math_h_error<Distribution1D>);
+	EXPECT_THROW(Distribution1D(2,0,2),Error<Distribution1D>);
+	EXPECT_THROW(Distribution1D(0,2,0),Error<Distribution1D>);
+	EXPECT_THROW(Distribution1D(2,0,0),Error<Distribution1D>);
 }
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();
