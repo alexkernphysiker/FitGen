@@ -24,12 +24,21 @@ For using this library in your git repository please run:
 
 git submodule add https://github.com/alexkernphysiker/FitGen.git
 
-git submodule init
+git submodule update --init --recursive
 
-git submodule update
-
-and add path to it's directory to your include paths.
 If you have your own cmake project, you can use this library by adding add_subdirectory instruction.
+But you will have to add path FitGen/include to your include directories.
+
+
+
+CMake Options
+=============
+
+debug - if ON the project is compiled in debug mode
+
+example - if ON the examples are compiled
+
+test - if ON the tests are compiled
 
 
 
@@ -48,28 +57,34 @@ For plotting the results, the examples require gnuplot installed
 Header files
 ============
 
-paramset.h - set of parameters.
+gnuplot.h and math_h/*.h - links from math_h submodule.
 
-abstract.h - base abstract classes used in the whole library.
+Genetic/paramset.h - set of parameters.
 
-genetic.h - template classes that provide different types of genetic algorithm. 
+Genetic/abstract.h - base abstract classes used in the whole library.
+
+Genetic/genetic.h - template classes that provide different types of genetic algorithm. 
 Inheriting one template class from another allows to combine several mutation mechanisms.
 
-initialcondition.h - classes that provide algorithm of generatins points for initialization of population.
+Genetic/initialcondition.h - classes that provide algorithm of generatins points for initialization of population.
 
-filter.h - classes that provide conditions on fitted parameters acting like a filter for new points that appear in the population.
+Genetic/filter.h - classes that provide conditions on fitted parameters acting like a filter for new points that appear in the population.
 
-equation.h - template classes and functions providing solving equations using classes declared in other header files.
+Genetic/equation.h - template classes and functions providing solving equations using classes declared in other header files.
 
-fit.h - classes needed for fitting algorithms. Contains also classes for plotting 1D fitting results with gnuplot.
+Genetic/fit.h - classes needed for fitting algorithms. Contains also classes for plotting 1D fitting results with gnuplot.
 
-paramfunc.h - template classes providing parametric functions for fitting algorithm. 
+Genetic/paramfunc.h - template classes providing parametric functions for fitting algorithm. 
 Mechanism of inheriting template classes allows to construct complicated ones. 
 Parameter number is obtained automatically.
+
+Genetic/paramsort.h - classes for basic features for analysis of parameters distributions. 
+Contains classes that allow to split distribution of one parameter into bins and separate ParamSet's by these bins.
+More complicated classes allow binning by several parameter indexes.
 
 
 Tests
 =====
 
-The directory FitGen_tests contains cmake project with unit tests.
+The directory tests contains cmake project with unit tests.
 The tests require GoogleTest framework to be installed
