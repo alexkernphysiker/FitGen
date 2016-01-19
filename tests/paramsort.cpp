@@ -74,4 +74,7 @@ TEST(ParamsPerBinsCounter2,Base){
 	EXPECT_EQ(1,Binner[0][1]);
 	EXPECT_EQ(1,Binner[1][0]);
 	EXPECT_EQ(1,Binner[1][1]);
+	size_t cnt=0;
+	Binner.FullCycle([&cnt](ParamSet&,unsigned long n){cnt+=n;});
+	EXPECT_EQ(4,cnt);
 }

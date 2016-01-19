@@ -75,6 +75,9 @@ namespace Genetic{
 	
 	template<unsigned int dimensions>
 	class ParamsPerBinsCounter:public AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>{
+	public:
+		friend class ParamsPerBinsCounter<dimensions+1>;
+		typedef function<void(ParamSet&,unsigned long)> Delegate;
 	private:
 		vector<BinningParam>*m_binning_addr;
 		vector<BinningParam> m_binning;
@@ -88,24 +91,40 @@ namespace Genetic{
 				m_binning_addr=binning;
 				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::Init();
 		}
+		void Full_Cycle(Delegate func,ParamSet&P){
+			for(size_t i=0;i<AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::count();i++){
+				double x=AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::bin_center(i);
+				P<<x;
+				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::operator[](i).Full_Cycle(func,P);
+				P>>x;
+			}
+		}
 	public:
 		ParamsPerBinsCounter<dimensions>(const vector<BinningParam>&binning)
 			:AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>(binning[binning.size()-dimensions]){
 				m_binning=binning;
 				m_binning_addr=&m_binning;
 				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::Init();
-			}
+		}
 		ParamsPerBinsCounter<dimensions>(vector<BinningParam>&binning):ParamsPerBinsCounter<dimensions>(binning){}
+		void FullCycle(Delegate func){
+			ParamSet P;
+			Full_Cycle(func,P);
+		}
 	};
 	template<>
 	class ParamsPerBinsCounter<1>:public AbstractPerBinSeparator<unsigned long>{
 	public:
+		friend class ParamsPerBinsCounter<2>;
+		typedef function<void(ParamSet&,unsigned long)> Delegate;
 		ParamsPerBinsCounter(const vector<BinningParam>&binning);
 		ParamsPerBinsCounter(vector<BinningParam>&&binning);
 		ParamsPerBinsCounter(const vector<BinningParam>*binning);
+		void FullCycle(Delegate func);
 	protected:
 		virtual shared_ptr<unsigned long> CreateParamProcessor(size_t)override;
 		virtual void ProcessParams(unsigned long&proc,const ParamSet&)override;
+		void Full_Cycle(Delegate func,ParamSet&P);
 	};
 	
 	typedef PlotPoints<double,vector<pair<double,double>>> PlotEngine;
