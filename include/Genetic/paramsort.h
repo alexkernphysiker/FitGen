@@ -88,7 +88,7 @@ namespace Genetic{
 			return make_shared<ParamsPerBinsCounter<(dimensions-1)>>(m_binning_addr);
 		}
 		virtual void ProcessParams(ParamsPerBinsCounter<(dimensions-1)>&proc,const ParamSet&P)override{proc<<P;}
-		void Full_Cycle(Delegate func,ParamSet&P){
+		void Full_Cycle(Delegate func,ParamSet&P)const{
 			for(size_t i=0;i<AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::count();i++){
 				double x=AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::bin_center(i);
 				P<<x;
@@ -109,7 +109,7 @@ namespace Genetic{
 				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::Init();
 		}
 		ParamsPerBinsCounter<dimensions>(vector<BinningParam>&binning):ParamsPerBinsCounter<dimensions>(binning){}
-		void FullCycle(Delegate func){
+		void FullCycle(Delegate func)const{
 			ParamSet P;
 			Full_Cycle(func,P);
 		}
@@ -122,11 +122,11 @@ namespace Genetic{
 		ParamsPerBinsCounter(const vector<BinningParam>&binning);
 		ParamsPerBinsCounter(vector<BinningParam>&&binning);
 		ParamsPerBinsCounter(const vector<BinningParam>*binning);
-		void FullCycle(Delegate func);
+		void FullCycle(Delegate func)const;
 	protected:
 		virtual shared_ptr<unsigned long> CreateParamProcessor(size_t)override;
 		virtual void ProcessParams(unsigned long&proc,const ParamSet&)override;
-		void Full_Cycle(Delegate func,ParamSet&P);
+		void Full_Cycle(Delegate func,ParamSet&P)const;
 	};
 	
 	typedef PlotPoints<double,vector<pair<double,double>>> PlotEngine;

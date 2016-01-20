@@ -8,6 +8,7 @@
 #include <Genetic/initialconditions.h>
 using namespace std;
 using namespace Genetic;
+using namespace GnuplotWrap;
 int main(){
 	double left=0;
 	double right=10;

@@ -62,12 +62,15 @@ TEST(ParamsPerBinsCounter,Base){
 	EXPECT_EQ(1,Binner[1]);
 	EXPECT_EQ(1,Binner[2]);
 	EXPECT_EQ(1,Binner[3]);
+	size_t cnt=0;
+	Binner.FullCycle([&cnt](const ParamSet&,const unsigned long n){cnt+=n;});
+	EXPECT_EQ(4,cnt);
 }
 TEST(ParamsPerBinsCounter2,Base){
 	ParamsPerBinsCounter<2> Binner({BinningParam(0,make_pair(0,1),2),BinningParam(1,make_pair(1,2),2)});
 	Binner<<ParamSet({0.2,1.2})<<ParamSet({0.8,1.2})<<ParamSet({0.2,1.8})<<ParamSet({0.8,1.8})
-		<<ParamSet({0.2,0})<<ParamSet({0.2,3})<<ParamSet({-1,1.2})<<ParamSet({2,1.2})
-		<<ParamSet({-1,0})<<ParamSet({-1,3})<<ParamSet({3,0})<<ParamSet({3,3});
+	<<ParamSet({0.2,0})<<ParamSet({0.2,3})<<ParamSet({-1,1.2})<<ParamSet({2,1.2})
+	<<ParamSet({-1,0})<<ParamSet({-1,3})<<ParamSet({3,0})<<ParamSet({3,3});
 	ASSERT_EQ(2,Binner.count());
 	ASSERT_EQ(2,Binner[0].count());
 	ASSERT_EQ(2,Binner[1].count());
@@ -75,6 +78,22 @@ TEST(ParamsPerBinsCounter2,Base){
 	EXPECT_EQ(1,Binner[0][1]);
 	EXPECT_EQ(1,Binner[1][0]);
 	EXPECT_EQ(1,Binner[1][1]);
+	size_t cnt=0;
+	Binner.FullCycle([&cnt](const ParamSet&,const unsigned long n){cnt+=n;});
+	EXPECT_EQ(4,cnt);
+}
+TEST(ParamsPerBinsCounter3,Base){
+	ParamsPerBinsCounter<3> Binner({BinningParam(0,make_pair(0,1),2),BinningParam(1,make_pair(1,2),2),BinningParam(2,make_pair(2,3),1)});
+	Binner<<ParamSet({0.2,1.2,2.5})<<ParamSet({0.8,1.2,2.5})<<ParamSet({0.2,1.8,2.5})<<ParamSet({0.8,1.8,2.5})
+	<<ParamSet({0.2,0,2.5})<<ParamSet({0.2,3,2.5})<<ParamSet({-1,1.2,2.5})<<ParamSet({2,1.2,2.5})
+	<<ParamSet({-1,0,2.5})<<ParamSet({-1,3,2.5})<<ParamSet({3,0,2.5})<<ParamSet({3,3,2.5});
+	ASSERT_EQ(2,Binner.count());
+	ASSERT_EQ(2,Binner[0].count());
+	ASSERT_EQ(2,Binner[1].count());
+	ASSERT_EQ(1,Binner[0][0].count());
+	ASSERT_EQ(1,Binner[1][0].count());
+	ASSERT_EQ(1,Binner[0][1].count());
+	ASSERT_EQ(1,Binner[1][1].count());
 	size_t cnt=0;
 	Binner.FullCycle([&cnt](const ParamSet&,const unsigned long n){cnt+=n;});
 	EXPECT_EQ(4,cnt);

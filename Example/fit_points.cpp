@@ -8,6 +8,8 @@
 const int background_polynom_power=5;
 using namespace std;
 using namespace Genetic;
+using namespace MathTemplates;
+using namespace GnuplotWrap;
 typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
 typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
