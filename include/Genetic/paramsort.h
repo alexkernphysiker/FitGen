@@ -79,7 +79,7 @@ namespace Genetic{
 	class ParamsPerBinsCounter:public AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>{
 	public:
 		friend class ParamsPerBinsCounter<dimensions+1>;
-		typedef function<void(ParamSet&,unsigned long)> Delegate;
+		typedef function<void(const ParamSet&,const unsigned long)> Delegate;
 	private:
 		vector<BinningParam>*m_binning_addr;
 		vector<BinningParam> m_binning;
@@ -118,7 +118,7 @@ namespace Genetic{
 	class ParamsPerBinsCounter<1>:public AbstractPerBinSeparator<unsigned long>{
 	public:
 		friend class ParamsPerBinsCounter<2>;
-		typedef function<void(ParamSet&,unsigned long)> Delegate;
+		typedef function<void(const ParamSet&,const unsigned long)> Delegate;
 		ParamsPerBinsCounter(const vector<BinningParam>&binning);
 		ParamsPerBinsCounter(vector<BinningParam>&&binning);
 		ParamsPerBinsCounter(const vector<BinningParam>*binning);
