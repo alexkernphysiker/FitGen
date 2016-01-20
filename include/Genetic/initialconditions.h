@@ -4,10 +4,11 @@
 #define ___DnoQpUEN
 #include <random>
 #include <functional>
-#include <math_h/randomfunc.h>
+#include "../math_h/randomfunc.h"
 #include "abstract.h"
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
 	typedef RandomValueGenerator<double> Distrib;
 	class InitialDistributions:public IInitialConditions{
 	public:

@@ -5,6 +5,7 @@
 #include <Genetic/initialconditions.h>
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
 	InitialDistributions::InitialDistributions(){}
 	InitialDistributions::~InitialDistributions(){}
 	InitialDistributions& InitialDistributions::operator<<(shared_ptr<Distrib> distr){
@@ -16,7 +17,7 @@ namespace Genetic{
 	}
 	Distrib &InitialDistributions::operator[](size_t i){
 		if(i>=ParamDistr.size())
-			throw Error<InitialDistributions>("Range check error when accessing InitialDistributions' element");
+			throw Exception<InitialDistributions>("Range check error when accessing InitialDistributions' element");
 		return *ParamDistr[i];
 	}
 	ParamSet InitialDistributions::Generate(RANDOM&R){
@@ -40,19 +41,19 @@ namespace Genetic{
 	}
 	GenerateUniform &GenerateUniform::Add(double min, double max){
 		if(min>max)
-			throw Error<GenerateUniform>("ParamRangeUniform: Max<Min");
+			throw Exception<GenerateUniform>("ParamRangeUniform: Max<Min");
 		m_min.push_back(min);
 		m_max.push_back(max);
 		return *this;
 	}
 	double GenerateUniform::Min(size_t i){
 		if(i>=m_min.size())
-			throw Error<GenerateUniform>("Range check error when accessing GenerateUniform's element");
+			throw Exception<GenerateUniform>("Range check error when accessing GenerateUniform's element");
 		return m_min[i];
 	}
 	double GenerateUniform::Max(size_t i){
 		if(i>=m_max.size())
-			throw Error<GenerateUniform>("Range check error when accessing GenerateUniform's element");
+			throw Exception<GenerateUniform>("Range check error when accessing GenerateUniform's element");
 		return m_max[i];
 	}
 	ParamSet GenerateUniform::Generate(RANDOM&R){
@@ -76,12 +77,12 @@ namespace Genetic{
 	}
 	double GenerateByGauss::Mean(size_t i){
 		if(i>=m_mean.size())
-			throw Error<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
+			throw Exception<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
 		return m_mean[i];
 	}
 	double GenerateByGauss::Sigma(size_t i){
 		if(i>=m_sig.size())
-			throw Error<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
+			throw Exception<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
 		return m_sig[i];
 	}
 	ParamSet GenerateByGauss::Generate(RANDOM&R){

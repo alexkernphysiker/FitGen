@@ -8,6 +8,7 @@
 #include "paramset.h"
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
 	class IParamFunc{
 	public:
 		virtual ~IParamFunc(){}

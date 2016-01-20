@@ -8,6 +8,8 @@
 #include "paramset.h"
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
+	using namespace GnuplotWrap;
 	class BinningParam{
 	public:
 		BinningParam(size_t ind,const pair<double,double>&R,size_t cnt);
@@ -50,12 +52,12 @@ namespace Genetic{
 		}
 	public:
 		ParamProcessor&operator[](size_t index)const{
-			if(m_data.size()==0)throw Error<AbstractPerBinSeparator>("Not inited");
-			if(index>=count())throw Error<AbstractPerBinSeparator>("Range check error");
+			if(m_data.size()==0)throw Exception<AbstractPerBinSeparator>("Not inited");
+			if(index>=count())throw Exception<AbstractPerBinSeparator>("Range check error");
 			return const_cast<ParamProcessor&>(*(m_data[index]));
 		}
 		AbstractPerBinSeparator&operator<<(const ParamSet&P){
-			if(m_data.size()==0)throw Error<AbstractPerBinSeparator>("Not inited");
+			if(m_data.size()==0)throw Exception<AbstractPerBinSeparator>("Not inited");
 			size_t index=0;
 			if(FindBinIndex(P,index))
 				ProcessParams(*(m_data[index]),P);

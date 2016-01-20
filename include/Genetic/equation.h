@@ -6,6 +6,7 @@
 #include "genetic.h"
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
 	template<class GENETIC>
 	class Equation:public virtual GENETIC{
 	public:

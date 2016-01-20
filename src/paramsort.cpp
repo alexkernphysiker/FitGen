@@ -3,6 +3,8 @@
 #include <Genetic/paramsort.h>
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
+	using namespace GnuplotWrap;
 	BinningParam::BinningParam(size_t ind, const pair< double, double >& R, size_t c){
 		index=ind;cnt=c;
 		range=R;
@@ -15,21 +17,21 @@ namespace Genetic{
 	size_t BinningParam::count() const{return cnt;}
 	void BinningParam::CheckCorrectness() const{
 		if(range.second<=range.first)
-			throw Error<BinningParam>("wrong binning ranges");
+			throw Exception<BinningParam>("wrong binning ranges");
 		if(0==cnt)
-			throw Error<BinningParam>("there cannot be zero bins");
+			throw Exception<BinningParam>("there cannot be zero bins");
 	}
 	double BinningParam::bin_width() const{
-		if(0==count())throw Error<BinningParam>("count==0");
+		if(0==count())throw Exception<BinningParam>("count==0");
 		return (range.second-range.first)/double(count());
 	}
 	double BinningParam::bin_center(size_t i) const{
-		if(i>=count())throw Error<BinningParam>("bin range check error");
+		if(i>=count())throw Exception<BinningParam>("bin range check error");
 		return range.first+bin_width()*(double(i)+0.5);
 	}
 	bool BinningParam::FindBinIndex(const ParamSet& P, size_t& res) const{
 		double x=P[index],delta=bin_width()/2.0;
-		if(delta<=0)throw Error<BinningParam>("delta<=0");
+		if(delta<=0)throw Exception<BinningParam>("delta<=0");
 		for(size_t i=0,n=count();i<n;i++){
 			double pos=bin_center(i);
 			if((x>=(pos-delta))&&(x<(pos+delta))){

@@ -3,8 +3,9 @@
 #include <gtest/gtest.h>
 #include <math_h/error.h>
 #include <Genetic/filter.h>
-using namespace Genetic;
 using namespace std;
+using namespace MathTemplates;
+using namespace Genetic;
 TEST(Filter, BaseTest){
 	Filter must_be_false([](const ParamSet&){return false;});
 	Filter must_be_true([](const ParamSet&){return true;});
@@ -76,8 +77,8 @@ template<class FilterMulti>void test_multi(){
 		EXPECT_EQ(count,I.Count());
 		for(int i=0;i<count;i++)
 			EXPECT_EQ(filters[i].get(),&I.Get(i));
-		EXPECT_THROW(I.Get(count),Error<AbstractFilterMulti>);
-		EXPECT_THROW(I.Get(-1),Error<AbstractFilterMulti>);
+		EXPECT_THROW(I.Get(count),Exception<AbstractFilterMulti>);
+		EXPECT_THROW(I.Get(-1),Exception<AbstractFilterMulti>);
 	}
 }
 TEST(And,Add){test_multi<And>();}

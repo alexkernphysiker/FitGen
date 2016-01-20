@@ -4,6 +4,7 @@
 #include <Genetic/filter.h>
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
 	Above::Above(){}
 	Above::Above(ParamSet&&v):m_data(v){}
 	bool Above::operator()(const ParamSet&P)const{
@@ -43,7 +44,7 @@ namespace Genetic{
 		if(i<m_data.size())
 			return *m_data[i];
 		else
-			throw Error<AbstractFilterMulti>("Range check error when getting an element from filter set");
+			throw Exception<AbstractFilterMulti>("Range check error when getting an element from filter set");
 	}
 	AbstractFilterMulti &AbstractFilterMulti::Add(std::shared_ptr<IParamCheck> val){
 		m_data.push_back(val);

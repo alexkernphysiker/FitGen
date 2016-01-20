@@ -4,15 +4,16 @@
 #include <gtest/gtest.h>
 #include <math_h/error.h>
 #include <Genetic/paramsort.h>
-using namespace Genetic;
 using namespace std;
+using namespace MathTemplates;
+using namespace Genetic;
 TEST(BinningParam,Throwing){
 	EXPECT_NO_THROW(BinningParam(0,make_pair(0,1),1));
-	EXPECT_THROW(BinningParam(0,make_pair(0,1),0),Error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(0,0),0),Error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(1,0),0),Error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(0,0),1),Error<BinningParam>);
-	EXPECT_THROW(BinningParam(0,make_pair(1,0),1),Error<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(0,1),0),Exception<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(0,0),0),Exception<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(1,0),0),Exception<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(0,0),1),Exception<BinningParam>);
+	EXPECT_THROW(BinningParam(0,make_pair(1,0),1),Exception<BinningParam>);
 }
 TEST(BinningParam,Base){
 	BinChecker b(0,make_pair(0,1),10);

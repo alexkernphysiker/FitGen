@@ -4,8 +4,9 @@
 #include <gtest/gtest.h>
 #include <math_h/error.h>
 #include <Genetic/paramset.h>
-using namespace Genetic;
 using namespace std;
+using namespace MathTemplates;
+using namespace Genetic;
 TEST(ParamSet, Constructor0){
 	ParamSet p;
 	EXPECT_EQ(0,p.size());
@@ -113,8 +114,8 @@ TEST(ParamSet, Set){
 		}
 		ParamSet source;
 		for(int i=0;i<count;i++)source<<data[i];
-		EXPECT_THROW(source[-1]=0.0,Error<ParamSet>);
-		EXPECT_THROW(source[source.size()]=0.0,Error<ParamSet>);
+		EXPECT_THROW(source[-1]=0.0,Exception<ParamSet>);
+		EXPECT_THROW(source[source.size()]=0.0,Exception<ParamSet>);
 	}
 }
 TEST(ParamSet,ParEQ){

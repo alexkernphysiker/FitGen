@@ -4,6 +4,7 @@
 #include <Genetic/paramset.h>
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
 	typedef lock_guard<mutex> Lock;
 	ParamSet::ParamSet(){}
 	ParamSet::ParamSet(const initializer_list< double >& source){
@@ -21,12 +22,12 @@ namespace Genetic{
 	size_t ParamSet::size()const{return m_values.size();}
 	double ParamSet::operator[](size_t i)const{
 		if(i>=m_values.size())
-			throw Error<ParamSet>("Range check error when accessing ParamSet's element");
+			throw Exception<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
 	double& ParamSet::operator[](size_t i){
 		if(i>=m_values.size())
-			throw Error<ParamSet>("Range check error when accessing ParamSet's element");
+			throw Exception<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
 
@@ -53,7 +54,7 @@ namespace Genetic{
 	ParamSet& ParamSet::operator>>(double& p){
 		Lock lock(m_mutex);
 		if(m_values.size()==0)
-			throw Error<ParamSet>("Attempt to take a value from empty paramset");
+			throw Exception<ParamSet>("Attempt to take a value from empty paramset");
 		p=m_values[m_values.size()-1];
 		m_values.pop_back();
 		return *this;
