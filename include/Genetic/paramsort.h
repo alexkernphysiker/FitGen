@@ -88,11 +88,6 @@ namespace Genetic{
 			return make_shared<ParamsPerBinsCounter<(dimensions-1)>>(m_binning_addr);
 		}
 		virtual void ProcessParams(ParamsPerBinsCounter<(dimensions-1)>&proc,const ParamSet&P)override{proc<<P;}
-		ParamsPerBinsCounter<dimensions>(vector<BinningParam>*binning)
-			:AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>((*binning)[binning->size()-dimensions]){
-				m_binning_addr=binning;
-				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::Init();
-		}
 		void Full_Cycle(Delegate func,ParamSet&P){
 			for(size_t i=0;i<AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::count();i++){
 				double x=AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::bin_center(i);
@@ -102,6 +97,11 @@ namespace Genetic{
 			}
 		}
 	public:
+		ParamsPerBinsCounter<dimensions>(vector<BinningParam>*binning)
+			:AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>((*binning)[binning->size()-dimensions]){
+				m_binning_addr=binning;
+				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::Init();
+		}
 		ParamsPerBinsCounter<dimensions>(const vector<BinningParam>&binning)
 			:AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>(binning[binning.size()-dimensions]){
 				m_binning=binning;
