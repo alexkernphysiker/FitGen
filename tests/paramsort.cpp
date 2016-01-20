@@ -54,6 +54,23 @@ TEST(ParamsPerBins,Base){
 	EXPECT_EQ(0.55,Binner[2][0][0]);
 	EXPECT_EQ(0.85,Binner[3][0][0]);
 }
+TEST(ParamsPerBins,Base2){
+	ParamsPerBins Binner(BinningParam(0,make_pair(0,1),4));
+	Binner<<ParamSet({-1})<<ParamSet({0.15})<<ParamSet({0.85})<<ParamSet({2})<<ParamSet({0.45})<<ParamSet({0.55});
+	ASSERT_EQ(4,Binner.count());
+	EXPECT_EQ(1,Binner[0].size());
+	EXPECT_EQ(1,Binner[1].size());
+	EXPECT_EQ(1,Binner[2].size());
+	EXPECT_EQ(1,Binner[3].size());
+	EXPECT_EQ(1,Binner[0][0].size());
+	EXPECT_EQ(1,Binner[1][0].size());
+	EXPECT_EQ(1,Binner[2][0].size());
+	EXPECT_EQ(1,Binner[3][0].size());
+	EXPECT_EQ(0.15,Binner[0][0][0]);
+	EXPECT_EQ(0.45,Binner[1][0][0]);
+	EXPECT_EQ(0.55,Binner[2][0][0]);
+	EXPECT_EQ(0.85,Binner[3][0][0]);
+}
 TEST(ParamsPerBinsCounter,Base){
 	ParamsPerBinsCounter<1> Binner({BinningParam(0,make_pair(0,1),4)});
 	Binner<<ParamSet({-1})<<ParamSet({0.15})<<ParamSet({0.85})<<ParamSet({2})<<ParamSet({0.45})<<ParamSet({0.55});

@@ -70,6 +70,8 @@ namespace Genetic{
 	public:
 		ParamsPerBins(size_t ind,const pair<double,double>&R,size_t cnt);
 		ParamsPerBins(size_t ind,pair<double,double>&&R,size_t cnt);
+		ParamsPerBins(const BinningParam&src);
+		ParamsPerBins(BinningParam&&src);
 	protected:
 		virtual shared_ptr<vector<ParamSet>> CreateParamProcessor(size_t for_pos)override;
 		virtual void ProcessParams(vector<ParamSet>&proc,const ParamSet&P)override;

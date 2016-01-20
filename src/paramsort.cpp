@@ -44,6 +44,9 @@ namespace Genetic{
 	
 	ParamsPerBins::ParamsPerBins(size_t ind, const pair<double,double>& R, size_t cnt):AbstractPerBinSeparator<vector<ParamSet>>(ind,R,cnt){Init();}
 	ParamsPerBins::ParamsPerBins(size_t ind, pair< double, double >&& R, size_t cnt):ParamsPerBins(ind,R,cnt){}
+	ParamsPerBins::ParamsPerBins(const BinningParam& src):AbstractPerBinSeparator<vector<ParamSet>>(src){Init();}
+	ParamsPerBins::ParamsPerBins(BinningParam&&src):ParamsPerBins(src){}
+	
 	shared_ptr<vector<ParamSet>> ParamsPerBins::CreateParamProcessor(size_t){return make_shared<vector<ParamSet>>();}
 	void ParamsPerBins::ProcessParams(vector<ParamSet>& proc, const ParamSet& P){proc.push_back(P);}
 	
