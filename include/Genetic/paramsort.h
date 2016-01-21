@@ -92,10 +92,9 @@ namespace Genetic{
 		virtual void ProcessParams(ParamsPerBinsCounter<(dimensions-1)>&proc,const ParamSet&P)override{proc<<P;}
 		void Full_Cycle(Delegate func,ParamSet&P)const{
 			for(size_t i=0;i<AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::count();i++){
-				double x=AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::bin_center(i);
-				P<<x;
+				P[AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::param_index()]=
+					AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::bin_center(i);
 				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::operator[](i).Full_Cycle(func,P);
-				P>>x;
 			}
 		}
 	public:
@@ -112,7 +111,11 @@ namespace Genetic{
 		}
 		ParamsPerBinsCounter<dimensions>(vector<BinningParam>&&binning):ParamsPerBinsCounter<dimensions>(binning){}
 		void FullCycle(Delegate func)const{
-			ParamSet P;
+			size_t cnt=0;
+			for(const BinningParam&bp: *m_binning_addr)
+				if(cnt<bp.param_index())
+					cnt=bp.param_index();
+			ParamSet P=parZeros(cnt+1);
 			Full_Cycle(func,P);
 		}
 	};

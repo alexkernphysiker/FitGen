@@ -55,16 +55,17 @@ namespace Genetic{
 	ParamsPerBinsCounter<1>::ParamsPerBinsCounter(const vector<BinningParam>*binning):ParamsPerBinsCounter(*binning){}
 	shared_ptr<unsigned long> ParamsPerBinsCounter<1>::CreateParamProcessor(size_t){return make_shared<unsigned long>(0);}
 	void ParamsPerBinsCounter<1>::ProcessParams(long unsigned int& proc, const ParamSet&){proc++;}
-	void ParamsPerBinsCounter<1>::Full_Cycle(ParamsPerBinsCounter<int(1)>::Delegate func,ParamSet&P)const{
-		for(size_t i=0;i<AbstractPerBinSeparator<unsigned long>::count();i++){
-			double x=AbstractPerBinSeparator<unsigned long>::bin_center(i);
-			P<<x;
-			func(P,AbstractPerBinSeparator<unsigned long>::operator[](i));
-			P>>x;
+	void ParamsPerBinsCounter<1>::Full_Cycle(Delegate func,ParamSet&P)const{
+		for(size_t i=0;i<count();i++){
+			P[param_index()]=bin_center(i);
+			func(P,operator[](i));
 		}
 	}
-	void ParamsPerBinsCounter<1>::FullCycle(Genetic::ParamsPerBinsCounter<int(1)>::Delegate func) const{
-		ParamSet P;
+	void ParamsPerBinsCounter<1>::FullCycle(Delegate func) const{
+		size_t cnt=0;
+		if(cnt<param_index())
+			cnt=param_index();
+		ParamSet P=parZeros(cnt+1);
 		Full_Cycle(func,P);
 	}
 
