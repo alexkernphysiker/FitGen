@@ -110,7 +110,7 @@ namespace Genetic{
 				m_binning_addr=&m_binning;
 				AbstractPerBinSeparator<ParamsPerBinsCounter<(dimensions-1)>>::Init();
 		}
-		ParamsPerBinsCounter<dimensions>(vector<BinningParam>&binning):ParamsPerBinsCounter<dimensions>(binning){}
+		ParamsPerBinsCounter<dimensions>(vector<BinningParam>&&binning):ParamsPerBinsCounter<dimensions>(binning){}
 		void FullCycle(Delegate func)const{
 			ParamSet P;
 			Full_Cycle(func,P);
