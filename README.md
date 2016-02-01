@@ -1,6 +1,9 @@
 Genetic algorithm for fitting and solving equations (C++11)
 ===========================================================
 
+This repository contains the source code of the library, examples and unit tests
+
+
 
 
 Compiling
