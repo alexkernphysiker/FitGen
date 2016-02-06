@@ -159,7 +159,7 @@ namespace Genetic{
 			for(size_t i=0; i<n;i++){
 				m_population.push_back(tmp_population[i]);
 				for(size_t j=0;j<par_cnt;j++){
-					disp[j].AddValue(tmp_population[i].first[j]);
+					disp[j]<<tmp_population[i].first[j];
 					double dev=tmp_population[i].first[j]-tmp_population[0].first[j];
 					if(dev<0)dev=-dev;
 					if(dev>m_max_dev[j])
@@ -169,8 +169,8 @@ namespace Genetic{
 			m_avr=ParamSet();
 			m_disp=ParamSet();
 			for(size_t j=0;j<par_cnt;j++){
-				m_avr<<disp[j].getAverage();
-				m_disp<<disp[j].getSigma();
+				m_avr<<disp[j].get().val();
+				m_disp<<disp[j].get().delta();
 			}
 			m_itercount++;
 		}

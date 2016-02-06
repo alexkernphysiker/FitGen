@@ -19,7 +19,7 @@ int main(){
 	normal_distribution<double> gauss((right+left)/2.0,(right-left)/10.0);
 	for(int i=0;i<count;i++)
 		distribution->Fill(gauss(engine));
-	printf("Prepare fitting...\n");
+	cout<<"Prepare fitting..."<<endl;
 	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,[](const ParamSet&X,const ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];});
 	fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
 	fit.Init(30,make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,2.0*count/bins),engine);
@@ -33,7 +33,6 @@ int main(){
 	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
 	cout<<"Fit parameters dispersion:"<<endl<<fit.ParamDispersion()<<endl;
 	Plotter::Instance().SetOutput(".","distribution");
-	PlotFit1D<decltype(fit)>().Fit("Fit distribution","Generated distribution",fit,0.1)
-		<<"set xlabel 'argument value'"<<"set ylabel 'counts'";
+	PlotFit1D<decltype(fit)>().FitWithPoints(fit,0.1);
 	return 0;
 }

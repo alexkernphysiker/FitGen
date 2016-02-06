@@ -70,13 +70,8 @@ namespace Genetic{
 	}
 
 	
-	AbstractPlotStream::AbstractPlotStream(string&& name, shared_ptr<PlotEngine> plot){
-		m_plot=plot;
-		m_name=name;
-	}
-	AbstractPlotStream::AbstractPlotStream(string&& name):
-	AbstractPlotStream(static_cast<string&&>(name),make_shared<PlotEngine>()){}
-	string&&AbstractPlotStream::Name() const{return const_cast<string&&>(m_name);}
+	AbstractPlotStream::AbstractPlotStream(shared_ptr<PlotEngine> plot){m_plot=plot;}
+	AbstractPlotStream::AbstractPlotStream():AbstractPlotStream(make_shared<PlotEngine>()){}
 	shared_ptr<PlotEngine> AbstractPlotStream::Plot(){return m_plot;}
 	AbstractPlotStream::~AbstractPlotStream(){}
 	AbstractPlotStream& AbstractPlotStream::operator<<(const ParamSet& P){
@@ -85,20 +80,20 @@ namespace Genetic{
 	}
 	AbstractPlotStream& AbstractPlotStream::operator<<(ParamSet&& P){return operator<<(P);}
 
-	SimplePlotStream::SimplePlotStream(string&&name, pair<size_t,size_t>&&indexes,shared_ptr<PlotEngine>plot)
-		:AbstractPlotStream(static_cast<string&&>(name), plot){m_indexes=indexes;m_xrange=make_pair(+INFINITY,-INFINITY);}
-	SimplePlotStream::SimplePlotStream(std::string&& name,pair<size_t,size_t>&& indexes)
-		:AbstractPlotStream(static_cast<string&&>(name)){m_indexes=indexes;m_xrange=make_pair(+INFINITY,-INFINITY);}
+	SimplePlotStream::SimplePlotStream(pair<size_t,size_t>&&indexes,shared_ptr<PlotEngine>plot)
+		:AbstractPlotStream(plot){m_indexes=indexes;m_xrange=make_pair(+INFINITY,-INFINITY);}
+	SimplePlotStream::SimplePlotStream(pair<size_t,size_t>&& indexes)
+		:AbstractPlotStream(){m_indexes=indexes;m_xrange=make_pair(+INFINITY,-INFINITY);}
 	SimplePlotStream& SimplePlotStream::AddFunc(SimplePlotStream::func f){
 		m_funcs.push_back(f);
 		return *this;
 	}
 	SimplePlotStream::~SimplePlotStream(){
 		if(m_data.size()>0)
-			Plot()->WithoutErrors(Name(),m_data);
+			Plot()->Points(m_data);
 		size_t cnt=1;
 		for(func F:m_funcs){
-			Plot()->Line(Name()+" Line "+to_string(cnt),F,m_xrange.first,m_xrange.second,(m_xrange.second-m_xrange.first)/100.0);
+			Plot()->Func(F,m_xrange.first,m_xrange.second,(m_xrange.second-m_xrange.first)/100.0);
 			cnt++;
 		}
 	}

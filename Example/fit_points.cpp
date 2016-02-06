@@ -62,7 +62,8 @@ int main(){
 	cout<<"Errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
 
 	Plotter::Instance().SetOutput(".","points");
-	PlotFit1D<decltype(fit)>().Points("Generated distribution",points_to_fit).Fit("Fit distribution",fit,0.5)
-		.ParamFunc("Foreground",Foreground(),fit,0.5).ParamFunc("Background",Background(),fit,0.5);
+	PlotFit1D<decltype(fit)>().FitWithPoints(fit,0.5)
+		.ParamFunc(Foreground(),fit,0.5,"Foreground")
+		.ParamFunc(Background(),fit,0.5,"Background");
 	return 0;
 }

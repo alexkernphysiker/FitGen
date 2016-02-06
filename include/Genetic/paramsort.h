@@ -137,8 +137,8 @@ namespace Genetic{
 	typedef PlotPoints<double,vector<pair<double,double>>> PlotEngine;
 	class AbstractPlotStream{
 	protected:
-		AbstractPlotStream(string&&name,shared_ptr<PlotEngine>plot);
-		AbstractPlotStream(string&&name);
+		AbstractPlotStream();
+		AbstractPlotStream(shared_ptr<PlotEngine>plot);
 		virtual ~AbstractPlotStream();
 	public:
 		AbstractPlotStream&operator<<(const ParamSet&P);
@@ -146,15 +146,13 @@ namespace Genetic{
 		shared_ptr<PlotEngine>Plot();
 	protected:
 		virtual void ProcessPoint(const ParamSet&P)=0;
-		string&&Name()const;
 	private:
-		string m_name;
 		shared_ptr<PlotEngine> m_plot;
 	};
 	class SimplePlotStream:public AbstractPlotStream{
 	public:
-		SimplePlotStream(string&& name,pair<size_t,size_t>&&indexes);
-		SimplePlotStream(string&& name,pair<size_t,size_t>&&indexes,shared_ptr<PlotEngine> plot);
+		SimplePlotStream(pair<size_t,size_t>&&indexes);
+		SimplePlotStream(pair<size_t,size_t>&&indexes,shared_ptr<PlotEngine> plot);
 		virtual ~SimplePlotStream();
 		typedef function<double(double)> func;
 		SimplePlotStream&AddFunc(func f);
