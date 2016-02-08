@@ -55,7 +55,8 @@ int main(){
 		fit.RelativeParametersDispersionExitCondition(parEq(TotalFunc::ParamCount,0.01))
 	)){
 		fit.Iterate(engine);
-		cout<<fit.iteration_count()<<" iterations; "<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
+		cout<<fit.iteration_count()<<" iterations; "
+			<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
 	}
 	cout<<endl;
 	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;

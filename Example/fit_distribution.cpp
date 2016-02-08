@@ -20,14 +20,20 @@ int main(){
 	for(int i=0;i<count;i++)
 		distribution->Fill(gauss(engine));
 	cout<<"Prepare fitting..."<<endl;
-	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,[](const ParamSet&X,const ParamSet&P){return Gaussian(X[0],P[0],P[1])*P[2];});
+	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,[](const ParamSet&X,const ParamSet&P){
+		return Gaussian(X[0],P[0],P[1])*P[2];
+	});
 	fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
-	fit.Init(30,make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,2.0*count/bins),engine);
+	fit.Init(30,
+		make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,2.0*count/bins)
+		,engine
+	);
 	cout<<"Population:"<<fit.PopulationSize()<<endl;
 	cout<<"Parameters:"<<fit.ParamCount()<<endl;
 	while(!fit.AbsoluteOptimalityExitCondition(0.00000001)){
 		fit.Iterate(engine);
-		cout<<fit.iteration_count()<<" iterations; "<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
+		cout<<fit.iteration_count()<<" iterations; "
+			<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
 	}
 	cout<<endl;
 	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
