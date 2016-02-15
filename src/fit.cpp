@@ -283,7 +283,7 @@ namespace Genetic{
 		OutputPlot([points,param_index](ofstream&out){
 			for(auto p:*points)
 				out<<p.X()[param_index]<<" "<<p.y()<<" "<<p.WX()[param_index]<<" "<<p.wy()<<"\n";
-		},"using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars",static_cast<std::string&&>(title));
+		},"using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars",title);
 		return *this;
 	}
 }
