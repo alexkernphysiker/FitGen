@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <random>
+#include <gnuplot_wrap.h>
 #include <math_h/functions.h>
 #include <Genetic/fit.h>
 #include <Genetic/initialconditions.h>
@@ -13,9 +14,8 @@ using namespace MathTemplates;
 int main(){
 	double left=0;
 	double right=10;
-	int bins = 10;
 	int count=5000;
-	Distribution1D<double> distribution(BinsByCount(bins,left,right));
+	Distribution1D<double> distribution(BinsByStep(left,1.0,right));
 	RANDOM engine;
 	normal_distribution<double> gauss((right+left)/2.0,(right-left)/10.0);
 	for(int i=0;i<count;i++)
@@ -26,7 +26,7 @@ int main(){
 	});
 	fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
 	fit.Init(30,
-		make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,2.0*count/bins)
+		make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,2.0*count)
 		,engine
 	);
 	cout<<"Population:"<<fit.PopulationSize()<<endl;
@@ -40,6 +40,7 @@ int main(){
 	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
 	cout<<"Fit parameters dispersion:"<<endl<<fit.ParamDispersion()<<endl;
 	Plotter::Instance().SetOutput(".","distribution");
-	PlotFit1D<decltype(fit)>().FitWithPoints(fit,0.1);
+	Plot<double>().Hist(distribution)
+		.Line(LinearInterpolation<double>([&fit](double x)->double{return fit({x});},0.0,0.01,10.0));
 	return 0;
 }

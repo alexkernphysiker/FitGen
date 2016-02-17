@@ -2,6 +2,7 @@
 // MIT license
 #include <iostream>
 #include <fstream>
+#include <gnuplot_wrap.h>
 #include <Genetic/fit.h>
 #include <Genetic/filter.h>
 #include <Genetic/initialconditions.h>
@@ -63,8 +64,9 @@ int main(){
 	cout<<"Errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
 
 	Plotter::Instance().SetOutput(".","points");
-	PlotFit1D<decltype(fit)>().FitWithPoints(fit,0.5)
-		.ParamFunc(Foreground(),fit,0.5,"Foreground")
-		.ParamFunc(Background(),fit,0.5,"Background");
+	LinearInterpolation<double>
+		totalfit([&fit](double x)->double{return fit({x});},-70.0,0.1,30.0),
+		background([&fit](double x)->double{return Background()({x},fit.Parameters());},-70.0,0.1,30.0);
+	Plot<double>().Hist(points_to_fit->Hist1(0)).Line(totalfit,"Fit").Line(background,"Background");
 	return 0;
 }

@@ -71,6 +71,16 @@ namespace Genetic{
 		m_data.push_back(point);
 		return *this;
 	}
+	hist<double> FitPoints::Hist1(size_t parameter_index) const{
+		vector<point<double>> data;
+		for(const Point&P:m_data)
+			data.push_back(point<double>(
+				value<double>(P.X()[parameter_index],P.WX()[parameter_index]),
+				value<double>(P.y(),P.wy())
+			));
+		return hist<double>(data);
+	}
+	
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,Point&&p){
 		src->operator<<(static_cast<FitPoints::Point&&>(p));
 		return src;
@@ -270,14 +280,5 @@ namespace Genetic{
 		for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
 			res<<GetParamParabolicError(delta[i],i);
 		return res;
-	}
-	PlotPoints1D::PlotPoints1D():Plot<double>(){}
-	PlotPoints1D::~PlotPoints1D(){}
-	PlotPoints1D&PlotPoints1D::Points(shared_ptr<FitPoints> points,size_t param_index,string&&title){
-		OutputPlot([points,param_index](ofstream&out){
-			for(auto p:*points)
-				out<<p.X()[param_index]<<" "<<p.y()<<" "<<p.WX()[param_index]<<" "<<p.wy()<<"\n";
-		},"using 1:2:($1-$3):($1+$3):($2-$4):($2+$4) with xyerrorbars",title);
-		return *this;
 	}
 }

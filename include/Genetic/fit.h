@@ -3,7 +3,6 @@
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
 #include <functional>
-#include "../gnuplot_wrap.h"
 #include "../math_h/hist.h"
 #include "abstract.h"
 #include "genetic.h"
@@ -11,7 +10,6 @@
 namespace Genetic{
 	using namespace std;
 	using namespace MathTemplates;
-	using namespace GnuplotWrap;
 	class ParameterFunction:public IParamFunc{
 	public:
 		ParameterFunction(paramFunc f);
@@ -61,6 +59,7 @@ namespace Genetic{
 		const_iterator cbegin()const;
 		iterator end();
 		const_iterator cend() const;
+		hist<double> Hist1(size_t parameter_index)const;
 	private:
 		vector<Point> m_data;
 		ParamSet m_min,m_max;
@@ -183,53 +182,6 @@ namespace Genetic{
 		virtual ~FitFunctionWithError(){}
 		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
 		shared_ptr<FitPoints> Points()const{return dynamic_pointer_cast<OptimalityForPointsWithFuncError>(AbstractGenetic::OptimalityCalculator())->Points();}
-	};
-	class PlotPoints1D:public Plot<double>{
-	public:
-		PlotPoints1D();
-		virtual ~PlotPoints1D();
-		PlotPoints1D& Points(shared_ptr<FitPoints> points,size_t param_index=0,string&&title="");
-	};
-	template<class FIT>
-	class PlotFit1D:public PlotPoints1D{
-	private:
-		double min,max;
-	public:
-		PlotFit1D():PlotPoints1D(){
-			min=+INFINITY;
-			max=-INFINITY;
-		}
-		virtual ~PlotFit1D(){}
-		PlotFit1D& Points(shared_ptr<FitPoints> points,size_t param_index=0,string&&title=""){
-			PlotPoints1D::Points(points,param_index,static_cast<std::string&&>(title));
-			for(FitPoints::Point p:*points){
-				if(p.X()[param_index]<min)
-					min=p.X()[param_index];
-				if(p.X()[param_index]>max)
-					max=p.X()[param_index];
-			}
-			return *this;
-		}
-		PlotFit1D& Fit(const FIT&fit,double step,string&&title=""){
-			if(max<min)throw Exception<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
-			Plot<double>::Func([&fit](double x){return fit({x});},min,max,step,static_cast<std::string&&>(title));
-			return *this;
-		}
-		PlotFit1D& FitWithPoints(const FIT&fit,double step,string&&title=""){
-			Points(fit.Points());
-			Plot<double>::Func([&fit](double x){return fit({x});},min,max,step,static_cast<std::string&&>(title));
-			return *this;
-		}
-		PlotFit1D& ParamFunc(IParamFunc&&func,const FIT&fit,double step,string&&title=""){
-			if(max<min)throw Exception<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
-			Plot<double>::Func([&func,&fit](double x){return func({x},fit.Parameters());},min,max,step,static_cast<std::string&&>(title));
-			return *this;
-		}
-		PlotFit1D& ParamFunc(paramFunc func,const FIT&fit,double step,string&&title=""){
-			if(max<min)throw Exception<PlotFit1D>("No FitPoints instance initialized the ranges on the plot");
-			Plot<double>::Func([&func,&fit](double x){return func({x},fit.Parameters());},min,max,step,static_cast<std::string&&>(title));
-			return *this;
-		}
 	};
 }
 #endif
