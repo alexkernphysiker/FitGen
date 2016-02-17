@@ -40,6 +40,6 @@ int main(){
 	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
 	cout<<"Fit parameters dispersion:"<<endl<<fit.ParamDispersion()<<endl;
 	Plotter::Instance().SetOutput(".","distribution");
-	Plot<double>().Hist(distribution).Line(LinearInterpolation<double>([&fit](double x)->double{return fit({x});},0.0,0.01,10.0));
+	Plot<double>().Hist(distribution).Line(LinearInterpolation<double>([&fit](double x)->double{return fit({x});},ChainWithStep(0.0,0.01,10.0)));
 	return 0;
 }
