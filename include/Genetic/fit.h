@@ -29,8 +29,8 @@ namespace Genetic{
 			Point(ParamSet&&x,double y_);
 			Point(ParamSet&&x,double y_,double wy_);
 			Point(ParamSet&&x,ParamSet&&wx,double y_,double wy_);
-			ParamSet&X()const;
-			ParamSet&WX()const;
+			const ParamSet&X()const;
+			const ParamSet&WX()const;
 			double y()const;
 			double wy()const;
 			double&y_modify();
@@ -45,12 +45,12 @@ namespace Genetic{
 		FitPoints(const hist<double>&h);
 		FitPoints(const Distribution2D<double>&d);
 		virtual ~FitPoints();
-		FitPoints&operator<<(Point&&point);
-		Point&&operator[](size_t i)const;
+		FitPoints&operator<<(const Point&point);
+		const Point&operator[](size_t i)const;
 		size_t size()const;
 		size_t dimensions()const;
-		ParamSet&min()const;
-		ParamSet&max()const;
+		const ParamSet&min()const;
+		const ParamSet&max()const;
 		double Ymin()const;
 		double Ymax()const;
 		typedef vector<Point>::iterator iterator;
@@ -67,6 +67,8 @@ namespace Genetic{
 		double ymin,ymax;
 	};
 	typedef FitPoints::Point Point;
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const Point&p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const pair<double,double>&p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,Point&&p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,pair<double,double>&&p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,shared_ptr<FitPoints>data);
@@ -115,6 +117,7 @@ namespace Genetic{
 	public:
 		virtual ~Parabolic();
 		double GetParamParabolicError(double delta,int i)const;
+		ParamSet GetParamParabolicErrors(const ParamSet&delta)const;
 		ParamSet GetParamParabolicErrors(ParamSet&&delta)const;
 	};
 	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f);
@@ -138,7 +141,8 @@ namespace Genetic{
 		}
 		Fit(shared_ptr<FitPoints> points, paramFunc f):Fit(points,make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
-		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
+		double operator()(const ParamSet&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
+		double operator()(ParamSet&&X)const{return operator()(X);}
 		shared_ptr<IParamFunc> Func()const{return m_func;}
 		shared_ptr<FitPoints> Points()const{return dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();}
 	};

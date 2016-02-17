@@ -26,8 +26,8 @@ namespace Genetic{
 	FitPoints::Point::Point(ParamSet&&x,double y_, double wy_):Point(x,y_,wy_){}
 	FitPoints::Point::Point(ParamSet&&x,double y_):Point(x,y_){}
 	FitPoints::Point::Point(const Point& src):Point(src.__X,src.__WX,src.__y,src.__wy){}
-	ParamSet&FitPoints::Point::X()const{return const_cast<ParamSet&>(__X);}
-	ParamSet&FitPoints::Point::WX()const{return const_cast<ParamSet&>(__WX);}
+	const ParamSet&FitPoints::Point::X()const{return const_cast<ParamSet&>(__X);}
+	const ParamSet&FitPoints::Point::WX()const{return const_cast<ParamSet&>(__WX);}
 	double FitPoints::Point::y() const{return __y;}
 	double FitPoints::Point::wy() const{return __wy;}
 	double&FitPoints::Point::y_modify(){return __y;}
@@ -50,17 +50,17 @@ namespace Genetic{
 			throw Exception<FitPoints>("No dimensions in empty FitPoints");
 		return m_data[0].X().size();
 	}
-	ParamSet&FitPoints::min()const{return const_cast<ParamSet&>(m_min);}
-	ParamSet&FitPoints::max()const{return const_cast<ParamSet&>(m_max);}
+	const ParamSet&FitPoints::min()const{return const_cast<ParamSet&>(m_min);}
+	const ParamSet&FitPoints::max()const{return const_cast<ParamSet&>(m_max);}
 	double FitPoints::Ymax() const{return ymax;}
 	double FitPoints::Ymin() const{return ymin;}
-	FitPoints& FitPoints::operator<<(Point&&point){
+	FitPoints& FitPoints::operator<<(const Point&point){
 		if(size()>0){
 			if(point.X().size()!=dimensions())
 				throw Exception<FitPoints>("This point has different dimensions");
 			for(size_t i=0;i<dimensions();i++){
-				if(point.X()[i]<m_min[i])m_min[i]=point.X()[i];
-				if(point.X()[i]>m_max[i])m_max[i]=point.X()[i];
+				if(point.X()[i]<m_min[i])m_min(i)=point.X()[i];
+				if(point.X()[i]>m_max[i])m_max(i)=point.X()[i];
 				if(point.y()<ymin)ymin=point.y();
 				if(point.y()>ymax)ymax=point.y();
 			}
@@ -90,19 +90,27 @@ namespace Genetic{
 		return hist<double>(data);
 	}
 	
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,Point&&p){
-		src->operator<<(static_cast<FitPoints::Point&&>(p));
+
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,const Point&p){
+		src->operator<<(p);
 		return src;
+	}
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,Point&&p){
+		src->operator<<(p);
+		return src;
+	}
+	shared_ptr< FitPoints > operator<<(shared_ptr< FitPoints > src, const pair<double,double>& p){
+		return src<<FitPoints::Point({p.first},p.second);
 	}
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,double>&&p){
 		return src<<FitPoints::Point({p.first},p.second);
 	}
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, shared_ptr<FitPoints> data){
-		for(Point&P:(*data))src<<static_cast<Point&&>(P);
+		for(Point&P:(*data))src<<P;
 		return src;
 	}
 
-	FitPoints::Point&&FitPoints::operator[](size_t i)const{
+	const FitPoints::Point&FitPoints::operator[](size_t i)const{
 		if(i>=size())
 			throw Exception<FitPoints>("Range check error when getting an element from FitPoints");
 		return const_cast<Point&&>(m_data[i]);
@@ -122,22 +130,21 @@ namespace Genetic{
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point&p:(*src))
-			if(condition->operator()(static_cast<ParamSet&&>(p.X())))
-				res<<static_cast<FitPoints::Point&&>(p);
+			if(condition->operator()(p.X()))res<<p;
 		return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point&p:(*src))
 			if(Ycond(p.y()))
-				res<<static_cast<FitPoints::Point&&>(p);
+				res<<p;
 		return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
 		for(FitPoints::Point&p:(*src))
-			if(condition->operator()(static_cast<ParamSet&&>(p.X()))&&Ycond(p.y()))
-				res<<static_cast<FitPoints::Point&&>(p);
+			if(condition->operator()(p.X())&&Ycond(p.y()))
+				res<<p;
 		return res;
 	}
 	OptimalityForPoints::OptimalityForPoints(
@@ -205,8 +212,8 @@ namespace Genetic{
 			for(size_t j=0; j<p.X().size();j++){
 				ParamSet x1=p.X();
 				ParamSet x2=p.X();
-				x1[j]+=p.WX()[j];
-				x2[j]-=p.WX()[j];
+				x1(j)+=p.WX()[j];
+				x2(j)-=p.WX()[j];
 				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
 			}
 			return pow((p.y()-F(p.X(),P)),2)/w;
@@ -258,8 +265,8 @@ namespace Genetic{
 			for(size_t j=0; j<p.X().size();j++){
 				ParamSet x1=p.X();
 				ParamSet x2=p.X();
-				x1[j]+=p.WX()[j];
-				x2[j]-=p.WX()[j];
+				x1(j)+=p.WX()[j];
+				x2(j)-=p.WX()[j];
 				w+=pow(0.5*(F(x1,P)-F(x2,P)),2);
 			}
 			return pow((p.y()-F(p.X(),P)),2)/w;
@@ -274,8 +281,8 @@ namespace Genetic{
 		double s=Optimality();
 		ParamSet ab=Parameters();
 		ParamSet be=ab;
-		ab[i]+=delta;
-		be[i]-=delta;
+		ab(i)+=delta;
+		be(i)-=delta;
 		double sa=OptimalityCalculator()->operator()(ab);
 		double sb=OptimalityCalculator()->operator()(be);
 		double dd=(sa-2.0*s+sb)/pow(delta,2);
@@ -284,10 +291,11 @@ namespace Genetic{
 		else
 			return sqrt(2.0/dd);
 	}
-	ParamSet Parabolic::GetParamParabolicErrors(ParamSet&&delta)const{
+	ParamSet Parabolic::GetParamParabolicErrors(const ParamSet&delta)const{
 		ParamSet res;
 		for(int i=0,n=AbstractGenetic::ParamCount();i<n;i++)
 			res<<GetParamParabolicError(delta[i],i);
 		return res;
 	}
+	ParamSet Parabolic::GetParamParabolicErrors(ParamSet&& delta) const{return GetParamParabolicErrors(delta);}
 }

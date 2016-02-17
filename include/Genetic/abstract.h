@@ -70,15 +70,17 @@ namespace Genetic{
 		size_t PopulationSize()const;
 		size_t ParamCount()const;
 		double Optimality(size_t point_index=0)const;
-		ParamSet&&Parameters(size_t point_index=0)const;
+		const ParamSet&Parameters(size_t point_index=0)const;
 		double operator[](size_t i)const;
-		ParamSet&&ParamAverage()const;
-		ParamSet&&ParamDispersion()const;
-		ParamSet&&ParamMaxDeviation()const;
+		const ParamSet&ParamAverage()const;
+		const ParamSet&ParamDispersion()const;
+		const ParamSet&ParamMaxDeviation()const;
 		
 		bool ConcentratedInOnePoint()const;
 		bool AbsoluteOptimalityExitCondition(double accuracy)const;
 		bool RelativeOptimalityExitCondition(double accuracy)const;
+		bool ParametersDispersionExitCondition(const ParamSet&max_disp)const;
+		bool RelativeParametersDispersionExitCondition(const ParamSet&max_disp)const;
 		bool ParametersDispersionExitCondition(ParamSet&&max_disp)const;
 		bool RelativeParametersDispersionExitCondition(ParamSet&&max_disp)const;
 		

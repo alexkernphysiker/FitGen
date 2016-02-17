@@ -130,7 +130,7 @@ public:
 	GeneticTestWithMutations(shared_ptr<IOptimalityFunction> optimality):AbstractGenetic(optimality),G(-1,1){}
 	virtual ~GeneticTestWithMutations(){}
 protected:
-	virtual void mutations(ParamSet&P,RANDOM&R)override{P[0]=G(R);}
+	virtual void mutations(ParamSet&P,RANDOM&R)override{P(0)=G(R);}
 };
 TEST(AbstractGenetic,FilterSettingFunc){
 	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,1);

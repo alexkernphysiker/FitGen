@@ -30,7 +30,7 @@ namespace Genetic{
 			auto A=AbstractGenetic::Parameters(randomelement(R));
 			auto B=AbstractGenetic::Parameters(randomelement(R));
 			for(int i=0; i<C.size();i++)
-				C[i]+=M*(A[i]-B[i]);
+				C(i)+=M*(A[i]-B[i]);
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
@@ -58,7 +58,7 @@ namespace Genetic{
 				FITGEN::mutations(X,R);
 				for(int i=0; i<C.size();i++)
 					if(Prob(R)<0.5)
-						C[i]=X[i];
+						C(i)=X[i];
 			}
 		}
 	};
@@ -98,7 +98,7 @@ namespace Genetic{
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)<P)
 				for(int i=0;i<AbstractGenetic::ParamCount();i++)
-					C[i]+=distr[i](R);
+					C(i)+=distr[i](R);
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
@@ -137,7 +137,7 @@ namespace Genetic{
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)<P)
 				for(int i=0;i<AbstractGenetic::ParamCount();i++)
-					C[i]*=(1+distr[i](R));
+					C(i)*=(1+distr[i](R));
 		}
 	};
 	template<class FITGEN>

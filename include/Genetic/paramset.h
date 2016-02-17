@@ -37,7 +37,7 @@ namespace Genetic{
 		
 		size_t size()const;
 		double operator[](size_t i)const;
-		double&operator[](size_t i);
+		double&operator()(size_t i);
 
 		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;

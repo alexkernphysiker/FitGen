@@ -25,7 +25,7 @@ namespace Genetic{
 			throw Exception<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];
 	}
-	double& ParamSet::operator[](size_t i){
+	double& ParamSet::operator()(size_t i){
 		if(i>=m_values.size())
 			throw Exception<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];

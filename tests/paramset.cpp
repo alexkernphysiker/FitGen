@@ -103,7 +103,7 @@ TEST(ParamSet, Set){
 		for(int si=0;si<count;si++){
 			ParamSet source;
 			for(int i=0;i<count;i++)source<<data[i];
-			source[si]=0.0;
+			source(si)=0.0;
 			EXPECT_EQ(count,source.size());
 			for(int i=0;i<count;i++){
 				if(i==si)
@@ -114,8 +114,8 @@ TEST(ParamSet, Set){
 		}
 		ParamSet source;
 		for(int i=0;i<count;i++)source<<data[i];
-		EXPECT_THROW(source[-1]=0.0,Exception<ParamSet>);
-		EXPECT_THROW(source[source.size()]=0.0,Exception<ParamSet>);
+		EXPECT_THROW(source(-1)=0.0,Exception<ParamSet>);
+		EXPECT_THROW(source(source.size())=0.0,Exception<ParamSet>);
 	}
 }
 TEST(ParamSet,ParEQ){

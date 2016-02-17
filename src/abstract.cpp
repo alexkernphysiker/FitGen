@@ -163,7 +163,7 @@ namespace Genetic{
 					double dev=tmp_population[i].first[j]-tmp_population[0].first[j];
 					if(dev<0)dev=-dev;
 					if(dev>m_max_dev[j])
-						m_max_dev[j]=j;
+						m_max_dev(j)=j;
 				}
 			}
 			m_avr=ParamSet();
@@ -193,26 +193,26 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Range check error when accessing an element in the population");
 		return m_population[point_index].second;
 	}
-	ParamSet&&AbstractGenetic::Parameters(size_t point_index)const{
+	const ParamSet&AbstractGenetic::Parameters(size_t point_index)const{
 		if(m_population.size()==0)
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(point_index>=m_population.size())
 			throw Exception<AbstractGenetic>("Range check error when accessing an element in the population");
-		return const_cast<ParamSet&&>(m_population[point_index].first);
+		return const_cast<ParamSet&>(m_population[point_index].first);
 	}
 	double AbstractGenetic::operator [](size_t i)const{
 		if(i>=ParamCount())
 			throw Exception<AbstractGenetic>("Parameter index out of range");
 		return m_population[0].first[i];
 	}
-	ParamSet&&AbstractGenetic::ParamAverage()const{
-		return const_cast<ParamSet&&>(m_avr);
+	const ParamSet&AbstractGenetic::ParamAverage()const{
+		return const_cast<ParamSet&>(m_avr);
 	}
-	ParamSet&&AbstractGenetic::ParamDispersion()const{
-		return const_cast<ParamSet&&>(m_disp);
+	const ParamSet&AbstractGenetic::ParamDispersion()const{
+		return const_cast<ParamSet&>(m_disp);
 	}
-	ParamSet&&AbstractGenetic::ParamMaxDeviation()const{
-		return const_cast<ParamSet&&>(m_max_dev);
+	const ParamSet&AbstractGenetic::ParamMaxDeviation()const{
+		return const_cast<ParamSet&>(m_max_dev);
 	}
 	
 	bool AbstractGenetic::ConcentratedInOnePoint()const{
@@ -249,7 +249,7 @@ namespace Genetic{
 			return Optimality(PopulationSize()-1)==Optimality();
 		return Optimality(PopulationSize()-1)<=(Optimality()*(1.0+accuracy));
 	}
-	bool AbstractGenetic::ParametersDispersionExitCondition(ParamSet&& max_disp)const{
+	bool AbstractGenetic::ParametersDispersionExitCondition(const ParamSet&max_disp)const{
 		if(m_population.size()==0)
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
@@ -267,7 +267,8 @@ namespace Genetic{
 		}
 		return true;
 	}
-	bool AbstractGenetic::RelativeParametersDispersionExitCondition(ParamSet&& max_disp)const{
+	bool AbstractGenetic::ParametersDispersionExitCondition(ParamSet&& max_disp) const{return ParametersDispersionExitCondition(max_disp);}
+	bool AbstractGenetic::RelativeParametersDispersionExitCondition(const ParamSet&max_disp)const{
 		if(m_population.size()==0)
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
@@ -286,6 +287,7 @@ namespace Genetic{
 		}
 		return true;
 	}
+	bool AbstractGenetic::RelativeParametersDispersionExitCondition(ParamSet&& max_disp) const{return RelativeParametersDispersionExitCondition(max_disp);}
 	
 	AbstractGenetic::iterator AbstractGenetic::begin(){
 		if(m_population.size()==0)
