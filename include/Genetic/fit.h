@@ -4,6 +4,7 @@
 #define ____lrEPWamH___
 #include <functional>
 #include "../gnuplot_wrap.h"
+#include "../math_h/hist.h"
 #include "abstract.h"
 #include "genetic.h"
 #include "paramfunc.h"
@@ -43,6 +44,8 @@ namespace Genetic{
 			double __wy;
 		};
 		FitPoints();
+		FitPoints(const hist<double>&h);
+		FitPoints(const Distribution2D<double>&d);
 		virtual ~FitPoints();
 		FitPoints&operator<<(Point&&point);
 		Point&&operator[](size_t i)const;
@@ -91,11 +94,6 @@ namespace Genetic{
 			res<<FitPoints::Point({X[i]},{WX[i]},Y[i],WY[i]);
 		return res;
 	}
-	class Distribution1D:public FitPoints{
-	public:
-		Distribution1D(double min, double max, int bins);
-		void Fill(double x);
-	};
 	
 	class OptimalityForPoints:public IOptimalityFunction{
 	public:

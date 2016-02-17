@@ -34,6 +34,15 @@ namespace Genetic{
 	double&FitPoints::Point::wy_modify(){return __wy;}
 	
 	FitPoints::FitPoints(){}
+	FitPoints::FitPoints(const hist< double >& h){
+		for(const point<double>&p:h)
+			operator<<(Point({p.X().val()},{p.X().delta()},p.Y().val(),p.Y().delta()));
+	}
+	FitPoints::FitPoints(const Distribution2D< double >& d){
+		d.FullCycle([this](Distribution2D<double>::Point&&p){
+			operator<<(Point({p.X().val(),p.Y().val()},{p.X().delta(),p.Y().delta()},p.Z().val(),p.Z().delta()));
+		});
+	}
 	FitPoints::~FitPoints(){}
 	size_t FitPoints::size()const{return m_data.size();}
 	size_t FitPoints::dimensions() const{
@@ -111,21 +120,6 @@ namespace Genetic{
 			if(condition->operator()(static_cast<ParamSet&&>(p.X()))&&Ycond(p.y()))
 				res<<static_cast<FitPoints::Point&&>(p);
 		return res;
-	}
-	Distribution1D::Distribution1D(double min, double max, int bins):FitPoints(){
-		if((max<min)||(bins<1))
-			throw Exception<Distribution1D>("Wrong constructor parameters for Distribution1D");
-		double binwidth=(max-min)/double(bins);
-		double halfwidth=binwidth/2.0;
-		for(double x=min+halfwidth;x<max;x+=binwidth)
-			operator<<(Point({x},{halfwidth},0.,1.));
-	}
-	void Distribution1D::Fill(double x){
-		for(Point&p:(*this))
-			if((x>=(p.X()[0]-p.WX()[0]))&&(x<(p.X()[0]+p.WX()[0]))){
-				p.y_modify()+=1.0;
-				p.wy_modify()=sqrt(p.y());
-			}
 	}
 	OptimalityForPoints::OptimalityForPoints(
 		std::shared_ptr< FitPoints > p, 

@@ -16,16 +16,16 @@ TEST(ParameterFunction,Basic){
 	EXPECT_EQ(res,F(ParamSet(),ParamSet()));
 	EXPECT_EQ(1,c);
 }
-typedef FitPoints::Point point;
+
 TEST(point,Base){
 	{
-		point P({0},0);
+		Point P({0},0);
 		EXPECT_EQ(1,P.X().size());
 		EXPECT_EQ(1,P.WX().size());
 	}
-	point P({1},{0.1},1,1);
+	Point P({1},{0.1},1,1);
 	{
-		point P2(P);
+		Point P2(P);
 		EXPECT_EQ(P.y(),P2.y());
 		EXPECT_EQ(P.wy(),P2.wy());
 		EXPECT_EQ(P.X().size(),P2.X().size());
@@ -73,7 +73,7 @@ TEST(FitPoints,Base){
 	EXPECT_EQ(0,points[0].X()[0]);
 	EXPECT_EQ(1,points[1].X()[0]);
 	int c=0;
-	for(point&p:points){
+	for(Point&p:points){
 		EXPECT_EQ(1,p.X().size());
 		c++;
 	}
@@ -90,27 +90,14 @@ TEST(FitPoints,Select){
 	auto filter=[](const ParamSet&X){return X[0]<2.5;};
 	auto y_filter=[](double y){return y<2.5;};
 	auto sel1=SelectFitPoints(points,make_shared<Filter>(filter));
-	for(point&p:*sel1)EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
+	for(Point&p:*sel1)EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
 	auto sel2=SelectFitPoints(points,y_filter);
-	for(point&p:*sel2)EXPECT_EQ(true,y_filter(p.y()));
+	for(Point&p:*sel2)EXPECT_EQ(true,y_filter(p.y()));
 	auto sel3=SelectFitPoints(points,make_shared<Filter>(filter),y_filter);
-	for(point&p:*sel3){
+	for(Point&p:*sel3){
 		EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
 		EXPECT_EQ(true,y_filter(p.y()));
 	}
-}
-TEST(Distribution1D,Base){
-	Distribution1D d(0,2,2);
-	EXPECT_EQ(2,d.size());
-	for(point&p:d)EXPECT_EQ(0,p.y());
-	d.Fill(0.5);
-	d.Fill(1.5);
-	for(point&p:d)EXPECT_EQ(1,p.y());
-}
-TEST(Distribution1D,Throw){
-	EXPECT_THROW(Distribution1D(2,0,2),Exception<Distribution1D>);
-	EXPECT_THROW(Distribution1D(0,2,0),Exception<Distribution1D>);
-	EXPECT_THROW(Distribution1D(2,0,0),Exception<Distribution1D>);
 }
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();

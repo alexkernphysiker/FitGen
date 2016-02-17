@@ -9,18 +9,19 @@
 using namespace std;
 using namespace Genetic;
 using namespace GnuplotWrap;
+using namespace MathTemplates;
 int main(){
 	double left=0;
 	double right=10;
-	unsigned int bins=2;
+	int bins = 10;
 	int count=5000;
-	auto distribution=make_shared<Distribution1D>(left,right,int(right-left)*bins);
+	Distribution1D<double> distribution(BinsByCount(bins,left,right));
 	RANDOM engine;
 	normal_distribution<double> gauss((right+left)/2.0,(right-left)/10.0);
 	for(int i=0;i<count;i++)
-		distribution->Fill(gauss(engine));
+		distribution<<gauss(engine);
 	cout<<"Prepare fitting..."<<endl;
-	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(distribution,[](const ParamSet&X,const ParamSet&P){
+	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(make_shared<FitPoints>(distribution),[](const ParamSet&X,const ParamSet&P){
 		return Gaussian(X[0],P[0],P[1])*P[2];
 	});
 	fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});

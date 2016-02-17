@@ -2,6 +2,7 @@
 // MIT license
 #include <gtest/gtest.h>
 #include <math_h/error.h>
+#include <math_h/hist.h>
 #include <Genetic/genetic.h>
 #include <Genetic/initialconditions.h>
 #include "engine.h"
@@ -100,14 +101,14 @@ TEST(Crossing,Yes){
 		TestClass<Crossing<>> gen;
 		auto init=make_shared<InitialDistributions>();
 		for(size_t i=0; i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(0.9,1.0);
+			init<<make_shared<Distrib>(0.9,1.0);
 		gen.Init(10,init,engine);
 		gen.SetCrossingProbability(1);
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
 		EXPECT_TRUE(P.size()==count);
 		for(double p:P)
-			EXPECT_TRUE((p==0)||((p>=0.9)&&(p<=1.0)));
+			EXPECT_TRUE((p==0)||((p>=0.89)&&(p<=1.01)));
 	}
 }
 TEST(AbsoluteMutations,Throws){
@@ -205,19 +206,20 @@ TEST(ExactCopying,Size){
 		EXPECT_TRUE(P.size()==count);
 	}
 }
+
 TEST(ExactCopying,Check){
 		double S=0;
 		TestClass<ExactCopying<TestMutations>> gen;
 		for(double P=0;P<=1;P+=0.1){
 			gen.SetExactCopyingProbability(P);
-			Distribution<double> D(-0.5,1.5,2);
+			Distribution1D<double> D(BinsByCount(2,-0.5,1.5));
 			for(int i=0;i<1000;i++){
 				ParamSet P{0};
 				gen.MAKE_TEST(P,engine);
-				D.AddValue(P[0]);
+				D<<P[0];
 			}
-			double P_exp=D.getY(0)/(D.getY(0)+D.getY(1));
-			double dP_exp=sqrt(D.getY(0))/(D.getY(0)+D.getY(1))+sqrt(D.getY(1))/pow(D.getY(0)+D.getY(1),2);
+			double P_exp=D[0].Y().val()/(D[0].Y().val()+D[1].Y().val());
+			double dP_exp=sqrt(D[0].Y().val())/(D[0].Y().val()+D[1].Y().val())+sqrt(D[1].Y().val())/pow(D[0].Y().val()+D[1].Y().val(),2);
 			S+=pow((P-P_exp)/dP_exp,2);
 		}
 		S/=11.0;

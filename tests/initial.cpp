@@ -10,11 +10,11 @@ using namespace Genetic;
 const int n=5;
 RANDOM engine;
 shared_ptr<Distrib> Distrs[]={
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,0,1);},0,10,10),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,1,1);},0,10,10),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,2,1);},0,10,10),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,3,1);},0,10,10),
-	make_shared<Distrib>([](double x){return Gaussian<double>(x,4,1);},0,10,10)
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,0,1);},10,0,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,1,1);},10,0,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,2,1);},10,0,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,3,1);},10,0,10),
+	make_shared<Distrib>([](double x){return Gaussian<double>(x,4,1);},10,0,10)
 };
 TEST(InitialDistributions,Create){
 	InitialDistributions I;
