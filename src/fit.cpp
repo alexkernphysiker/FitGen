@@ -80,6 +80,15 @@ namespace Genetic{
 			));
 		return hist<double>(data);
 	}
+	hist<double> FitPoints::Hist1(size_t parameter_index_x, size_t parameter_index_y) const{
+		vector<point<double>> data;
+		for(const Point&P:m_data)
+			data.push_back(point<double>(
+				value<double>(P.X()[parameter_index_x],P.WX()[parameter_index_x]),
+				value<double>(P.X()[parameter_index_y],P.WX()[parameter_index_y])
+			));
+		return hist<double>(data);
+	}
 	
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,Point&&p){
 		src->operator<<(static_cast<FitPoints::Point&&>(p));

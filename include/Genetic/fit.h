@@ -59,7 +59,8 @@ namespace Genetic{
 		const_iterator cbegin()const;
 		iterator end();
 		const_iterator cend() const;
-		hist<double> Hist1(size_t parameter_index)const;
+		hist<double> Hist1(size_t parameter_index_x)const;
+		hist<double> Hist1(size_t parameter_index_x,size_t parameter_index_y)const;
 	private:
 		vector<Point> m_data;
 		ParamSet m_min,m_max;
