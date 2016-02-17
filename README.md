@@ -81,10 +81,6 @@ Genetic/paramfunc.h - template classes providing parametric functions for fittin
 Mechanism of inheriting template classes allows to construct complicated ones. 
 Parameter number is obtained automatically.
 
-Genetic/paramsort.h - classes for basic features for analysis of parameters distributions. 
-Contains classes that allow to split distribution of one parameter into bins and separate ParamSet's by these bins.
-More complicated classes allow binning by several parameter indexes.
-
 
 Tests
 =====
