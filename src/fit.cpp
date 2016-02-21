@@ -39,7 +39,7 @@ namespace Genetic{
 			operator<<(Point({p.X().val()},{p.X().delta()},p.Y().val(),p.Y().delta()));
 	}
 	FitPoints::FitPoints(const Distribution2D< double >& d){
-		d.FullCycle([this](Distribution2D<double>::Point&&p){
+		d.FullCycle([this](point3d<double>&&p){
 			operator<<(Point({p.X().val(),p.Y().val()},{p.X().delta(),p.Y().delta()},p.Z().val(),p.Z().delta()));
 		});
 	}
