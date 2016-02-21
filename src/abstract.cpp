@@ -198,7 +198,7 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(point_index>=m_population.size())
 			throw Exception<AbstractGenetic>("Range check error when accessing an element in the population");
-		return const_cast<ParamSet&>(m_population[point_index].first);
+		return m_population[point_index].first;
 	}
 	double AbstractGenetic::operator [](size_t i)const{
 		if(i>=ParamCount())
@@ -206,13 +206,13 @@ namespace Genetic{
 		return m_population[0].first[i];
 	}
 	const ParamSet&AbstractGenetic::ParamAverage()const{
-		return const_cast<ParamSet&>(m_avr);
+		return m_avr;
 	}
 	const ParamSet&AbstractGenetic::ParamDispersion()const{
-		return const_cast<ParamSet&>(m_disp);
+		return m_disp;
 	}
 	const ParamSet&AbstractGenetic::ParamMaxDeviation()const{
-		return const_cast<ParamSet&>(m_max_dev);
+		return m_max_dev;
 	}
 	
 	bool AbstractGenetic::ConcentratedInOnePoint()const{

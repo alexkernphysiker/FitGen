@@ -26,8 +26,8 @@ namespace Genetic{
 	FitPoints::Point::Point(ParamSet&&x,double y_, double wy_):Point(x,y_,wy_){}
 	FitPoints::Point::Point(ParamSet&&x,double y_):Point(x,y_){}
 	FitPoints::Point::Point(const Point& src):Point(src.__X,src.__WX,src.__y,src.__wy){}
-	const ParamSet&FitPoints::Point::X()const{return const_cast<ParamSet&>(__X);}
-	const ParamSet&FitPoints::Point::WX()const{return const_cast<ParamSet&>(__WX);}
+	const ParamSet&FitPoints::Point::X()const{return __X;}
+	const ParamSet&FitPoints::Point::WX()const{return __WX;}
 	double FitPoints::Point::y() const{return __y;}
 	double FitPoints::Point::wy() const{return __wy;}
 	double&FitPoints::Point::y_modify(){return __y;}
@@ -50,8 +50,8 @@ namespace Genetic{
 			throw Exception<FitPoints>("No dimensions in empty FitPoints");
 		return m_data[0].X().size();
 	}
-	const ParamSet&FitPoints::min()const{return const_cast<ParamSet&>(m_min);}
-	const ParamSet&FitPoints::max()const{return const_cast<ParamSet&>(m_max);}
+	const ParamSet&FitPoints::min()const{return m_min;}
+	const ParamSet&FitPoints::max()const{return m_max;}
 	double FitPoints::Ymax() const{return ymax;}
 	double FitPoints::Ymin() const{return ymin;}
 	FitPoints& FitPoints::operator<<(const Point&point){
@@ -113,7 +113,7 @@ namespace Genetic{
 	const FitPoints::Point&FitPoints::operator[](size_t i)const{
 		if(i>=size())
 			throw Exception<FitPoints>("Range check error when getting an element from FitPoints");
-		return const_cast<Point&&>(m_data[i]);
+		return m_data[i];
 	}
 	FitPoints::iterator FitPoints::begin(){
 		return m_data.begin();
