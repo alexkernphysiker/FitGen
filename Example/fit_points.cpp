@@ -11,9 +11,11 @@ using namespace std;
 using namespace Genetic;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
+
 typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
 typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 typedef Add<Foreground,Background> TotalFunc;
+
 int main(){
 	RANDOM engine;
 	auto points_to_fit=make_shared<FitPoints>()
@@ -37,36 +39,54 @@ int main(){
 		<<Point({ 17.5},{2.5},495.3,14.0)
 		<<Point({ 22.5},{2.5},497.3,14.5)
 		<<Point({ 27.5},{2.5},511.4,15.0);
+		
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<(make_shared<Below>()<<INFINITY<<5)
-		<<[](const ParamSet&P){Foreground F;return F({P[2]},P)<P[1]*5.0;}
+		<<[](const ParamSet&P){
+			static Foreground F;
+			return F({P[2]},P)<P[1]*5.0;
+		}
 	);
+	
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(100,100)<<make_pair(20,20)<<make_pair(-20,0)
 		<<make_pair(400,100)<<make_pair(5,1)<<make_pair(0,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_pair(0,0.01);
 	fit.Init(TotalFunc::ParamCount*20,initial,engine);
-	cout<<"Population:"<<fit.PopulationSize()<<endl;
-	cout<<"Parameters:"<<fit.ParamCount()<<endl;
+	
 	while(!(
-		fit.AbsoluteOptimalityExitCondition(0.000001)&&
-		fit.RelativeParametersDispersionExitCondition(parEq(TotalFunc::ParamCount,0.01))
+		fit.AbsoluteOptimalityExitCondition(0.000001)
 	)){
 		fit.Iterate(engine);
 		cout<<fit.iteration_count()<<" iterations; "
-			<<fit.Optimality()<<"<S<"<<fit.Optimality(fit.PopulationSize()-1)<<"        \r";
+			<<fit.Optimality()<<"<S<"
+			<<fit.Optimality(fit.PopulationSize()-1)
+			<<"        \r";
 	}
 	cout<<endl;
+	
 	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
 	cout<<"Errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
 
 	Plotter::Instance().SetOutput(".","points");
 	LinearInterpolation<double>
-		totalfit([&fit](double x)->double{return fit({x});},ChainWithStep(-70.0,0.1,30.0)),
-		background([&fit](double x)->double{return Background()({x},fit.Parameters());},ChainWithStep(-70.0,0.1,30.0));
-	Plot<double>().Hist(points_to_fit->Hist1(0)).Line(totalfit,"Fit").Line(background,"Background");
+		totalfit(
+			[&fit](double x)->double{
+				return fit({x});
+			},
+			ChainWithStep(-70.0,0.1,30.0)
+		),
+		background(
+			[&fit](double x)->double{
+				return Background()({x},fit.Parameters());
+			},
+			ChainWithStep(-70.0,0.1,30.0)
+		);
+	Plot<double>().Hist(points_to_fit->Hist1(0))
+	.Line(totalfit,"Fit")
+	.Line(background,"Background");
 	return 0;
 }
