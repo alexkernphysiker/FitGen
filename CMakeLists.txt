@@ -1,17 +1,19 @@
 cmake_minimum_required(VERSION 2.6)
 project(FitGen)
+
 option(debug "Compile in debug mode" OFF)
 if(debug)
   set(CMAKE_BUILD_TYPE Debug)
 endif()
+
 set(CMAKE_CXX_FLAGS -pthread)
 add_definitions(-std=c++11 -Wall -Wunused-parameter)
 add_subdirectory(math_h)
 include_directories(include)
 add_subdirectory(src)
+
 option(example "Compile example(s)." OFF) 
 if(example)
-	set(gnuplot_wrap ON CACHE BOOL "Plotting library is needed")
 	add_subdirectory(Example)
 endif()
 option(test "Build all tests." OFF) 

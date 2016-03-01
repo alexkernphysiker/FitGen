@@ -23,7 +23,6 @@ CMake Options
 	debug - if ON the project is compiled in debug mode
 	example - if ON the examples are compiled
 	test - if ON the tests are compiled
-	gnuplot_wrap - if ON the library from math_h which is an interface for gnuplot is compiled
 
 
 Examples
