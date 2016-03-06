@@ -12,7 +12,7 @@ namespace Genetic{
 	using namespace MathTemplates;
 	class ParameterFunction:public IParamFunc{
 	public:
-		ParameterFunction(paramFunc f);
+		ParameterFunction(const paramFunc f);
 		virtual ~ParameterFunction();
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override;
 	private:
@@ -23,18 +23,18 @@ namespace Genetic{
 		class Point{
 		public:
 			Point(const Point &src);
-			Point(const ParamSet&x,double y_);
-			Point(const ParamSet&x,double y_,double wy_);
-			Point(const ParamSet&x,const ParamSet&wx,double y_,double wy_);
-			Point(ParamSet&&x,double y_);
-			Point(ParamSet&&x,double y_,double wy_);
-			Point(ParamSet&&x,ParamSet&&wx,double y_,double wy_);
+			Point(const ParamSet&x,const double y_);
+			Point(const ParamSet&x,const double y_,const double wy_);
+			Point(const ParamSet&x,const ParamSet&wx,const double y_,const double wy_);
+			Point(const ParamSet&&x,const double y_);
+			Point(const ParamSet&&x,const double y_,const double wy_);
+			Point(const ParamSet&&x,const ParamSet&&wx,const double y_,const double wy_);
 			const ParamSet&X()const;
 			const ParamSet&WX()const;
 			double y()const;
 			double wy()const;
-			double&y_modify();
-			double&wy_modify();
+			double&var_y();
+			double&var_wy();
 		private:
 			ParamSet __X;
 			ParamSet __WX;
@@ -43,24 +43,23 @@ namespace Genetic{
 		};
 		FitPoints();
 		FitPoints(const hist<double>&h);
-		FitPoints(const Distribution2D<double>&d);
+		FitPoints(const hist2d<double>&d);
 		virtual ~FitPoints();
 		FitPoints&operator<<(const Point&point);
-		const Point&operator[](size_t i)const;
+		const Point&operator[](const size_t i)const;
 		size_t size()const;
 		size_t dimensions()const;
 		const ParamSet&min()const;
 		const ParamSet&max()const;
 		double Ymin()const;
 		double Ymax()const;
-		typedef vector<Point>::iterator iterator;
 		typedef vector<Point>::const_iterator const_iterator;
-		iterator begin();
+		const_iterator begin()const;
 		const_iterator cbegin()const;
-		iterator end();
+		const_iterator end()const;
 		const_iterator cend() const;
-		hist<double> Hist1(size_t parameter_index_x)const;
-		hist<double> Hist1(size_t parameter_index_x,size_t parameter_index_y)const;
+		hist<double> Hist1(const size_t parameter_index_x)const;
+		hist<double> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
 	private:
 		vector<Point> m_data;
 		ParamSet m_min,m_max;

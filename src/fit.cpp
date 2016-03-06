@@ -8,11 +8,11 @@ namespace Genetic{
 	using namespace std;
 	using namespace MathTemplates;
 	using namespace GnuplotWrap;
-	ParameterFunction::ParameterFunction(function<double(const ParamSet&,const ParamSet&)> f){func=f;}
+	ParameterFunction::ParameterFunction(const function<double(const ParamSet&,const ParamSet&)> f){func=f;}
 	ParameterFunction::~ParameterFunction(){}
 	double ParameterFunction::operator()(const ParamSet&X,const ParamSet&P)const{return func(X,P);}
 	
-	FitPoints::Point::Point(const ParamSet&x,const ParamSet&wx, double y_, double wy_){
+	FitPoints::Point::Point(const ParamSet&x,const ParamSet&wx, const double y_, const double wy_){
 		if(x.size()==0)
 			throw Exception<Point>("Empty parameter set");
 		if(x.size()!=wx.size())
@@ -20,26 +20,26 @@ namespace Genetic{
 		__X=x;__WX=wx;
 		__y=y_;__wy=wy_;
 	}
-	FitPoints::Point::Point(const ParamSet&x,double y_, double wy_):Point(x,parEq(x.size(),0),y_,wy_){}
-	FitPoints::Point::Point(const ParamSet&x,double y_):Point(x,y_,1.0){}
-	FitPoints::Point::Point(ParamSet&&x,ParamSet&&wx,double y_,double wy_):Point(x,wx,y_,wy_){}
-	FitPoints::Point::Point(ParamSet&&x,double y_, double wy_):Point(x,y_,wy_){}
-	FitPoints::Point::Point(ParamSet&&x,double y_):Point(x,y_){}
+	FitPoints::Point::Point(const ParamSet&x,const double y_, const double wy_):Point(x,parEq(x.size(),0),y_,wy_){}
+	FitPoints::Point::Point(const ParamSet&x,const double y_):Point(x,y_,1.0){}
+	FitPoints::Point::Point(const ParamSet&&x,const ParamSet&&wx,const double y_,const double wy_):Point(x,wx,y_,wy_){}
+	FitPoints::Point::Point(const ParamSet&&x,const double y_, const double wy_):Point(x,y_,wy_){}
+	FitPoints::Point::Point(const ParamSet&&x,const double y_):Point(x,y_){}
 	FitPoints::Point::Point(const Point& src):Point(src.__X,src.__WX,src.__y,src.__wy){}
 	const ParamSet&FitPoints::Point::X()const{return __X;}
 	const ParamSet&FitPoints::Point::WX()const{return __WX;}
 	double FitPoints::Point::y() const{return __y;}
 	double FitPoints::Point::wy() const{return __wy;}
-	double&FitPoints::Point::y_modify(){return __y;}
-	double&FitPoints::Point::wy_modify(){return __wy;}
+	double&FitPoints::Point::var_y(){return __y;}
+	double&FitPoints::Point::var_wy(){return __wy;}
 	
 	FitPoints::FitPoints(){}
 	FitPoints::FitPoints(const hist< double >& h){
 		for(const point<double>&p:h)
 			operator<<(Point({p.X().val()},{p.X().delta()},p.Y().val(),p.Y().delta()));
 	}
-	FitPoints::FitPoints(const Distribution2D< double >& d){
-		d.FullCycle([this](point3d<double>&&p){
+	FitPoints::FitPoints(const hist2d<double>& d){
+		d.FullCycle([this](const point3d<double>&p){
 			operator<<(Point({p.X().val(),p.Y().val()},{p.X().delta(),p.Y().delta()},p.Z().val(),p.Z().delta()));
 		});
 	}
@@ -71,7 +71,7 @@ namespace Genetic{
 		m_data.push_back(point);
 		return *this;
 	}
-	hist<double> FitPoints::Hist1(size_t parameter_index) const{
+	hist<double> FitPoints::Hist1(const size_t parameter_index) const{
 		vector<point<double>> data;
 		for(const Point&P:m_data)
 			data.push_back(point<double>(
@@ -80,7 +80,7 @@ namespace Genetic{
 			));
 		return hist<double>(data);
 	}
-	hist<double> FitPoints::Hist1(size_t parameter_index_x, size_t parameter_index_y) const{
+	hist<double> FitPoints::Hist1(const size_t parameter_index_x,const size_t parameter_index_y) const{
 		vector<point<double>> data;
 		for(const Point&P:m_data)
 			data.push_back(point<double>(
@@ -106,22 +106,22 @@ namespace Genetic{
 		return src<<FitPoints::Point({p.first},p.second);
 	}
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, shared_ptr<FitPoints> data){
-		for(Point&P:(*data))src<<P;
+		for(const Point&P:(*data))src<<P;
 		return src;
 	}
 
-	const FitPoints::Point&FitPoints::operator[](size_t i)const{
+	const FitPoints::Point&FitPoints::operator[](const size_t i)const{
 		if(i>=size())
 			throw Exception<FitPoints>("Range check error when getting an element from FitPoints");
 		return m_data[i];
 	}
-	FitPoints::iterator FitPoints::begin(){
+	FitPoints::const_iterator FitPoints::begin()const {
 		return m_data.begin();
 	}
 	FitPoints::const_iterator FitPoints::cbegin() const{
 		return m_data.cbegin();
 	}
-	FitPoints::iterator FitPoints::end(){
+	FitPoints::const_iterator FitPoints::end()const {
 		return m_data.end();
 	}
 	FitPoints::const_iterator FitPoints::cend() const{
@@ -129,20 +129,20 @@ namespace Genetic{
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::Point&p:(*src))
+		for(const FitPoints::Point&p:(*src))
 			if(condition->operator()(p.X()))res<<p;
 		return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::Point&p:(*src))
+		for(const FitPoints::Point&p:(*src))
 			if(Ycond(p.y()))
 				res<<p;
 		return res;
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
-		for(FitPoints::Point&p:(*src))
+		for(const FitPoints::Point&p:(*src))
 			if(condition->operator()(p.X())&&Ycond(p.y()))
 				res<<p;
 		return res;

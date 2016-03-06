@@ -73,7 +73,7 @@ TEST(FitPoints,Base){
 	EXPECT_EQ(0,points[0].X()[0]);
 	EXPECT_EQ(1,points[1].X()[0]);
 	int c=0;
-	for(Point&p:points){
+	for(const Point&p:points){
 		EXPECT_EQ(1,p.X().size());
 		c++;
 	}
@@ -90,11 +90,11 @@ TEST(FitPoints,Select){
 	auto filter=[](const ParamSet&X){return X[0]<2.5;};
 	auto y_filter=[](double y){return y<2.5;};
 	auto sel1=SelectFitPoints(points,make_shared<Filter>(filter));
-	for(Point&p:*sel1)EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
+	for(const Point&p:*sel1)EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
 	auto sel2=SelectFitPoints(points,y_filter);
-	for(Point&p:*sel2)EXPECT_EQ(true,y_filter(p.y()));
+	for(const Point&p:*sel2)EXPECT_EQ(true,y_filter(p.y()));
 	auto sel3=SelectFitPoints(points,make_shared<Filter>(filter),y_filter);
-	for(Point&p:*sel3){
+	for(const Point&p:*sel3){
 		EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
 		EXPECT_EQ(true,y_filter(p.y()));
 	}
@@ -217,7 +217,7 @@ TEST(Parabolic,BaseTest){
 }
 typedef Add<Mul<Arg<0>,Par<0>>,Par<1>> Fit_Func;
 typedef Const<1> Fit_Func_err;
-auto Points=make_shared<FitPoints>()<<make_pair(0,1)<<make_pair(1,2)<<make_pair(2,3);
+auto Points=make_shared<FitPoints>()<<Point({0},1,1)<<Point({1},2,1)<<Point({2},3,1);
 auto Init=make_shared<GenerateUniform>()<<make_pair(0,2)<<make_pair(0,2);
 TEST(Fit,Basetest){
 	Fit<DifferentialMutations<>,SumSquareDiff> fit(Points,make_shared<Fit_Func>());
@@ -244,7 +244,6 @@ TEST(FitFunction,Basetest){
 	EXPECT_EQ(1,fit[1]);
 }
 TEST(FitFunctionWithError,Basetest){
-	for(auto&p:*Points)p.wy_modify()=1;
 	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,make_shared<Fit_Func>(),make_shared<Fit_Func_err>());
 	fit.Init(30,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
