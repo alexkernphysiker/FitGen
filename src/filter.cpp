@@ -6,7 +6,7 @@ namespace Genetic{
 	using namespace std;
 	using namespace MathTemplates;
 	Above::Above(){}
-	Above::Above(ParamSet&&v):m_data(v){}
+	Above::Above(const ParamSet&&v):m_data(v){}
 	bool Above::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
@@ -17,13 +17,13 @@ namespace Genetic{
 		}
 		return res;
 	}
-	Above& Above::operator<<(double value){
+	Above& Above::operator<<(const double value){
 		m_data<<value;
 		return *this;
 	}
 	
 	Below::Below(){}
-	Below::Below(ParamSet&&v):m_data(v){}
+	Below::Below(const ParamSet&&v):m_data(v){}
 	bool Below::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
@@ -34,31 +34,31 @@ namespace Genetic{
 		}
 		return res;
 	}
-	Below& Below::operator<<(double value){
+	Below& Below::operator<<(const double value){
 		m_data<<value;
 		return *this;
 	}
 	
-	size_t AbstractFilterMulti::Count()const{return m_data.size();}
-	IParamCheck &AbstractFilterMulti::Get(size_t i)const{
+	const size_t AbstractFilterMulti::Count()const{return m_data.size();}
+	const IParamCheck &AbstractFilterMulti::Get(size_t i)const{
 		if(i<m_data.size())
 			return *m_data[i];
 		else
 			throw Exception<AbstractFilterMulti>("Range check error when getting an element from filter set");
 	}
-	AbstractFilterMulti &AbstractFilterMulti::Add(std::shared_ptr<IParamCheck> val){
+	AbstractFilterMulti &AbstractFilterMulti::Add(const std::shared_ptr<IParamCheck> val){
 		m_data.push_back(val);
 		return *this;
 	}
-	AbstractFilterMulti& AbstractFilterMulti::Add(function<bool(const ParamSet&)> condition){
+	AbstractFilterMulti& AbstractFilterMulti::Add(const function<bool(const ParamSet&)> condition){
 		m_data.push_back(make_shared<Filter>(condition));
 		return *this;
 	}
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter, shared_ptr<IParamCheck> value){
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter, const shared_ptr<IParamCheck> value){
 		filter->Add(value);
 		return filter;
 	}
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,function<bool(const ParamSet&)> condition){
+	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti> filter,const function<bool(const ParamSet&)> condition){
 		filter->Add(condition);
 		return filter;
 	}

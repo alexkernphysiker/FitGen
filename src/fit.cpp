@@ -148,10 +148,10 @@ namespace Genetic{
 		return res;
 	}
 	OptimalityForPoints::OptimalityForPoints(
-		std::shared_ptr< FitPoints > p, 
-		shared_ptr<IParamFunc> f,
-		OptimalityForPoints::Coefficient c, 
-		OptimalityForPoints::Summand s
+		const std::shared_ptr< FitPoints > p, 
+		const shared_ptr<IParamFunc> f,
+		const OptimalityForPoints::Coefficient c, 
+		const OptimalityForPoints::Summand s
 	){
 		points=p;
 		func=f;
@@ -166,7 +166,7 @@ namespace Genetic{
 			res+=S(p,P,*func);
 		return res*C(P,*func);
 	}
-	shared_ptr<OptimalityForPoints> SumSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> SumSquareDiff(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[](const ParamSet&,const IParamFunc&){
 			return 1.0;
 		};
@@ -176,7 +176,7 @@ namespace Genetic{
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
 	
-	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&,const IParamFunc&){
 			double z=0;
 			for(FitPoints::Point p:*points)
@@ -188,7 +188,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<OptimalityForPoints> ChiSquare(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> ChiSquare(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
@@ -200,7 +200,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
-	shared_ptr<OptimalityForPoints> ChiSquareWithXError(shared_ptr<FitPoints> points, shared_ptr<IParamFunc> f){
+	shared_ptr<OptimalityForPoints> ChiSquareWithXError(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
@@ -222,10 +222,10 @@ namespace Genetic{
 	}
 	
 	OptimalityForPointsWithFuncError::OptimalityForPointsWithFuncError(
-		shared_ptr< FitPoints > p, 
-		shared_ptr< IParamFunc > f, 
-		shared_ptr< IParamFunc > e, 
-		Coefficient c, Summand s
+		const shared_ptr< FitPoints > p, 
+		const shared_ptr< IParamFunc > f, 
+		const shared_ptr< IParamFunc > e, 
+		const Coefficient c, const Summand s
 	){
 		points=p;
 		func=f;
@@ -241,7 +241,7 @@ namespace Genetic{
 			res+=S(p,P,*func,*error);
 		return res*C(P,*func,*error);
 	}
-	shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+	shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(const shared_ptr<FitPoints> points,const shared_ptr<IParamFunc> f,const shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
@@ -253,7 +253,7 @@ namespace Genetic{
 		};
 		return make_shared<OptimalityForPointsWithFuncError>(points,f,e,c,s);
 	}
-	shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e){
+	shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(const shared_ptr<FitPoints> points,const shared_ptr<IParamFunc> f,const shared_ptr<IParamFunc> e){
 		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const IParamFunc&,const IParamFunc&){
 			double z=points->size()-P.size();
 			if(z<=0)
@@ -275,7 +275,7 @@ namespace Genetic{
 	}
 	Parabolic::Parabolic(){}
 	Parabolic::~Parabolic(){}
-	double Parabolic::GetParamParabolicError(double delta, int i)const{
+	double Parabolic::GetParamParabolicError(const double delta, const int i)const{
 		if(delta<=0)
 			throw new Exception<Parabolic>("Exception in parabolic error calculation: delta cannot be zero or negative");
 		double s=Optimality();
@@ -297,5 +297,5 @@ namespace Genetic{
 			res<<GetParamParabolicError(delta[i],i);
 		return res;
 	}
-	ParamSet Parabolic::GetParamParabolicErrors(ParamSet&& delta) const{return GetParamParabolicErrors(delta);}
+	ParamSet Parabolic::GetParamParabolicErrors(const ParamSet&& delta) const{return GetParamParabolicErrors(delta);}
 }

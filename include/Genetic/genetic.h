@@ -15,16 +15,14 @@ namespace Genetic{
 	public:
 		DifferentialMutations():FITGEN(),M(0.5){}
 		virtual ~DifferentialMutations(){}
-		double MutationCoefficient(){
-			return M;
-		}
-		void SetMutationCoefficient(double val){
+		const double MutationCoefficient()const {return M;}
+		void SetMutationCoefficient(const double val){
 			if(val<0)
 				throw Exception<DifferentialMutations>("DifferentialMutations: mutation coefficient should be a positive value");
 			M=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C,RANDOM&R)override{
+		virtual void mutations(ParamSet &C,RANDOM&R)const override{
 			FITGEN::mutations(C,R);
 			std::uniform_int_distribution<int> randomelement(0,AbstractGenetic::PopulationSize()-1);
 			auto A=AbstractGenetic::Parameters(randomelement(R));
@@ -40,16 +38,14 @@ namespace Genetic{
 	public:
 		Crossing():FITGEN(),P(0){}
 		virtual ~Crossing(){}
-		double CrossingProbability(){
-			return P;
-		}
-		void SetCrossingProbability(double val){
+		const double CrossingProbability()const {return P;}
+		void SetCrossingProbability(const double val){
 			if((val<0)||(val>1))
 				throw Exception<Crossing>("Crossing: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C,RANDOM&R)override{
+		virtual void mutations(ParamSet &C,RANDOM&R)const override{
 			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)<P){
@@ -66,78 +62,68 @@ namespace Genetic{
 	class AbsoluteMutations:public virtual FITGEN{
 	private:
 		double P;
-		std::vector<std::normal_distribution<double>> distr;
+		ParamSet m_mutation;
 	public:
 		AbsoluteMutations():FITGEN(),P(0){}
 		virtual ~AbsoluteMutations(){}
-		ParamSet AbsoluteMutationCoefficients(){
-			ParamSet P;
-			for(auto&d:distr)
-				P<<d.stddev();
-			return P;
-		}
-		void SetAbsoluteMutationCoefficients(ParamSet p){
-			distr.clear();
+		const ParamSet&AbsoluteMutationCoefficients()const {return m_mutation;}
+		void SetAbsoluteMutationCoefficients(const ParamSet&&p){
+			m_mutation={};
 			for(double v:p){
 				if(v<0)
 					throw Exception<AbsoluteMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
-				distr.push_back(std::normal_distribution<double>(0,v));
+				m_mutation<<v;
 			}
 		}
-		double AbsoluteMutationsProbability(){
-			return P;
-		}
-		void SetAbsoluteMutationsProbability(double val){
+		const double AbsoluteMutationsProbability()const {return P;}
+		void SetAbsoluteMutationsProbability(const double val){
 			if((val<0)||(val>1))
 				throw Exception<AbsoluteMutations>("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C,RANDOM&R)override{
+		virtual void mutations(ParamSet &C,RANDOM&R)const override{
 			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)<P)
-				for(int i=0;i<AbstractGenetic::ParamCount();i++)
-					C(i)+=distr[i](R);
+				for(int i=0;i<AbstractGenetic::ParamCount();i++){
+					std::normal_distribution<double>distr(0,m_mutation[i]);
+					C(i)+=distr(R);
+				}
 		}
 	};
 	template<class FITGEN=AbstractGenetic>
 	class RelativeMutations:public virtual FITGEN{
 	private:
 		double P;
-		std::vector<std::normal_distribution<double>> distr;
+		ParamSet m_mutation;
 	public:
 		RelativeMutations():FITGEN(),P(0){}
 		virtual ~RelativeMutations(){}
-		ParamSet RelativeMutationCoefficients(){
-			ParamSet P;
-			for(auto&d:distr)
-				P<<d.stddev();
-			return P;
-		}
-		void SetRelativeMutationCoefficients(ParamSet p){
-			distr.clear();
+		const ParamSet&RelativeMutationCoefficients()const {return m_mutation;}
+		void SetRelativeMutationCoefficients(const ParamSet&&p){
+			m_mutation={};
 			for(double v:p){
 				if(v<0)
 					throw Exception<RelativeMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
-				distr.push_back(std::normal_distribution<double>(0,v));
+				m_mutation<<v;
 			}
 		}
-		double RelativeMutationsProbability(){
-			return P;
-		}
-		void SetRelativeMutationsProbability(double val){
+		const double RelativeMutationsProbability()const {return P;}
+		void SetRelativeMutationsProbability(const double val){
 			if((val<0)||(val>1))
 				throw Exception<RelativeMutations>("RelativeMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
-		virtual void mutations(ParamSet &C,RANDOM&R)override{
+		virtual void mutations(ParamSet &C,RANDOM&R)const override{
 			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)<P)
-				for(int i=0;i<AbstractGenetic::ParamCount();i++)
-					C(i)*=(1+distr[i](R));
+				for(int i=0;i<AbstractGenetic::ParamCount();i++){
+					std::normal_distribution<double> distr(0,m_mutation[i]);
+					C(i)*=(1+distr(R));
+				}
 		}
 	};
 	template<class FITGEN>
@@ -147,16 +133,14 @@ namespace Genetic{
 	public:
 		ExactCopying():FITGEN(),P(0){}
 		virtual ~ExactCopying(){}
-		void SetExactCopyingProbability(double value){
+		void SetExactCopyingProbability(const double value){
 			if((value<0)||(value>1))
 				throw Exception<ExactCopying>("ExactCopying: probability value should fit the condition 0<=P<=1");
 			P=value;
 		}
-		double ExactCopyingProbability(){
-			return P;
-		}
+		const double ExactCopyingProbability()const {return P;}
 	protected:
-		virtual void mutations(ParamSet &C,RANDOM&R)override{
+		virtual void mutations(ParamSet &C,RANDOM&R)const override{
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)>P)
 				FITGEN::mutations(C,R);

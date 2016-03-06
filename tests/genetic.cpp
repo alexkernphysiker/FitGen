@@ -180,7 +180,7 @@ public:
 	TestMutations():AbstractGenetic(){}
 	virtual ~TestMutations(){}
 protected:
-	virtual void mutations(ParamSet &C,RANDOM&)override{
+	virtual void mutations(ParamSet &C,RANDOM&)const override{
 		C=parOnes(C.size());
 	}
 };

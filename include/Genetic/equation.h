@@ -10,11 +10,11 @@ namespace Genetic{
 	template<class GENETIC>
 	class Equation:public virtual GENETIC{
 	public:
-		Equation(function<double(const ParamSet&)> f)
+		Equation(const function<double(const ParamSet&)> f)
 		:AbstractGenetic(make_shared<OptimalityFunction>([f](const ParamSet&P){
 			return pow(f(P),2);
 		})),GENETIC(){}
-		Equation(function<double(const ParamSet&)> left,function<double(const ParamSet&)> right)
+		Equation(const function<double(const ParamSet&)> left,const function<double(const ParamSet&)> right)
 		:AbstractGenetic(make_shared<OptimalityFunction>([left,right](const ParamSet&P){
 			return pow(left(P)-right(P),2);
 		})),GENETIC(){}
@@ -22,7 +22,7 @@ namespace Genetic{
 	template<class GENETIC>
 	class SearchMin:public GENETIC{
 	public:
-		SearchMin(function<double(const ParamSet&)> f)
+		SearchMin(const function<double(const ParamSet&)> f)
 		:AbstractGenetic(make_shared<OptimalityFunction>(f)),GENETIC(){}
 	};
 }

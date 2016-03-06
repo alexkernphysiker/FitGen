@@ -16,7 +16,7 @@ namespace Genetic{
 	class IInitialConditions{
 	public:
 		virtual ~IInitialConditions(){}
-		virtual ParamSet Generate(RANDOM&)=0;
+		virtual ParamSet Generate(RANDOM&)const =0;
 	};
 	class IParamCheck{
 	public:
@@ -25,7 +25,7 @@ namespace Genetic{
 	};
 	class Filter:public IParamCheck{
 	public:
-		Filter(function<bool(const ParamSet&)> c);
+		Filter(const function<bool(const ParamSet&)> c);
 		virtual ~Filter();
 		virtual bool operator()(const ParamSet&P)const override;
 	private:
@@ -38,7 +38,7 @@ namespace Genetic{
 	};
 	class OptimalityFunction:public IOptimalityFunction{
 	public:
-		OptimalityFunction(function<double(const ParamSet&)> f);
+		OptimalityFunction(const function<double(const ParamSet&)> f);
 		virtual ~OptimalityFunction();
 		virtual double operator()(const ParamSet&P)const override;
 	private:
@@ -48,48 +48,45 @@ namespace Genetic{
 	class AbstractGenetic{
 	protected:
 		AbstractGenetic();
-		AbstractGenetic(shared_ptr<IOptimalityFunction> optimality);
+		AbstractGenetic(const shared_ptr<IOptimalityFunction> optimality);
 	public:
 		virtual ~AbstractGenetic();
 		shared_ptr<IOptimalityFunction> OptimalityCalculator()const;
 		
-		AbstractGenetic&SetFilter(shared_ptr<IParamCheck> filter);
-		AbstractGenetic&SetFilter(function<bool(const ParamSet&)>);
+		AbstractGenetic&SetFilter(const shared_ptr<IParamCheck> filter);
+		AbstractGenetic&SetFilter(const function<bool(const ParamSet&)>);
 		AbstractGenetic&RemoveFilter();
 		
-		AbstractGenetic&SetThreadCount(size_t threads_count);
-		size_t ThreadCount()const;
+		AbstractGenetic&SetThreadCount(const size_t threads_count);
+		const size_t ThreadCount()const;
 		
-		AbstractGenetic&Init(size_t population_size,shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
+		AbstractGenetic&Init(const size_t population_size,const shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 	protected:
-		virtual void mutations(ParamSet&,RANDOM&);
+		virtual void mutations(ParamSet&,RANDOM&)const;
 	public:
 		void Iterate(RANDOM&random);
 		
-		unsigned long int iteration_count()const;
-		size_t PopulationSize()const;
-		size_t ParamCount()const;
-		double Optimality(size_t point_index=0)const;
-		const ParamSet&Parameters(size_t point_index=0)const;
-		double operator[](size_t i)const;
+		const unsigned long int iteration_count()const;
+		const size_t PopulationSize()const;
+		const size_t ParamCount()const;
+		const double Optimality(const size_t point_index=0)const;
+		const ParamSet&Parameters(const size_t point_index=0)const;
+		const double operator[](const size_t i)const;
 		const ParamSet&ParamAverage()const;
 		const ParamSet&ParamDispersion()const;
 		const ParamSet&ParamMaxDeviation()const;
 		
-		bool ConcentratedInOnePoint()const;
-		bool AbsoluteOptimalityExitCondition(double accuracy)const;
-		bool RelativeOptimalityExitCondition(double accuracy)const;
-		bool ParametersDispersionExitCondition(const ParamSet&max_disp)const;
-		bool RelativeParametersDispersionExitCondition(const ParamSet&max_disp)const;
-		bool ParametersDispersionExitCondition(ParamSet&&max_disp)const;
-		bool RelativeParametersDispersionExitCondition(ParamSet&&max_disp)const;
+		const bool ConcentratedInOnePoint()const;
+		const bool AbsoluteOptimalityExitCondition(const double accuracy)const;
+		const bool RelativeOptimalityExitCondition(const double accuracy)const;
+		const bool ParametersDispersionExitCondition(const ParamSet&max_disp)const;
+		const bool RelativeParametersDispersionExitCondition(const ParamSet&max_disp)const;
+		const bool ParametersDispersionExitCondition(const ParamSet&&max_disp)const;
+		const bool RelativeParametersDispersionExitCondition(const ParamSet&&max_disp)const;
 		
-		typedef vector<double>::iterator iterator;
 		typedef vector<double>::const_iterator const_iterator;
-		iterator begin();
 		const_iterator begin()const;
 		const_iterator cbegin()const;
-		iterator end();
 		const_iterator end() const;
 		const_iterator cend() const;
 	protected:
