@@ -95,17 +95,17 @@ namespace Genetic{
 		src->operator<<(p);
 		return src;
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,Point&&p){
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,const Point&&p){
 		src->operator<<(p);
 		return src;
 	}
 	shared_ptr< FitPoints > operator<<(shared_ptr< FitPoints > src, const pair<double,double>& p){
 		return src<<FitPoints::Point({p.first},p.second);
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, pair<double,double>&&p){
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const  pair<double,double>&&p){
 		return src<<FitPoints::Point({p.first},p.second);
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, shared_ptr<FitPoints> data){
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const  shared_ptr<FitPoints> data){
 		for(const Point&P:(*data))src<<P;
 		return src;
 	}
@@ -127,20 +127,20 @@ namespace Genetic{
 	FitPoints::const_iterator FitPoints::cend() const{
 		return m_data.cend();
 	}
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition){
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();
 		for(const FitPoints::Point&p:(*src))
 			if(condition->operator()(p.X()))res<<p;
 		return res;
 	}
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, function<bool(double)> Ycond){
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, const function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
 		for(const FitPoints::Point&p:(*src))
 			if(Ycond(p.y()))
 				res<<p;
 		return res;
 	}
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, shared_ptr<IParamCheck> condition,function<bool(double)> Ycond){
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, const shared_ptr<IParamCheck> condition,const function<bool(double)> Ycond){
 		auto res=make_shared<FitPoints>();
 		for(const FitPoints::Point&p:(*src))
 			if(condition->operator()(p.X())&&Ycond(p.y()))

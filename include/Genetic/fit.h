@@ -68,28 +68,28 @@ namespace Genetic{
 	typedef FitPoints::Point Point;
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const Point&p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const pair<double,double>&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,Point&&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,pair<double,double>&&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,shared_ptr<FitPoints>data);
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition);
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,function<bool(double)> Ycond);
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,shared_ptr<IParamCheck> condition,function<bool(double)> Ycond);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const Point&&p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const pair<double,double>&&p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const shared_ptr<FitPoints>data);
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition);
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const function<bool(double)> Ycond);
+	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition,const function<bool(double)> Ycond);
 	template<class IndexerX,class IndexerY=IndexerX>
-	shared_ptr<FitPoints> FitPointsXY(int from,int to,IndexerX X,IndexerY Y){
+	shared_ptr<FitPoints> FitPointsXY(const int from,const int to,const IndexerX&X,const IndexerY&Y){
 		auto res=make_shared<FitPoints>();
 		for(int i=from;i<=to;i++)
 			res<<FitPoints::Point({X[i]},Y[i]);
 		return res;
 	}
 	template<class IndexerX,class IndexerY=IndexerX,class IndexerWY=IndexerY>
-	shared_ptr<FitPoints> FitPointsXYdY(int from,int to,IndexerX X,IndexerY Y,IndexerWY WY){
+	shared_ptr<FitPoints> FitPointsXYdY(const int from,const int to,const IndexerX&X,const IndexerY&Y,const IndexerWY&WY){
 		auto res=make_shared<FitPoints>();
 		for(int i=from;i<=to;i++)
 			res<<FitPoints::Point({X[i]},Y[i],WY[i]);
 		return res;
 	}
 	template<class IndexerX,class IndexerWX=IndexerX,class IndexerY=IndexerX,class IndexerWY=IndexerY>
-	shared_ptr<FitPoints> FitPointsXdXYdY(int from,int to,IndexerX X,IndexerWX WX,IndexerY Y,IndexerWY WY){
+	shared_ptr<FitPoints> FitPointsXdXYdY(const int from,const int to,const IndexerX&X,const IndexerWX&WX,const IndexerY&Y,const IndexerWY&WY){
 		auto res=make_shared<FitPoints>();
 		for(int i=from;i<=to;i++)
 			res<<FitPoints::Point({X[i]},{WX[i]},Y[i],WY[i]);
