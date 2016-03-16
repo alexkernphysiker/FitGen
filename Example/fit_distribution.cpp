@@ -48,7 +48,7 @@ int main(){
 
 	Plotter::Instance().SetOutput(".","distribution");
 	Plot<double>().Hist(distribution)
-	.Line(LinearInterpolation<double>(
+	.Line(SortedPoints<double>(
 		[&fit](double x)->double{return fit({x});},
 		ChainWithStep(0.0,0.01,10.0)
 	));

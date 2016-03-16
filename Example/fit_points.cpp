@@ -72,7 +72,7 @@ int main(){
 	cout<<"Errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
 
 	Plotter::Instance().SetOutput(".","points");
-	LinearInterpolation<double>
+	SortedPoints<double>
 		totalfit(
 			[&fit](double x)->double{
 				return fit({x});
