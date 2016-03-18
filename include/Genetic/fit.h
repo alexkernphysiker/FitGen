@@ -58,8 +58,10 @@ namespace Genetic{
 		const_iterator cbegin()const;
 		const_iterator end()const;
 		const_iterator cend() const;
-		SortedPoints<value<double>> Hist1(const size_t parameter_index_x)const;
-		SortedPoints<value<double>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
+		const SortedPoints<value<double>> Hist1(const size_t parameter_index_x)const;
+		const SortedPoints<value<double>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
+		const SortedPoints<double> Line(const size_t parameter_index_x)const;
+		const SortedPoints<double> Line(const size_t parameter_index_x,const size_t parameter_index_y)const;
 	private:
 		vector<Point> m_data;
 		ParamSet m_min,m_max;
@@ -67,9 +69,9 @@ namespace Genetic{
 	};
 	typedef FitPoints::Point Point;
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const Point&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const pair<double,double>&p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const point<double>&p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const Point&&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const pair<double,double>&&p);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const point<double>&&p);
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const shared_ptr<FitPoints>data);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition);
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const function<bool(double)> Ycond);

@@ -89,7 +89,7 @@ namespace Genetic{
 				);
 				auto new_point=make_pair(new_param,s);
 				{Lock lock(m_mutex);
-					details::InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
+					InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
 				}
 			}
 		};
@@ -138,8 +138,8 @@ namespace Genetic{
 				);
 				auto new_point=make_pair(new_param,s);
 				{Lock lock(m_mutex);
-					details::InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
-					details::InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
+					InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
+					InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
 				}
 			}
 		};
@@ -169,8 +169,8 @@ namespace Genetic{
 			m_avr=ParamSet();
 			m_disp=ParamSet();
 			for(size_t j=0;j<par_cnt;j++){
-				m_avr<<disp[j].get().val();
-				m_disp<<disp[j].get().delta();
+				m_avr<<disp[j]().val();
+				m_disp<<disp[j]().delta();
 			}
 			m_itercount++;
 		}

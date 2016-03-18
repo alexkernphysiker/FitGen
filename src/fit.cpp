@@ -71,22 +71,34 @@ namespace Genetic{
 		m_data.push_back(point);
 		return *this;
 	}
-	SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index) const{
+	const SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index) const{
 		SortedPoints<value<double>> data;
 		for(const Point&P:m_data)
 			data<<point<value<double>>(
 				value<double>(P.X()[parameter_index],P.WX()[parameter_index]),
-				value<double>(P.y(),P.wy())
+						   value<double>(P.y(),P.wy())
 			);
 		return data;
 	}
-	SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index_x,const size_t parameter_index_y) const{
+	const SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index_x,const size_t parameter_index_y) const{
 		SortedPoints<value<double>> data;
 		for(const Point&P:m_data)
 			data<<point<value<double>>(
 				value<double>(P.X()[parameter_index_x],P.WX()[parameter_index_x]),
-				value<double>(P.X()[parameter_index_y],P.WX()[parameter_index_y])
+						   value<double>(P.X()[parameter_index_y],P.WX()[parameter_index_y])
 			);
+		return data;
+	}
+	const SortedPoints<double> FitPoints::Line(const size_t parameter_index)const{
+		SortedPoints<double> data;
+		for(const Point&P:m_data)
+			data<<point<double>(P.X()[parameter_index],P.y());
+		return data;
+	}
+	const SortedPoints<double> FitPoints::Line(const size_t parameter_index_x,const size_t parameter_index_y) const{
+		SortedPoints<double> data;
+		for(const Point&P:m_data)
+			data<<point<double>(P.X()[parameter_index_x],P.X()[parameter_index_y]);
 		return data;
 	}
 	
@@ -99,11 +111,11 @@ namespace Genetic{
 		src->operator<<(p);
 		return src;
 	}
-	shared_ptr< FitPoints > operator<<(shared_ptr< FitPoints > src, const pair<double,double>& p){
-		return src<<FitPoints::Point({p.first},p.second);
+	shared_ptr< FitPoints > operator<<(shared_ptr< FitPoints > src, const point<double>& p){
+		return src<<FitPoints::Point({p.X()},p.Y());
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const  pair<double,double>&&p){
-		return src<<FitPoints::Point({p.first},p.second);
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const  point<double>&&p){
+		return src<<FitPoints::Point({p.X()},p.Y());
 	}
 	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const  shared_ptr<FitPoints> data){
 		for(const Point&P:(*data))src<<P;

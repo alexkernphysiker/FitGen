@@ -82,11 +82,11 @@ TEST(FitPoints,Base){
 TEST(FitPoints,Operators){
 	auto points=make_shared<FitPoints>();
 	EXPECT_EQ(points.get(),(points<<FitPoints::Point({0},0)).get());
-	EXPECT_EQ(points.get(),(points<<make_pair(1.0,1.0)).get());
+	EXPECT_EQ(points.get(),(points<<point<double>(1.0,1.0)).get());
 }
 TEST(FitPoints,Select){
 	auto points=make_shared<FitPoints>();
-	points<<make_pair(0,0)<<make_pair(1,1)<<make_pair(2,2)<<make_pair(3,3)<<make_pair(3,3)<<make_pair(3,1)<<make_pair(1,3);
+	points<<point<double>(0,0)<<point<double>(1,1)<<point<double>(2,2)<<point<double>(3,3)<<point<double>(3,3)<<point<double>(3,1)<<point<double>(1,3);
 	auto filter=[](const ParamSet&X){return X[0]<2.5;};
 	auto y_filter=[](double y){return y<2.5;};
 	auto sel1=SelectFitPoints(points,make_shared<Filter>(filter));
@@ -114,7 +114,7 @@ TEST(OptimalityForPoints,Base){
 	EXPECT_EQ(1,coef_calls);
 	for(int count=1;count<5;count++){
 		func_calls=summand_calls=coef_calls=0;
-		points<<make_pair(0,0);
+		points<<point<double>(0,0);
 		EXPECT_EQ(count,S(ParamSet()));
 		EXPECT_EQ(0,func_calls);
 		EXPECT_EQ(points->size(),summand_calls);
@@ -138,7 +138,7 @@ TEST(OptimalityForPointsWithFuncError,Base){
 	EXPECT_EQ(1,coef_calls);
 	for(int count=1;count<5;count++){
 		func_calls=summand_calls=coef_calls=0;
-		points<<make_pair(0,0);
+		points<<point<double>(0,0);
 		EXPECT_EQ(count,S(ParamSet()));
 		EXPECT_EQ(0,func_calls);
 		EXPECT_EQ(points->size(),summand_calls);
