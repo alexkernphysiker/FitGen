@@ -42,7 +42,7 @@ namespace Genetic{
 			double __wy;
 		};
 		FitPoints();
-		FitPoints(const hist<double>&h);
+		FitPoints(const SortedPoints<value<double>>&h);
 		FitPoints(const hist2d<double>&d);
 		virtual ~FitPoints();
 		FitPoints&operator<<(const Point&point);
@@ -58,8 +58,8 @@ namespace Genetic{
 		const_iterator cbegin()const;
 		const_iterator end()const;
 		const_iterator cend() const;
-		hist<double> Hist1(const size_t parameter_index_x)const;
-		hist<double> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
+		SortedPoints<value<double>> Hist1(const size_t parameter_index_x)const;
+		SortedPoints<value<double>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
 	private:
 		vector<Point> m_data;
 		ParamSet m_min,m_max;

@@ -19,7 +19,7 @@ int main(){
 	
 	Distribution1D<double> distribution(BinsByStep(left,1.0,right));
 	normal_distribution<double> gauss((right+left)/2.0,(right-left)/10.0);
-	for(int i=0;i<count;i++)distribution<<gauss(engine);
+	for(int i=0;i<count;i++)distribution.Fill(gauss(engine));
 	
 	Fit<DifferentialMutations<>,ChiSquareWithXError> fit(
 		make_shared<FitPoints>(distribution),

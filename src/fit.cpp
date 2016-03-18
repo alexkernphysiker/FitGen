@@ -34,7 +34,7 @@ namespace Genetic{
 	double&FitPoints::Point::var_wy(){return __wy;}
 	
 	FitPoints::FitPoints(){}
-	FitPoints::FitPoints(const hist< double >& h){
+	FitPoints::FitPoints(const SortedPoints<value<double>>& h){
 		for(const point<value<double>>&p:h)
 			operator<<(Point({p.X().val()},{p.X().delta()},p.Y().val(),p.Y().delta()));
 	}
@@ -71,23 +71,23 @@ namespace Genetic{
 		m_data.push_back(point);
 		return *this;
 	}
-	hist<double> FitPoints::Hist1(const size_t parameter_index) const{
-		vector<hist<double>::Point> data;
+	SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index) const{
+		SortedPoints<value<double>> data;
 		for(const Point&P:m_data)
-			data.push_back(point<value<double>>(
+			data<<point<value<double>>(
 				value<double>(P.X()[parameter_index],P.WX()[parameter_index]),
 				value<double>(P.y(),P.wy())
-			));
-		return hist<double>(data);
+			);
+		return data;
 	}
-	hist<double> FitPoints::Hist1(const size_t parameter_index_x,const size_t parameter_index_y) const{
-		vector<hist<double>::Point> data;
+	SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index_x,const size_t parameter_index_y) const{
+		SortedPoints<value<double>> data;
 		for(const Point&P:m_data)
-			data.push_back(point<value<double>>(
+			data<<point<value<double>>(
 				value<double>(P.X()[parameter_index_x],P.WX()[parameter_index_x]),
 				value<double>(P.X()[parameter_index_y],P.WX()[parameter_index_y])
-			));
-		return hist<double>(data);
+			);
+		return data;
 	}
 	
 

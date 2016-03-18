@@ -216,7 +216,7 @@ TEST(ExactCopying,Check){
 			for(int i=0;i<1000;i++){
 				ParamSet P{0};
 				gen.MAKE_TEST(P,engine);
-				D<<P[0];
+				D.Fill(P[0]);
 			}
 			double P_exp=D[0].Y().val()/(D[0].Y().val()+D[1].Y().val());
 			double dP_exp=sqrt(D[0].Y().val())/(D[0].Y().val()+D[1].Y().val())+sqrt(D[1].Y().val())/pow(D[0].Y().val()+D[1].Y().val(),2);
