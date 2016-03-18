@@ -3,7 +3,7 @@
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
 #include <functional>
-#include "../math_h/hist.h"
+#include "../math_h/structures.h"
 #include "abstract.h"
 #include "genetic.h"
 #include "paramfunc.h"

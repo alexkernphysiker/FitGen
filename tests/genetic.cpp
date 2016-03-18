@@ -2,7 +2,7 @@
 // MIT license
 #include <gtest/gtest.h>
 #include <math_h/error.h>
-#include <math_h/hist.h>
+#include <math_h/structures.h>
 #include <Genetic/genetic.h>
 #include <Genetic/initialconditions.h>
 #include "engine.h"
