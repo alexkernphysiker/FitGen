@@ -68,8 +68,9 @@ int main(){
 	}
 	cout<<endl;
 	
-	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
-	cout<<"Errors:"<<endl<<fit.GetParamParabolicErrors(parEq(fit.ParamCount(),0.001))<<endl;
+	cout<<"Fit parameters:"<<endl;
+	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
+	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
 
 	Plotter::Instance().SetOutput(".","points");
 	SortedPoints<double>

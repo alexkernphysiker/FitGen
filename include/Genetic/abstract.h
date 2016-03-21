@@ -66,7 +66,7 @@ namespace Genetic{
 	public:
 		void Iterate(RANDOM&random);
 		
-		const unsigned long int iteration_count()const;
+		const unsigned long long int iteration_count()const;
 		const size_t PopulationSize()const;
 		const size_t ParamCount()const;
 		const double Optimality(const size_t point_index=0)const;
@@ -98,7 +98,7 @@ namespace Genetic{
 		ParamSet m_avr;
 		ParamSet m_disp;
 		ParamSet m_max_dev;
-		unsigned long int m_itercount;
+		unsigned long long int m_itercount;
 		size_t threads;
 	};
 	ostream&operator<<(ostream&str,const AbstractGenetic&P);

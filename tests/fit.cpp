@@ -199,8 +199,9 @@ public:
 };
 TEST(Parabolic,Base){
 	ParabolicTest gen;
-	gen.Init(1,make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(-0.0001,0.0001),engine);
-	EXPECT_TRUE(pow(gen.GetParamParabolicErrors({0.01})[0]-1.0,2)<0.0001);
+	gen.SetUncertaintyCalcDeltas({0.01})
+		.Init(1,make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(-0.0001,0.0001),engine);
+	EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[0].delta()-1.0,2)<0.0001);
 }
 TEST(Parabolic,BaseTest){
 	for(int count=1;count<10;count++){
@@ -208,11 +209,12 @@ TEST(Parabolic,BaseTest){
 		auto init=make_shared<InitialDistributions>();
 		for(int i=0;i<count;i++)
 			init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
-		gen.Init(1,init,engine);
-		ParamSet P=gen.GetParamParabolicErrors(parEq(count,0.01));
-		ASSERT_EQ(count,P.size());
-		for(double p:P)
-			EXPECT_TRUE(pow(p-1.0,2)<0.0001);
+		gen.SetUncertaintyCalcDeltas(parEq(count,0.01)).Init(1,init,engine);
+		ASSERT_EQ(count,gen.ParametersWithUncertainties().size());
+		for(size_t i=0;i<gen.ParamCount();i++){
+			EXPECT_EQ(gen[i],gen.ParametersWithUncertainties()[i].val());
+			EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[i].delta()-1.0,2)<0.0001);
+		}
 	}
 }
 typedef Add<Mul<Arg<0>,Par<0>>,Par<1>> Fit_Func;

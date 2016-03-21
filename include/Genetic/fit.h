@@ -117,9 +117,14 @@ namespace Genetic{
 		Parabolic();
 	public:
 		virtual ~Parabolic();
-		double GetParamParabolicError(const double delta,const int i)const;
-		ParamSet GetParamParabolicErrors(const ParamSet&delta)const;
-		ParamSet GetParamParabolicErrors(const ParamSet&&delta)const;
+		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&P);
+		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&&P);
+		const vector<value<double>>&ParametersWithUncertainties()const;
+	private:
+		double GetParamParabolicError(const double delta, const size_t i)const;
+		ParamSet m_delta;
+		shared_ptr<vector<value<double>>> m_uncertainty_cache;
+		shared_ptr<unsigned long long int> m_iter_number;
 	};
 	shared_ptr<OptimalityForPoints> SumSquareDiff(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f);
 	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f);
