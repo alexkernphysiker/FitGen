@@ -5,7 +5,6 @@
 #include "abstract.h"
 #include "paramfunc.h"
 namespace Genetic{
-	using namespace std;
 	using namespace MathTemplates;
 	class Above:public IParamCheck{
 	public:
@@ -28,7 +27,7 @@ namespace Genetic{
 		ParamSet m_data;
 	};
 	template<class Filter>
-	inline shared_ptr<Filter> operator<<(shared_ptr<Filter> filter, const double value){
+	inline std::shared_ptr<Filter> operator<<(std::shared_ptr<Filter> filter, const double value){
 		filter->operator<<(value);
 		return filter;
 	}
@@ -38,13 +37,13 @@ namespace Genetic{
 		virtual ~AbstractFilterMulti();
 		const size_t Count()const;
 		const IParamCheck &Get(size_t i)const;
-		AbstractFilterMulti &Add(const shared_ptr<IParamCheck> val);
-		AbstractFilterMulti &Add(const function<bool(const ParamSet&)> condition);
+		AbstractFilterMulti &Add(const std::shared_ptr<IParamCheck> val);
+		AbstractFilterMulti &Add(const std::function<bool(const ParamSet&)> condition);
 	protected:
-		vector<shared_ptr<IParamCheck>> m_data;
+		std::vector<std::shared_ptr<IParamCheck>> m_data;
 	};
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti>filter,const shared_ptr<IParamCheck> value);
-	shared_ptr<AbstractFilterMulti> operator<<(shared_ptr<AbstractFilterMulti>filter,const function<bool(const ParamSet&)> condition);
+	std::shared_ptr<AbstractFilterMulti> operator<<(std::shared_ptr<AbstractFilterMulti>filter,const std::shared_ptr<IParamCheck> value);
+	std::shared_ptr<AbstractFilterMulti> operator<<(std::shared_ptr<AbstractFilterMulti>filter,const std::function<bool(const ParamSet&)> condition);
 	class And:public AbstractFilterMulti{
 	public:
 		And(){}

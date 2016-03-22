@@ -7,31 +7,30 @@
 #include <mutex>
 #include <iostream>
 namespace Genetic{
-	using namespace std;
 	class ParamSet{
 	public:
 		ParamSet();
-		ParamSet(const initializer_list<double>&source);
-		ParamSet(const initializer_list<double>&&source);
-		ParamSet(const vector<double> &source);
-		ParamSet(const vector<double>&&source);
+		ParamSet(const std::initializer_list<double>&source);
+		ParamSet(const std::initializer_list<double>&&source);
+		ParamSet(const std::vector<double> &source);
+		ParamSet(const std::vector<double>&&source);
 		ParamSet(const ParamSet&source);
 		ParamSet(const ParamSet&&source);
 		~ParamSet();
 		
 		ParamSet&operator<<(const double p);
-		ParamSet&operator<<(const initializer_list<double>&source);
-		ParamSet&operator<<(const initializer_list<double>&&source);
-		ParamSet&operator<<(const vector<double>&V);
-		ParamSet&operator<<(const vector<double>&&V);
+		ParamSet&operator<<(const std::initializer_list<double>&source);
+		ParamSet&operator<<(const std::initializer_list<double>&&source);
+		ParamSet&operator<<(const std::vector<double>&V);
+		ParamSet&operator<<(const std::vector<double>&&V);
 		ParamSet&operator<<(const ParamSet&P);
 		ParamSet&operator<<(const ParamSet&&P);
 		ParamSet&operator>>(double&p);
 		
-		ParamSet&operator=(const initializer_list<double>&source);
-		ParamSet&operator=(const initializer_list<double>&&source);
-		ParamSet&operator=(const vector<double>&V);
-		ParamSet&operator=(const vector<double>&&V);
+		ParamSet&operator=(const std::initializer_list<double>&source);
+		ParamSet&operator=(const std::initializer_list<double>&&source);
+		ParamSet&operator=(const std::vector<double>&V);
+		ParamSet&operator=(const std::vector<double>&&V);
 		ParamSet&operator=(const ParamSet&P);
 		ParamSet&operator=(const ParamSet&&P);
 		
@@ -39,8 +38,8 @@ namespace Genetic{
 		double operator[](const size_t i)const;
 		double&operator()(const size_t i);
 
-		typedef vector<double>::iterator iterator;
-		typedef vector<double>::const_iterator const_iterator;
+		typedef std::vector<double>::iterator iterator;
+		typedef std::vector<double>::const_iterator const_iterator;
 		iterator begin();
 		const_iterator begin()const;
 		const_iterator cbegin()const;
@@ -48,9 +47,9 @@ namespace Genetic{
 		const_iterator end() const;
 		const_iterator cend() const;
 	protected:
-		mutex m_mutex;
+		std::mutex m_mutex;
 	private:
-		vector<double> m_values;
+		std::vector<double> m_values;
 	};
 	template<class indexer> 
 	ParamSet parFrom(const size_t n,const indexer x){
@@ -59,8 +58,8 @@ namespace Genetic{
 			res<<(x[i]);
 		return res;
 	}
-	ostream&operator<<(ostream&str,const ParamSet&P);
-	istream&operator>>(istream&str,ParamSet&P);
+	std::ostream&operator<<(std::ostream&str,const ParamSet&P);
+	std::istream&operator>>(std::istream&str,ParamSet&P);
 	ParamSet parEq(const size_t cnt,const double val);
 	inline ParamSet parZeros(const size_t cnt){return parEq(cnt,0);}
 	inline ParamSet parOnes(const size_t cnt){return parEq(cnt,1);}

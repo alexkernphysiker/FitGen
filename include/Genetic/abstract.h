@@ -12,9 +12,8 @@
 #include "../math_h/sigma.h"
 #include "paramset.h"
 namespace Genetic{
-	using namespace std;
 	using namespace MathTemplates;
-	typedef mt19937 RANDOM;
+	typedef std::mt19937 RANDOM;
 	class IInitialConditions{
 	public:
 		virtual ~IInitialConditions(){}
@@ -27,11 +26,11 @@ namespace Genetic{
 	};
 	class Filter:public IParamCheck{
 	public:
-		Filter(const function<bool(const ParamSet&)> c);
+		Filter(const std::function<bool(const ParamSet&)> c);
 		virtual ~Filter();
 		virtual bool operator()(const ParamSet&P)const override;
 	private:
-		function<bool(const ParamSet&)> condition;
+		std::function<bool(const ParamSet&)> condition;
 	};
 	class IOptimalityFunction{
 	public:
@@ -40,29 +39,29 @@ namespace Genetic{
 	};
 	class OptimalityFunction:public IOptimalityFunction{
 	public:
-		OptimalityFunction(const function<double(const ParamSet&)> f);
+		OptimalityFunction(const std::function<double(const ParamSet&)> f);
 		virtual ~OptimalityFunction();
 		virtual double operator()(const ParamSet&P)const override;
 	private:
-		function<double(const ParamSet&)> func;
+		std::function<double(const ParamSet&)> func;
 	};
 	
 	class AbstractGenetic{
 	protected:
 		AbstractGenetic();
-		AbstractGenetic(const shared_ptr<IOptimalityFunction> optimality);
+		AbstractGenetic(const std::shared_ptr<IOptimalityFunction> optimality);
 	public:
 		virtual ~AbstractGenetic();
-		shared_ptr<IOptimalityFunction> OptimalityCalculator()const;
+		std::shared_ptr<IOptimalityFunction> OptimalityCalculator()const;
 		
-		AbstractGenetic&SetFilter(const shared_ptr<IParamCheck> filter);
-		AbstractGenetic&SetFilter(const function<bool(const ParamSet&)>);
+		AbstractGenetic&SetFilter(const std::shared_ptr<IParamCheck> filter);
+		AbstractGenetic&SetFilter(const std::function<bool(const ParamSet&)>);
 		AbstractGenetic&RemoveFilter();
 		
 		AbstractGenetic&SetThreadCount(const size_t threads_count);
 		const size_t ThreadCount()const;
 		
-		AbstractGenetic&Init(const size_t population_size,const shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
+		AbstractGenetic&Init(const size_t population_size,const std::shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 	protected:
 		virtual void mutations(ParamSet&,RANDOM&)const;
 	public:
@@ -74,7 +73,7 @@ namespace Genetic{
 		const double Optimality(const size_t point_index=0)const;
 		const ParamSet&Parameters(const size_t point_index=0)const;
 		const double operator[](const size_t i)const;
-		const vector<value<double>>&ParametersStatistics()const;
+		const std::vector<value<double>>&ParametersStatistics()const;
 		
 		const bool ConcentratedInOnePoint()const;
 		const bool AbsoluteOptimalityExitCondition(const double accuracy)const;
@@ -84,22 +83,22 @@ namespace Genetic{
 		const bool ParametersDispersionExitCondition(const ParamSet&&max_disp)const;
 		const bool RelativeParametersDispersionExitCondition(const ParamSet&&max_disp)const;
 		
-		typedef vector<double>::const_iterator const_iterator;
+		typedef std::vector<double>::const_iterator const_iterator;
 		const_iterator begin()const;
 		const_iterator cbegin()const;
 		const_iterator end() const;
 		const_iterator cend() const;
 	protected:
-		mutex m_mutex;
+		std::mutex m_mutex;
 	private:
-		shared_ptr<IOptimalityFunction> m_optimality;
-		shared_ptr<IParamCheck> m_filter;
-		vector<pair<ParamSet,double>> m_population;
-		vector<value<double>> m_stat;
+		std::shared_ptr<IOptimalityFunction> m_optimality;
+		std::shared_ptr<IParamCheck> m_filter;
+		std::vector<std::pair<ParamSet,double>> m_population;
+		std::vector<value<double>> m_stat;
 		unsigned long long int m_itercount;
 		size_t threads;
 	};
-	ostream&operator<<(ostream&str,const AbstractGenetic&P);
+	std::ostream&operator<<(std::ostream&str,const AbstractGenetic&P);
 	inline void Find(AbstractGenetic&fit,RANDOM&engine){
 		while(!fit.ConcentratedInOnePoint())
 			fit.Iterate(engine);

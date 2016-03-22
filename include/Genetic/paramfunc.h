@@ -7,14 +7,13 @@
 #include "../math_h/functions.h"
 #include "paramset.h"
 namespace Genetic{
-	using namespace std;
 	using namespace MathTemplates;
 	class IParamFunc{
 	public:
 		virtual ~IParamFunc(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const=0;
 	};
-	typedef function<double(const ParamSet&,const ParamSet&)> paramFunc;
+	typedef std::function<double(const ParamSet&,const ParamSet&)> paramFunc;
 	
 	template<int a,int b>
 	struct max2{enum{val=(a>b)?a:b};};

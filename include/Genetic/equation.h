@@ -5,25 +5,24 @@
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic{
-	using namespace std;
 	using namespace MathTemplates;
 	template<class GENETIC>
 	class Equation:public virtual GENETIC{
 	public:
-		Equation(const function<double(const ParamSet&)> f)
-		:AbstractGenetic(make_shared<OptimalityFunction>([f](const ParamSet&P){
+		Equation(const std::function<double(const ParamSet&)> f)
+		:AbstractGenetic(std::make_shared<OptimalityFunction>([f](const ParamSet&P){
 			return pow(f(P),2);
 		})),GENETIC(){}
-		Equation(const function<double(const ParamSet&)> left,const function<double(const ParamSet&)> right)
-		:AbstractGenetic(make_shared<OptimalityFunction>([left,right](const ParamSet&P){
+		Equation(const std::function<double(const ParamSet&)> left,const std::function<double(const ParamSet&)> right)
+		:AbstractGenetic(std::make_shared<OptimalityFunction>([left,right](const ParamSet&P){
 			return pow(left(P)-right(P),2);
 		})),GENETIC(){}
 	};
 	template<class GENETIC>
 	class SearchMin:public GENETIC{
 	public:
-		SearchMin(const function<double(const ParamSet&)> f)
-		:AbstractGenetic(make_shared<OptimalityFunction>(f)),GENETIC(){}
+		SearchMin(const std::function<double(const ParamSet&)> f)
+		:AbstractGenetic(std::make_shared<OptimalityFunction>(f)),GENETIC(){}
 	};
 }
 #endif

@@ -8,7 +8,6 @@
 #include "genetic.h"
 #include "paramfunc.h"
 namespace Genetic{
-	using namespace std;
 	using namespace MathTemplates;
 	class ParameterFunction:public IParamFunc{
 	public:
@@ -53,7 +52,7 @@ namespace Genetic{
 		const ParamSet&max()const;
 		double Ymin()const;
 		double Ymax()const;
-		typedef vector<Point>::const_iterator const_iterator;
+		typedef std::vector<Point>::const_iterator const_iterator;
 		const_iterator begin()const;
 		const_iterator cbegin()const;
 		const_iterator end()const;
@@ -63,36 +62,36 @@ namespace Genetic{
 		const SortedPoints<double> Line(const size_t parameter_index_x)const;
 		const SortedPoints<double> Line(const size_t parameter_index_x,const size_t parameter_index_y)const;
 	private:
-		vector<Point> m_data;
+		std::vector<Point> m_data;
 		ParamSet m_min,m_max;
 		double ymin,ymax;
 	};
 	typedef FitPoints::Point Point;
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const Point&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const point<double>&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const Point&&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const point<double>&&p);
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const shared_ptr<FitPoints>data);
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition);
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const function<bool(double)> Ycond);
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition,const function<bool(double)> Ycond);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const Point&p);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const point<double>&p);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const Point&&p);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const point<double>&&p);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const std::shared_ptr<FitPoints>data);
+	std::shared_ptr<FitPoints> SelectFitPoints(std::shared_ptr<FitPoints> src,const std::shared_ptr<IParamCheck> condition);
+	std::shared_ptr<FitPoints> SelectFitPoints(std::shared_ptr<FitPoints> src,const std::function<bool(double)> Ycond);
+	std::shared_ptr<FitPoints> SelectFitPoints(std::shared_ptr<FitPoints> src,const std::shared_ptr<IParamCheck> condition,const std::function<bool(double)> Ycond);
 	template<class IndexerX,class IndexerY=IndexerX>
-	shared_ptr<FitPoints> FitPointsXY(const int from,const int to,const IndexerX&X,const IndexerY&Y){
-		auto res=make_shared<FitPoints>();
+	std::shared_ptr<FitPoints> FitPointsXY(const int from,const int to,const IndexerX&X,const IndexerY&Y){
+		auto res=std::make_shared<FitPoints>();
 		for(int i=from;i<=to;i++)
 			res<<FitPoints::Point({X[i]},Y[i]);
 		return res;
 	}
 	template<class IndexerX,class IndexerY=IndexerX,class IndexerWY=IndexerY>
-	shared_ptr<FitPoints> FitPointsXYdY(const int from,const int to,const IndexerX&X,const IndexerY&Y,const IndexerWY&WY){
-		auto res=make_shared<FitPoints>();
+	std::shared_ptr<FitPoints> FitPointsXYdY(const int from,const int to,const IndexerX&X,const IndexerY&Y,const IndexerWY&WY){
+		auto res=std::make_shared<FitPoints>();
 		for(int i=from;i<=to;i++)
 			res<<FitPoints::Point({X[i]},Y[i],WY[i]);
 		return res;
 	}
 	template<class IndexerX,class IndexerWX=IndexerX,class IndexerY=IndexerX,class IndexerWY=IndexerY>
-	shared_ptr<FitPoints> FitPointsXdXYdY(const int from,const int to,const IndexerX&X,const IndexerWX&WX,const IndexerY&Y,const IndexerWY&WY){
-		auto res=make_shared<FitPoints>();
+	std::shared_ptr<FitPoints> FitPointsXdXYdY(const int from,const int to,const IndexerX&X,const IndexerWX&WX,const IndexerY&Y,const IndexerWY&WY){
+		auto res=std::make_shared<FitPoints>();
 		for(int i=from;i<=to;i++)
 			res<<FitPoints::Point({X[i]},{WX[i]},Y[i],WY[i]);
 		return res;
@@ -100,15 +99,15 @@ namespace Genetic{
 	
 	class OptimalityForPoints:public IOptimalityFunction{
 	public:
-		typedef function<double(const ParamSet&,const IParamFunc&)> Coefficient;
-		typedef function<double(const FitPoints::Point&,const ParamSet&,const IParamFunc&)> Summand;
-		OptimalityForPoints(const shared_ptr<FitPoints> p,const  shared_ptr<IParamFunc> f,const Coefficient c,const Summand s);
+		typedef std::function<double(const ParamSet&,const IParamFunc&)> Coefficient;
+		typedef std::function<double(const FitPoints::Point&,const ParamSet&,const IParamFunc&)> Summand;
+		OptimalityForPoints(const std::shared_ptr<FitPoints> p,const  std::shared_ptr<IParamFunc> f,const Coefficient c,const Summand s);
 		virtual ~OptimalityForPoints();
 		virtual double operator()(const ParamSet&P)const override;
-		shared_ptr<FitPoints> Points()const;
+		std::shared_ptr<FitPoints> Points()const;
 	protected:
-		shared_ptr<FitPoints> points;
-		shared_ptr<IParamFunc> func;
+		std::shared_ptr<FitPoints> points;
+		std::shared_ptr<IParamFunc> func;
 		Coefficient C;
 		Summand S;
 	};
@@ -119,80 +118,84 @@ namespace Genetic{
 		virtual ~Parabolic();
 		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&P);
 		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&&P);
-		const vector<value<double>>&ParametersWithUncertainties()const;
+		const std::vector<value<double>>&ParametersWithUncertainties()const;
 	private:
 		double GetParamParabolicError(const double delta, const size_t i)const;
 		ParamSet m_delta;
-		shared_ptr<vector<value<double>>> m_uncertainty_cache;
-		shared_ptr<unsigned long long int> m_iter_number;
+		std::shared_ptr<std::vector<value<double>>> m_uncertainty_cache;
+		std::shared_ptr<unsigned long long int> m_iter_number;
 	};
-	shared_ptr<OptimalityForPoints> SumSquareDiff(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f);
-	shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f);
-	shared_ptr<OptimalityForPoints> ChiSquare(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f);
-	shared_ptr<OptimalityForPoints> ChiSquareWithXError(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f);
-	template<class GENETIC,shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const shared_ptr<FitPoints>,const shared_ptr<IParamFunc>)>
+	std::shared_ptr<OptimalityForPoints> SumSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
+	std::shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
+	std::shared_ptr<OptimalityForPoints> ChiSquare(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
+	std::shared_ptr<OptimalityForPoints> ChiSquareWithXError(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
+	template<class GENETIC,std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)>
 	class Fit:public virtual GENETIC,public virtual Parabolic{
 	private:
-		shared_ptr<IParamFunc> m_func;
+		std::shared_ptr<IParamFunc> m_func;
 	protected:
-		Fit(shared_ptr<IParamFunc> f):GENETIC(),Parabolic(){
+		Fit(std::shared_ptr<IParamFunc> f):GENETIC(),Parabolic(){
 			m_func=f;
 		}
 	public:
 		Fit(
-			const shared_ptr<FitPoints> points, 
-			const shared_ptr<IParamFunc> f
+			const std::shared_ptr<FitPoints> points, 
+			const std::shared_ptr<IParamFunc> f
 		):AbstractGenetic(OptimalityAlgorithm(points,f)){
 			m_func=f;
 		}
-		Fit(const shared_ptr<FitPoints> points,const paramFunc f):Fit(points,make_shared<ParameterFunction>(f)){}
+		Fit(const std::shared_ptr<FitPoints> points,const paramFunc f):Fit(points,std::make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
 		double operator()(const ParamSet&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
 		double operator()(const ParamSet&&X)const{return operator()(X);}
-		shared_ptr<IParamFunc> Func()const{return m_func;}
-		shared_ptr<FitPoints> Points()const{return dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();}
+		std::shared_ptr<IParamFunc> Func()const{return m_func;}
+		std::shared_ptr<FitPoints> Points()const{
+			return std::dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();
+		}
 	};
-	template<class GENETIC,class FUNC,shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const shared_ptr<FitPoints>,const shared_ptr<IParamFunc>)>
+	template<class GENETIC,class FUNC,std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)>
 	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
 	public:
 		typedef FUNC functype;
-		FitFunction(const shared_ptr<FitPoints> points):
-			AbstractGenetic(OptimalityAlgorithm(points,make_shared<FUNC>())),
-			Fit<GENETIC,OptimalityAlgorithm>(make_shared<FUNC>()){}
+		FitFunction(const std::shared_ptr<FitPoints> points):
+			AbstractGenetic(OptimalityAlgorithm(points,std::make_shared<FUNC>())),
+			Fit<GENETIC,OptimalityAlgorithm>(std::make_shared<FUNC>()){}
 		virtual ~FitFunction(){}
 	};
 	
 	class OptimalityForPointsWithFuncError:public IOptimalityFunction{
 	public:
-		typedef function<double(const ParamSet&,const IParamFunc&,const IParamFunc&)> Coefficient;
-		typedef function<double(const FitPoints::Point&,const ParamSet&,const IParamFunc&,const IParamFunc&)> Summand;
-		OptimalityForPointsWithFuncError(const shared_ptr<FitPoints> p,const shared_ptr<IParamFunc> f,const shared_ptr<IParamFunc> e,const Coefficient c,const Summand s);
+		typedef std::function<double(const ParamSet&,const IParamFunc&,const IParamFunc&)> Coefficient;
+		typedef std::function<double(const FitPoints::Point&,const ParamSet&,const IParamFunc&,const IParamFunc&)> Summand;
+		OptimalityForPointsWithFuncError(const std::shared_ptr<FitPoints> p,const std::shared_ptr<IParamFunc> f,const std::shared_ptr<IParamFunc> e,const Coefficient c,const Summand s);
 		virtual ~OptimalityForPointsWithFuncError();
 		virtual double operator()(const ParamSet&P)const override;
-		shared_ptr<FitPoints> Points()const;
+		std::shared_ptr<FitPoints> Points()const;
 	protected:
-		shared_ptr<FitPoints> points;
-		shared_ptr<IParamFunc> func;
-		shared_ptr<IParamFunc> error;
+		std::shared_ptr<FitPoints> points;
+		std::shared_ptr<IParamFunc> func;
+		std::shared_ptr<IParamFunc> error;
 		Coefficient C;
 		Summand S;
 	};
-	shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f,const shared_ptr<IParamFunc> e);
-	shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f,const shared_ptr<IParamFunc> e);
-	template<class GENETIC,shared_ptr<OptimalityForPointsWithFuncError> OptimalityAlgorithm(const shared_ptr<FitPoints>,const shared_ptr<IParamFunc>,const shared_ptr<IParamFunc>)>
+	std::shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f,const std::shared_ptr<IParamFunc> e);
+	std::shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f,const std::shared_ptr<IParamFunc> e);
+	template<class GENETIC,std::shared_ptr<OptimalityForPointsWithFuncError> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>,const std::shared_ptr<IParamFunc>)>
 	class FitFunctionWithError:public virtual GENETIC,public virtual Parabolic{
 	private:
-		shared_ptr<IParamFunc> m_func;
+		std::shared_ptr<IParamFunc> m_func;
 	public:
-		FitFunctionWithError(shared_ptr<FitPoints> points,shared_ptr<IParamFunc> f,shared_ptr<IParamFunc> e)
+		FitFunctionWithError(std::shared_ptr<FitPoints> points,std::shared_ptr<IParamFunc> f,std::shared_ptr<IParamFunc> e)
 			:AbstractGenetic(OptimalityAlgorithm(points,f,e)),GENETIC(),Parabolic(){
 			m_func=f;
 		}
-		FitFunctionWithError(shared_ptr<FitPoints> points,paramFunc f,paramFunc e):
-			FitFunctionWithError(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e)){}
+		FitFunctionWithError(std::shared_ptr<FitPoints> points,paramFunc f,paramFunc e):
+		FitFunctionWithError(points,std::make_shared<ParameterFunction>(f),std::make_shared<ParameterFunction>(e)){}
 		virtual ~FitFunctionWithError(){}
 		double operator()(ParamSet&&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
-		shared_ptr<FitPoints> Points()const{return dynamic_pointer_cast<OptimalityForPointsWithFuncError>(AbstractGenetic::OptimalityCalculator())->Points();}
+		std::shared_ptr<FitPoints> Points()const{
+			return std::dynamic_pointer_cast<OptimalityForPointsWithFuncError>(AbstractGenetic::OptimalityCalculator())->Points();
+		}
 	};
 }
 #endif

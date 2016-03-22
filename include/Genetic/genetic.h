@@ -6,7 +6,6 @@
 #include "../math_h/error.h"
 #include "abstract.h"
 namespace Genetic{
-	using namespace std;
 	using namespace MathTemplates;
 	template<class FITGEN=AbstractGenetic>
 	class DifferentialMutations: public virtual FITGEN{

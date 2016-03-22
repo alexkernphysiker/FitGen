@@ -7,7 +7,6 @@
 #include "../math_h/randomfunc.h"
 #include "abstract.h"
 namespace Genetic{
-	using namespace std;
 	using namespace MathTemplates;
 	typedef RandomValueGenerator<double> Distrib;
 	class InitialDistributions:public IInitialConditions{
@@ -15,13 +14,13 @@ namespace Genetic{
 		InitialDistributions();
 		virtual ~InitialDistributions();
 		virtual ParamSet Generate(RANDOM&R)const override;
-		InitialDistributions &operator<<(const shared_ptr<Distrib> distr);
+		InitialDistributions &operator<<(const std::shared_ptr<Distrib> distr);
 		const size_t Count()const ;
 		const Distrib &operator[](const size_t i)const ;
 	private:
-		vector<shared_ptr<Distrib>> ParamDistr;
+		std::vector<std::shared_ptr<Distrib>> ParamDistr;
 	};
-	shared_ptr<InitialDistributions> operator<<(shared_ptr<InitialDistributions> init,const shared_ptr<Distrib> func);
+	std::shared_ptr<InitialDistributions> operator<<(std::shared_ptr<InitialDistributions> init,const std::shared_ptr<Distrib> func);
 	
 	class GenerateUniform:public IInitialConditions{
 	public:
@@ -33,8 +32,8 @@ namespace Genetic{
 		GenerateUniform &Add(const double min,const double max);
 		virtual ParamSet Generate(RANDOM&R)const override;
 	private:
-		vector<double> m_min;
-		vector<double> m_max;
+		std::vector<double> m_min;
+		std::vector<double> m_max;
 	};
 	class GenerateByGauss:public IInitialConditions{
 	public:
@@ -46,14 +45,14 @@ namespace Genetic{
 		GenerateByGauss &Add(const double mean,const double sig);
 		virtual ParamSet Generate(RANDOM&R)const override;
 	private:
-		vector<double> m_mean;
-		vector<double> m_sig;
+		std::vector<double> m_mean;
+		std::vector<double> m_sig;
 	};
-	inline shared_ptr<GenerateByGauss> operator<<(shared_ptr<GenerateByGauss> G,const pair<double,double>&&value){
+	inline std::shared_ptr<GenerateByGauss> operator<<(std::shared_ptr<GenerateByGauss> G,const std::pair<double,double>&&value){
 		G->Add(value.first,value.second);
 		return G;
 	}
-	inline shared_ptr<GenerateUniform> operator<<(shared_ptr<GenerateUniform> G,const pair<double,double>&&value){
+	inline std::shared_ptr<GenerateUniform> operator<<(std::shared_ptr<GenerateUniform> G,const std::pair<double,double>&&value){
 		G->Add(value.first,value.second);
 		return G;
 	}
