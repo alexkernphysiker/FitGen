@@ -77,20 +77,8 @@ int main(){
 	
 	Plotter::Instance().SetOutput(".","points");
 	SortedPoints<double>
-		totalfit(
-			[&fit](double x)->double{
-				return fit({x});
-			},
-			ChainWithStep(-70.0,0.1,30.0)
-		),
-		background(
-			[&fit](double x)->double{
-				return Background()({x},fit.Parameters());
-			},
-			ChainWithStep(-70.0,0.1,30.0)
-		);
-	Plot<double>().Hist(points_to_fit->Hist1(0))
-	.Line(totalfit,"Fit")
-	.Line(background,"Background");
+		totalfit([&fit](double x)->double{return fit({x});},ChainWithStep(-70.0,0.1,30.0)),
+		background([&fit](double x)->double{return Background()({x},fit.Parameters());},ChainWithStep(-70.0,0.1,30.0));
+	Plot<double>().Hist(points_to_fit->Hist1(0)).Line(totalfit,"Fit").Line(background,"Background");
 	return 0;
 }
