@@ -9,9 +9,11 @@
 #include <functional>
 #include <random>
 #include <math.h>
+#include "../math_h/sigma.h"
 #include "paramset.h"
 namespace Genetic{
 	using namespace std;
+	using namespace MathTemplates;
 	typedef mt19937 RANDOM;
 	class IInitialConditions{
 	public:
@@ -72,9 +74,7 @@ namespace Genetic{
 		const double Optimality(const size_t point_index=0)const;
 		const ParamSet&Parameters(const size_t point_index=0)const;
 		const double operator[](const size_t i)const;
-		const ParamSet&ParamAverage()const;
-		const ParamSet&ParamDispersion()const;
-		const ParamSet&ParamMaxDeviation()const;
+		const vector<value<double>>&ParametersStatistics()const;
 		
 		const bool ConcentratedInOnePoint()const;
 		const bool AbsoluteOptimalityExitCondition(const double accuracy)const;
@@ -95,9 +95,7 @@ namespace Genetic{
 		shared_ptr<IOptimalityFunction> m_optimality;
 		shared_ptr<IParamCheck> m_filter;
 		vector<pair<ParamSet,double>> m_population;
-		ParamSet m_avr;
-		ParamSet m_disp;
-		ParamSet m_max_dev;
+		vector<value<double>> m_stat;
 		unsigned long long int m_itercount;
 		size_t threads;
 	};

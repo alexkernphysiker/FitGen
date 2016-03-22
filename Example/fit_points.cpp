@@ -68,10 +68,13 @@ int main(){
 	}
 	cout<<endl;
 	
-	cout<<"Fit parameters:"<<endl;
+	cout<<"Fit parameters (most optimal values):"<<endl<<fit.Parameters()<<endl;
+	cout<<"Fit parameters (statistics)"<<endl;
+	for(const auto&P:fit.ParametersStatistics())cout<<P<<endl;
 	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
+	cout<<"Fit parameters (uncertainty)"<<endl;
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
-
+	
 	Plotter::Instance().SetOutput(".","points");
 	SortedPoints<double>
 		totalfit(

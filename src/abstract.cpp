@@ -4,7 +4,6 @@
 #include <math.h>
 #include <math_h/error.h>
 #include <math_h/interpolate.h>
-#include <math_h/sigma.h>
 #include <Genetic/abstract.h>
 namespace Genetic{
 	using namespace std;
@@ -153,25 +152,16 @@ namespace Genetic{
 				thr->join();
 		}
 		{Lock locker(m_mutex);
-			Sigma<double> disp[par_cnt];
-			m_max_dev=parZeros(par_cnt);
+			Sigma<double> STAT[par_cnt];
 			m_population.clear();
 			for(size_t i=0; i<n;i++){
 				m_population.push_back(tmp_population[i]);
-				for(size_t j=0;j<par_cnt;j++){
-					disp[j]<<tmp_population[i].first[j];
-					double dev=tmp_population[i].first[j]-tmp_population[0].first[j];
-					if(dev<0)dev=-dev;
-					if(dev>m_max_dev[j])
-						m_max_dev(j)=j;
-				}
+				for(size_t j=0;j<par_cnt;j++)
+					STAT[j]<<tmp_population[i].first[j];
 			}
-			m_avr=ParamSet();
-			m_disp=ParamSet();
-			for(size_t j=0;j<par_cnt;j++){
-				m_avr<<disp[j]().val();
-				m_disp<<disp[j]().delta();
-			}
+			m_stat.clear();
+			for(size_t j=0;j<par_cnt;j++)
+				m_stat.push_back(STAT[j]());
 			m_itercount++;
 		}
 	}
@@ -205,14 +195,8 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Parameter index out of range");
 		return m_population[0].first[i];
 	}
-	const ParamSet&AbstractGenetic::ParamAverage()const{
-		return m_avr;
-	}
-	const ParamSet&AbstractGenetic::ParamDispersion()const{
-		return m_disp;
-	}
-	const ParamSet&AbstractGenetic::ParamMaxDeviation()const{
-		return m_max_dev;
+	const vector< value< double > >& AbstractGenetic::ParametersStatistics() const{
+		return m_stat;
 	}
 	
 	const bool AbstractGenetic::ConcentratedInOnePoint()const{
@@ -223,8 +207,8 @@ namespace Genetic{
 		if(Optimality(PopulationSize()-1)>Optimality())
 			return false;
 		bool res=true;
-		for(size_t i=0,n=m_max_dev.size();i<n;i++)
-			res&=(m_max_dev[i]==0);
+		for(size_t i=0,n=m_stat.size();i<n;i++)
+			res&=(m_stat[i].delta()==0);
 		return res;
 	}
 	const bool AbstractGenetic::AbsoluteOptimalityExitCondition(const double accuracy)const{
@@ -254,14 +238,14 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
-		if(max_disp.size()>m_disp.size())
+		if(max_disp.size()>m_stat.size())
 			throw Exception<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
 		for(size_t i=0;i<max_disp.size();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)
 					throw Exception<AbstractGenetic>("Dispersion value cannot be negative");
-				if(m<m_disp[i])
+				if(m<m_stat[i].delta())
 					return false;
 			}
 		}
@@ -273,15 +257,14 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(m_itercount==0)
 			return false;
-		if(max_disp.size()>m_disp.size())
+		if(max_disp.size()>m_stat.size())
 			throw Exception<AbstractGenetic>("There number of parameters of GA is less than number of maximum dispersion exit conditions");
 		for(size_t i=0;i<max_disp.size();i++){
 			double m=max_disp[i];
 			if(isfinite(m)){
 				if(m<0)
 					throw Exception<AbstractGenetic>("Dispersion value cannot be negative");
-				m*=m;
-				if(m<pow(m_disp[i]/m_population[0].first[i],2))
+				if(m<m_stat[i].epsilon())
 					return false;
 			}
 		}

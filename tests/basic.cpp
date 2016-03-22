@@ -104,9 +104,8 @@ void test_iterate(size_t threads,size_t population,size_t iterations){
 			c++;
 		}
 		EXPECT_EQ(c,gen.ParamCount());
-		EXPECT_CLOSE(0,gen.ParamAverage()[0]);
-		EXPECT_CLOSE(0,gen.ParamDispersion()[0]);
-		EXPECT_CLOSE(0,gen.ParamMaxDeviation()[0]);
+		EXPECT_CLOSE(0,gen.ParametersStatistics()[0].val());
+		EXPECT_CLOSE(0,gen.ParametersStatistics()[0].delta());
 		EXPECT_TRUE(gen.ParametersDispersionExitCondition(parEq(c,INFINITY)));
 		EXPECT_TRUE(gen.ParametersDispersionExitCondition(parOnes(c)));
 	}

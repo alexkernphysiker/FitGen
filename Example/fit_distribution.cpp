@@ -43,9 +43,13 @@ int main(){
 			<<"        \r";
 	}
 	cout<<endl;
-	cout<<"Fit parameters:"<<endl<<fit.Parameters()<<endl;
-	cout<<"Fit parameters dispersion:"<<endl<<fit.ParamDispersion()<<endl;
-
+	cout<<"Fit parameters (most optimal values):"<<endl<<fit.Parameters()<<endl;
+	cout<<"Fit parameters (statistics)"<<endl;
+	for(const auto&P:fit.ParametersStatistics())cout<<P<<endl;
+	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
+	cout<<"Fit parameters (uncertainty)"<<endl;
+	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
+	
 	Plotter::Instance().SetOutput(".","distribution");
 	Plot<double>().Hist(distribution)
 	.Line(SortedPoints<double>(
