@@ -124,14 +124,12 @@ TEST(OptimalityForPoints,Base){
 TEST(OptimalityForPointsWithFuncError,Base){
 	auto points=make_shared<FitPoints>();
 	int func_calls=0;
-	auto f=[&func_calls](const ParamSet&,const ParamSet&){func_calls++;return 0.0;};
-	int err_calls=0;
-	auto e=[&err_calls](const ParamSet&,const ParamSet&){err_calls++;return 0.0;};
+	auto f=[&func_calls](const ParamSet&,const ParamSet&)->value<double>{func_calls++;return 0.0;};
 	int summand_calls=0;
-	auto s=[&summand_calls](const FitPoints::Point&,const ParamSet&,const IParamFunc&,const IParamFunc&){summand_calls++;return 1.0;};
+	auto s=[&summand_calls](const FitPoints::Point&,const ParamSet&,const OptimalityForPointsWithFuncError::Func&){summand_calls++;return 1.0;};
 	int coef_calls=0;
-	auto c=[&coef_calls](const ParamSet&,const IParamFunc&,const IParamFunc&){coef_calls++;return 1.0;};
-	OptimalityForPointsWithFuncError S(points,make_shared<ParameterFunction>(f),make_shared<ParameterFunction>(e),c,s);
+	auto c=[&coef_calls](const ParamSet&,const OptimalityForPointsWithFuncError::Func&){coef_calls++;return 1.0;};
+	OptimalityForPointsWithFuncError S(points,f,c,s);
 	EXPECT_EQ(0,S(ParamSet()));
 	EXPECT_EQ(0,func_calls);
 	EXPECT_EQ(points->size(),summand_calls);
@@ -168,19 +166,18 @@ TEST(OptimalityForPoints,Algorithms){
 	test_optimality1<ChiSquare>(1);
 	test_optimality1<ChiSquareWithXError>();
 }
-template<shared_ptr<OptimalityForPointsWithFuncError> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>,shared_ptr<IParamFunc>)>
+template<shared_ptr<OptimalityForPointsWithFuncError> OptimalityAlgorithm(shared_ptr<FitPoints>,const OptimalityForPointsWithFuncError::Func)>
 void test_optimality2(){
 	auto points=make_shared<FitPoints>()
 		<<FitPoints::Point({0},{1},0,1)
 		<<FitPoints::Point({1},{1},0,1)
 		<<FitPoints::Point({2},{1},0,1);
-	auto F=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
-	auto E=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
-	auto S=OptimalityAlgorithm(points,F,E);
+	auto F=[](const ParamSet&,const ParamSet&)->value<double>{return 0.0;};
+	auto S=OptimalityAlgorithm(points,F);
 	EXPECT_NE(nullptr,S.get());
 	EXPECT_EQ(0,S->operator()(ParamSet()));
-	auto F1=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 1;});
-	auto S1=OptimalityAlgorithm(points,F1,E);
+	auto F1=[](const ParamSet&,const ParamSet&)->value<double>{return 1.0;};
+	auto S1=OptimalityAlgorithm(points,F1);
 	EXPECT_NE(nullptr,S1.get());
 	EXPECT_EQ(true,S1->operator()(ParamSet())>0);
 }
@@ -246,7 +243,7 @@ TEST(FitFunction,Basetest){
 	EXPECT_EQ(1,fit[1]);
 }
 TEST(FitFunctionWithError,Basetest){
-	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,make_shared<Fit_Func>(),make_shared<Fit_Func_err>());
+	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,[](const ParamSet&X,const ParamSet&P){return value<double>(X[0]*P[0]+P[1],0.1);});
 	fit.Init(30,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate(engine);
