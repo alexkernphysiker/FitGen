@@ -38,7 +38,7 @@ int main(){
 	
 	Plotter::Instance().SetOutput(".","func_with_error");
 	SortedPoints<value<double>> func_draw;
-	for(double x:ChainWithStep(0.0,0.1,10.0))func_draw<<point<value<double>>(value<double>(x,0),fit({x}));
+	for(double x:ChainWithStep(0.0,0.1,10.0))func_draw<<point<value<double>>(x,fit({x}));
 	Plot<double>().Hist(distribution).Hist(func_draw,"fit");
 	
 	return 0;
