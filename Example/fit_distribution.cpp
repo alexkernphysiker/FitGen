@@ -28,34 +28,17 @@ int main(){
 		}
 	);
 	fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
-	fit.Init(30,
-		make_shared<GenerateUniform>()
-			<<make_pair(left,right)
-			<<make_pair(0,right-left)
-			<<make_pair(0,5.0*count)
-		,engine
-	);
-	while(!fit.AbsoluteOptimalityExitCondition(0.00000001)){
+	fit.Init(30,make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,5.0*count),engine);
+	while(!fit.AbsoluteOptimalityExitCondition(0.00000001))
 		fit.Iterate(engine);
-		cout<<fit.iteration_count()<<" iterations; "
-			<<fit.Optimality()<<"<S<"
-			<<fit.Optimality(fit.PopulationSize()-1)
-			<<"        \r";
-	}
-	cout<<endl;
+
 	cout<<"Fit parameters (most optimal values):"<<endl<<fit.Parameters()<<endl;
-	cout<<"Fit parameters (statistics)"<<endl;
-	for(const auto&P:fit.ParametersStatistics())cout<<P<<endl;
-	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
+	fit.SetUncertaintyCalcDeltas({0.01,0.01,0.01});
 	cout<<"Fit parameters (uncertainty)"<<endl;
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
 	
 	Plotter::Instance().SetOutput(".","distribution");
-	Plot<double>().Hist(distribution)
-	.Line(SortedPoints<double>(
-		[&fit](double x)->double{return fit({x});},
-		ChainWithStep(0.0,0.01,10.0)
-	));
+	Plot<double>().Hist(distribution).Line(SortedPoints<double>([&fit](double x)->double{return fit({x});},ChainWithStep(0.0,0.01,10.0)));
 
 	return 0;
 }

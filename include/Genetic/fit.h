@@ -189,12 +189,11 @@ namespace Genetic{
 	private:
 		OptimalityForPointsWithFuncError::Func m_func;
 	public:
-		FitFunctionWithError(std::shared_ptr<FitPoints> points, const OptimalityForPointsWithFuncError::Func f)
+		typedef typename OptimalityForPointsWithFuncError::Func Func;
+		FitFunctionWithError(std::shared_ptr<FitPoints> points, const Func f)
 			:AbstractGenetic(OptimalityAlgorithm(points,f)),GENETIC(),Parabolic(){
 			m_func=f;
 		}
-		FitFunctionWithError(std::shared_ptr<FitPoints> points,paramFunc f,paramFunc e):
-		FitFunctionWithError(points,std::make_shared<ParameterFunction>(f),std::make_shared<ParameterFunction>(e)){}
 		virtual ~FitFunctionWithError(){}
 		const value<double> operator()(ParamSet&&X)const{return m_func(X,AbstractGenetic::Parameters());}
 		std::shared_ptr<FitPoints> Points()const{
