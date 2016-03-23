@@ -41,8 +41,10 @@ namespace Genetic{
 			double __wy;
 		};
 		FitPoints();
+		FitPoints(const SortedPoints<double>&h);
+		FitPoints(const BiSortedPoints<double>&d);
 		FitPoints(const SortedPoints<value<double>>&h);
-		FitPoints(const hist2d<double>&d);
+		FitPoints(const BiSortedPoints<value<double>>&d);
 		virtual ~FitPoints();
 		FitPoints&operator<<(const Point&point);
 		const Point&operator[](const size_t i)const;

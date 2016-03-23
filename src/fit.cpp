@@ -35,11 +35,20 @@ namespace Genetic{
 	double&FitPoints::Point::var_wy(){return __wy;}
 	
 	FitPoints::FitPoints(){}
+	FitPoints::FitPoints(const SortedPoints<double>& h){
+		for(const point<double>&p:h)
+			operator<<(Point({p.X()},{0.0},p.Y(),0.0));
+	}
+	FitPoints::FitPoints(const BiSortedPoints<double>&d){
+		d.FullCycle([this](const point3d<double>&p){
+			operator<<(Point({p.X(),p.Y()},{0.0,0.0},p.Z(),0.0));
+		});
+	}
 	FitPoints::FitPoints(const SortedPoints<value<double>>& h){
 		for(const point<value<double>>&p:h)
 			operator<<(Point({p.X().val()},{p.X().delta()},p.Y().val(),p.Y().delta()));
 	}
-	FitPoints::FitPoints(const hist2d<double>& d){
+	FitPoints::FitPoints(const BiSortedPoints<value<double>>&d){
 		d.FullCycle([this](const point3d<value<double>>&p){
 			operator<<(Point({p.X().val(),p.Y().val()},{p.X().delta(),p.Y().delta()},p.Z().val(),p.Z().delta()));
 		});
