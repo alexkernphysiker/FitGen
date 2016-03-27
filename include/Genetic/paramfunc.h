@@ -7,7 +7,6 @@
 #include "../math_h/functions.h"
 #include "paramset.h"
 namespace Genetic{
-	using namespace MathTemplates;
 	class IParamFunc{
 	public:
 		virtual ~IParamFunc(){}
@@ -62,7 +61,7 @@ namespace Genetic{
 		PolynomFunc(){}
 		virtual ~PolynomFunc(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
-			return Polynom<power,double,ParamSet,p_index>(X[x_index],P);
+			return MathTemplates::Polynom<power,double,ParamSet,p_index>(X[x_index],P);
 		}
 		enum{ParamCount=p_index+power+1,ArgCount=x_index+1};
 	};

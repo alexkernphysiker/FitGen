@@ -5,7 +5,6 @@
 #include "abstract.h"
 #include "paramfunc.h"
 namespace Genetic{
-	using namespace MathTemplates;
 	class Above:public IParamCheck{
 	public:
 		Above();

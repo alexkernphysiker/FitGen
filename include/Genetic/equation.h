@@ -5,7 +5,6 @@
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic{
-	using namespace MathTemplates;
 	template<class GENETIC>
 	class Equation:public virtual GENETIC{
 	public:

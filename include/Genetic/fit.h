@@ -8,7 +8,6 @@
 #include "genetic.h"
 #include "paramfunc.h"
 namespace Genetic{
-	using namespace MathTemplates;
 	class ParameterFunction:public IParamFunc{
 	public:
 		ParameterFunction(const paramFunc f);
@@ -41,10 +40,10 @@ namespace Genetic{
 			double __wy;
 		};
 		FitPoints();
-		FitPoints(const SortedPoints<double>&h);
-		FitPoints(const BiSortedPoints<double>&d);
-		FitPoints(const SortedPoints<value<double>>&h);
-		FitPoints(const BiSortedPoints<value<double>>&d);
+		FitPoints(const MathTemplates::SortedPoints<double>&h);
+		FitPoints(const MathTemplates::BiSortedPoints<double>&d);
+		FitPoints(const MathTemplates::SortedPoints<MathTemplates::value<double>>&h);
+		FitPoints(const MathTemplates::BiSortedPoints<MathTemplates::value<double>>&d);
 		virtual ~FitPoints();
 		FitPoints&operator<<(const Point&point);
 		const Point&operator[](const size_t i)const;
@@ -59,10 +58,10 @@ namespace Genetic{
 		const_iterator cbegin()const;
 		const_iterator end()const;
 		const_iterator cend() const;
-		const SortedPoints<value<double>> Hist1(const size_t parameter_index_x)const;
-		const SortedPoints<value<double>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
-		const SortedPoints<double> Line(const size_t parameter_index_x)const;
-		const SortedPoints<double> Line(const size_t parameter_index_x,const size_t parameter_index_y)const;
+		const MathTemplates::SortedPoints<MathTemplates::value<double>> Hist1(const size_t parameter_index_x)const;
+		const MathTemplates::SortedPoints<MathTemplates::value<double>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
+		const MathTemplates::SortedPoints<double> Line(const size_t parameter_index_x)const;
+		const MathTemplates::SortedPoints<double> Line(const size_t parameter_index_x,const size_t parameter_index_y)const;
 	private:
 		std::vector<Point> m_data;
 		ParamSet m_min,m_max;
@@ -70,9 +69,9 @@ namespace Genetic{
 	};
 	typedef FitPoints::Point Point;
 	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const Point&p);
-	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const point<double>&p);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const MathTemplates::point<double>&p);
 	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const Point&&p);
-	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const point<double>&&p);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const MathTemplates::point<double>&&p);
 	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const std::shared_ptr<FitPoints>data);
 	std::shared_ptr<FitPoints> SelectFitPoints(std::shared_ptr<FitPoints> src,const std::shared_ptr<IParamCheck> condition);
 	std::shared_ptr<FitPoints> SelectFitPoints(std::shared_ptr<FitPoints> src,const std::function<bool(double)> Ycond);
@@ -120,11 +119,11 @@ namespace Genetic{
 		virtual ~Parabolic();
 		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&P);
 		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&&P);
-		const std::vector<value<double>>&ParametersWithUncertainties()const;
+		const std::vector<MathTemplates::value<double>>&ParametersWithUncertainties()const;
 	private:
 		double GetParamParabolicError(const double delta, const size_t i)const;
 		ParamSet m_delta;
-		std::shared_ptr<std::vector<value<double>>> m_uncertainty_cache;
+		std::shared_ptr<std::vector<MathTemplates::value<double>>> m_uncertainty_cache;
 		std::shared_ptr<unsigned long long int> m_iter_number;
 	};
 	std::shared_ptr<OptimalityForPoints> SumSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
@@ -169,7 +168,7 @@ namespace Genetic{
 	
 	class OptimalityForPointsWithFuncError:public IOptimalityFunction{
 	public:
-		typedef std::function<value<double>(const ParamSet&,const ParamSet&)> Func;
+		typedef std::function<MathTemplates::value<double>(const ParamSet&,const ParamSet&)> Func;
 		typedef std::function<double(const ParamSet&,const Func&)> Coefficient;
 		typedef std::function<double(const FitPoints::Point&,const ParamSet&,const Func&)> Summand;
 		OptimalityForPointsWithFuncError(const std::shared_ptr<FitPoints> p,const Func f,const Coefficient c,const Summand s);
@@ -195,7 +194,7 @@ namespace Genetic{
 			m_func=f;
 		}
 		virtual ~FitFunctionWithError(){}
-		const value<double> operator()(ParamSet&&X)const{return m_func(X,AbstractGenetic::Parameters());}
+		const MathTemplates::value<double> operator()(ParamSet&&X)const{return m_func(X,AbstractGenetic::Parameters());}
 		std::shared_ptr<FitPoints> Points()const{
 			return std::dynamic_pointer_cast<OptimalityForPointsWithFuncError>(AbstractGenetic::OptimalityCalculator())->Points();
 		}

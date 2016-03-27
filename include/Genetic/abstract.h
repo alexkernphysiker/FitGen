@@ -12,7 +12,6 @@
 #include "../math_h/sigma.h"
 #include "paramset.h"
 namespace Genetic{
-	using namespace MathTemplates;
 	typedef std::mt19937 RANDOM;
 	class IInitialConditions{
 	public:
@@ -73,7 +72,7 @@ namespace Genetic{
 		const double Optimality(const size_t point_index=0)const;
 		const ParamSet&Parameters(const size_t point_index=0)const;
 		const double operator[](const size_t i)const;
-		const std::vector<value<double>>&ParametersStatistics()const;
+		const std::vector<MathTemplates::value<double>>&ParametersStatistics()const;
 		
 		const bool ConcentratedInOnePoint()const;
 		const bool AbsoluteOptimalityExitCondition(const double accuracy)const;
@@ -94,7 +93,7 @@ namespace Genetic{
 		std::shared_ptr<IOptimalityFunction> m_optimality;
 		std::shared_ptr<IParamCheck> m_filter;
 		std::vector<std::pair<ParamSet,double>> m_population;
-		std::vector<value<double>> m_stat;
+		std::vector<MathTemplates::value<double>> m_stat;
 		unsigned long long int m_itercount;
 		size_t threads;
 	};

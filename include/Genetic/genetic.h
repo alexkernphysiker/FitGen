@@ -6,7 +6,6 @@
 #include "../math_h/error.h"
 #include "abstract.h"
 namespace Genetic{
-	using namespace MathTemplates;
 	template<class FITGEN=AbstractGenetic>
 	class DifferentialMutations: public virtual FITGEN{
 	private:
@@ -17,7 +16,7 @@ namespace Genetic{
 		const double MutationCoefficient()const {return M;}
 		void SetMutationCoefficient(const double val){
 			if(val<0)
-				throw Exception<DifferentialMutations>("DifferentialMutations: mutation coefficient should be a positive value");
+				throw MathTemplates::Exception<DifferentialMutations>("DifferentialMutations: mutation coefficient should be a positive value");
 			M=val;
 		}
 	protected:
@@ -40,7 +39,7 @@ namespace Genetic{
 		const double CrossingProbability()const {return P;}
 		void SetCrossingProbability(const double val){
 			if((val<0)||(val>1))
-				throw Exception<Crossing>("Crossing: probability value should fit the condition 0<=P<=1");
+				throw MathTemplates::Exception<Crossing>("Crossing: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -70,14 +69,14 @@ namespace Genetic{
 			m_mutation={};
 			for(double v:p){
 				if(v<0)
-					throw Exception<AbsoluteMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
+					throw MathTemplates::Exception<AbsoluteMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
 				m_mutation<<v;
 			}
 		}
 		const double AbsoluteMutationsProbability()const {return P;}
 		void SetAbsoluteMutationsProbability(const double val){
 			if((val<0)||(val>1))
-				throw Exception<AbsoluteMutations>("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
+				throw MathTemplates::Exception<AbsoluteMutations>("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -104,14 +103,14 @@ namespace Genetic{
 			m_mutation={};
 			for(double v:p){
 				if(v<0)
-					throw Exception<RelativeMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
+					throw MathTemplates::Exception<RelativeMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
 				m_mutation<<v;
 			}
 		}
 		const double RelativeMutationsProbability()const {return P;}
 		void SetRelativeMutationsProbability(const double val){
 			if((val<0)||(val>1))
-				throw Exception<RelativeMutations>("RelativeMutations: probability value should fit the condition 0<=P<=1");
+				throw MathTemplates::Exception<RelativeMutations>("RelativeMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
 		}
 	protected:
@@ -134,7 +133,7 @@ namespace Genetic{
 		virtual ~ExactCopying(){}
 		void SetExactCopyingProbability(const double value){
 			if((value<0)||(value>1))
-				throw Exception<ExactCopying>("ExactCopying: probability value should fit the condition 0<=P<=1");
+				throw MathTemplates::Exception<ExactCopying>("ExactCopying: probability value should fit the condition 0<=P<=1");
 			P=value;
 		}
 		const double ExactCopyingProbability()const {return P;}

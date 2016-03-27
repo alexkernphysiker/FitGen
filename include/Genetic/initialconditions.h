@@ -7,8 +7,7 @@
 #include "../math_h/randomfunc.h"
 #include "abstract.h"
 namespace Genetic{
-	using namespace MathTemplates;
-	typedef RandomValueGenerator<double> Distrib;
+	typedef MathTemplates::RandomValueGenerator<double> Distrib;
 	class InitialDistributions:public IInitialConditions{
 	public:
 		InitialDistributions();
