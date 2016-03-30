@@ -23,7 +23,7 @@ namespace Genetic{
 	bool operator<(const Point&a,const Point&b){return a.second<b.second;}
 	template<class Create,class Condition>
 	inline ParamSet CreateNew(const Create create,const Condition condition){
-		//ToDo: this may be a problem source
+		//achtung: is the condition cannot return true this will hang up
 		while(true){
 			ParamSet res=create();
 			if(condition(res))return res;
@@ -152,7 +152,7 @@ namespace Genetic{
 				thr->join();
 		}
 		{Lock locker(m_mutex);
-			Sigma<double> STAT[par_cnt];
+			StandardDeviation<double> STAT[par_cnt];
 			m_population.clear();
 			for(size_t i=0; i<n;i++){
 				m_population.push_back(tmp_population[i]);
