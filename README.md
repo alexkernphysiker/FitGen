@@ -20,13 +20,8 @@ Then commit your changes :)
 
 CMake Options
 =============
-	debug
-if ON the project is compiled in debug mode
 
-	example
-if ON the examples are compiled
-
-	test
+	tests
 if ON the tests are compiled
 
 
