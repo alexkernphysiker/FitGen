@@ -7,7 +7,7 @@ get_directory_property(has_parent PARENT_DIRECTORY)
 if(has_parent)
 	set(FITGEN_INC 
 		${CMAKE_CURRENT_SOURCE_DIR}/include
-		${MATH_H_INC
+		${MATH_H_INC}
 		PARENT_SCOPE)
 endif()
 
