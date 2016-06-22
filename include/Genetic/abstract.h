@@ -9,7 +9,7 @@
 #include <functional>
 #include <random>
 #include <math.h>
-#include "../math_h/sigma.h"
+#include <math_h/sigma.h>
 #include "paramset.h"
 namespace Genetic{
 	typedef std::mt19937 RANDOM;

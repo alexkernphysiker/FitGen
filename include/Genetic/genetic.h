@@ -3,7 +3,7 @@
 #ifndef RGCFVQNCAQKWQXFU
 #define RGCFVQNCAQKWQXFU
 #include <random>
-#include "../math_h/error.h"
+#include <math_h/error.h>
 #include "abstract.h"
 namespace Genetic{
 	template<class FITGEN=AbstractGenetic>

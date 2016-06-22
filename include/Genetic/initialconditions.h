@@ -4,7 +4,7 @@
 #define ___DnoQpUEN
 #include <random>
 #include <functional>
-#include "../math_h/randomfunc.h"
+#include <math_h/randomfunc.h>
 #include "abstract.h"
 namespace Genetic{
 	typedef MathTemplates::RandomValueGenerator<double> Distrib;

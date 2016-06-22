@@ -13,7 +13,7 @@ If you have your git repository with cmake project you can add a submodule
 Then add to CMakeLists.txt
 
 	add_subdirectory(FitGen)
-	include_directories(FitGen/include/)
+	include_directories(${FITGEN_INC})
 
 Then commit your changes :)
 

@@ -4,7 +4,7 @@
 #define ____mVYpymgQ
 #include <math.h>
 #include <functional>
-#include "../math_h/functions.h"
+#include <math_h/functions.h>
 #include "paramset.h"
 namespace Genetic{
 	class IParamFunc{

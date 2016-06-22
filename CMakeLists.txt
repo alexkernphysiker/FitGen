@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 2.6)
 project(FitGen)
-
-add_subdirectory(math_h)
 set(CMAKE_CXX_FLAGS -pthread)
 add_definitions(-std=c++11 -Wall -Wunused-parameter)
+add_subdirectory(math_h)
+get_directory_property(has_parent PARENT_DIRECTORY)
+if(has_parent)
+	set(FITGEN_INC 
+		${CMAKE_CURRENT_SOURCE_DIR}/include
+		${MATH_H_INC
+		PARENT_SCOPE)
+endif()
+
+include_directories(${MATH_H_INC})
 include_directories(include)
 file(GLOB SOURCES src/*.cpp)
 file(GLOB TESTS tests/*.cpp)
