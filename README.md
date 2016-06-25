@@ -18,16 +18,22 @@ Then add to CMakeLists.txt
 Then commit your changes :)
 
 
-CMake Options
-=============
+Examples
+========
 
-	tests
-if ON the tests are compiled
+	Example/equation.cpp
+example of using genetic algorithm for solving equation.
+
+	Example/fit_distribution.cpp 
+	Example/fit_points.cpp
+examples of using genetic algorithm for fitting points with function.
+For plotting the results, the examples require gnuplot installed.
+
 
 
 Short developers guide
 ======================
-All stuff is declared in header files that are loated in 'include' directory
+All stuff is declared in header files that are located in 'include' directory
 
 	Genetic/paramset.h
 Contains class 'ParamSet' that is wrapper over vector<double> used in this library.
@@ -69,26 +75,26 @@ In such way, one can create a class providing needed chain of mutations.
 They all have dfault constructors and the mutation parameters are set via special methods.
 The list of classes and provided mutations is the following:
 
-1) DifferentialMutations<...> => P'[i]=P[i]+M*(A[i]-B[i]), where M is a 
+1) DifferentialMutations<...>:  P'[i]=P[i]+M*(A[i]-B[i]), where M is a 
   parameter and A,B are random points from population.
-  The most recommended is using of this type of mutation.
+  The most recommended is using this type of mutation.
 
-2) Crossing<...> => There's a probability rho of the following process: 
+2) Crossing<...>: There's a probability rho of the following process: 
   there would be found random other point X from the population and 
   P'[i]=(random(0..1)>0.5)?P[i]:X[i]
 
-3) AbsoluteMutations<...> => P'[i]=P[i]+RandomGauss(M[i]), where M is 
+3) AbsoluteMutations<...>: P'[i]=P[i]+RandomGauss(M[i]), where M is 
   a ParamSet of sigmas for the gauss random bluring.
 
-4) RelativeMutations<...> =>  P'[i]=P[i]*(1+RandomGauss(M[i]))
+4) RelativeMutations<...>:  P'[i]=P[i]*(1+RandomGauss(M[i]))
 
-5) ExactCopying<...> => there's a probability of cancellation of all inherited mutations.
+5) ExactCopying<...>: there's a probability of cancellation of all inherited mutations.
 
 
 	Genetic/initialcondition.h 
 Contains classes representing the rules of generating the initial points population.
 All these classes are applicable via shared_ptr. All they have empty constructors and
-have operator<< defined over shared_ptr for these classes that implement adding rules
+have operator<< defined over shared_ptr<these classes> that implement adding rules
 for each parameter from generated ParamSet.
 The more rules are added to the generator the more parameters have generated ParamSet's.
 
@@ -105,9 +111,9 @@ of gaussian distributions for each parameter of generated ParamSet.
 
 	
 	Genetic/filter.h 
-Contains classes implementing different rules of checking the validity of points from population.
+Contains classes implementing different rules of checking the validity of points in population.
 All these classes are applicable via shared_ptr. All they have empty constructors and
-have operator<< defined over shared_ptr for these classes that implement adding rules
+have operator<< defined over shared_ptr<these classes> that implement adding rules
 for each parameter. For simpler checking use class 'Filter' defined in abstract.h
 
 'Above' accepts double values via << operator and checks if the parameter with index corresponding to
@@ -165,21 +171,15 @@ template classes providing parametric functions for fitting algorithm (inheritti
 Please view example fit_points.cpp to see how they are used
 
 
-
-Examples
-========
-
-	Example/equation.cpp
-example of using genetic algorithm for solving equation.
-
-	Example/fit_distribution.cpp 
-	Example/fit_points.cpp
-examples of using genetic algorithm for fitting points with function.
-For plotting the results, the examples require gnuplot installed.
-
 Tests
 =====
 
 	tests/*.cpp
 The directory tests contains cmake project with unit tests.
 The tests require GoogleTest framework to be installed
+
+CMake Options
+=============
+
+	tests
+if ON the tests are compiled
