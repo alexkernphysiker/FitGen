@@ -23,5 +23,11 @@ namespace Genetic{
 		SearchMin(const std::function<double(const ParamSet&)> f)
 		:AbstractGenetic(std::make_shared<OptimalityFunction>(f)),GENETIC(){}
 	};
+	template<class GENETIC>
+	class SearchMax:public GENETIC{
+	public:
+		SearchMax(const std::function<double(const ParamSet&)> f)
+		:AbstractGenetic(std::make_shared<OptimalityFunction>([f](const ParamSet&P){return -f(P);})),GENETIC(){}
+	};
 }
 #endif
