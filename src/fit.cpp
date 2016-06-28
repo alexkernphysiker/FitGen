@@ -243,52 +243,6 @@ namespace Genetic{
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
 	
-	OptimalityForPointsWithFuncError::OptimalityForPointsWithFuncError(const shared_ptr< FitPoints > p, const Func f,const Coefficient c, const Summand s){
-		points=p;
-		m_func=f;
-		C=c;
-		S=s;
-	}
-	OptimalityForPointsWithFuncError::~OptimalityForPointsWithFuncError(){}
-	shared_ptr< FitPoints > OptimalityForPointsWithFuncError::Points()const{return points;}
-	double OptimalityForPointsWithFuncError::operator()(const ParamSet&P)const{
-		double res=0;
-		for(FitPoints::Point p:*points)
-			res+=S(p,P,m_func);
-		return res*C(P,m_func);
-	}
-	shared_ptr<OptimalityForPointsWithFuncError> ChiSquare(const shared_ptr<FitPoints> points,const OptimalityForPointsWithFuncError::Func f){
-		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const OptimalityForPointsWithFuncError::Func&){
-			double z=points->size()-P.size();
-			if(z<=0)
-				throw Exception<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
-			return 1.0/z;
-		};
-		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const OptimalityForPointsWithFuncError::Func&F){
-			return pow((p.y()-F(p.X(),P).val())/(p.wy()+F(p.X(),P).delta()),2);
-		};
-		return make_shared<OptimalityForPointsWithFuncError>(points,f,c,s);
-	}
-	shared_ptr<OptimalityForPointsWithFuncError> ChiSquareWithXError(const shared_ptr<FitPoints> points,const OptimalityForPointsWithFuncError::Func f){
-		OptimalityForPointsWithFuncError::Coefficient c=[points](const ParamSet&P,const OptimalityForPointsWithFuncError::Func&){
-			double z=points->size()-P.size();
-			if(z<=0)
-				throw Exception<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
-			return 1.0/z;
-		};
-		OptimalityForPointsWithFuncError::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const OptimalityForPointsWithFuncError::Func&F){
-			double w=pow(p.wy()+F(p.X(),P).delta(),2);
-			for(size_t j=0; j<p.X().size();j++){
-				ParamSet x1=p.X();
-				ParamSet x2=p.X();
-				x1(j)+=p.WX()[j];
-				x2(j)-=p.WX()[j];
-				w+=pow(0.5*(F(x1,P).val()-F(x2,P).val()),2);
-			}
-			return pow((p.y()-F(p.X(),P).val()),2)/w;
-		};
-		return make_shared<OptimalityForPointsWithFuncError>(points,f,c,s);
-	}
 	Parabolic::Parabolic(){
 		m_uncertainty_cache=make_shared<vector<value<double>>>();
 		m_iter_number=make_shared<unsigned long long int>(ULLONG_MAX);

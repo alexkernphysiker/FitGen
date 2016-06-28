@@ -23,28 +23,11 @@ namespace Genetic{
 		virtual ~IParamCheck(){}
 		virtual bool operator()(const ParamSet&P)const=0;
 	};
-	class Filter:public IParamCheck{
-	public:
-		Filter(const std::function<bool(const ParamSet&)> c);
-		virtual ~Filter();
-		virtual bool operator()(const ParamSet&P)const override;
-	private:
-		std::function<bool(const ParamSet&)> condition;
-	};
 	class IOptimalityFunction{
 	public:
 		virtual ~IOptimalityFunction(){}
 		virtual double operator()(const ParamSet&P)const=0;
 	};
-	class OptimalityFunction:public IOptimalityFunction{
-	public:
-		OptimalityFunction(const std::function<double(const ParamSet&)> f);
-		virtual ~OptimalityFunction();
-		virtual double operator()(const ParamSet&P)const override;
-	private:
-		std::function<double(const ParamSet&)> func;
-	};
-	
 	class AbstractGenetic{
 	protected:
 		AbstractGenetic();
@@ -56,15 +39,10 @@ namespace Genetic{
 		AbstractGenetic&SetFilter(const std::shared_ptr<IParamCheck> filter);
 		AbstractGenetic&SetFilter(const std::function<bool(const ParamSet&)>);
 		AbstractGenetic&RemoveFilter();
-		
 		AbstractGenetic&SetThreadCount(const size_t threads_count);
 		const size_t ThreadCount()const;
 		
 		AbstractGenetic&Init(const size_t population_size,const std::shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
-	protected:
-		virtual void mutations(ParamSet&,RANDOM&)const;
-		virtual void HandleIteration();
-	public:
 		void Iterate(RANDOM&random);
 		
 		const unsigned long long int iteration_count()const;
@@ -82,8 +60,11 @@ namespace Genetic{
 		const bool ParametersDispersionExitCondition(const ParamSet&&max_disp)const;
 		const bool RelativeParametersDispersionExitCondition(const ParamSet&&max_disp)const;
 	protected:
-		std::mutex m_mutex;
+		//contains empty implementation for templates from genetic.h could work correctly
+		virtual void mutations(ParamSet&,RANDOM&)const;
+		virtual void HandleIteration();
 	private:
+		std::mutex m_mutex;
 		std::shared_ptr<IOptimalityFunction> m_optimality;
 		std::shared_ptr<IParamCheck> m_filter;
 		std::vector<std::pair<ParamSet,double>> m_population;
@@ -96,5 +77,22 @@ namespace Genetic{
 		while(!fit.ConcentratedInOnePoint())
 			fit.Iterate(engine);
 	}
+
+	class Filter:public IParamCheck{
+	public:
+		Filter(const std::function<bool(const ParamSet&)> c);
+		virtual ~Filter();
+		virtual bool operator()(const ParamSet&P)const override;
+	private:
+		std::function<bool(const ParamSet&)> condition;
+	};
+	class OptimalityFunction:public IOptimalityFunction{
+	public:
+		OptimalityFunction(const std::function<double(const ParamSet&)> f);
+		virtual ~OptimalityFunction();
+		virtual double operator()(const ParamSet&P)const override;
+	private:
+		std::function<double(const ParamSet&)> func;
+	};
 }
 #endif

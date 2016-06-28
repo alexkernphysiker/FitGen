@@ -121,28 +121,6 @@ TEST(OptimalityForPoints,Base){
 		EXPECT_EQ(1,coef_calls);
 	}
 }
-TEST(OptimalityForPointsWithFuncError,Base){
-	auto points=make_shared<FitPoints>();
-	int func_calls=0;
-	auto f=[&func_calls](const ParamSet&,const ParamSet&)->value<double>{func_calls++;return 0.0;};
-	int summand_calls=0;
-	auto s=[&summand_calls](const FitPoints::Point&,const ParamSet&,const OptimalityForPointsWithFuncError::Func&){summand_calls++;return 1.0;};
-	int coef_calls=0;
-	auto c=[&coef_calls](const ParamSet&,const OptimalityForPointsWithFuncError::Func&){coef_calls++;return 1.0;};
-	OptimalityForPointsWithFuncError S(points,f,c,s);
-	EXPECT_EQ(0,S(ParamSet()));
-	EXPECT_EQ(0,func_calls);
-	EXPECT_EQ(points->size(),summand_calls);
-	EXPECT_EQ(1,coef_calls);
-	for(int count=1;count<5;count++){
-		func_calls=summand_calls=coef_calls=0;
-		points<<point<double>(0,0);
-		EXPECT_EQ(count,S(ParamSet()));
-		EXPECT_EQ(0,func_calls);
-		EXPECT_EQ(points->size(),summand_calls);
-		EXPECT_EQ(1,coef_calls);
-	}
-}
 template<shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 void test_optimality1(double v=INFINITY){
 	auto points=make_shared<FitPoints>()
@@ -165,25 +143,6 @@ TEST(OptimalityForPoints,Algorithms){
 	test_optimality1<SumWeightedSquareDiff>(1);
 	test_optimality1<ChiSquare>(1);
 	test_optimality1<ChiSquareWithXError>();
-}
-template<shared_ptr<OptimalityForPointsWithFuncError> OptimalityAlgorithm(shared_ptr<FitPoints>,const OptimalityForPointsWithFuncError::Func)>
-void test_optimality2(){
-	auto points=make_shared<FitPoints>()
-		<<FitPoints::Point({0},{1},0,1)
-		<<FitPoints::Point({1},{1},0,1)
-		<<FitPoints::Point({2},{1},0,1);
-	auto F=[](const ParamSet&,const ParamSet&)->value<double>{return 0.0;};
-	auto S=OptimalityAlgorithm(points,F);
-	EXPECT_NE(nullptr,S.get());
-	EXPECT_EQ(0,S->operator()(ParamSet()));
-	auto F1=[](const ParamSet&,const ParamSet&)->value<double>{return 1.0;};
-	auto S1=OptimalityAlgorithm(points,F1);
-	EXPECT_NE(nullptr,S1.get());
-	EXPECT_EQ(true,S1->operator()(ParamSet())>0);
-}
-TEST(OptimalityForPointsWithFuncError,Algorithms){
-	test_optimality2<ChiSquare>();
-	test_optimality2<ChiSquareWithXError>();
 }
 class ParabolicTest:public virtual Parabolic{
 public:
@@ -237,18 +196,6 @@ TEST(FitFunction,Basetest){
 		fit.Iterate(engine);
 	EXPECT_TRUE(fit.ParamCount()==2);
 	EXPECT_TRUE(fit.PopulationSize()==20);
-	EXPECT_TRUE(fit.Optimality()==0);
-	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
-	EXPECT_EQ(1,fit.Parameters()[0]);
-	EXPECT_EQ(1,fit.Parameters()[1]);
-}
-TEST(FitFunctionWithError,Basetest){
-	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,[](const ParamSet&X,const ParamSet&P){return value<double>(X[0]*P[0]+P[1],0.1);});
-	fit.Init(30,Init,engine);
-	while(!fit.ConcentratedInOnePoint())
-		fit.Iterate(engine);
-	EXPECT_TRUE(fit.ParamCount()==2);
-	EXPECT_TRUE(fit.PopulationSize()==30);
 	EXPECT_TRUE(fit.Optimality()==0);
 	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
 	EXPECT_EQ(1,fit.Parameters()[0]);

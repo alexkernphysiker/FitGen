@@ -8,15 +8,6 @@
 namespace Genetic{
 	using namespace std;
 	using namespace MathTemplates;
-	Filter::Filter(function<bool(const ParamSet&)> c){
-		condition=c;
-	}
-	Filter::~Filter(){}
-	bool Filter::operator()(const ParamSet&P)const{return condition(P);}
-	OptimalityFunction::OptimalityFunction(const function<double(const ParamSet&)> f){func=f;}
-	OptimalityFunction::~OptimalityFunction(){}
-	double OptimalityFunction::operator()(const ParamSet&P)const{return func(P);}
-	
 	typedef lock_guard<mutex> Lock;
 	typedef pair<ParamSet,double> Point;
 	bool operator>(const Point&a,const Point&b){return a.second>b.second;}
@@ -65,6 +56,7 @@ namespace Genetic{
 		return *this;
 	}
 	const size_t AbstractGenetic::ThreadCount()const{return threads;}
+	
 	AbstractGenetic&AbstractGenetic::Init(const size_t population_size, const shared_ptr<IInitialConditions> initial_conditions,RANDOM&random){
 		if(m_population.size()>0)
 			throw Exception<AbstractGenetic>("Genetic algorithm cannot be inited twice");
@@ -107,8 +99,6 @@ namespace Genetic{
 		}
 		return *this;
 	}
-	void AbstractGenetic::mutations(ParamSet&,RANDOM&)const{}
-	void AbstractGenetic::HandleIteration(){}
 	void AbstractGenetic::Iterate(RANDOM&random){
 		size_t n=PopulationSize();
 		size_t par_cnt=ParamCount();
@@ -270,7 +260,19 @@ namespace Genetic{
 		return true;
 	}
 	const bool AbstractGenetic::RelativeParametersDispersionExitCondition(const ParamSet&& max_disp) const{return RelativeParametersDispersionExitCondition(max_disp);}
+	void AbstractGenetic::mutations(ParamSet&,RANDOM&)const{}
+	void AbstractGenetic::HandleIteration(){}
+	
 	ostream& operator<<(ostream& str, const AbstractGenetic& P){
 		return str<<P.Parameters();
 	}
+	Filter::Filter(function<bool(const ParamSet&)> c){
+		condition=c;
+	}
+	Filter::~Filter(){}
+	bool Filter::operator()(const ParamSet&P)const{return condition(P);}
+	OptimalityFunction::OptimalityFunction(const function<double(const ParamSet&)> f){func=f;}
+	OptimalityFunction::~OptimalityFunction(){}
+	double OptimalityFunction::operator()(const ParamSet&P)const{return func(P);}
+	
 }
