@@ -108,6 +108,7 @@ namespace Genetic{
 		return *this;
 	}
 	void AbstractGenetic::mutations(ParamSet&,RANDOM&)const{}
+	void AbstractGenetic::HandleIteration(){}
 	void AbstractGenetic::Iterate(RANDOM&random){
 		size_t n=PopulationSize();
 		size_t par_cnt=ParamCount();
@@ -163,6 +164,9 @@ namespace Genetic{
 			for(size_t j=0;j<par_cnt;j++)
 				m_stat.push_back(STAT[j]());
 			m_itercount++;
+		}
+		{Lock locker(m_mutex);
+			HandleIteration();
 		}
 	}
 	const unsigned long long int AbstractGenetic::iteration_count()const{

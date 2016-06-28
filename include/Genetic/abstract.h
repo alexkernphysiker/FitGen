@@ -63,6 +63,7 @@ namespace Genetic{
 		AbstractGenetic&Init(const size_t population_size,const std::shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 	protected:
 		virtual void mutations(ParamSet&,RANDOM&)const;
+		virtual void HandleIteration();
 	public:
 		void Iterate(RANDOM&random);
 		
