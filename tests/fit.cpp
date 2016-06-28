@@ -209,7 +209,7 @@ TEST(Parabolic,BaseTest){
 		gen.SetUncertaintyCalcDeltas(parEq(count,0.01)).Init(1,init,engine);
 		ASSERT_EQ(count,gen.ParametersWithUncertainties().size());
 		for(size_t i=0;i<gen.ParamCount();i++){
-			EXPECT_EQ(gen[i],gen.ParametersWithUncertainties()[i].val());
+			EXPECT_EQ(gen.Parameters()[i],gen.ParametersWithUncertainties()[i].val());
 			EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[i].delta()-1.0,2)<0.0001);
 		}
 	}
@@ -227,8 +227,8 @@ TEST(Fit,Basetest){
 	EXPECT_TRUE(fit.PopulationSize()==20);
 	EXPECT_TRUE(fit.Optimality()==0);
 	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
-	EXPECT_EQ(1,fit[0]);
-	EXPECT_EQ(1,fit[1]);
+	EXPECT_EQ(1,fit.Parameters()[0]);
+	EXPECT_EQ(1,fit.Parameters()[1]);
 }
 TEST(FitFunction,Basetest){
 	FitFunction<DifferentialMutations<>,Fit_Func,SumSquareDiff> fit(Points);
@@ -239,8 +239,8 @@ TEST(FitFunction,Basetest){
 	EXPECT_TRUE(fit.PopulationSize()==20);
 	EXPECT_TRUE(fit.Optimality()==0);
 	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
-	EXPECT_EQ(1,fit[0]);
-	EXPECT_EQ(1,fit[1]);
+	EXPECT_EQ(1,fit.Parameters()[0]);
+	EXPECT_EQ(1,fit.Parameters()[1]);
 }
 TEST(FitFunctionWithError,Basetest){
 	FitFunctionWithError<DifferentialMutations<>,ChiSquare> fit(Points,[](const ParamSet&X,const ParamSet&P){return value<double>(X[0]*P[0]+P[1],0.1);});
@@ -251,6 +251,6 @@ TEST(FitFunctionWithError,Basetest){
 	EXPECT_TRUE(fit.PopulationSize()==30);
 	EXPECT_TRUE(fit.Optimality()==0);
 	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
-	EXPECT_EQ(1,fit[0]);
-	EXPECT_EQ(1,fit[1]);
+	EXPECT_EQ(1,fit.Parameters()[0]);
+	EXPECT_EQ(1,fit.Parameters()[1]);
 }

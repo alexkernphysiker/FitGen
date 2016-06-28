@@ -71,7 +71,6 @@ namespace Genetic{
 		const size_t ParamCount()const;
 		const double Optimality(const size_t point_index=0)const;
 		const ParamSet&Parameters(const size_t point_index=0)const;
-		const double operator[](const size_t i)const;
 		const std::vector<MathTemplates::value<double>>&ParametersStatistics()const;
 		
 		const bool ConcentratedInOnePoint()const;
@@ -81,12 +80,6 @@ namespace Genetic{
 		const bool RelativeParametersDispersionExitCondition(const ParamSet&max_disp)const;
 		const bool ParametersDispersionExitCondition(const ParamSet&&max_disp)const;
 		const bool RelativeParametersDispersionExitCondition(const ParamSet&&max_disp)const;
-		
-		typedef std::vector<double>::const_iterator const_iterator;
-		const_iterator begin()const;
-		const_iterator cbegin()const;
-		const_iterator end() const;
-		const_iterator cend() const;
 	protected:
 		std::mutex m_mutex;
 	private:

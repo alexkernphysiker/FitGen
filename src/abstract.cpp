@@ -190,11 +190,6 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Range check error when accessing an element in the population");
 		return m_population[point_index].first;
 	}
-	const double AbstractGenetic::operator [](const size_t i)const{
-		if(i>=ParamCount())
-			throw Exception<AbstractGenetic>("Parameter index out of range");
-		return m_population[0].first[i];
-	}
 	const vector< value< double > >& AbstractGenetic::ParametersStatistics() const{
 		return m_stat;
 	}
@@ -271,27 +266,6 @@ namespace Genetic{
 		return true;
 	}
 	const bool AbstractGenetic::RelativeParametersDispersionExitCondition(const ParamSet&& max_disp) const{return RelativeParametersDispersionExitCondition(max_disp);}
-	
-	AbstractGenetic::const_iterator AbstractGenetic::begin()const{
-		if(m_population.size()==0)
-			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-		return m_population[0].first.begin();
-	}
-	AbstractGenetic::const_iterator AbstractGenetic::cbegin()const{
-		if(m_population.size()==0)
-			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-		return m_population[0].first.cbegin();
-	}
-	AbstractGenetic::const_iterator AbstractGenetic::end() const{
-		if(m_population.size()==0)
-			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-		return m_population[0].first.end();
-	}
-	AbstractGenetic::const_iterator AbstractGenetic::cend() const{
-		if(m_population.size()==0)
-			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-		return m_population[0].first.cend();
-	}
 	ostream& operator<<(ostream& str, const AbstractGenetic& P){
 		return str<<P.Parameters();
 	}

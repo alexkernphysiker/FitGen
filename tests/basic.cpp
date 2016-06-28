@@ -72,9 +72,9 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_NO_THROW(gen.Optimality(0));
 	EXPECT_NO_THROW(gen.Optimality(1));
 	EXPECT_THROW(gen.Optimality(2),Exception<AbstractGenetic>);
-	EXPECT_THROW(gen[-1],Exception<AbstractGenetic>);
-	EXPECT_NO_THROW(gen[0]);
-	EXPECT_THROW(gen[1],Exception<AbstractGenetic>);
+	EXPECT_THROW(gen.Parameters()[-1],Exception<ParamSet>);
+	EXPECT_NO_THROW(gen.Parameters()[0]);
+	EXPECT_THROW(gen.Parameters()[1],Exception<ParamSet>);
 	gen.Iterate(engine);
 	EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),Exception<AbstractGenetic>);
 	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),Exception<AbstractGenetic>);
@@ -91,7 +91,7 @@ void test_iterate(size_t threads,size_t population,size_t iterations){
 		EXPECT_EQ(population,gen.PopulationSize());
 		EXPECT_EQ(1,gen.ParamCount());
 		EXPECT_EQ(i+1,gen.iteration_count());
-		EXPECT_CLOSE(gen[0],0);
+		EXPECT_CLOSE(gen.Parameters()[0],0);
 		for(size_t i=0;i<population;i++){
 			EXPECT_CLOSE(0,gen.Parameters(i)[0]);
 			if(i>0)
@@ -99,7 +99,7 @@ void test_iterate(size_t threads,size_t population,size_t iterations){
 		}
 		EXPECT_EQ(true,gen.AbsoluteOptimalityExitCondition(0.001));
 		size_t c=0;
-		for(auto p:gen){
+		for(auto p:gen.Parameters()){
 			EXPECT_TRUE(isfinite(p));
 			c++;
 		}
