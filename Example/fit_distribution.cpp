@@ -26,10 +26,10 @@ int main(){
 		}
 	);
 	fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
-	fit.SetUncertaintyCalcDeltas({0.01,0.01,0.01});
 	fit.Init(30,make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,5.0*count),engine);
 	while(!fit.AbsoluteOptimalityExitCondition(0.00000001))
 		fit.Iterate(engine);
+	fit.SetUncertaintyCalcDeltas({0.01,0.01,0.01});
 	cout<<"Fit parameters"<<endl;
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
 	Plotter::Instance().SetOutput(".","distribution");

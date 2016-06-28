@@ -49,7 +49,6 @@ int main(){
 			return F({P[2]},P)<P[1]*5.0;
 		}
 	);
-	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
 	auto initial=make_shared<GenerateByGauss>()
 		<<make_pair(100,100)<<make_pair(20,20)<<make_pair(-20,0)
 		<<make_pair(400,100)<<make_pair(5,1)<<make_pair(0,0.5);
@@ -67,6 +66,7 @@ int main(){
 			<<"        \r";
 	}
 	cout<<endl;
+	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
 	cout<<"Fit parameters"<<endl;
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
 	Plotter::Instance().SetOutput(".","points");
