@@ -6,8 +6,13 @@
 #include <math_h/tabledata.h>
 #include "abstract.h"
 #include "genetic.h"
-#include "paramfunc.h"
 namespace Genetic{
+	class IParamFunc{
+	public:
+		virtual ~IParamFunc(){}
+		virtual double operator()(const ParamSet&X,const ParamSet&P)const=0;
+	};
+	typedef std::function<double(const ParamSet&,const ParamSet&)> paramFunc;
 	class ParameterFunction:public IParamFunc{
 	public:
 		ParameterFunction(const paramFunc f);
@@ -29,8 +34,8 @@ namespace Genetic{
 			Point(const ParamSet&&x,const ParamSet&&wx,const double y_,const double wy_);
 			const ParamSet&X()const;
 			const ParamSet&WX()const;
-			double y()const;
-			double wy()const;
+			const double&y()const;
+			const double&wy()const;
 			double&var_y();
 			double&var_wy();
 		private:
@@ -51,8 +56,8 @@ namespace Genetic{
 		size_t dimensions()const;
 		const ParamSet&min()const;
 		const ParamSet&max()const;
-		double Ymin()const;
-		double Ymax()const;
+		const double&Ymin()const;
+		const double&Ymax()const;
 		typedef std::vector<Point>::const_iterator const_iterator;
 		const_iterator begin()const;
 		const_iterator cbegin()const;
@@ -118,7 +123,7 @@ namespace Genetic{
 	public:
 		virtual ~Parabolic();
 		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&P);
-		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&&P);
+		inline Parabolic&SetUncertaintyCalcDeltas(const ParamSet&&P){return SetUncertaintyCalcDeltas(P);}
 		const std::vector<MathTemplates::value<double>>&ParametersWithUncertainties()const;
 	private:
 		double GetParamParabolicError(const double delta, const size_t i)const;
@@ -148,7 +153,7 @@ namespace Genetic{
 		Fit(const std::shared_ptr<FitPoints> points,const paramFunc f):Fit(points,std::make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
 		double operator()(const ParamSet&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
-		double operator()(const ParamSet&&X)const{return operator()(X);}
+		inline double operator()(const ParamSet&&X)const{return operator()(X);}
 		std::shared_ptr<IParamFunc> Func()const{return m_func;}
 		std::shared_ptr<FitPoints> Points()const{
 			return std::dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();

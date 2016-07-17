@@ -29,8 +29,8 @@ namespace Genetic{
 	FitPoints::Point::Point(const Point& src):Point(src.__X,src.__WX,src.__y,src.__wy){}
 	const ParamSet&FitPoints::Point::X()const{return __X;}
 	const ParamSet&FitPoints::Point::WX()const{return __WX;}
-	double FitPoints::Point::y() const{return __y;}
-	double FitPoints::Point::wy() const{return __wy;}
+	const double&FitPoints::Point::y() const{return __y;}
+	const double&FitPoints::Point::wy() const{return __wy;}
 	double&FitPoints::Point::var_y(){return __y;}
 	double&FitPoints::Point::var_wy(){return __wy;}
 	
@@ -62,8 +62,8 @@ namespace Genetic{
 	}
 	const ParamSet&FitPoints::min()const{return m_min;}
 	const ParamSet&FitPoints::max()const{return m_max;}
-	double FitPoints::Ymax() const{return ymax;}
-	double FitPoints::Ymin() const{return ymin;}
+	const double&FitPoints::Ymax() const{return ymax;}
+	const double&FitPoints::Ymin() const{return ymin;}
 	FitPoints& FitPoints::operator<<(const Point&point){
 		if(size()>0){
 			if(point.X().size()!=dimensions())
@@ -268,9 +268,6 @@ namespace Genetic{
 		m_delta=P;
 		(*m_iter_number)=ULLONG_MAX;
 		return *this;
-	}
-	Parabolic& Parabolic::SetUncertaintyCalcDeltas(const ParamSet&& P){
-		return SetUncertaintyCalcDeltas(P);
 	}
 	const vector<value<double>>&Parabolic::ParametersWithUncertainties()const{
 		if(iteration_count()!=(*m_iter_number)){

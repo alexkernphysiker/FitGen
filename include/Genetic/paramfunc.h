@@ -5,15 +5,8 @@
 #include <math.h>
 #include <functional>
 #include <math_h/functions.h>
-#include "paramset.h"
+#include "fit.h"
 namespace Genetic{
-	class IParamFunc{
-	public:
-		virtual ~IParamFunc(){}
-		virtual double operator()(const ParamSet&X,const ParamSet&P)const=0;
-	};
-	typedef std::function<double(const ParamSet&,const ParamSet&)> paramFunc;
-	
 	template<int a,int b>
 	struct max2{enum{val=(a>b)?a:b};};
 	template<int a,int b,int c>

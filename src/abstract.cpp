@@ -170,7 +170,7 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		return m_population[0].first.size();
 	}
-	const double AbstractGenetic::Optimality(const size_t point_index)const{
+	const double&AbstractGenetic::Optimality(const size_t point_index)const{
 		if(m_population.size()==0)
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(point_index>=m_population.size())

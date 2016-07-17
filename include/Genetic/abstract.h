@@ -48,7 +48,7 @@ namespace Genetic{
 		const unsigned long long int iteration_count()const;
 		const size_t PopulationSize()const;
 		const size_t ParamCount()const;
-		const double Optimality(const size_t point_index=0)const;
+		const double&Optimality(const size_t point_index=0)const;
 		const ParamSet&Parameters(const size_t point_index=0)const;
 		const std::vector<MathTemplates::value<double>>&ParametersStatistics()const;
 		
