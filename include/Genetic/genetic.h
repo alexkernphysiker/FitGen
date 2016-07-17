@@ -50,7 +50,7 @@ namespace Genetic{
 				std::uniform_int_distribution<int> randomelement(0,AbstractGenetic::PopulationSize()-1);
 				auto X=AbstractGenetic::Parameters(randomelement(R));
 				FITGEN::mutations(X,R);
-				for(int i=0; i<C.size();i++)
+				for(size_t i=0; i<C.size();i++)
 					if(Prob(R)<0.5)
 						C(i)=X[i];
 			}
@@ -84,7 +84,7 @@ namespace Genetic{
 			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)<P)
-				for(int i=0;i<AbstractGenetic::ParamCount();i++){
+				for(size_t i=0;i<AbstractGenetic::ParamCount();i++){
 					std::normal_distribution<double>distr(0,m_mutation[i]);
 					C(i)+=distr(R);
 				}
@@ -118,7 +118,7 @@ namespace Genetic{
 			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
 			if(Prob(R)<P)
-				for(int i=0;i<AbstractGenetic::ParamCount();i++){
+				for(size_t i=0;i<AbstractGenetic::ParamCount();i++){
 					std::normal_distribution<double> distr(0,m_mutation[i]);
 					C(i)*=(1+distr(R));
 				}
