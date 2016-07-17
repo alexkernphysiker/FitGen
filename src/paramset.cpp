@@ -20,7 +20,7 @@ namespace Genetic{
 	ParamSet::~ParamSet(){}
 
 	const size_t ParamSet::size()const{return m_values.size();}
-	double ParamSet::operator[](const size_t i)const{
+	const double&ParamSet::operator[](const size_t i)const{
 		if(i>=m_values.size())
 			throw Exception<ParamSet>("Range check error when accessing ParamSet's element");
 		return m_values[i];

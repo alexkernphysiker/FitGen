@@ -159,7 +159,7 @@ namespace Genetic{
 			HandleIteration();
 		}
 	}
-	const unsigned long long int AbstractGenetic::iteration_count()const{
+	const unsigned long long int&AbstractGenetic::iteration_count()const{
 		return m_itercount;
 	}
 	const size_t AbstractGenetic::PopulationSize()const{

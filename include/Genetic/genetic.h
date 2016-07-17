@@ -13,7 +13,7 @@ namespace Genetic{
 	public:
 		DifferentialMutations():FITGEN(),M(0.5){}
 		virtual ~DifferentialMutations(){}
-		const double MutationCoefficient()const {return M;}
+		const double&MutationCoefficient()const {return M;}
 		void SetMutationCoefficient(const double val){
 			if(val<0)
 				throw MathTemplates::Exception<DifferentialMutations>("DifferentialMutations: mutation coefficient should be a positive value");
@@ -36,7 +36,7 @@ namespace Genetic{
 	public:
 		Crossing():FITGEN(),P(0){}
 		virtual ~Crossing(){}
-		const double CrossingProbability()const {return P;}
+		const double&CrossingProbability()const {return P;}
 		void SetCrossingProbability(const double val){
 			if((val<0)||(val>1))
 				throw MathTemplates::Exception<Crossing>("Crossing: probability value should fit the condition 0<=P<=1");
@@ -73,7 +73,7 @@ namespace Genetic{
 				m_mutation<<v;
 			}
 		}
-		const double AbsoluteMutationsProbability()const {return P;}
+		const double&AbsoluteMutationsProbability()const {return P;}
 		void SetAbsoluteMutationsProbability(const double val){
 			if((val<0)||(val>1))
 				throw MathTemplates::Exception<AbsoluteMutations>("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
@@ -107,7 +107,7 @@ namespace Genetic{
 				m_mutation<<v;
 			}
 		}
-		const double RelativeMutationsProbability()const {return P;}
+		const double&RelativeMutationsProbability()const {return P;}
 		void SetRelativeMutationsProbability(const double val){
 			if((val<0)||(val>1))
 				throw MathTemplates::Exception<RelativeMutations>("RelativeMutations: probability value should fit the condition 0<=P<=1");
@@ -136,7 +136,7 @@ namespace Genetic{
 				throw MathTemplates::Exception<ExactCopying>("ExactCopying: probability value should fit the condition 0<=P<=1");
 			P=value;
 		}
-		const double ExactCopyingProbability()const {return P;}
+		const double&ExactCopyingProbability()const {return P;}
 	protected:
 		virtual void mutations(ParamSet &C,RANDOM&R)const override{
 			std::uniform_real_distribution<double> Prob(0,1);

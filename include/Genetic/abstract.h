@@ -45,7 +45,7 @@ namespace Genetic{
 		AbstractGenetic&Init(const size_t population_size,const std::shared_ptr<IInitialConditions> initial_conditions,RANDOM&random);
 		void Iterate(RANDOM&random);
 		
-		const unsigned long long int iteration_count()const;
+		const unsigned long long int&iteration_count()const;
 		const size_t PopulationSize()const;
 		const size_t ParamCount()const;
 		const double&Optimality(const size_t point_index=0)const;

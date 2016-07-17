@@ -35,7 +35,7 @@ namespace Genetic{
 		ParamSet&operator=(const ParamSet&&P);
 		
 		const size_t size()const;
-		double operator[](const size_t i)const;
+		const double&operator[](const size_t i)const;
 		double&operator()(const size_t i);
 
 		typedef std::vector<double>::iterator iterator;
@@ -60,9 +60,10 @@ namespace Genetic{
 	}
 	std::ostream&operator<<(std::ostream&str,const ParamSet&P);
 	std::istream&operator>>(std::istream&str,ParamSet&P);
+	inline std::ostream&operator<<(std::ostream&str,const ParamSet&&P){return str<<P;}
 	ParamSet parEq(const size_t cnt,const double val);
-	inline ParamSet parZeros(const size_t cnt){return parEq(cnt,0);}
-	inline ParamSet parOnes(const size_t cnt){return parEq(cnt,1);}
+	inline const ParamSet parZeros(const size_t cnt){return parEq(cnt,0);}
+	inline const ParamSet parOnes(const size_t cnt){return parEq(cnt,1);}
 };
 
 #endif

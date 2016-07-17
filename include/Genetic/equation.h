@@ -11,7 +11,7 @@ namespace Genetic{
 		AbstractEq(){}
 	public:
 		virtual ~AbstractEq(){}
-		const double operator [](const size_t i)const{return AbstractGenetic::Parameters()[i];}
+		const double&operator [](const size_t i)const{return AbstractGenetic::Parameters()[i];}
 		typedef ParamSet::const_iterator const_iterator;
 		const_iterator begin()const{return AbstractGenetic::Parameters().begin();}
 		const_iterator cbegin()const{return AbstractGenetic::Parameters().cbegin();}

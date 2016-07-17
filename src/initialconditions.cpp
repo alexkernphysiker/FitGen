@@ -46,12 +46,12 @@ namespace Genetic{
 		m_max.push_back(max);
 		return *this;
 	}
-	const double GenerateUniform::Min(const size_t i)const {
+	const double&GenerateUniform::Min(const size_t i)const {
 		if(i>=m_min.size())
 			throw Exception<GenerateUniform>("Range check error when accessing GenerateUniform's element");
 		return m_min[i];
 	}
-	const double GenerateUniform::Max(const size_t i)const {
+	const double&GenerateUniform::Max(const size_t i)const {
 		if(i>=m_max.size())
 			throw Exception<GenerateUniform>("Range check error when accessing GenerateUniform's element");
 		return m_max[i];
@@ -75,12 +75,12 @@ namespace Genetic{
 		m_sig.push_back(sig);
 		return *this;
 	}
-	const double GenerateByGauss::Mean(size_t i)const {
+	const double&GenerateByGauss::Mean(size_t i)const {
 		if(i>=m_mean.size())
 			throw Exception<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
 		return m_mean[i];
 	}
-	const double GenerateByGauss::Sigma(size_t i)const {
+	const double&GenerateByGauss::Sigma(size_t i)const {
 		if(i>=m_sig.size())
 			throw Exception<GenerateByGauss>("Range check error when accessing GenerateByGauss's element");
 		return m_sig[i];

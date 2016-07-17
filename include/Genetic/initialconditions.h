@@ -15,7 +15,7 @@ namespace Genetic{
 		virtual ParamSet Generate(RANDOM&R)const override;
 		InitialDistributions &operator<<(const std::shared_ptr<Distrib> distr);
 		const size_t Count()const ;
-		const Distrib &operator[](const size_t i)const ;
+		const Distrib&operator[](const size_t i)const ;
 	private:
 		std::vector<std::shared_ptr<Distrib>> ParamDistr;
 	};
@@ -26,8 +26,8 @@ namespace Genetic{
 		GenerateUniform();
 		virtual ~GenerateUniform();
 		const size_t Count()const ;
-		const double Min(const size_t i)const ;
-		const double Max(const size_t i)const ;
+		const double&Min(const size_t i)const ;
+		const double&Max(const size_t i)const ;
 		GenerateUniform &Add(const double min,const double max);
 		virtual ParamSet Generate(RANDOM&R)const override;
 	private:
@@ -39,8 +39,8 @@ namespace Genetic{
 		GenerateByGauss();
 		virtual ~GenerateByGauss();
 		const size_t Count()const ;
-		const double Mean(const size_t i)const ;
-		const double Sigma(const size_t i)const ;
+		const double&Mean(const size_t i)const ;
+		const double&Sigma(const size_t i)const ;
 		GenerateByGauss &Add(const double mean,const double sig);
 		virtual ParamSet Generate(RANDOM&R)const override;
 	private:
