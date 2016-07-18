@@ -80,7 +80,7 @@ namespace Genetic{
 				);
 				auto new_point=make_pair(new_param,s);
 				{Lock lock(m_mutex);
-					InsertSorted(new_point,m_population,field_size(m_population),field_insert(m_population,Point));
+					m_population<<new_point;
 				}
 			}
 		};
@@ -106,7 +106,7 @@ namespace Genetic{
 			throw Exception<AbstractGenetic>("Cannot perform the calculation when population size is zero");
 		if(ThreadCount()>n)
 			SetThreadCount(n);
-		vector<Point> tmp_population;
+		SortedChain<Point> tmp_population;
 		auto process_elements=[this,&tmp_population,&random](size_t from,size_t to){
 			for(size_t i=from;i<=to;i++){
 				Point point;
@@ -128,8 +128,7 @@ namespace Genetic{
 				);
 				auto new_point=make_pair(new_param,s);
 				{Lock lock(m_mutex);
-					InsertSorted(point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
-					InsertSorted(new_point,tmp_population,std_size(tmp_population),std_insert(tmp_population,Point));
+					tmp_population<<point<<new_point;
 				}
 			}
 		};
@@ -143,13 +142,11 @@ namespace Genetic{
 				thr->join();
 		}
 		{Lock locker(m_mutex);
+			m_population=tmp_population.IndexRange(0,n);
 			StandardDeviation<double> STAT[par_cnt];
-			m_population.clear();
-			for(size_t i=0; i<n;i++){
-				m_population.push_back(tmp_population[i]);
+			for(size_t i=0; i<n;i++)
 				for(size_t j=0;j<par_cnt;j++)
 					STAT[j]<<tmp_population[i].first[j];
-			}
 			m_stat.clear();
 			for(size_t j=0;j<par_cnt;j++)
 				m_stat.push_back(STAT[j]());

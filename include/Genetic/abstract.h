@@ -10,6 +10,7 @@
 #include <random>
 #include <math.h>
 #include <math_h/sigma.h>
+#include <math_h/chains.h>
 #include "paramset.h"
 namespace Genetic{
 	typedef std::mt19937 RANDOM;
@@ -67,7 +68,7 @@ namespace Genetic{
 		std::mutex m_mutex;
 		std::shared_ptr<IOptimalityFunction> m_optimality;
 		std::shared_ptr<IParamCheck> m_filter;
-		std::vector<std::pair<ParamSet,double>> m_population;
+		MathTemplates::SortedChain<std::pair<ParamSet,double>> m_population;
 		std::vector<MathTemplates::value<double>> m_stat;
 		unsigned long long int m_itercount;
 		size_t threads;
