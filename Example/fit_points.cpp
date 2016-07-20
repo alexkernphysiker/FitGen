@@ -6,7 +6,7 @@
 #include <Genetic/fit.h>
 #include <Genetic/filter.h>
 #include <Genetic/initialconditions.h>
-const int background_polynom_power=5;
+const int background_polynom_power=4;
 using namespace std;
 using namespace Genetic;
 using namespace MathTemplates;
@@ -28,8 +28,8 @@ int main(){
 		<<Point({-37.5},{2.5},237.3,10.5)
 		<<Point({-32.5},{2.5},230.1,10.0)
 		<<Point({-27.5},{2.5},258.7,10.0)
-		<<Point({-22.5},{2.5},290.3,10.5)
-		<<Point({-17.5},{2.5},307.5,11.0)
+		<<Point({-22.5},{2.5},304.3,10.5)
+		<<Point({-17.5},{2.5},329.5,11.0)
 		<<Point({-12.5},{2.5},317.2,10.5)
 		<<Point({-07.5},{2.5},365.4,11.5)
 		<<Point({-02.5},{2.5},371.7,11.5)
@@ -50,11 +50,11 @@ int main(){
 		}
 	);
 	auto initial=make_shared<GenerateByGauss>()
-		<<make_pair(100,100)<<make_pair(20,20)<<make_pair(-20,0)
-		<<make_pair(400,100)<<make_pair(5,1)<<make_pair(0,0.5);
+		<<make_pair(100.,100.)<<make_pair(30.,30.)<<make_pair(-20.,10.)
+		<<make_pair(400.,100.)<<make_pair(5.,1.)<<make_pair(0.,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
-		initial<<make_pair(0,0.01);
-	fit.Init(TotalFunc::ParamCount*20,initial,engine);
+		initial<<make_pair(0.,0.01);
+	fit.Init(TotalFunc::ParamCount*15,initial,engine);
 	
 	while(!(
 		fit.AbsoluteOptimalityExitCondition(0.000001)
