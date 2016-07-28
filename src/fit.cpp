@@ -46,11 +46,11 @@ namespace Genetic{
 	}
 	FitPoints::FitPoints(const SortedPoints<value<double>>& h){
 		for(const point<value<double>>&p:h)
-			operator<<(Point({p.X().val()},{p.X().delta()},p.Y().val(),p.Y().delta()));
+			operator<<(Point({p.X().val()},{p.X().uncertainty()},p.Y().val(),p.Y().uncertainty()));
 	}
 	FitPoints::FitPoints(const BiSortedPoints<value<double>>&d){
 		d.FullCycle([this](const point3d<value<double>>&p){
-			operator<<(Point({p.X().val(),p.Y().val()},{p.X().delta(),p.Y().delta()},p.Z().val(),p.Z().delta()));
+			operator<<(Point({p.X().val(),p.Y().val()},{p.X().uncertainty(),p.Y().uncertainty()},p.Z().val(),p.Z().uncertainty()));
 		});
 	}
 	FitPoints::~FitPoints(){}

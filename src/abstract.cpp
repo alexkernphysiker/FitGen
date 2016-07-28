@@ -194,7 +194,7 @@ namespace Genetic{
 			return false;
 		bool res=true;
 		for(size_t i=0,n=m_stat.size();i<n;i++)
-			res&=(m_stat[i].delta()==0);
+			res&=(m_stat[i].uncertainty()==0);
 		return res;
 	}
 	const bool AbstractGenetic::AbsoluteOptimalityExitCondition(const double accuracy)const{
@@ -231,7 +231,7 @@ namespace Genetic{
 			if(isfinite(m)){
 				if(m<0)
 					throw Exception<AbstractGenetic>("Dispersion value cannot be negative");
-				if(m<m_stat[i].delta())
+				if(m<m_stat[i].uncertainty())
 					return false;
 			}
 		}
