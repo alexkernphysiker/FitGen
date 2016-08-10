@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(FitGen)
-set(CMAKE_CXX_FLAGS -pthread)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 add_definitions(-std=c++11 -Wall -Wunused-parameter)
 add_subdirectory(math_h)
 get_directory_property(has_parent PARENT_DIRECTORY)
