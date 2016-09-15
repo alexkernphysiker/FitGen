@@ -141,7 +141,7 @@ void test_optimality1(double v=INFINITY){
 TEST(OptimalityForPoints,Algorithms){
 	test_optimality1<SumSquareDiff>(3);
 	test_optimality1<SumWeightedSquareDiff>(1);
-	test_optimality1<ChiSquare>(1);
+	test_optimality1<ChiSquare>(3);
 	test_optimality1<ChiSquareWithXError>();
 }
 class ParabolicTest:public virtual Parabolic{

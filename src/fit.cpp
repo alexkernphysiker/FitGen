@@ -213,9 +213,8 @@ namespace Genetic{
 	shared_ptr<OptimalityForPoints> ChiSquare(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->size()-P.size();
-			if(z<=0)
-				throw Exception<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
-			return 1.0/z;
+			if(z<=0)throw Exception<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+			return 1.0;
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
 			return pow((p.y()-F(p.X(),P))/p.wy(),2);
@@ -225,9 +224,8 @@ namespace Genetic{
 	shared_ptr<OptimalityForPoints> ChiSquareWithXError(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f){
 		OptimalityForPoints::Coefficient c=[points](const ParamSet&P,const IParamFunc&){
 			double z=points->size()-P.size();
-			if(z<=0)
-				throw Exception<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
-			return 1.0/z;
+			if(z<=0)throw Exception<IOptimalityFunction>("wrong conditions for calculating xi^2: there must be at least one degree of freedom");
+			return 1.0;
 		};
 		OptimalityForPoints::Summand s=[](const FitPoints::Point&p,const ParamSet&P,const IParamFunc&F){
 			double w=pow(p.wy(),2);

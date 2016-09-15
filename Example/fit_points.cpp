@@ -66,8 +66,9 @@ int main(){
 			<<"        \r";
 	}
 	cout<<endl;
+	cout<<"Chi^2 divided by degrees of freedom:"<<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
 	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
-	cout<<"Fit parameters"<<endl;
+	cout<<"Fit parameters with uncertainties"<<endl;
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
 	Plotter::Instance().SetOutput(".","points");
 	SortedPoints<double>
