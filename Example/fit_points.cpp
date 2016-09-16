@@ -28,8 +28,8 @@ int main(){
 		<<Point({-37.5},{2.5},237.3,10.5)
 		<<Point({-32.5},{2.5},230.1,10.0)
 		<<Point({-27.5},{2.5},258.7,10.0)
-		<<Point({-22.5},{2.5},304.3,10.5)
-		<<Point({-17.5},{2.5},329.5,11.0)
+		<<Point({-22.5},{2.5},304.3,10.7)
+		<<Point({-17.5},{2.5},329.5,11.4)
 		<<Point({-12.5},{2.5},317.2,10.5)
 		<<Point({-07.5},{2.5},365.4,11.5)
 		<<Point({-02.5},{2.5},371.7,11.5)
@@ -43,7 +43,6 @@ int main(){
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
-		<<(make_shared<Below>()<<INFINITY<<5)
 		<<[](const ParamSet&P){
 			static Foreground F;
 			return F({P[2]},P)<P[1]*5.0;
@@ -56,19 +55,18 @@ int main(){
 		initial<<make_pair(0.,0.01);
 	fit.Init(TotalFunc::ParamCount*15,initial,engine);
 	
-	while(!(
-		fit.AbsoluteOptimalityExitCondition(0.000001)
-	)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.00001)){
 		fit.Iterate(engine);
 		cout<<fit.iteration_count()<<" iterations; "
-			<<fit.Optimality()<<"<S<"
+			<<fit.Optimality()<<" < Chi^2 < "
 			<<fit.Optimality(fit.PopulationSize()-1)
-			<<"        \r";
+			<<"           \r";
 	}
 	cout<<endl;
-	cout<<"Chi^2 divided by degrees of freedom:"<<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
-	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
+	cout<<"Chi^2 divided by degrees of freedom = "<<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
+	cout<<endl;
 	cout<<"Fit parameters with uncertainties"<<endl;
+	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
 	Plotter::Instance().SetOutput(".","points");
 	SortedPoints<double>
