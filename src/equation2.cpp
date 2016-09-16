@@ -8,6 +8,9 @@ namespace Genetic{
 	InexactEquationSystem::InexactEquationSystem(const initializer_list<InexactEquation>& source){
 		for(const auto&item:source)f_data.push_back(item);
 	}
+	InexactEquationSystem::InexactEquationSystem(const list<InexactEquation>& source){
+		for(const auto&item:source)f_data.push_back(item);
+	}
 	InexactEquationSystem::~InexactEquationSystem(){}
 	double InexactEquationSystem::operator()(const ParamSet& P) const{
 		double result=0;

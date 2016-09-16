@@ -13,6 +13,7 @@ namespace Genetic{
 	class InexactEquationSystem:public virtual IOptimalityFunction{
 	public:
 		InexactEquationSystem(const std::initializer_list<InexactEquation>&source);
+		InexactEquationSystem(const std::list<InexactEquation>&source);
 		virtual ~InexactEquationSystem();
 		virtual double operator()(const ParamSet&P)const override;
 	private:
@@ -22,6 +23,7 @@ namespace Genetic{
 	class InexactEquationSolver:public virtual GENETIC{
 	public:
 		InexactEquationSolver(const std::initializer_list<InexactEquation>&source):AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
+		InexactEquationSolver(const std::list<InexactEquation>&source):AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
 		virtual ~InexactEquationSolver(){}
 		const double&operator [](const size_t i)const{return AbstractGenetic::Parameters()[i];}
 		typedef ParamSet::const_iterator const_iterator;
