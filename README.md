@@ -138,7 +138,12 @@ It's construtor requires one std::function<double(const ParamSet&)> and the clas
 searches the minimum of this function.
 
 'SearchMax' has the same interface but searches maximum of the function.
+
 	
+	Genetic/equation2.h 
+'InexactEquationSystem' is a class representing a system of equations that have a function defined on ParamSet in the left part and a magnitude with uncertainty in the right part.
+'InexactEquationSolver' is a class inheritting 'AbstractGenetic' that finds the most optimal ParamSet for sych system of equations.
+
 	Genetic/fit.h 
 classes needed for fitting points by parametric function
 
