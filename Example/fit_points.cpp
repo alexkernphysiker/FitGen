@@ -11,27 +11,22 @@ using namespace std;
 using namespace Genetic;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-
-typedef Mul<Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
-typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
-typedef Add<Foreground,Background> TotalFunc;
-
 int main(){
 	RANDOM engine;
 	auto points_to_fit=make_shared<FitPoints>()
 		<<Point({-67.5},{2.5},179.4,12.5)
-		<<Point({-62.5},{2.5},223.1,13.0)
+		<<Point({-62.5},{2.5},213.1,13.0)
 		<<Point({-57.5},{2.5},221.6,12.0)
 		<<Point({-52.5},{2.5},220.1,11.5)
 		<<Point({-47.5},{2.5},214.4,10.5)
 		<<Point({-42.5},{2.5},241.0,10.5)
 		<<Point({-37.5},{2.5},237.3,10.5)
-		<<Point({-32.5},{2.5},230.1,10.0)
-		<<Point({-27.5},{2.5},258.7,10.0)
-		<<Point({-22.5},{2.5},304.3,10.7)
-		<<Point({-17.5},{2.5},329.5,11.4)
+		<<Point({-32.5},{2.5},240.1,10.0)
+		<<Point({-27.5},{2.5},268.7,10.0)
+		<<Point({-22.5},{2.5},314.3,10.0)
+		<<Point({-17.5},{2.5},329.5,11.0)
 		<<Point({-12.5},{2.5},317.2,10.5)
-		<<Point({-07.5},{2.5},365.4,11.5)
+		<<Point({-07.5},{2.5},360.4,12.0)
 		<<Point({-02.5},{2.5},371.7,11.5)
 		<<Point({ 02.5},{2.5},406.6,12.0)
 		<<Point({ 07.5},{2.5},413.2,12.0)
@@ -40,6 +35,9 @@ int main(){
 		<<Point({ 22.5},{2.5},497.3,14.5)
 		<<Point({ 27.5},{2.5},511.4,15.0);
 		
+	typedef Mul<Func3<Gaussian,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
+	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
+	typedef Add<Foreground,Background> TotalFunc;
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
@@ -55,7 +53,7 @@ int main(){
 		initial<<make_pair(0.,0.01);
 	fit.Init(TotalFunc::ParamCount*15,initial,engine);
 	
-	while(!fit.AbsoluteOptimalityExitCondition(0.00001)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.0001)){
 		fit.Iterate(engine);
 		cout<<fit.iteration_count()<<" iterations; "
 			<<fit.Optimality()<<" < Chi^2 < "
