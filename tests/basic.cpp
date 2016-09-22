@@ -114,14 +114,26 @@ TEST(AbstractGenetic,ItSync){test_iterate(1,10,100);}
 TEST(AbstractGenetic,ItAsync2){test_iterate(2,10,100);}
 TEST(AbstractGenetic,ItAsync3){test_iterate(3,10,100);}
 TEST(AbstractGenetic,ItAsync4){test_iterate(4,10,100);}
+TEST(AbstractGenetic,ItAsync5){test_iterate(5,10,100);}
+TEST(AbstractGenetic,ItAsync6){test_iterate(6,10,100);}
+TEST(AbstractGenetic,ItAsync7){test_iterate(7,10,100);}
+TEST(AbstractGenetic,ItAsync8){test_iterate(8,10,100);}
 TEST(AbstractGenetic,ItSync_){test_iterate(1,5,5);}
 TEST(AbstractGenetic,ItAsync2_){test_iterate(2,5,5);}
 TEST(AbstractGenetic,ItAsync3_){test_iterate(3,5,5);}
 TEST(AbstractGenetic,ItAsync4_){test_iterate(4,5,5);}
+TEST(AbstractGenetic,ItAsync5_){test_iterate(5,5,5);}
+TEST(AbstractGenetic,ItAsync6_){test_iterate(6,5,5);}
+TEST(AbstractGenetic,ItAsync7_){test_iterate(7,5,5);}
+TEST(AbstractGenetic,ItAsync8_){test_iterate(8,5,5);}
 TEST(AbstractGenetic,ItSync__){test_iterate(1,2,5);}
 TEST(AbstractGenetic,ItAsync2__){test_iterate(2,2,5);}
 TEST(AbstractGenetic,ItAsync3__){test_iterate(3,2,5);}
 TEST(AbstractGenetic,ItAsync4__){test_iterate(4,2,5);}
+TEST(AbstractGenetic,ItAsync5__){test_iterate(5,2,5);}
+TEST(AbstractGenetic,ItAsync6__){test_iterate(6,2,5);}
+TEST(AbstractGenetic,ItAsync7__){test_iterate(7,2,5);}
+TEST(AbstractGenetic,ItAsync8__){test_iterate(8,2,5);}
 class GeneticTestWithMutations:public AbstractGenetic{
 private:
 	RandomValueGenerator<double> G;
