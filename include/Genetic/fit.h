@@ -125,11 +125,12 @@ namespace Genetic{
 		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&P);
 		inline Parabolic&SetUncertaintyCalcDeltas(const ParamSet&&P){return SetUncertaintyCalcDeltas(P);}
 		const std::vector<MathTemplates::value<double>>&ParametersWithUncertainties()const;
+	protected:
+		virtual void HandleIteration()override;
 	private:
 		double GetParamParabolicError(const double delta, const size_t i)const;
 		ParamSet m_delta;
 		std::shared_ptr<std::vector<MathTemplates::value<double>>> m_uncertainty_cache;
-		std::shared_ptr<unsigned long long int> m_iter_number;
 	};
 	std::shared_ptr<OptimalityForPoints> SumSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	std::shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);

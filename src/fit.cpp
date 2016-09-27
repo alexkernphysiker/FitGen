@@ -243,7 +243,6 @@ namespace Genetic{
 	
 	Parabolic::Parabolic(){
 		m_uncertainty_cache=make_shared<vector<value<double>>>();
-		m_iter_number=make_shared<unsigned long long int>(ULLONG_MAX);
 	}
 	Parabolic::~Parabolic(){}
 	double Parabolic::GetParamParabolicError(const double delta, const size_t i)const{
@@ -262,18 +261,21 @@ namespace Genetic{
 		else
 			return sqrt(2.0/dd);
 	}
+	void Parabolic::HandleIteration(){
+		Genetic::AbstractGenetic::HandleIteration();
+		m_uncertainty_cache->clear();
+	}
 	Parabolic& Parabolic::SetUncertaintyCalcDeltas(const ParamSet& P){
 		m_delta=P;
-		(*m_iter_number)=ULLONG_MAX;
+		HandleIteration();
 		return *this;
 	}
+	
 	const vector<value<double>>&Parabolic::ParametersWithUncertainties()const{
-		if(iteration_count()!=(*m_iter_number)){
-			m_uncertainty_cache->clear();
+		if(m_uncertainty_cache->size()==0){
 			for(size_t i=0;(i<ParamCount())&&(i<m_delta.size());i++){
 				m_uncertainty_cache->push_back(value<double>(Parameters()[i],GetParamParabolicError(m_delta[i],i)));
 			}
-			(*m_iter_number)=iteration_count();
 		}
 		return *m_uncertainty_cache;
 	}
