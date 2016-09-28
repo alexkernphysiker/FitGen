@@ -6,6 +6,7 @@
 #include <list>
 #include <math_h/sigma.h>
 #include "abstract.h"
+#include "parabolic.h"
 namespace Genetic{
 	typedef std::pair<std::function<double(const ParamSet&)>,MathTemplates::value<double>> InexactEquation;
 	inline const InexactEquation in_eq(const std::function<double(const ParamSet&)>l,const MathTemplates::value<double>&r){return std::make_pair(l,r);}
@@ -20,7 +21,7 @@ namespace Genetic{
 		std::list<InexactEquation> f_data;
 	};
 	template<class GENETIC>
-	class InexactEquationSolver:public virtual GENETIC{
+	class InexactEquationSolver:public virtual GENETIC,public virtual ParabolicErrorEstimationFromChisq{
 	public:
 		InexactEquationSolver(const std::initializer_list<InexactEquation>&source):AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
 		InexactEquationSolver(const std::list<InexactEquation>&source):AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}

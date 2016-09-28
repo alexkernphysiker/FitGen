@@ -6,6 +6,7 @@
 #include <math_h/tabledata.h>
 #include "abstract.h"
 #include "genetic.h"
+#include "parabolic.h"
 namespace Genetic{
 	class IParamFunc{
 	public:
@@ -117,27 +118,12 @@ namespace Genetic{
 		Coefficient C;
 		Summand S;
 	};
-	class Parabolic:public virtual AbstractGenetic{
-	protected:
-		Parabolic();
-	public:
-		virtual ~Parabolic();
-		Parabolic&SetUncertaintyCalcDeltas(const ParamSet&P);
-		inline Parabolic&SetUncertaintyCalcDeltas(const ParamSet&&P){return SetUncertaintyCalcDeltas(P);}
-		const std::vector<MathTemplates::value<double>>&ParametersWithUncertainties()const;
-	protected:
-		virtual void HandleIteration()override;
-	private:
-		double GetParamParabolicError(const double delta, const size_t i)const;
-		ParamSet m_delta;
-		std::shared_ptr<std::vector<MathTemplates::value<double>>> m_uncertainty_cache;
-	};
 	std::shared_ptr<OptimalityForPoints> SumSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	std::shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	std::shared_ptr<OptimalityForPoints> ChiSquare(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	std::shared_ptr<OptimalityForPoints> ChiSquareWithXError(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	template<class GENETIC,std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)>
-	class Fit:public virtual GENETIC,public virtual Parabolic{
+	class Fit:public virtual GENETIC,public virtual ParabolicErrorEstimationFromChisq{
 	private:
 		std::shared_ptr<IParamFunc> m_func;
 	protected:

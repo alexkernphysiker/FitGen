@@ -2,13 +2,11 @@
 // MIT license
 #include <math.h>
 #include <climits>
-#include <gnuplot_wrap.h>
 #include <math_h/error.h>
 #include <Genetic/fit.h>
 namespace Genetic{
 	using namespace std;
 	using namespace MathTemplates;
-	using namespace GnuplotWrap;
 	ParameterFunction::ParameterFunction(const function<double(const ParamSet&,const ParamSet&)> f){func=f;}
 	ParameterFunction::~ParameterFunction(){}
 	double ParameterFunction::operator()(const ParamSet&X,const ParamSet&P)const{return func(X,P);}
@@ -241,42 +239,4 @@ namespace Genetic{
 		return make_shared<OptimalityForPoints>(points,f,c,s);
 	}
 	
-	Parabolic::Parabolic(){
-		m_uncertainty_cache=make_shared<vector<value<double>>>();
-	}
-	Parabolic::~Parabolic(){}
-	double Parabolic::GetParamParabolicError(const double delta, const size_t i)const{
-		if(delta<=0)
-			throw new Exception<Parabolic>("Exception in parabolic error calculation: delta cannot be zero or negative");
-		double s=Optimality();
-		ParamSet ab=Parameters();
-		ParamSet be=ab;
-		ab(i)+=delta;
-		be(i)-=delta;
-		double sa=OptimalityCalculator()->operator()(ab);
-		double sb=OptimalityCalculator()->operator()(be);
-		double dd=(sa-2.0*s+sb)/pow(delta,2);
-		if(dd<=0)
-			return INFINITY;
-		else
-			return sqrt(2.0/dd);
-	}
-	void Parabolic::HandleIteration(){
-		Genetic::AbstractGenetic::HandleIteration();
-		m_uncertainty_cache->clear();
-	}
-	Parabolic& Parabolic::SetUncertaintyCalcDeltas(const ParamSet& P){
-		m_delta=P;
-		HandleIteration();
-		return *this;
-	}
-	
-	const vector<value<double>>&Parabolic::ParametersWithUncertainties()const{
-		if(m_uncertainty_cache->size()==0){
-			for(size_t i=0;(i<ParamCount())&&(i<m_delta.size());i++){
-				m_uncertainty_cache->push_back(value<double>(Parameters()[i],GetParamParabolicError(m_delta[i],i)));
-			}
-		}
-		return *m_uncertainty_cache;
-	}
 }
