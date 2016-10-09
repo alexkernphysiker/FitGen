@@ -27,23 +27,18 @@ namespace Genetic{
 		class Point{
 		public:
 			Point(const Point &src);
-			Point(const ParamSet&x,const double y_);
-			Point(const ParamSet&x,const double y_,const double wy_);
-			Point(const ParamSet&x,const ParamSet&wx,const double y_,const double wy_);
-			Point(const ParamSet&&x,const double y_);
-			Point(const ParamSet&&x,const double y_,const double wy_);
-			Point(const ParamSet&&x,const ParamSet&&wx,const double y_,const double wy_);
-			const ParamSet&X()const;
-			const ParamSet&WX()const;
-			const double&y()const;
-			const double&wy()const;
-			double&var_y();
-			double&var_wy();
+			Point(const std::vector<MathTemplates::value<double>>&x,const MathTemplates::value<double>&y_);
+			Point(const std::vector<MathTemplates::value<double>>&&x,const MathTemplates::value<double>&y_);
+			Point(const std::vector<MathTemplates::value<double>>&x,const MathTemplates::value<double>&&y_);
+			Point(const std::vector<MathTemplates::value<double>>&&x,const MathTemplates::value<double>&&y_);
+			virtual ~Point();
+			const std::vector<MathTemplates::value<double>>&X()const;
+			const ParamSet x()const;
+			const MathTemplates::value<double>&y()const;
+			MathTemplates::value<double>&var_y();
 		private:
-			ParamSet __X;
-			ParamSet __WX;
-			double __y;
-			double __wy;
+			std::vector<MathTemplates::value<double>> XX;
+			MathTemplates::value<double> yy;
 		};
 		FitPoints();
 		FitPoints(const MathTemplates::SortedPoints<double>&h);
@@ -119,7 +114,6 @@ namespace Genetic{
 		Summand S;
 	};
 	std::shared_ptr<OptimalityForPoints> SumSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
-	std::shared_ptr<OptimalityForPoints> SumWeightedSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	std::shared_ptr<OptimalityForPoints> ChiSquare(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	std::shared_ptr<OptimalityForPoints> ChiSquareWithXError(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	template<class GENETIC,std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)>

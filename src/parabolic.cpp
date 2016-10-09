@@ -13,7 +13,7 @@ namespace Genetic{
 	ParabolicErrorEstimationFromChisq::~ParabolicErrorEstimationFromChisq(){}
 	double ParabolicErrorEstimationFromChisq::GetParamParabolicError(const double delta, const size_t i)const{
 		if(delta<=0)
-			throw new Exception<ParabolicErrorEstimationFromChisq>("Exception in parabolic error calculation: delta cannot be zero or negative");
+			throw Exception<ParabolicErrorEstimationFromChisq>("Exception in parabolic error calculation: delta cannot be zero or negative");
 		double s=Optimality();
 		ParamSet ab=Parameters();
 		ParamSet be=ab;

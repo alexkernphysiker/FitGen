@@ -13,10 +13,23 @@ TEST(InexactEquationSystem,empty){
 	InexactEquationSystem A{};
 	EXPECT_EQ(A({}),0);
 }
+TEST(InexactEquationSystem,empty2){
+	InexactEquationSystem A(list<InexactEquation>{});
+	EXPECT_EQ(A({}),0);
+}
 TEST(InexactEquationSystem,simple){
 	InexactEquationSystem A{
 		in_eq([](const ParamSet&P)->double{return P[0];},{0,1})
 	};
+	EXPECT_EQ(A({0.0}),0);
+	EXPECT_EQ(A({0.5}),0.25);
+	EXPECT_EQ(A({1.0}),1);
+	EXPECT_EQ(A({2.0}),4);
+}
+TEST(InexactEquationSystem,simple2){
+	InexactEquationSystem A(list<InexactEquation>{
+		in_eq([](const ParamSet&P)->double{return P[0];},{0,1})
+	});
 	EXPECT_EQ(A({0.0}),0);
 	EXPECT_EQ(A({0.5}),0.25);
 	EXPECT_EQ(A({1.0}),1);
@@ -35,11 +48,38 @@ TEST(InexactEquationSystem,twoparams){
 	EXPECT_EQ(A({0.0,1.0}),1);
 	EXPECT_EQ(A({0.0,2.0}),4);
 }
+TEST(InexactEquationSystem,twoparams2){
+	InexactEquationSystem A(list<InexactEquation>{
+		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1})
+	});
+	EXPECT_EQ(A({0.0,0.0}),0);
+	EXPECT_EQ(A({0.5,0.0}),0.25);
+	EXPECT_EQ(A({1.0,0.0}),1);
+	EXPECT_EQ(A({2.0,0.0}),4);
+	EXPECT_EQ(A({0.0,0.0}),0);
+	EXPECT_EQ(A({0.0,0.5}),0.25);
+	EXPECT_EQ(A({0.0,1.0}),1);
+	EXPECT_EQ(A({0.0,2.0}),4);
+}
 TEST(InexactEquationSystem,two_eq){
 	InexactEquationSystem A{
 		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1}),
 		in_eq([](const ParamSet&P)->double{return P[0]-P[1];},{0,1})
 	};
+	EXPECT_EQ(A({0.0,0.0}),0);
+	EXPECT_EQ(A({0.5,0.0}),0.5);
+	EXPECT_EQ(A({1.0,0.0}),2);
+	EXPECT_EQ(A({2.0,0.0}),8);
+	EXPECT_EQ(A({0.0,0.0}),0);
+	EXPECT_EQ(A({0.0,0.5}),0.5);
+	EXPECT_EQ(A({0.0,1.0}),2);
+	EXPECT_EQ(A({0.0,2.0}),8);
+}
+TEST(InexactEquationSystem,two_eq2){
+	InexactEquationSystem A(list<InexactEquation>{
+		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1}),
+		in_eq([](const ParamSet&P)->double{return P[0]-P[1];},{0,1})
+	});
 	EXPECT_EQ(A({0.0,0.0}),0);
 	EXPECT_EQ(A({0.5,0.0}),0.5);
 	EXPECT_EQ(A({1.0,0.0}),2);

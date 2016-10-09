@@ -36,12 +36,6 @@ namespace Genetic{
 		m_values.push_back(p);
 		return *this;
 	}
-	ParamSet& ParamSet::operator<<(const initializer_list< double >& source){
-		Lock lock(m_mutex);
-		for(double p:source)m_values.push_back(p);
-		return *this;
-	}
-	ParamSet& ParamSet::operator<<(const initializer_list<double>&&source){return operator<<(source);}
 	ParamSet& ParamSet::operator<<(const vector<double>&V){
 		Lock lock(m_mutex);
 		for(double p:V)m_values.push_back(p);

@@ -29,6 +29,9 @@ int main(){
 	fit.Init(30,make_shared<GenerateUniform>()<<make_pair(left,right)<<make_pair(0,right-left)<<make_pair(0,5.0*count),engine);
 	while(!fit.AbsoluteOptimalityExitCondition(0.00000001))
 		fit.Iterate(engine);
+	cout<<"Chi^2 = "<<fit.Optimality()<<endl;
+	cout<<"Chi^2 divided by degrees of freedom = "<<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
+	cout<<endl;
 	fit.SetUncertaintyCalcDeltas({0.01,0.01,0.01});
 	cout<<"Fit parameters"<<endl;
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;

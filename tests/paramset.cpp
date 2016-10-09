@@ -76,6 +76,20 @@ TEST(ParamSet, AddParamSet){
 		}
 	}
 }
+TEST(ParamSet, AddList){
+	for(int count=0;count<=n;count++){
+		ParamSet P;
+		for(int i=0;i<5;i++){
+			vector<double> p;
+			for(int i=0;i<count;i++)p.push_back(data[i]);
+			int c=P.size();
+			EXPECT_EQ(&P,&(P<<p));
+			EXPECT_EQ(c+count,P.size());
+			for(int i=0;i<count;i++)
+				EXPECT_EQ(P[P.size()-1-i],p[p.size()-1-i]);
+		}
+	}
+}
 TEST(ParamSet, AddToItself){
 	for(int count=0;count<=n;count++){
 		ParamSet P;
@@ -83,6 +97,15 @@ TEST(ParamSet, AddToItself){
 		int c=P.size();
 		EXPECT_EQ(&P,&(P<<P));
 		EXPECT_EQ(c+c,P.size());
+	}
+}
+TEST(ParamSet, Removing){
+	ParamSet P{0,1,2,3,4,5};
+	for(int count=5;count>=0;count--){
+		double p;
+		EXPECT_EQ(&P,&(P>>p));
+		EXPECT_EQ(count,p);
+		EXPECT_EQ(count,P.size());
 	}
 }
 TEST(ParamSet, Copying){

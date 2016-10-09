@@ -22,17 +22,15 @@ TEST(point,Base){
 	{
 		Point P({0},0);
 		EXPECT_EQ(1,P.X().size());
-		EXPECT_EQ(1,P.WX().size());
 	}
-	Point P({1},{0.1},1,1);
+	Point P({{1,0.1}},{1,1});
 	{
 		Point P2(P);
-		EXPECT_EQ(P.y(),P2.y());
-		EXPECT_EQ(P.wy(),P2.wy());
+		EXPECT_EQ(P.y().val(),P2.y().val());
+		EXPECT_EQ(P.y().uncertainty(),P2.y().uncertainty());
 		EXPECT_EQ(P.X().size(),P2.X().size());
-		EXPECT_EQ(P.X()[0],P2.X()[0]);
-		EXPECT_EQ(P.WX().size(),P2.WX().size());
-		EXPECT_EQ(P.WX()[0],P2.WX()[0]);
+		EXPECT_EQ(P.X()[0].val(),P2.X()[0].val());
+		EXPECT_EQ(P.X()[0].uncertainty(),P2.X()[0].uncertainty());
 	}
 }
 TEST(FitPoints,sizemismatch){
@@ -66,13 +64,13 @@ TEST(FitPoints,Base){
 	EXPECT_EQ(1,points.size());
 	EXPECT_THROW(points[-1],Exception<FitPoints>);
 	EXPECT_THROW(points[1],Exception<FitPoints>);
-	EXPECT_EQ(0,points[0].X()[0]);
+	EXPECT_EQ(0,points[0].X()[0].val());
 	EXPECT_EQ(&points,&(points<<FitPoints::Point({1},0)));
 	EXPECT_EQ(2,points.size());
 	EXPECT_THROW(points[-1],Exception<FitPoints>);
 	EXPECT_THROW(points[2],Exception<FitPoints>);
-	EXPECT_EQ(0,points[0].X()[0]);
-	EXPECT_EQ(1,points[1].X()[0]);
+	EXPECT_EQ(0,points[0].X()[0].val());
+	EXPECT_EQ(1,points[1].X()[0].val());
 	int c=0;
 	for(const Point&p:points){
 		EXPECT_EQ(1,p.X().size());
@@ -91,13 +89,17 @@ TEST(FitPoints,Select){
 	auto filter=[](const ParamSet&X){return X[0]<2.5;};
 	auto y_filter=[](double y){return y<2.5;};
 	auto sel1=SelectFitPoints(points,make_shared<Filter>(filter));
-	for(const Point&p:*sel1)EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
+	for(const Point&p:*sel1){
+		auto x=p.x();
+		EXPECT_EQ(true,filter(x));
+	}
 	auto sel2=SelectFitPoints(points,y_filter);
-	for(const Point&p:*sel2)EXPECT_EQ(true,y_filter(p.y()));
+	for(const Point&p:*sel2)EXPECT_EQ(true,y_filter(p.y().val()));
 	auto sel3=SelectFitPoints(points,make_shared<Filter>(filter),y_filter);
 	for(const Point&p:*sel3){
-		EXPECT_EQ(true,filter(static_cast<const ParamSet&>(p.X())));
-		EXPECT_EQ(true,y_filter(p.y()));
+		auto x=p.x();
+		EXPECT_EQ(true,filter(x));
+		EXPECT_EQ(true,y_filter(p.y().val()));
 	}
 }
 TEST(OptimalityForPoints,Base){
@@ -125,9 +127,9 @@ TEST(OptimalityForPoints,Base){
 template<shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>,shared_ptr<IParamFunc>)>
 void test_optimality1(double v=INFINITY){
 	auto points=make_shared<FitPoints>()
-		<<FitPoints::Point({0},{1},0,1)
-		<<FitPoints::Point({1},{1},0,1)
-		<<FitPoints::Point({2},{1},0,1);
+		<<FitPoints::Point({{0,1}},{0,1})
+		<<FitPoints::Point({{1,1}},{0,1})
+		<<FitPoints::Point({{2,1}},{0,1});
 	auto F=make_shared<ParameterFunction>([](const ParamSet&,const ParamSet&){return 0;});
 	auto S=OptimalityAlgorithm(points,F);
 	EXPECT_NE(nullptr,S.get());
@@ -139,15 +141,18 @@ void test_optimality1(double v=INFINITY){
 	if(isfinite(v))
 		EXPECT_EQ(v,S1->operator()(ParamSet()));
 }
-TEST(OptimalityForPoints,Algorithms){
+TEST(OptimalityForPoints,SumSquareDiff){
 	test_optimality1<SumSquareDiff>(3);
-	test_optimality1<SumWeightedSquareDiff>(1);
+}
+TEST(OptimalityForPoints,ChiSquare){
 	test_optimality1<ChiSquare>(3);
-	test_optimality1<ChiSquareWithXError>();
+}
+TEST(OptimalityForPoints,ChiSquareWithXError){
+	test_optimality1<ChiSquareWithXError>(3);
 }
 typedef Add<Mul<Arg<0>,Par<0>>,Par<1>> Fit_Func;
 typedef Const<1> Fit_Func_err;
-auto Points=make_shared<FitPoints>()<<Point({0},1,1)<<Point({1},2,1)<<Point({2},3,1);
+auto Points=make_shared<FitPoints>()<<Point({0},{1,1})<<Point({1},{2,1})<<Point({2},{3,1});
 auto Init=make_shared<GenerateUniform>()<<make_pair(0,2)<<make_pair(0,2);
 TEST(Fit,Basetest){
 	Fit<DifferentialMutations<>,SumSquareDiff> fit(Points,make_shared<Fit_Func>());
