@@ -35,6 +35,14 @@ TEST(Above,BasicTest){
 				c=-c;
 			}
 		}
+		{ParamSet tester;double c=1;
+			for(int i=0;i<count;i++){
+				EXPECT_EQ(&tester,&(tester<<c));
+				Above Tester(static_cast<const ParamSet&&>(tester));
+				EXPECT_EQ(false,Tester(static_cast<const ParamSet&>(Check)));
+				c=-c;
+			}
+		}
 	}
 }
 TEST(Below,BasicTest){
@@ -56,6 +64,14 @@ TEST(Below,BasicTest){
 			for(int i=0;i<count;i++){
 				EXPECT_EQ(&tester,&(tester<<c));
 				EXPECT_EQ(false,tester(static_cast<const ParamSet&>(Check)));
+				c=-c;
+			}
+		}
+		{ParamSet tester;double c=-1;
+			for(int i=0;i<count;i++){
+				EXPECT_EQ(&tester,&(tester<<c));
+				Below Tester(static_cast<const ParamSet&&>(tester));
+				EXPECT_EQ(false,Tester(static_cast<const ParamSet&>(Check)));
 				c=-c;
 			}
 		}
