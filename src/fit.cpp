@@ -138,14 +138,8 @@ namespace Genetic{
 	FitPoints::const_iterator FitPoints::begin()const {
 		return m_data.begin();
 	}
-	FitPoints::const_iterator FitPoints::cbegin() const{
-		return m_data.cbegin();
-	}
 	FitPoints::const_iterator FitPoints::end()const {
 		return m_data.end();
-	}
-	FitPoints::const_iterator FitPoints::cend() const{
-		return m_data.cend();
 	}
 	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition){
 		auto res=make_shared<FitPoints>();

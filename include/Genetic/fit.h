@@ -56,9 +56,7 @@ namespace Genetic{
 		const double&Ymax()const;
 		typedef std::vector<Point>::const_iterator const_iterator;
 		const_iterator begin()const;
-		const_iterator cbegin()const;
 		const_iterator end()const;
-		const_iterator cend() const;
 		const MathTemplates::SortedPoints<MathTemplates::value<double>> Hist1(const size_t parameter_index_x)const;
 		const MathTemplates::SortedPoints<MathTemplates::value<double>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
 		const MathTemplates::SortedPoints<double> Line(const size_t parameter_index_x)const;

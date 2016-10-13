@@ -79,6 +79,10 @@ TEST(AbstractGenetic,Throwing){
 	EXPECT_THROW(gen.ParametersDispersionExitCondition(parEq(1,-1)),Exception<AbstractGenetic>);
 	EXPECT_THROW(gen.RelativeParametersDispersionExitCondition(parEq(1,-1)),Exception<AbstractGenetic>);
 }
+TEST(AbstractGenetic,Throwing_without_init){
+	GeneticTest gen(optimality);
+	EXPECT_THROW(gen.Iterate(engine),Exception<AbstractGenetic>);
+}
 #define EXPECT_CLOSE(A,B) EXPECT_TRUE(pow((A)-(B),2)<0.0001);
 void test_iterate(size_t threads,size_t population,size_t iterations){
 	GeneticTest gen(optimality);

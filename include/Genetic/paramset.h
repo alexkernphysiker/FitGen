@@ -13,14 +13,12 @@ namespace Genetic{
 		ParamSet(const std::initializer_list<double>&source);
 		ParamSet(const std::initializer_list<double>&&source);
 		ParamSet(const std::vector<double> &source);
-		ParamSet(const std::vector<double>&&source);
 		ParamSet(const ParamSet&source);
 		ParamSet(const ParamSet&&source);
 		~ParamSet();
 		
 		ParamSet&operator<<(const double p);
 		ParamSet&operator<<(const std::vector<double>&V);
-		ParamSet&operator<<(const std::vector<double>&&V);
 		ParamSet&operator<<(const ParamSet&P);
 		ParamSet&operator<<(const ParamSet&&P);
 		ParamSet&operator>>(double&p);
@@ -28,7 +26,6 @@ namespace Genetic{
 		ParamSet&operator=(const std::initializer_list<double>&source);
 		ParamSet&operator=(const std::initializer_list<double>&&source);
 		ParamSet&operator=(const std::vector<double>&V);
-		ParamSet&operator=(const std::vector<double>&&V);
 		ParamSet&operator=(const ParamSet&P);
 		ParamSet&operator=(const ParamSet&&P);
 		
@@ -40,10 +37,8 @@ namespace Genetic{
 		typedef std::vector<double>::const_iterator const_iterator;
 		iterator begin();
 		const_iterator begin()const;
-		const_iterator cbegin()const;
 		iterator end();
 		const_iterator end() const;
-		const_iterator cend() const;
 	protected:
 		std::mutex m_mutex;
 	private:

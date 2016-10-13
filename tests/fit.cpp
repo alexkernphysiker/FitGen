@@ -27,6 +27,8 @@ TEST(point,Base){
 	{
 		Point P2(P);
 		EXPECT_EQ(P.y().val(),P2.y().val());
+		EXPECT_EQ(P.var_y().val(),P2.y().val());
+		EXPECT_EQ(P.y().val(),P2.var_y().val());
 		EXPECT_EQ(P.y().uncertainty(),P2.y().uncertainty());
 		EXPECT_EQ(P.X().size(),P2.X().size());
 		EXPECT_EQ(P.X()[0].val(),P2.X()[0].val());
@@ -39,6 +41,7 @@ TEST(FitPoints,sizemismatch){
 }
 TEST(FitPoints,simple_min_max){
 	FitPoints points;
+	EXPECT_THROW(points.dimensions(),Exception<FitPoints>);
 	points<<Point({1},5)<<Point({3},0)<<Point({0},1);
 	EXPECT_EQ(1,points.min().size());
 	EXPECT_EQ(1,points.max().size());
@@ -112,6 +115,7 @@ TEST(OptimalityForPoints,Base){
 	auto c=[&coef_calls](const ParamSet&,const IParamFunc&){coef_calls++;return 1.0;};
 	OptimalityForPoints S(points,make_shared<ParameterFunction>(f),c,s);
 	EXPECT_EQ(0,S(ParamSet()));
+	EXPECT_EQ(S.Points(),points);
 	EXPECT_EQ(0,func_calls);
 	EXPECT_EQ(points->size(),summand_calls);
 	EXPECT_EQ(1,coef_calls);

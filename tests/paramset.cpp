@@ -107,6 +107,9 @@ TEST(ParamSet, Removing){
 		EXPECT_EQ(count,p);
 		EXPECT_EQ(count,P.size());
 	}
+	P={};
+	double p;
+	EXPECT_THROW(P>>p,Exception<ParamSet>);
 }
 TEST(ParamSet, Copying){
 	for(int count=0;count<=n;count++){
