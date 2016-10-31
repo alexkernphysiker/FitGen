@@ -136,7 +136,7 @@ namespace Genetic{
 		ArgShift():FUNC(){}virtual ~ArgShift(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			ParamSet x=X;
-			x[x_index]+=P[p_index];
+			x(x_index)+=P[p_index];
 			return FUNC::operator()((x),(P));
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
@@ -148,7 +148,7 @@ namespace Genetic{
 		virtual ~ArgScale(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			ParamSet x=X;
-			x[x_index]*=P[p_index];
+			x(x_index)*=P[p_index];
 			return FUNC::operator()((x),(P));
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
