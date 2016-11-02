@@ -25,7 +25,7 @@ namespace Genetic{
 			std::uniform_int_distribution<int> randomelement(0,AbstractGenetic::PopulationSize()-1);
 			auto A=AbstractGenetic::Parameters(randomelement(R));
 			auto B=AbstractGenetic::Parameters(randomelement(R));
-			for(int i=0; i<C.size();i++)
+			for(size_t i=0; i<C.size();i++)
 				C(i)+=M*(A[i]-B[i]);
 		}
 	};
@@ -50,9 +50,10 @@ namespace Genetic{
 				std::uniform_int_distribution<int> randomelement(0,AbstractGenetic::PopulationSize()-1);
 				auto X=AbstractGenetic::Parameters(randomelement(R));
 				FITGEN::mutations(X,R);
-				for(size_t i=0; i<C.size();i++)
+				for(size_t i=0; i<C.size();i++){
 					if(Prob(R)<0.5)
 						C(i)=X[i];
+				}
 			}
 		}
 	};
