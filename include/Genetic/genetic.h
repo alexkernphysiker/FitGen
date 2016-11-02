@@ -66,14 +66,7 @@ namespace Genetic{
 		AbsoluteMutations():FITGEN(),P(0){}
 		virtual ~AbsoluteMutations(){}
 		const ParamSet&AbsoluteMutationCoefficients()const {return m_mutation;}
-		void SetAbsoluteMutationCoefficients(const ParamSet&&p){
-			m_mutation={};
-			for(double v:p){
-				if(v<0)
-					throw MathTemplates::Exception<AbsoluteMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
-				m_mutation<<v;
-			}
-		}
+		void SetAbsoluteMutationCoefficients(const ParamSet&p){m_mutation=p;}
 		const double&AbsoluteMutationsProbability()const {return P;}
 		void SetAbsoluteMutationsProbability(const double val){
 			if((val<0)||(val>1))
@@ -100,14 +93,7 @@ namespace Genetic{
 		RelativeMutations():FITGEN(),P(0){}
 		virtual ~RelativeMutations(){}
 		const ParamSet&RelativeMutationCoefficients()const {return m_mutation;}
-		void SetRelativeMutationCoefficients(const ParamSet&&p){
-			m_mutation={};
-			for(double v:p){
-				if(v<0)
-					throw MathTemplates::Exception<RelativeMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
-				m_mutation<<v;
-			}
-		}
+		void SetRelativeMutationCoefficients(const ParamSet&p){m_mutation=p;}
 		const double&RelativeMutationsProbability()const {return P;}
 		void SetRelativeMutationsProbability(const double val){
 			if((val<0)||(val>1))
@@ -118,11 +104,12 @@ namespace Genetic{
 		virtual void mutations(ParamSet &C,RANDOM&R)const override{
 			FITGEN::mutations(C,R);
 			std::uniform_real_distribution<double> Prob(0,1);
-			if(Prob(R)<P)
+			if(Prob(R)<P){
 				for(size_t i=0;i<AbstractGenetic::ParamCount();i++){
 					std::normal_distribution<double> distr(0,m_mutation[i]);
 					C(i)*=(1+distr(R));
 				}
+			}
 		}
 	};
 	template<class FITGEN>
