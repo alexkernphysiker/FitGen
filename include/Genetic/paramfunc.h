@@ -97,7 +97,7 @@ namespace Genetic{
 		virtual ~Func4(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),
-				    FUNC4::operator()(X,P));
+						FUNC4::operator()(X,P));
 		}
 		enum{
 			ParamCount=max4<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount>::val,
@@ -110,7 +110,7 @@ namespace Genetic{
 		virtual ~Func5(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),
-				    FUNC4::operator()(X,P),FUNC5::operator()(X,P));
+						FUNC4::operator()(X,P),FUNC5::operator()(X,P));
 		}
 		enum{
 			ParamCount=max5<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount,FUNC5::ParamCount>::val,
@@ -123,7 +123,7 @@ namespace Genetic{
 		virtual ~Func6(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return func(FUNC1::operator()(X,P),FUNC2::operator()(X,P),FUNC3::operator()(X,P),
-				    FUNC4::operator()(X,P),FUNC5::operator()(X,P),FUNC6::operator()(X,P));
+						FUNC4::operator()(X,P),FUNC5::operator()(X,P),FUNC6::operator()(X,P));
 		}
 		enum{
 			ParamCount=max6<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
@@ -200,13 +200,13 @@ namespace Genetic{
 		virtual ~Add4(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P))+FUNC3::operator()((X),(P))
-			    +FUNC4::operator()((X),(P));
+				+FUNC4::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max4<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
-			    ,FUNC4::ParamCount>::val,
+				,FUNC4::ParamCount>::val,
 			ArgCount=max4<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
-			    ,FUNC4::ArgCount>::val
+				,FUNC4::ArgCount>::val
 		};
 	};
 	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5, Recuring recurring=first>
@@ -217,13 +217,13 @@ namespace Genetic{
 		virtual ~Add5(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P))+FUNC3::operator()((X),(P))
-			    +FUNC4::operator()((X),(P))+FUNC5::operator()((X),(P));
+				+FUNC4::operator()((X),(P))+FUNC5::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max5<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
-			    ,FUNC4::ParamCount,FUNC5::ParamCount>::val,
+				,FUNC4::ParamCount,FUNC5::ParamCount>::val,
 			ArgCount=max5<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
-			    ,FUNC4::ArgCount,FUNC5::ArgCount>::val
+				,FUNC4::ArgCount,FUNC5::ArgCount>::val
 		};
 	};
 	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6, Recuring recurring=first>
@@ -234,13 +234,13 @@ namespace Genetic{
 		virtual ~Add6(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return FUNC1::operator()((X),(P))+FUNC2::operator()((X),(P))+FUNC3::operator()((X),(P))
-			    +FUNC4::operator()((X),(P))+FUNC5::operator()((X),(P))+FUNC6::operator()((X),(P));
+				+FUNC4::operator()((X),(P))+FUNC5::operator()((X),(P))+FUNC6::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max6<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
-			    ,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
+				,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
 			ArgCount=max6<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
-			    ,FUNC4::ArgCount,FUNC5::ArgCount,FUNC6::ArgCount>::val
+				,FUNC4::ArgCount,FUNC5::ArgCount,FUNC6::ArgCount>::val
 		};
 	};
 	
@@ -291,13 +291,13 @@ namespace Genetic{
 		virtual ~Mul4(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P))*FUNC3::operator()((X),(P))
-			    *FUNC4::operator()((X),(P));
+				*FUNC4::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max4<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
-			    ,FUNC4::ParamCount>::val,
+				,FUNC4::ParamCount>::val,
 			ArgCount=max4<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
-			    ,FUNC4::ArgCount>::val
+				,FUNC4::ArgCount>::val
 		};
 	};
 	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5, Recuring recurring=first>
@@ -308,13 +308,13 @@ namespace Genetic{
 		virtual ~Mul5(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P))*FUNC3::operator()((X),(P))
-			    *FUNC4::operator()((X),(P))*FUNC5::operator()((X),(P));
+				*FUNC4::operator()((X),(P))*FUNC5::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max5<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
-			    ,FUNC4::ParamCount,FUNC5::ParamCount>::val,
+				,FUNC4::ParamCount,FUNC5::ParamCount>::val,
 			ArgCount=max5<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
-			    ,FUNC4::ArgCount,FUNC5::ArgCount>::val
+				,FUNC4::ArgCount,FUNC5::ArgCount>::val
 		};
 	};
 	template<class FUNC1,class FUNC2,class FUNC3,class FUNC4,class FUNC5,class FUNC6, Recuring recurring=first>
@@ -325,13 +325,13 @@ namespace Genetic{
 		virtual ~Mul6(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
 			return FUNC1::operator()((X),(P))*FUNC2::operator()((X),(P))*FUNC3::operator()((X),(P))
-			    *FUNC4::operator()((X),(P))*FUNC5::operator()((X),(P))*FUNC6::operator()((X),(P));
+				*FUNC4::operator()((X),(P))*FUNC5::operator()((X),(P))*FUNC6::operator()((X),(P));
 		}
 		enum{
 			ParamCount=max6<FUNC1::ParamCount,FUNC2::ParamCount,FUNC3::ParamCount
-			    ,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
+				,FUNC4::ParamCount,FUNC5::ParamCount,FUNC6::ParamCount>::val,
 			ArgCount=max6<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount
-			    ,FUNC4::ArgCount,FUNC5::ArgCount,FUNC6::ArgCount>::val
+				,FUNC4::ArgCount,FUNC5::ArgCount,FUNC6::ArgCount>::val
 		};
 	};
 
