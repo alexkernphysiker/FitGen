@@ -20,8 +20,8 @@ namespace Genetic{
 	private:
 		std::list<InexactEquation> f_data;
 	};
-	template<class GENETIC>
-	class InexactEquationSolver:public virtual GENETIC,public virtual ParabolicErrorEstimationFromChisq{
+	template<class MUTATION_TYPE>
+	class InexactEquationSolver:public virtual MUTATION_TYPE,public virtual ParabolicErrorEstimationFromChisq{
 	public:
 		InexactEquationSolver(const std::initializer_list<InexactEquation>&source):AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
 		InexactEquationSolver(const std::list<InexactEquation>&source):AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}

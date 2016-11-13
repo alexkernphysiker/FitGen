@@ -260,12 +260,7 @@ namespace Genetic{
 	void AbstractGenetic::mutations(ParamSet&,RANDOM&)const{}
 	void AbstractGenetic::HandleIteration(){}
 	
-	ostream& operator<<(ostream& str, const AbstractGenetic& P){
-		return str<<P.Parameters();
-	}
-	Filter::Filter(function<bool(const ParamSet&)> c){
-		condition=c;
-	}
+	Filter::Filter(function<bool(const ParamSet&)> c){condition=c;}
 	Filter::~Filter(){}
 	bool Filter::operator()(const ParamSet&P)const{return condition(P);}
 	OptimalityFunction::OptimalityFunction(const function<double(const ParamSet&)> f){func=f;}

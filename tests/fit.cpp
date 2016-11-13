@@ -86,25 +86,6 @@ TEST(FitPoints,Operators){
 	EXPECT_EQ(points.get(),(points<<FitPoints::Point({0},0)).get());
 	EXPECT_EQ(points.get(),(points<<point<double>(1.0,1.0)).get());
 }
-TEST(FitPoints,Select){
-	auto points=make_shared<FitPoints>();
-	points<<point<double>(0,0)<<point<double>(1,1)<<point<double>(2,2)<<point<double>(3,3)<<point<double>(3,3)<<point<double>(3,1)<<point<double>(1,3);
-	auto filter=[](const ParamSet&X){return X[0]<2.5;};
-	auto y_filter=[](double y){return y<2.5;};
-	auto sel1=SelectFitPoints(points,make_shared<Filter>(filter));
-	for(const Point&p:*sel1){
-		auto x=p.x();
-		EXPECT_EQ(true,filter(x));
-	}
-	auto sel2=SelectFitPoints(points,y_filter);
-	for(const Point&p:*sel2)EXPECT_EQ(true,y_filter(p.y().val()));
-	auto sel3=SelectFitPoints(points,make_shared<Filter>(filter),y_filter);
-	for(const Point&p:*sel3){
-		auto x=p.x();
-		EXPECT_EQ(true,filter(x));
-		EXPECT_EQ(true,y_filter(p.y().val()));
-	}
-}
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();
 	int func_calls=0;

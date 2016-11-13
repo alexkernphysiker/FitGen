@@ -13,6 +13,7 @@ using namespace MathTemplates;
 using namespace GnuplotWrap;
 int main(){
 	RANDOM engine;
+	//points
 	auto points_to_fit=make_shared<FitPoints>()
 		<<Point({{-67.5,2.5}},{179.4,12.5})
 		<<Point({{-62.5,2.5}},{213.1,13.0})
@@ -35,9 +36,12 @@ int main(){
 		<<Point({{ 22.5,2.5}},{497.3,14.5})
 		<<Point({{ 27.5,2.5}},{511.4,15.0});
 		
+	//Foreground, background and total sum for fitting
 	typedef Mul<Func3<Gaussian,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
 	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 	typedef Add<Foreground,Background> TotalFunc;
+
+	//Fitting
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
@@ -61,15 +65,19 @@ int main(){
 			<<"           \r";
 	}
 	cout<<endl;
+	
+	//Output results
 	cout<<"Chi^2 divided by degrees of freedom = "<<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
 	cout<<endl;
 	cout<<"Fit parameters with uncertainties"<<endl;
 	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
 	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
-	Plotter::Instance().SetOutput(".","points");
+	//Plotting total fit and background
+	Plotter::Instance().SetOutput(".","foreground-background-fit");
+	auto chain=ChainWithStep(-70.0,0.1,30.0);
 	SortedPoints<double>
-		totalfit([&fit](double x)->double{return fit({x});},ChainWithStep(-70.0,0.1,30.0)),
-		background([&fit](double x)->double{return Background()({x},fit.Parameters());},ChainWithStep(-70.0,0.1,30.0));
+	    totalfit([&fit](double x)->double{return fit({x});},chain),
+	    background([&fit](double x)->double{return Background()({x},fit.Parameters());},chain);
 	Plot<double>().Hist(points_to_fit->Hist1(0)).Line(totalfit,"Fit").Line(background,"Background");
 	return 0;
 }

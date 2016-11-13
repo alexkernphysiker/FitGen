@@ -141,28 +141,6 @@ namespace Genetic{
 	FitPoints::const_iterator FitPoints::end()const {
 		return m_data.end();
 	}
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src,const shared_ptr<IParamCheck> condition){
-		auto res=make_shared<FitPoints>();
-		for(const FitPoints::Point&p:(*src)){
-			if(condition->operator()(p.x()))res<<p;
-		}
-		return res;
-	}
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, const function<bool(double)> Ycond){
-		auto res=make_shared<FitPoints>();
-		for(const FitPoints::Point&p:(*src))
-			if(Ycond(p.y().val()))
-				res<<p;
-		return res;
-	}
-	shared_ptr<FitPoints> SelectFitPoints(shared_ptr<FitPoints> src, const shared_ptr<IParamCheck> condition,const function<bool(double)> Ycond){
-		auto res=make_shared<FitPoints>();
-		for(const FitPoints::Point&p:(*src)){
-			if(condition->operator()(p.x())&&Ycond(p.y().val()))
-				res<<p;
-		}
-		return res;
-	}
 	OptimalityForPoints::OptimalityForPoints(
 		const std::shared_ptr< FitPoints > p, 
 		const shared_ptr<IParamFunc> f,

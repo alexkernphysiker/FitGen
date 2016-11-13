@@ -73,7 +73,6 @@ namespace Genetic{
 		unsigned long long int m_itercount;
 		size_t threads;
 	};
-	std::ostream&operator<<(std::ostream&str,const AbstractGenetic&P);
 	inline void Find(AbstractGenetic&fit,RANDOM&engine){
 		while(!fit.ConcentratedInOnePoint())
 			fit.Iterate(engine);

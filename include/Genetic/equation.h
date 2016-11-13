@@ -5,8 +5,8 @@
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic{
-	template<class GENETIC>
-	class AbstractEq:public virtual GENETIC{
+    template<class MUTATION_TYPE>
+    	class AbstractEq:public virtual MUTATION_TYPE{
 	protected:
 		AbstractEq(){}
 	public:
@@ -18,8 +18,8 @@ namespace Genetic{
 		const_iterator end() const{return AbstractGenetic::Parameters().end();}
 		const_iterator cend() const{return AbstractGenetic::Parameters().cend();}
 	};
-	template<class GENETIC>
-	class Equation:public virtual AbstractEq<GENETIC>{
+	template<class MUTATION_TYPE>
+	class Equation:public virtual AbstractEq<MUTATION_TYPE>{
 	public:
 		Equation(const std::function<double(const ParamSet&)> f)
 		:AbstractGenetic(std::make_shared<OptimalityFunction>([f](const ParamSet&P){
@@ -30,8 +30,8 @@ namespace Genetic{
 			return pow(left(P)-right(P),2);
 		})){}
 	};
-	template<class GENETIC>
-	class SearchMin:public AbstractEq<GENETIC>{
+	template<class MUTATION_TYPE>
+	class SearchMin:public AbstractEq<MUTATION_TYPE>{
 	public:
 		SearchMin(const std::function<double(const ParamSet&)> f)
 		:AbstractGenetic(std::make_shared<OptimalityFunction>(f)){}

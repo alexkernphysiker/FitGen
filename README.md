@@ -24,8 +24,8 @@ Examples
 	Example/equation.cpp
 example of using genetic algorithm for solving equation.
 
-	Example/fit_distribution.cpp 
-	Example/fit_points.cpp
+	Example/fit_one_func.cpp 
+	Example/fit_foreground_background.cpp
 examples of using genetic algorithm for fitting points with function.
 For plotting the results, the examples require gnuplot installed.
 
