@@ -21,8 +21,8 @@ Then commit your changes :)
 Examples
 ========
 
-	Example/equation.cpp
-example of using genetic algorithm for solving equation.
+	Example/exact_equation.cpp
+example of using genetic algorithm for solving equation F(x,y)=G(x,y).
 
 	Example/fit_one_func.cpp 
 	Example/fit_foreground_background.cpp
