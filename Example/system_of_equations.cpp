@@ -8,16 +8,20 @@
 using namespace std;
 using namespace Genetic;
 int main(){
+    //declaring
     EquationSolver<DifferentialMutations<>> example{
 	{.left=[](const ParamSet&X){return X[0]+X[1];},.right=1},
 	{.left=[](const ParamSet&X){return X[0]-X[1];},.right=0}
     };
+    //searching the solution
     RANDOM random_engine;
-    example.Init(25,make_shared<GenerateUniform>()<<make_pair(-10,10)<<make_pair(-10,10),random_engine);
+    example.Init(30,make_shared<GenerateUniform>()<<make_pair(-10,10)<<make_pair(-10,10),random_engine);
     Find(example,random_engine);
-    cout<<endl<<"Solution: x0="<<example.Parameters()[0]<<"; x1="<<example.Parameters()[1]<<endl;
+    //output results
+    const auto&X=example.Parameters();
+    cout<<endl<<"Solution: x0="<<X[0]<<"; x1="<<X[1]<<endl;
     for(const auto&eq:example.equations()){
-	cout<<eq.left(example.Parameters())<<"=="<<eq.right<<endl;
+	cout<<eq.left(X)<<"=="<<eq.right<<endl;
     }
     return 0;
 }
