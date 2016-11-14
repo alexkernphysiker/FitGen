@@ -19,7 +19,7 @@ TEST(EquationSystem,empty2){
 }
 TEST(EquationSystem,simple){
     EquationSystem A{
-	equation([](const ParamSet&P)->double{return P[0];},0)
+	{.left=[](const ParamSet&P)->double{return P[0];},.right=0}
     };
     EXPECT_EQ(A({0.0}),0);
     EXPECT_EQ(A({0.5}),0.25);
@@ -28,7 +28,7 @@ TEST(EquationSystem,simple){
 }
 TEST(EquationSystem,simple2){
     EquationSystem A(list<Equation>{
-	equation([](const ParamSet&P)->double{return P[0];},0)
+	{.left=[](const ParamSet&P)->double{return P[0];},.right=0}
     });
     EXPECT_EQ(A({0.0}),0);
     EXPECT_EQ(A({0.5}),0.25);
@@ -37,7 +37,7 @@ TEST(EquationSystem,simple2){
 }
 TEST(EquationSystem,twoparams){
     EquationSystem A{
-	equation([](const ParamSet&P)->double{return P[0]+P[1];},0)
+	{.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right=0}
     };
     EXPECT_EQ(A({0.0,0.0}),0);
     EXPECT_EQ(A({0.5,0.0}),0.25);
@@ -50,7 +50,7 @@ TEST(EquationSystem,twoparams){
 }
 TEST(EquationSystem,twoparams2){
     EquationSystem A(list<Equation>{
-	equation([](const ParamSet&P)->double{return P[0]+P[1];},0)
+	{.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right=0}
     });
     EXPECT_EQ(A({0.0,0.0}),0);
     EXPECT_EQ(A({0.5,0.0}),0.25);
@@ -63,8 +63,8 @@ TEST(EquationSystem,twoparams2){
 }
 TEST(EquationSystem,two_eq){
     EquationSystem A{
-	equation([](const ParamSet&P)->double{return P[0]+P[1];},0),
-	equation([](const ParamSet&P)->double{return P[0]-P[1];},0)
+	{.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right=0},
+	{.left=[](const ParamSet&P)->double{return P[0]-P[1];},.right=0}
     };
     EXPECT_EQ(A({0.0,0.0}),0);
     EXPECT_EQ(A({0.5,0.0}),0.5);
@@ -77,8 +77,8 @@ TEST(EquationSystem,two_eq){
 }
 TEST(EquationSystem,two_eq2){
     EquationSystem A(list<Equation>{
-	equation([](const ParamSet&P)->double{return P[0]+P[1];},0),
-	equation([](const ParamSet&P)->double{return P[0]-P[1];},0)
+	{.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right=0},
+	{.left=[](const ParamSet&P)->double{return P[0]-P[1];},.right=0}
     });
     EXPECT_EQ(A({0.0,0.0}),0);
     EXPECT_EQ(A({0.5,0.0}),0.5);
@@ -91,8 +91,8 @@ TEST(EquationSystem,two_eq2){
 }
 TEST(EquationSolver,Integrationtest){
     EquationSolver<DifferentialMutations<>> test{
-	equation([](const ParamSet&P)->double{return P[0]+P[1];},0),
-	equation([](const ParamSet&P)->double{return P[0]-P[1];},0)
+	{.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right=0},
+	{.left=[](const ParamSet&P)->double{return P[0]-P[1];},.right=0}
     };
     test.Init(100,make_shared<GenerateUniform>()<<make_pair(-20,20)<<make_pair(-20,20),engine);
     Find(test,engine);

@@ -7,9 +7,6 @@
 #include "abstract.h"
 namespace Genetic{
     struct Equation{std::function<double(const ParamSet&)> left;double right;};
-    inline const Equation equation(const std::function<double(const ParamSet&)>l,const double&r){
-	return {.left=l,.right=r};
-    }
     class EquationSystem:public virtual IOptimalityFunction{
     public:
 	EquationSystem(const std::initializer_list<Equation>&source);

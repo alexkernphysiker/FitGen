@@ -9,8 +9,8 @@ using namespace std;
 using namespace Genetic;
 int main(){
     EquationSolver<DifferentialMutations<>> example{
-	equation([](const ParamSet&X){return X[0]+X[1];},1.0),
-	equation([](const ParamSet&X){return X[0]-X[1];},0.0),
+	{.left=[](const ParamSet&X){return X[0]+X[1];},.right=1},
+	{.left=[](const ParamSet&X){return X[0]-X[1];},.right=0}
     };
     RANDOM random_engine;
     example.Init(25,make_shared<GenerateUniform>()<<make_pair(-10,10)<<make_pair(-10,10),random_engine);

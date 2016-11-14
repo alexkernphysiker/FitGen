@@ -19,7 +19,7 @@ TEST(InexactEquationSystem,empty2){
 }
 TEST(InexactEquationSystem,simple){
 	InexactEquationSystem A{
-		in_eq([](const ParamSet&P)->double{return P[0];},{0,1})
+	    {.left=[](const ParamSet&P)->double{return P[0];},.right={0,1}}
 	};
 	EXPECT_EQ(A({0.0}),0);
 	EXPECT_EQ(A({0.5}),0.25);
@@ -28,7 +28,7 @@ TEST(InexactEquationSystem,simple){
 }
 TEST(InexactEquationSystem,simple2){
 	InexactEquationSystem A(list<InexactEquation>{
-		in_eq([](const ParamSet&P)->double{return P[0];},{0,1})
+	    {.left=[](const ParamSet&P)->double{return P[0];},.right={0,1}}
 	});
 	EXPECT_EQ(A({0.0}),0);
 	EXPECT_EQ(A({0.5}),0.25);
@@ -37,7 +37,7 @@ TEST(InexactEquationSystem,simple2){
 }
 TEST(InexactEquationSystem,twoparams){
 	InexactEquationSystem A{
-		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1})
+	    {.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right={0,1}}
 	};
 	EXPECT_EQ(A({0.0,0.0}),0);
 	EXPECT_EQ(A({0.5,0.0}),0.25);
@@ -50,7 +50,7 @@ TEST(InexactEquationSystem,twoparams){
 }
 TEST(InexactEquationSystem,twoparams2){
 	InexactEquationSystem A(list<InexactEquation>{
-		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1})
+	    {.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right={0,1}}
 	});
 	EXPECT_EQ(A({0.0,0.0}),0);
 	EXPECT_EQ(A({0.5,0.0}),0.25);
@@ -63,8 +63,8 @@ TEST(InexactEquationSystem,twoparams2){
 }
 TEST(InexactEquationSystem,two_eq){
 	InexactEquationSystem A{
-		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1}),
-		in_eq([](const ParamSet&P)->double{return P[0]-P[1];},{0,1})
+	    {.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right={0,1}},
+	    {.left=[](const ParamSet&P)->double{return P[0]-P[1];},.right={0,1}}
 	};
 	EXPECT_EQ(A({0.0,0.0}),0);
 	EXPECT_EQ(A({0.5,0.0}),0.5);
@@ -77,8 +77,8 @@ TEST(InexactEquationSystem,two_eq){
 }
 TEST(InexactEquationSystem,two_eq2){
 	InexactEquationSystem A(list<InexactEquation>{
-		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1}),
-		in_eq([](const ParamSet&P)->double{return P[0]-P[1];},{0,1})
+	    {.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right={0,1}},
+	    {.left=[](const ParamSet&P)->double{return P[0]-P[1];},.right={0,1}}
 	});
 	EXPECT_EQ(A({0.0,0.0}),0);
 	EXPECT_EQ(A({0.5,0.0}),0.5);
@@ -90,12 +90,17 @@ TEST(InexactEquationSystem,two_eq2){
 	EXPECT_EQ(A({0.0,2.0}),8);
 }
 TEST(InexactEquationSolver,Integrationtest){
-	InexactEquationSolver<DifferentialMutations<>> eq{
-		in_eq([](const ParamSet&P)->double{return P[0]+P[1];},{0,1}),
-		in_eq([](const ParamSet&P)->double{return P[0]-P[1];},{0,1})
+	InexactEquationSolver<DifferentialMutations<>> test{
+	    {.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right={0,1}},
+	    {.left=[](const ParamSet&P)->double{return P[0]-P[1];},.right={0,1}}
 	};
-	eq.Init(100,make_shared<GenerateUniform>()<<make_pair(-20,20)<<make_pair(-20,20),engine);
-	Find(eq,engine);
-	EXPECT_TRUE(pow(eq[0],2)<0.0000001);
-	EXPECT_TRUE(pow(eq[1],2)<0.0000001);
+	test.Init(100,make_shared<GenerateUniform>()<<make_pair(-20,20)<<make_pair(-20,20),engine);
+	Find(test,engine);
+	EXPECT_TRUE(pow(test.Parameters()[0],2)<0.0000001);
+	EXPECT_TRUE(pow(test.Parameters()[1],2)<0.0000001);
+	for(const auto&eq:test.equations()){
+	    EXPECT_EQ(0,eq.right.val());
+	    EXPECT_EQ(1,eq.right.uncertainty());
+	    EXPECT_TRUE(pow(eq.left(test.Parameters()).val(),2)<0.0000001);
+	}
 }

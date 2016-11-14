@@ -15,7 +15,10 @@ namespace Genetic{
 	double InexactEquationSystem::operator()(const ParamSet& P) const{
 	    double result=0;
 	    for(const auto&item:f_data)
-		result+=item.second.NumCompare(item.first(P));
+		result+=item.right.NumCompare(item.left(P));
 	    return result;
+	}
+	const std::list<InexactEquation>&Genetic::InexactEquationSystem::equations()const{
+	    return f_data;
 	}
 }
