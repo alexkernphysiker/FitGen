@@ -8,14 +8,17 @@
 using namespace std;
 using namespace Genetic;
 int main(){
-    RANDOM engine;
-    EquationSolver<DifferentialMutations<>> equation{
-	eq([](const ParamSet&X){return X[0]+X[1];},1.0),
-	eq([](const ParamSet&X){return X[0]-X[1];},0.0),
+    EquationSolver<DifferentialMutations<>> example{
+	equation([](const ParamSet&X){return X[0]+X[1];},1.0),
+	equation([](const ParamSet&X){return X[0]-X[1];},0.0),
     };
-    equation.Init(25,make_shared<GenerateUniform>()<<make_pair(-10,10)<<make_pair(-10,10),engine);
-    Find(equation,engine);
-    cout<<endl<<"Solution: x="<<equation[0]<<"; y="<<equation[1]<<endl;
+    RANDOM random_engine;
+    example.Init(25,make_shared<GenerateUniform>()<<make_pair(-10,10)<<make_pair(-10,10),random_engine);
+    Find(example,random_engine);
+    cout<<endl<<"Solution: x0="<<example.Parameters()[0]<<"; x1="<<example.Parameters()[1]<<endl;
+    for(const auto&eq:example.equations()){
+	cout<<eq.left(example.Parameters())<<"=="<<eq.right<<endl;
+    }
     return 0;
 }
 
