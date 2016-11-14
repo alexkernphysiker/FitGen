@@ -13,9 +13,9 @@ namespace Genetic{
 	}
 	InexactEquationSystem::~InexactEquationSystem(){}
 	double InexactEquationSystem::operator()(const ParamSet& P) const{
-		double result=0;
-		for(const auto&item:f_data)
-			result+=item.second.NumCompare(item.first(P));
-		return result;
+	    double result=0;
+	    for(const auto&item:f_data)
+		result+=item.second.NumCompare(item.first(P));
+	    return result;
 	}
 }
