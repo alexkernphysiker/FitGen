@@ -12,7 +12,7 @@ using namespace Genetic;
 using namespace GnuplotWrap;
 using namespace MathTemplates;
 int main(){
-    RANDOM engine;
+    RANDOM random_engine;
 
     //Generating the distribution for fitting
     //we use class from math_h submodule
@@ -20,7 +20,7 @@ int main(){
     Distribution1D<double> distribution(BinsByStep(left,1.0,right));
     normal_distribution<double> gauss((right+left)/2.0,sigma);
     for(size_t i=0;i<count;i++)
-	distribution.Fill(gauss(engine));
+	distribution.Fill(gauss(random_engine));
 
     //Fitting generated distribution
     Fit<DifferentialMutations<>,ChiSquareWithXError> fit(
@@ -35,26 +35,25 @@ int main(){
 	     <<make_pair(left,right)
 	     <<make_pair(0,right-left)
 	     <<make_pair(0,5.0*count),
-	 engine
+	 random_engine
     );
     while(!fit.AbsoluteOptimalityExitCondition(0.000001))
-	fit.Iterate(engine);
+	fit.Iterate(random_engine);
 
     //Output results
     cout<<"Chi^2 = "<<fit.Optimality()<<endl;
     cout<<"Chi^2 divided by degrees of freedom = "
     <<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
     cout<<endl;
-    fit.SetUncertaintyCalcDeltas({0.01,0.01,0.01});//for estimating the uncertainties
+    fit.SetUncertaintyCalcDeltas({0.01,0.01,0.01});
     cout<<"Fit parameters"<<endl;
     for(const auto&P:fit.ParametersWithUncertainties())
 	cout<<P<<endl;
+
+    //plotting results
     Plotter::Instance().SetOutput(".","gauss-fit");
-    Plot<double>().Hist(distribution).Line(
-	SortedPoints<double>(
-	    [&fit](double x)->double{return fit({x});},
-	     ChainWithStep(0.0,0.01,10.0)
-	)
-    );
+    const auto chain=ChainWithStep(0.0,0.01,10.0);
+    const SortedPoints<double> line([&fit](double x)->double{return fit({x});},chain);
+    Plot<double>().Hist(distribution).Line(line);
     return 0;
 }

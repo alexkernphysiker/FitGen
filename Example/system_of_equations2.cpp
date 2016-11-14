@@ -25,9 +25,8 @@ int main(){
     const auto&X=example.ParametersWithUncertainties();
     cout<<endl<<"Solution: x0={"<<X[0]<<"}; x1={"<<X[1]<<"}"<<endl;
     cout<<"chi^2="<<example.Optimality()<<endl;
-    for(const auto&eq:example.equations()){
+    for(const auto&eq:example.equations())
 	cout<<eq.left(x).val()<<"=={"<<eq.right<<"}"<<endl;
-    }
     return 0;
 }
 

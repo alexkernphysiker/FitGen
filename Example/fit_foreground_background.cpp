@@ -6,13 +6,11 @@
 #include <Genetic/fit.h>
 #include <Genetic/filter.h>
 #include <Genetic/initialconditions.h>
-const int background_polynom_power=4;
 using namespace std;
 using namespace Genetic;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
 int main(){
-	RANDOM engine;
 	//points
 	auto points_to_fit=make_shared<FitPoints>()
 		<<Point({{-67.5,2.5}},{179.4,12.5})
@@ -38,10 +36,12 @@ int main(){
 		
 	//Foreground, background and total sum for fitting
 	typedef Mul<Func3<Gaussian,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
+	const int background_polynom_power=4;
 	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 	typedef Add<Foreground,Background> TotalFunc;
 
 	//Fitting
+	RANDOM random_engine;
 	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
@@ -51,33 +51,37 @@ int main(){
 		}
 	);
 	auto initial=make_shared<GenerateByGauss>()
-		<<make_pair(100.,100.)<<make_pair(30.,30.)<<make_pair(-20.,10.)
+		<<make_pair(100.,100.)<<make_pair(30.,30.)<<make_pair(-20.,5.)
 		<<make_pair(400.,100.)<<make_pair(5.,1.)<<make_pair(0.,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
-		initial<<make_pair(0.,0.01);
-	fit.Init(TotalFunc::ParamCount*15,initial,engine);
+		initial<<make_pair(0.,0.001);
+	fit.Init(TotalFunc::ParamCount*15,initial,random_engine);
 	
 	while(!fit.AbsoluteOptimalityExitCondition(0.0001)){
-		fit.Iterate(engine);
-		cout<<fit.iteration_count()<<" iterations; "
-			<<fit.Optimality()<<" < Chi^2 < "
-			<<fit.Optimality(fit.PopulationSize()-1)
-			<<"           \r";
+	    fit.Iterate(random_engine);
+	    cout<<fit.iteration_count()<<" iterations; "
+		<<fit.Optimality()<<" < Chi^2 < "
+		<<fit.Optimality(fit.PopulationSize()-1)
+		<<"           \r";
 	}
 	cout<<endl;
 	
 	//Output results
-	cout<<"Chi^2 divided by degrees of freedom = "<<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
-	cout<<endl;
+	cout<<"Chi^2 divided by degrees of freedom = "
+	<<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())
+	<<endl;
 	cout<<"Fit parameters with uncertainties"<<endl;
 	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
-	for(const auto&P:fit.ParametersWithUncertainties())cout<<P<<endl;
+	for(const auto&P:fit.ParametersWithUncertainties())
+	    cout<<P<<endl;
 	//Plotting total fit and background
 	Plotter::Instance().SetOutput(".","foreground-background-fit");
-	auto chain=ChainWithStep(-70.0,0.1,30.0);
-	SortedPoints<double>
+	const auto&P=fit.Parameters();
+	const auto chain=ChainWithStep(-70.0,0.1,30.0);
+	const SortedPoints<double>
 	    totalfit([&fit](double x)->double{return fit({x});},chain),
-	    background([&fit](double x)->double{return Background()({x},fit.Parameters());},chain);
-	Plot<double>().Hist(points_to_fit->Hist1(0)).Line(totalfit,"Fit").Line(background,"Background");
+	    background([&P](double x)->double{return Background()({x},P);},chain);
+	Plot<double>().Hist(points_to_fit->Hist1(0),"points").Line(totalfit,"fit")
+	.Line(background,"background")<<"set key on";
 	return 0;
 }

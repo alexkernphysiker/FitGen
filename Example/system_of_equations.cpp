@@ -20,9 +20,8 @@ int main(){
     //output results
     const auto&X=example.Parameters();
     cout<<endl<<"Solution: x0="<<X[0]<<"; x1="<<X[1]<<endl;
-    for(const auto&eq:example.equations()){
+    for(const auto&eq:example.equations())
 	cout<<eq.left(X)<<"=="<<eq.right<<endl;
-    }
     return 0;
 }
 
