@@ -86,13 +86,5 @@ namespace Genetic{
 	private:
 		std::function<bool(const ParamSet&)> condition;
 	};
-	class OptimalityFunction:public IOptimalityFunction{
-	public:
-		OptimalityFunction(const std::function<double(const ParamSet&)> f);
-		virtual ~OptimalityFunction();
-		virtual double operator()(const ParamSet&P)const override;
-	private:
-		std::function<double(const ParamSet&)> func;
-	};
 }
 #endif

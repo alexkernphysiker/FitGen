@@ -3,6 +3,7 @@
 #include <math.h>
 #include <gtest/gtest.h>
 #include <math_h/error.h>
+#include <Genetic/searchmin.h>
 #include <Genetic/parabolic.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/paramfunc.h>

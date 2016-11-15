@@ -3,7 +3,8 @@
 #include <gtest/gtest.h>
 #include <math_h/error.h>
 #include <math_h/randomfunc.h>
-#include <Genetic/abstract.h>
+#include <Genetic/searchmin.h>
+#include <Genetic/genetic.h>
 #include <Genetic/initialconditions.h>
 #include "engine.h"
 using namespace std;
@@ -204,4 +205,10 @@ TEST(AbstractGenetic,Infinite){
 				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
 		}
 	}
+}
+TEST(SearchMin,Integrationtest){
+    SearchMin<DifferentialMutations<>> test([](const ParamSet&X){return X[0]*X[0];});
+    test.Init(20,make_shared<GenerateUniform>()<<make_pair(-10,10),engine);
+    Find(test,engine);
+    EXPECT_TRUE(pow(test.Parameters()[0],2)<0.0000001);
 }

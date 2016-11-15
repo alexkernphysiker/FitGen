@@ -263,8 +263,4 @@ namespace Genetic{
 	Filter::Filter(function<bool(const ParamSet&)> c){condition=c;}
 	Filter::~Filter(){}
 	bool Filter::operator()(const ParamSet&P)const{return condition(P);}
-	OptimalityFunction::OptimalityFunction(const function<double(const ParamSet&)> f){func=f;}
-	OptimalityFunction::~OptimalityFunction(){}
-	double OptimalityFunction::operator()(const ParamSet&P)const{return func(P);}
-	
 }
