@@ -123,26 +123,15 @@ the order of added number is greater than the number. Adding INFINITY means skip
 
 'And' and 'Or' provide logical operations over set of filters that are accepted via << operator.
 
-	
+
 	Genetic/equation.h 
-'Equation' is a template class providing solving of equations. 
-The template parameter is class from genetic.h that means used type of mutation(s)
-The constructor requires either one or two functions (std::function<double(const ParamSet&)>)
+'EquationSystem' is a class representing a system of equations that have a function defined on ParamSet in the left part and a number in the right part.
+'EquationSolver' is a class inheritting 'AbstractGenetic' that finds the most optimal ParamSet for such system of equations.
 
-In case of one given function it solves equation F(P)=0
 
-In case of two given functions it solves equation F1(P)=F2(P)
-
-'SearchMin' is also template class with the same meaning of template parameter.
-It's construtor requires one std::function<double(const ParamSet&)> and the class
-searches the minimum of this function.
-
-'SearchMax' has the same interface but searches maximum of the function.
-
-	
 	Genetic/equation2.h 
-'InexactEquationSystem' is a class representing a system of equations that have a function defined on ParamSet in the left part and a magnitude with uncertainty in the right part.
-'InexactEquationSolver' is a class inheritting 'AbstractGenetic' that finds the most optimal ParamSet for sych system of equations.
+'InexactEquationSystem' is a class representing a system of equations that have a function defined on ParamSet in the left part and a magnitude with uncertainty in the right part. 
+'InexactEquationSolver' is a class inheritting 'AbstractGenetic' that finds the most optimal ParamSet for such system of equations.
 
 	Genetic/fit.h 
 classes needed for fitting points by parametric function
