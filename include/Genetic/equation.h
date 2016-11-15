@@ -6,7 +6,7 @@
 #include <list>
 #include "abstract.h"
 namespace Genetic{
-    struct Equation{std::function<double(const ParamSet&)> left;double right;};
+    struct Equation{std::function<double(const ParamSet&)> left,right;};
     class EquationSystem:public virtual IOptimalityFunction{
     public:
 	EquationSystem(const std::initializer_list<Equation>&source);

@@ -15,7 +15,7 @@ namespace Genetic{
     double EquationSystem::operator()(const ParamSet& P) const{
 	double result=0;
 	for(const auto&item:f_data)
-	    result+=pow(item.left(P)-item.right,2);
+	    result+=pow(item.left(P)-item.right(P),2);
 	return result;
     }
     const list<Equation>&EquationSystem::equations()const{return f_data;}

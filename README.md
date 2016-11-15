@@ -125,7 +125,7 @@ the order of added number is greater than the number. Adding INFINITY means skip
 
 
 	Genetic/equation.h 
-'EquationSystem' is a class representing a system of equations that have a function defined on ParamSet in the left part and a number in the right part.
+'EquationSystem' is a class representing a system of equations that have a function defined on ParamSet in the left part and one more function in the right part.
 'EquationSolver' is a class inheritting 'AbstractGenetic' that finds the most optimal ParamSet for such system of equations.
 
 
