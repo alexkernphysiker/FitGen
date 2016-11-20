@@ -81,10 +81,67 @@ TEST(FitPoints,Base){
 	}
 	EXPECT_EQ(c,points.size());
 }
+TEST(FitPoints,GetCurves){
+    FitPoints p;
+    p<<Point({1,2},3)<<Point({2,3},4)<<Point({3,4},5);
+    const auto H1=p.Hist1(1);
+    const auto H2=p.Hist1(1,0);
+    EXPECT_EQ(3,H1.size());
+    EXPECT_EQ(2,H1[0].X().val());
+    EXPECT_EQ(3,H1[1].X().val());
+    EXPECT_EQ(4,H1[2].X().val());
+    EXPECT_EQ(3,H1[0].Y().val());
+    EXPECT_EQ(4,H1[1].Y().val());
+    EXPECT_EQ(5,H1[2].Y().val());
+    EXPECT_EQ(3,H2.size());
+    EXPECT_EQ(2,H2[0].X().val());
+    EXPECT_EQ(3,H2[1].X().val());
+    EXPECT_EQ(4,H2[2].X().val());
+    EXPECT_EQ(1,H2[0].Y().val());
+    EXPECT_EQ(2,H2[1].Y().val());
+    EXPECT_EQ(3,H2[2].Y().val());
+    const auto L1=p.Line(1);
+    const auto L2=p.Line(1,0);
+    EXPECT_EQ(3,L1.size());
+    EXPECT_EQ(2,L1[0].X());
+    EXPECT_EQ(3,L1[1].X());
+    EXPECT_EQ(4,L1[2].X());
+    EXPECT_EQ(3,L1[0].Y());
+    EXPECT_EQ(4,L1[1].Y());
+    EXPECT_EQ(5,L1[2].Y());
+    EXPECT_EQ(3,L2.size());
+    EXPECT_EQ(2,L2[0].X());
+    EXPECT_EQ(3,L2[1].X());
+    EXPECT_EQ(4,L2[2].X());
+    EXPECT_EQ(1,L2[0].Y());
+    EXPECT_EQ(2,L2[1].Y());
+    EXPECT_EQ(3,L2[2].Y());
+    FitPoints P1(H1),P2(H2),P3(L1),P4(L2);
+    EXPECT_EQ(3,P1.size());
+    EXPECT_EQ(2,P1[0].X()[0].val());
+    EXPECT_EQ(3,P1[1].X()[0].val());
+    EXPECT_EQ(4,P1[2].X()[0].val());
+    EXPECT_EQ(3,P2.size());
+    EXPECT_EQ(2,P2[0].X()[0].val());
+    EXPECT_EQ(3,P2[1].X()[0].val());
+    EXPECT_EQ(4,P2[2].X()[0].val());
+    EXPECT_EQ(3,P3.size());
+    EXPECT_EQ(2,P3[0].X()[0].val());
+    EXPECT_EQ(3,P3[1].X()[0].val());
+    EXPECT_EQ(4,P3[2].X()[0].val());
+    EXPECT_EQ(3,P4.size());
+    EXPECT_EQ(2,P4[0].X()[0].val());
+    EXPECT_EQ(3,P4[1].X()[0].val());
+    EXPECT_EQ(4,P4[2].X()[0].val());
+}
 TEST(FitPoints,Operators){
 	auto points=make_shared<FitPoints>();
 	EXPECT_EQ(points.get(),(points<<FitPoints::Point({0},0)).get());
 	EXPECT_EQ(points.get(),(points<<point<double>(1.0,1.0)).get());
+	FitPoints p; p<<FitPoints::Point({2},2);
+	EXPECT_EQ(points.get(),(points<<p).get());
+	EXPECT_EQ(3,points->size());
+	EXPECT_EQ(1,points->dimensions());
 }
 TEST(OptimalityForPoints,Base){
 	auto points=make_shared<FitPoints>();

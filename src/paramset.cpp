@@ -10,12 +10,10 @@ namespace Genetic{
 	ParamSet::ParamSet(const initializer_list< double >& source){
 		for(auto value:source)m_values.push_back(value);
 	}
-	ParamSet::ParamSet(const initializer_list< double >&& source):ParamSet(source){}
 	ParamSet::ParamSet(const vector< double >& source){
 		for(auto value:source)m_values.push_back(value);
 	}
 	ParamSet::ParamSet(const ParamSet&source):ParamSet(source.m_values){}
-	ParamSet::ParamSet(const ParamSet&&source):ParamSet(source.m_values){}
 	ParamSet::~ParamSet(){}
 
 	const size_t ParamSet::size()const{return m_values.size();}
@@ -41,7 +39,6 @@ namespace Genetic{
 		return *this;
 	}
 	ParamSet& ParamSet::operator<<(const ParamSet&P){return operator<<(P.m_values);}
-	ParamSet& ParamSet::operator<<(const ParamSet&&P){return operator<<(P);}
 	
 	ParamSet& ParamSet::operator>>(double& p){
 		Lock lock(m_mutex);
@@ -58,7 +55,6 @@ namespace Genetic{
 		for(double p:source)m_values.push_back(p);
 		return *this;
 	}
-	ParamSet& ParamSet::operator=(const initializer_list<double>&&source){return operator=(source);}
 	ParamSet& ParamSet::operator=(const vector<double>&V){
 		Lock lock(m_mutex);
 		m_values.clear();
@@ -66,7 +62,6 @@ namespace Genetic{
 		return *this;
 	}
 	ParamSet& ParamSet::operator=(const ParamSet& P){return operator=(P.m_values);}
-	ParamSet& ParamSet::operator=(const ParamSet&& P){return operator=(P);}
 
 	ParamSet::iterator ParamSet::begin(){return m_values.begin();}
 	ParamSet::const_iterator ParamSet::begin()const{return m_values.begin();}

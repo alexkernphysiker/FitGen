@@ -32,6 +32,7 @@ void test_init(size_t threads,size_t population){
 	EXPECT_EQ(threads,gen.ThreadCount());
 	EXPECT_EQ(0,gen.PopulationSize());
 	EXPECT_THROW(gen.Init(0,initial,engine),Exception<AbstractGenetic>);
+	EXPECT_THROW(gen.Iterate(engine),Exception<AbstractGenetic>);
 	EXPECT_THROW(gen.ParamCount(),Exception<AbstractGenetic>);
 	EXPECT_EQ(0,gen.PopulationSize());
 	EXPECT_NO_THROW(gen.Init(population,initial,engine));
@@ -89,11 +90,22 @@ void test_iterate(size_t threads,size_t population,size_t iterations){
 	GeneticTest gen(optimality);
 	gen.SetThreadCount(threads);
 	gen.Init(population,initial,engine);
+	if(threads<population)
+	    EXPECT_EQ(threads,gen.ThreadCount());
+	else
+	    EXPECT_EQ(population,gen.ThreadCount());
 	EXPECT_FALSE(gen.ParametersDispersionExitCondition(parOnes(1)));
 	EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parOnes(1)));
 	for(size_t i=0;i<iterations;i++){
+		gen.SetThreadCount(threads);
 		gen.Iterate(engine);
+		if(threads<population)
+		    EXPECT_EQ(threads,gen.ThreadCount());
+		else
+		    EXPECT_EQ(population,gen.ThreadCount());
 		EXPECT_EQ(population,gen.PopulationSize());
+		EXPECT_THROW(gen.Parameters(population),Exception<AbstractGenetic>);
+		EXPECT_THROW(gen.Parameters(population+1),Exception<AbstractGenetic>);
 		EXPECT_EQ(1,gen.ParamCount());
 		EXPECT_EQ(i+1,gen.iteration_count());
 		EXPECT_CLOSE(gen.Parameters()[0],0);

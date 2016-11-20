@@ -20,9 +20,6 @@ namespace Genetic{
 		if(XX.size()==0)
 			throw Exception<FitPoints::Point>("Cannot create Point with zero arguments");
 	}
-	FitPoints::Point::Point(const vector<value<double>>&&x,const value<double>&y_):Point(x,y_){}
-	FitPoints::Point::Point(const vector<value<double>>&x,const value<double>&&y_):Point(x,y_){}
-	FitPoints::Point::Point(const vector<value<double>>&&x,const value<double>&&y_):Point(x,y_){}
 	const vector<value<double>>&FitPoints::Point::X() const{return XX;}
 	const ParamSet FitPoints::Point::x() const{
 		ParamSet res;
@@ -69,10 +66,14 @@ namespace Genetic{
 			if(point.X().size()!=dimensions())
 				throw Exception<FitPoints>("This point has different dimensions");
 			for(size_t i=0;i<dimensions();i++){
-				if(point.X()[i].val()<m_min[i])m_min(i)=point.X()[i].val();
-				if(point.X()[i].val()>m_max[i])m_max(i)=point.X()[i].val();
-				if(point.y().val()<ymin)ymin=point.y().val();
-				if(point.y().val()>ymax)ymax=point.y().val();
+				if(point.X()[i].val()<m_min[i])
+				    m_min(i)=point.X()[i].val();
+				if(point.X()[i].val()>m_max[i])
+				    m_max(i)=point.X()[i].val();
+				if(point.y().val()<ymin)
+				    ymin=point.y().val();
+				if(point.y().val()>ymax)
+				    ymax=point.y().val();
 			}
 		}else{
 			m_min=m_max={};
@@ -115,18 +116,11 @@ namespace Genetic{
 		src->operator<<(p);
 		return src;
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src,const Point&&p){
-		src->operator<<(p);
-		return src;
-	}
 	shared_ptr< FitPoints > operator<<(shared_ptr< FitPoints > src, const point<double>& p){
 		return src<<FitPoints::Point({p.X()},p.Y());
 	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const  point<double>&&p){
-		return src<<FitPoints::Point({p.X()},p.Y());
-	}
-	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const  shared_ptr<FitPoints> data){
-		for(const Point&P:(*data))src<<P;
+	shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src,const FitPoints&data){
+		for(const Point&P:data)src<<P;
 		return src;
 	}
 

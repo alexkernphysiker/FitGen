@@ -102,8 +102,7 @@ namespace Genetic{
 	void AbstractGenetic::Iterate(RANDOM&random){
 		size_t n=PopulationSize();
 		size_t par_cnt=ParamCount();
-		if(n==0)
-			throw Exception<AbstractGenetic>("Cannot perform the calculation when population size is zero");
+		//if n==0 we won't get here
 		if(ThreadCount()>n)
 			SetThreadCount(n);
 		SortedChain<Point> tmp_population;

@@ -11,23 +11,18 @@ namespace Genetic{
 	public:
 		ParamSet();
 		ParamSet(const std::initializer_list<double>&source);
-		ParamSet(const std::initializer_list<double>&&source);
 		ParamSet(const std::vector<double> &source);
 		ParamSet(const ParamSet&source);
-		ParamSet(const ParamSet&&source);
 		~ParamSet();
 		
 		ParamSet&operator<<(const double p);
 		ParamSet&operator<<(const std::vector<double>&V);
 		ParamSet&operator<<(const ParamSet&P);
-		ParamSet&operator<<(const ParamSet&&P);
 		ParamSet&operator>>(double&p);
 		
 		ParamSet&operator=(const std::initializer_list<double>&source);
-		ParamSet&operator=(const std::initializer_list<double>&&source);
 		ParamSet&operator=(const std::vector<double>&V);
 		ParamSet&operator=(const ParamSet&P);
-		ParamSet&operator=(const ParamSet&&P);
 		
 		const size_t size()const;
 		const double&operator[](const size_t i)const;
@@ -53,7 +48,6 @@ namespace Genetic{
 	}
 	std::ostream&operator<<(std::ostream&str,const ParamSet&P);
 	std::istream&operator>>(std::istream&str,ParamSet&P);
-	inline std::ostream&operator<<(std::ostream&str,const ParamSet&&P){return str<<P;}
 	ParamSet parEq(const size_t cnt,const double val);
 	inline const ParamSet parZeros(const size_t cnt){return parEq(cnt,0);}
 	inline const ParamSet parOnes(const size_t cnt){return parEq(cnt,1);}

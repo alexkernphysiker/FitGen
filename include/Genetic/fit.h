@@ -28,9 +28,6 @@ namespace Genetic{
 		public:
 			Point(const Point &src);
 			Point(const std::vector<MathTemplates::value<double>>&x,const MathTemplates::value<double>&y_);
-			Point(const std::vector<MathTemplates::value<double>>&&x,const MathTemplates::value<double>&y_);
-			Point(const std::vector<MathTemplates::value<double>>&x,const MathTemplates::value<double>&&y_);
-			Point(const std::vector<MathTemplates::value<double>>&&x,const MathTemplates::value<double>&&y_);
 			virtual ~Point();
 			const std::vector<MathTemplates::value<double>>&X()const;
 			const ParamSet x()const;
@@ -69,9 +66,7 @@ namespace Genetic{
 	typedef FitPoints::Point Point;
 	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const Point&p);
 	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const MathTemplates::point<double>&p);
-	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const Point&&p);
-	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const MathTemplates::point<double>&&p);
-	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const std::shared_ptr<FitPoints>data);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const FitPoints&data);
 	
 	class OptimalityForPoints:public IOptimalityFunction{
 	public:
