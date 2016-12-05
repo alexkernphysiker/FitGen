@@ -58,7 +58,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=p_index+power+1,ArgCount=x_index+1};
 	};
-	template<double (func)(double), class FUNC, Recuring recurring=first>
+	template<double (func)(const double&), class FUNC, Recuring recurring=first>
 	class Func:public virtual FUNC{
 		public:Func():FUNC(){}
 		virtual ~Func(){}
@@ -67,7 +67,7 @@ namespace Genetic{
 		}
 		enum{ParamCount=FUNC::ParamCount,ArgCount=FUNC::ArgCount};
 	};
-	template<double (func)(double,double), class FUNC1, class FUNC2, Recuring recurring=first>
+	template<double (func)(const double&,const double&), class FUNC1, class FUNC2, Recuring recurring=first>
 	class Func2:public virtual FUNC1,public virtual FUNC2{
 		public:Func2():FUNC1(),FUNC2(){}
 		virtual ~Func2(){}
@@ -79,7 +79,7 @@ namespace Genetic{
 			ArgCount=max2<FUNC1::ArgCount,FUNC2::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double), class FUNC1, class FUNC2, class FUNC3, Recuring recurring=first>
+	template<double (func)(const double&,const double&,const double&), class FUNC1, class FUNC2, class FUNC3, Recuring recurring=first>
 	class Func3:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3{
 		public:Func3():FUNC1(),FUNC2(),FUNC3(){}
 		virtual ~Func3(){}
@@ -91,7 +91,7 @@ namespace Genetic{
 			ArgCount=max3<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, Recuring recurring=first>
+	template<double (func)(const double&,const double&,const double&,const double&), class FUNC1, class FUNC2, class FUNC3, class FUNC4, Recuring recurring=first>
 	class Func4:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4{
 		public:Func4():FUNC1(),FUNC2(),FUNC3(),FUNC4(){}
 		virtual ~Func4(){}
@@ -104,7 +104,7 @@ namespace Genetic{
 			ArgCount=max4<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount,FUNC4::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, Recuring recurring=first>
+	template<double (func)(const double&,const double&,const double&,const double&,const double&), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, Recuring recurring=first>
 	class Func5:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4,public virtual FUNC5{
 		public:Func5():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(){}
 		virtual ~Func5(){}
@@ -117,7 +117,7 @@ namespace Genetic{
 			ArgCount=max5<FUNC1::ArgCount,FUNC2::ArgCount,FUNC3::ArgCount,FUNC4::ArgCount,FUNC5::ArgCount>::val
 		};
 	};
-	template<double (func)(double,double,double,double,double,double), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, class FUNC6, Recuring recurring=first>
+	template<double (func)(const double&,const double&,const double&,const double&,const double&,const double&), class FUNC1, class FUNC2, class FUNC3, class FUNC4, class FUNC5, class FUNC6, Recuring recurring=first>
 	class Func6:public virtual FUNC1,public virtual FUNC2,public virtual FUNC3,public virtual FUNC4,public virtual FUNC5,public virtual FUNC6{
 		public:Func6():FUNC1(),FUNC2(),FUNC3(),FUNC4(),FUNC5(),FUNC6(){}
 		virtual ~Func6(){}

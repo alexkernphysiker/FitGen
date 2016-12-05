@@ -52,7 +52,7 @@ int main(){
 	);
 	auto initial=make_shared<InitialDistributions>()
 		<<make_shared<DistribGauss>(100.,100.)<<make_shared<DistribGauss>(30.,30.)
-		<<make_shared<DistribGauss>(-20.,5.)<<make_shared<DistribGauss>(400.,100.)
+		<<make_shared<FixParam>(-20.)<<make_shared<DistribGauss>(400.,100.)
 		<<make_shared<DistribGauss>(5.,1.)<<make_shared<DistribGauss>(0.,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
 		initial<<make_shared<DistribGauss>(0.,0.001);

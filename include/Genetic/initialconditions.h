@@ -11,6 +11,15 @@ namespace Genetic{
 	typedef MathTemplates::RandomValueTableDistr<double,RANDOM&> DistribTable;
 	typedef MathTemplates::RandomGauss<double,RANDOM&> DistribGauss;
 	typedef MathTemplates::RandomUniform<double,RANDOM&> DistribUniform;
+	class FixParam:public Distrib{
+	public:
+	    FixParam(const double&x);
+	    FixParam(const FixParam&source);
+	    virtual ~FixParam();
+	    virtual double operator ()(RANDOM&)const override;
+	private:
+	    double value;
+	};
 	class InitialDistributions:public IInitialConditions{
 	public:
 		InitialDistributions();
