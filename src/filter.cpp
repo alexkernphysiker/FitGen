@@ -6,7 +6,7 @@ namespace Genetic{
 	using namespace std;
 	using namespace MathTemplates;
 	Above::Above(){}
-	Above::Above(const ParamSet&&v):m_data(v){}
+	Above::Above(const ParamSet&v):m_data(v){}
 	bool Above::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
@@ -17,13 +17,13 @@ namespace Genetic{
 		}
 		return res;
 	}
-	Above& Above::operator<<(const double value){
+	Above& Above::operator<<(const double&value){
 		m_data<<value;
 		return *this;
 	}
 	
 	Below::Below(){}
-	Below::Below(const ParamSet&&v):m_data(v){}
+	Below::Below(const ParamSet&v):m_data(v){}
 	bool Below::operator()(const ParamSet&P)const{
 		bool res=true;
 		int index=0;
@@ -34,7 +34,7 @@ namespace Genetic{
 		}
 		return res;
 	}
-	Below& Below::operator<<(const double value){
+	Below& Below::operator<<(const double&value){
 		m_data<<value;
 		return *this;
 	}

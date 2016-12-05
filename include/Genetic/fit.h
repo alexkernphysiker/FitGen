@@ -106,7 +106,6 @@ namespace Genetic{
 		Fit(const std::shared_ptr<FitPoints> points,const paramFunc f):Fit(points,std::make_shared<ParameterFunction>(f)){}
 		virtual ~Fit(){}
 		double operator()(const ParamSet&X)const{return m_func->operator()(X,AbstractGenetic::Parameters());}
-		inline double operator()(const ParamSet&&X)const{return operator()(X);}
 		std::shared_ptr<IParamFunc> Func()const{return m_func;}
 		std::shared_ptr<FitPoints> Points()const{
 			return std::dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();

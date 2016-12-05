@@ -11,7 +11,7 @@ namespace Genetic{
 		m_uncertainty_cache=make_shared<vector<value<double>>>();
 	}
 	ParabolicErrorEstimationFromChisq::~ParabolicErrorEstimationFromChisq(){}
-	double ParabolicErrorEstimationFromChisq::GetParamParabolicError(const double delta, const size_t i)const{
+	double ParabolicErrorEstimationFromChisq::GetParamParabolicError(const double&delta, const size_t i)const{
 		if(delta<=0)
 			throw Exception<ParabolicErrorEstimationFromChisq>("Exception in parabolic error calculation: delta cannot be zero or negative");
 		double s=Optimality();

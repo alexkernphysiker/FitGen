@@ -54,12 +54,10 @@ namespace Genetic{
 		const std::vector<MathTemplates::value<double>>&ParametersStatistics()const;
 		
 		const bool ConcentratedInOnePoint()const;
-		const bool AbsoluteOptimalityExitCondition(const double accuracy)const;
-		const bool RelativeOptimalityExitCondition(const double accuracy)const;
+		const bool AbsoluteOptimalityExitCondition(const double&accuracy)const;
+		const bool RelativeOptimalityExitCondition(const double&accuracy)const;
 		const bool ParametersDispersionExitCondition(const ParamSet&max_disp)const;
 		const bool RelativeParametersDispersionExitCondition(const ParamSet&max_disp)const;
-		const bool ParametersDispersionExitCondition(const ParamSet&&max_disp)const;
-		const bool RelativeParametersDispersionExitCondition(const ParamSet&&max_disp)const;
 	protected:
 		//contains empty implementation for templates from genetic.h could work correctly
 		virtual void mutations(ParamSet&,RANDOM&)const;

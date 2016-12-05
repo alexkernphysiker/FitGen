@@ -8,20 +8,20 @@ namespace Genetic{
 	class Above:public IParamCheck{
 	public:
 		Above();
-		Above(const ParamSet&&v);
+		Above(const ParamSet&v);
 		virtual ~Above(){}
 		virtual bool operator()(const ParamSet&P)const override;
-		Above &operator<<(const double value);
+		Above &operator<<(const double&value);
 	private:
 		ParamSet m_data;
 	};
 	class Below:public IParamCheck{
 	public:
 		Below();
-		Below(const ParamSet&&v);
+		Below(const ParamSet&v);
 		virtual ~Below(){}
 		virtual bool operator()(const ParamSet&P)const override;
-		Below &operator<<(const double value);
+		Below &operator<<(const double&value);
 	private:
 		ParamSet m_data;
 	};

@@ -196,7 +196,7 @@ namespace Genetic{
 			res&=(m_stat[i].uncertainty()==0);
 		return res;
 	}
-	const bool AbstractGenetic::AbsoluteOptimalityExitCondition(const double accuracy)const{
+	const bool AbstractGenetic::AbsoluteOptimalityExitCondition(const double&accuracy)const{
 		if(m_population.size()==0)
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
@@ -207,7 +207,8 @@ namespace Genetic{
 			return Optimality(PopulationSize()-1)==Optimality();
 		return (Optimality(PopulationSize()-1)-Optimality())<=accuracy;
 	}
-	const bool AbstractGenetic::RelativeOptimalityExitCondition(const double accuracy)const{
+	const bool AbstractGenetic::RelativeOptimalityExitCondition ( const double& accuracy ) const
+{
 		if(m_population.size()==0)
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
 		if(accuracy<0)
@@ -236,7 +237,6 @@ namespace Genetic{
 		}
 		return true;
 	}
-	const bool AbstractGenetic::ParametersDispersionExitCondition(const ParamSet&& max_disp) const{return ParametersDispersionExitCondition(max_disp);}
 	const bool AbstractGenetic::RelativeParametersDispersionExitCondition(const ParamSet&max_disp)const{
 		if(m_population.size()==0)
 			throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
@@ -255,7 +255,6 @@ namespace Genetic{
 		}
 		return true;
 	}
-	const bool AbstractGenetic::RelativeParametersDispersionExitCondition(const ParamSet&& max_disp) const{return RelativeParametersDispersionExitCondition(max_disp);}
 	void AbstractGenetic::mutations(ParamSet&,RANDOM&)const{}
 	void AbstractGenetic::HandleIteration(){}
 	

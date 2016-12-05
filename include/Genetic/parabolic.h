@@ -11,12 +11,11 @@ namespace Genetic{
 	public:
 		virtual ~ParabolicErrorEstimationFromChisq();
 		ParabolicErrorEstimationFromChisq&SetUncertaintyCalcDeltas(const ParamSet&P);
-		inline ParabolicErrorEstimationFromChisq&SetUncertaintyCalcDeltas(const ParamSet&&P){return SetUncertaintyCalcDeltas(P);}
 		const std::vector<MathTemplates::value<double>>&ParametersWithUncertainties()const;
 	protected:
 		virtual void HandleIteration()override;
 	private:
-		double GetParamParabolicError(const double delta, const size_t i)const;
+		double GetParamParabolicError(const double&delta, const size_t i)const;
 		ParamSet m_delta;
 		std::shared_ptr<std::vector<MathTemplates::value<double>>> m_uncertainty_cache;
 	};
