@@ -31,10 +31,10 @@ int main(){
     );
     fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
     fit.Init(30,
-	 make_shared<GenerateUniform>()
-	     <<make_pair(left,right)
-	     <<make_pair(0,right-left)
-	     <<make_pair(0,5.0*count),
+	 make_shared<InitialDistributions>()
+	     <<make_shared<DistribGauss>(left,right)
+	     <<make_shared<DistribGauss>(0,right-left)
+	     <<make_shared<DistribGauss>(0,5.0*count),
 	 random_engine
     );
     while(!fit.AbsoluteOptimalityExitCondition(0.000001))

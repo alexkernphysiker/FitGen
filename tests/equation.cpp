@@ -94,7 +94,9 @@ TEST(EquationSolver,Integrationtest){
 	{.left=[](const ParamSet&P){return P[0]+P[1];},.right=[](const ParamSet&){return 0;}},
 	{.left=[](const ParamSet&P){return P[0];},.right=[](const ParamSet&P){return P[1];}}
     };
-    test.Init(100,make_shared<GenerateUniform>()<<make_pair(-20,20)<<make_pair(-20,20),engine);
+    test.Init(100,make_shared<InitialDistributions>()
+	<<make_shared<DistribGauss>(-20,20)<<make_shared<DistribGauss>(-20,20)
+    ,engine);
     Find(test,engine);
     EXPECT_TRUE(pow(test.Parameters()[0],2)<0.0000001);
     EXPECT_TRUE(pow(test.Parameters()[1],2)<0.0000001);

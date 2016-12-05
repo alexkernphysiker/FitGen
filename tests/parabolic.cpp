@@ -24,7 +24,7 @@ TEST(ParabolicErrorEstimationFromChisq,Base){
 	ParabolicTest gen;
 	gen.SetUncertaintyCalcDeltas({0.01})
 	.Init(1,make_shared<InitialDistributions>()
-	    <<make_shared<RandomValueGenerator<double>>(-0.0001,0.0001)
+	    <<make_shared<DistribUniform>(-0.0001,0.0001)
 	,engine);
 	EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[0].uncertainty()-1.0,2)<0.0001);
 }
@@ -32,7 +32,7 @@ TEST(ParabolicErrorEstimationFromChisq,NegDelta){
 	ParabolicTest gen;
 	gen.SetUncertaintyCalcDeltas({-0.01})
 	.Init(1,make_shared<InitialDistributions>()
-	    <<make_shared<RandomValueGenerator<double>>(-0.0001,0.0001)
+	    <<make_shared<DistribUniform>(-0.0001,0.0001)
 	,engine);
 	EXPECT_THROW(gen.ParametersWithUncertainties()[0],Exception<ParabolicErrorEstimationFromChisq>);
 }
@@ -40,7 +40,7 @@ TEST(ParabolicErrorEstimationFromChisq,NegZero){
 	ParabolicTest gen;
 	gen.SetUncertaintyCalcDeltas({0})
 	.Init(1,make_shared<InitialDistributions>()
-	    <<make_shared<RandomValueGenerator<double>>(-0.0001,0.0001)
+	    <<make_shared<DistribUniform>(-0.0001,0.0001)
 	,engine);
 	EXPECT_THROW(gen.ParametersWithUncertainties()[0],Exception<ParabolicErrorEstimationFromChisq>);
 }
@@ -49,7 +49,7 @@ TEST(ParabolicErrorEstimationFromChisq,BaseTest){
 	ParabolicTest gen;
 	auto init=make_shared<InitialDistributions>();
 	for(int i=0;i<count;i++)
-	    init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
+	    init<<make_shared<DistribUniform>(-0.001,0.001);
 	gen.SetUncertaintyCalcDeltas(parEq(count,0.01)).Init(1,init,engine);
 	ASSERT_EQ(count,gen.ParametersWithUncertainties().size());
 	for(size_t i=0;i<gen.ParamCount();i++){
@@ -63,7 +63,7 @@ TEST(ParabolicErrorEstimationFromChisq,MoreInteresting){
 		ParabolicTest gen(2);
 		auto init=make_shared<InitialDistributions>();
 		for(int i=0;i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
+			init<<make_shared<DistribUniform>(-0.001,0.001);
 		gen.SetUncertaintyCalcDeltas(parEq(count,0.01)).Init(1,init,engine);
 		ASSERT_EQ(count,gen.ParametersWithUncertainties().size());
 		for(size_t i=0;i<gen.ParamCount();i++){
@@ -75,7 +75,7 @@ TEST(ParabolicErrorEstimationFromChisq,MoreInteresting){
 		ParabolicTest gen(0.5);
 		auto init=make_shared<InitialDistributions>();
 		for(int i=0;i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
+			init<<make_shared<DistribUniform>(-0.001,0.001);
 		gen.SetUncertaintyCalcDeltas(parEq(count,0.01)).Init(1,init,engine);
 		ASSERT_EQ(count,gen.ParametersWithUncertainties().size());
 		for(size_t i=0;i<gen.ParamCount();i++){
@@ -89,7 +89,7 @@ TEST(ParabolicErrorEstimationFromChisq,Infinite){
 		ParabolicTest gen(0.);
 		auto init=make_shared<InitialDistributions>();
 		for(int i=0;i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
+			init<<make_shared<DistribUniform>(-0.001,0.001);
 		gen.SetUncertaintyCalcDeltas(parEq(count,0.01)).Init(1,init,engine);
 		ASSERT_EQ(count,gen.ParametersWithUncertainties().size());
 		for(size_t i=0;i<gen.ParamCount();i++){
@@ -101,7 +101,7 @@ TEST(ParabolicErrorEstimationFromChisq,Infinite){
 		ParabolicTest gen(-1);
 		auto init=make_shared<InitialDistributions>();
 		for(int i=0;i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(-0.001,0.001);
+			init<<make_shared<DistribUniform>(-0.001,0.001);
 		gen.SetUncertaintyCalcDeltas(parEq(count,0.01)).Init(1,init,engine);
 		ASSERT_EQ(count,gen.ParametersWithUncertainties().size());
 		for(size_t i=0;i<gen.ParamCount();i++){

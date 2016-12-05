@@ -16,7 +16,9 @@ int main(){
     };
     //searching the solution
     RANDOM random_engine;
-    example.Init(20,make_shared<GenerateUniform>()<<make_pair(0,3)<<make_pair(0,3),random_engine);
+    example.Init(20,make_shared<InitialDistributions>()
+	<<make_shared<DistribUniform>(0,3)<<make_shared<DistribUniform>(0,3)
+    ,random_engine);
     Find(example,random_engine);
     //output results
     const auto&X=example.Parameters();

@@ -23,7 +23,7 @@ public:
 	virtual ~GeneticTest(){}
 };
 auto optimality=make_shared<OptimalityFunction>([](const ParamSet&p){return pow(p[0],2);});
-auto initial=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,0.001);
+auto initial=make_shared<InitialDistributions>()<<make_shared<RandomUniform<double>>(0,0.001);
 void test_init(size_t threads,size_t population){
 	GeneticTest gen(optimality);
 	EXPECT_EQ(optimality.get(),gen.OptimalityCalculator().get());
@@ -153,7 +153,7 @@ TEST(AbstractGenetic,ItAsync7__){test_iterate(7,2,5);}
 TEST(AbstractGenetic,ItAsync8__){test_iterate(8,2,5);}
 class GeneticTestWithMutations:public AbstractGenetic{
 private:
-	RandomValueGenerator<double> G;
+	RandomUniform<double> G;
 public:
 	GeneticTestWithMutations(shared_ptr<IOptimalityFunction> optimality):AbstractGenetic(optimality),G(-1,1){}
 	virtual ~GeneticTestWithMutations(){}
@@ -161,7 +161,7 @@ protected:
 	virtual void mutations(ParamSet&P,RANDOM&R)const override{P(0)=G(R);}
 };
 TEST(AbstractGenetic,FilterSettingFunc){
-	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,1);
+	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomUniform<double>>(0,1);
 	auto filter=[](const ParamSet&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(filter);
@@ -179,7 +179,7 @@ TEST(AbstractGenetic,FilterSettingFunc){
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,FilterSetting){
-	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(-1,1);
+	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomUniform<double>>(-1,1);
 	auto filter=[](const ParamSet&P){return P[0]>0.5;};
 	GeneticTestWithMutations gen(optimality);
 	gen.SetFilter(make_shared<Filter>(filter));
@@ -197,7 +197,7 @@ TEST(AbstractGenetic,FilterSetting){
 		EXPECT_EQ(false,filter(gen.Parameters(i)));
 }
 TEST(AbstractGenetic,Infinite){
-	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomValueGenerator<double>>(0,1);
+	auto initial_uniform=make_shared<InitialDistributions>()<<make_shared<RandomUniform<double>>(0,1);
 	auto opt=make_shared<OptimalityFunction>([](const ParamSet&P){
 		double res=P[0];
 		res*=res;
@@ -220,7 +220,7 @@ TEST(AbstractGenetic,Infinite){
 }
 TEST(SearchMin,Integrationtest){
     SearchMin<DifferentialMutations<>> test([](const ParamSet&X){return X[0]*X[0];});
-    test.Init(20,make_shared<GenerateUniform>()<<make_pair(-10,10),engine);
+    test.Init(20,make_shared<InitialDistributions>()<<make_shared<DistribUniform>(-10,10),engine);
     Find(test,engine);
     EXPECT_TRUE(pow(test.Parameters()[0],2)<0.0000001);
 }

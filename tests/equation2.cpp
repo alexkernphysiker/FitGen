@@ -94,7 +94,9 @@ TEST(InexactEquationSolver,Integrationtest){
 	    {.left=[](const ParamSet&P)->double{return P[0]+P[1];},.right={0,1}},
 	    {.left=[](const ParamSet&P)->double{return P[0]-P[1];},.right={0,1}}
 	};
-	test.Init(100,make_shared<GenerateUniform>()<<make_pair(-20,20)<<make_pair(-20,20),engine);
+	test.Init(100,make_shared<InitialDistributions>()
+	    <<make_shared<DistribUniform>(-20,20)<<make_shared<DistribUniform>(-20,20)
+	,engine);
 	Find(test,engine);
 	EXPECT_TRUE(pow(test.Parameters()[0],2)<0.0000001);
 	EXPECT_TRUE(pow(test.Parameters()[1],2)<0.0000001);

@@ -16,7 +16,9 @@ int main(){
     };
     //searching the optimal parameter values
     RANDOM random_engine;
-    example.Init(25,make_shared<GenerateUniform>()<<make_pair(-10,10)<<make_pair(-10,10),random_engine);
+    example.Init(25,make_shared<InitialDistributions>()
+	<<make_shared<DistribGauss>(-10,10)<<make_shared<DistribGauss>(-10,10)
+    ,random_engine);
     while(!example.AbsoluteOptimalityExitCondition(0.00000001))
 	example.Iterate(random_engine);
     //output the solution

@@ -38,7 +38,7 @@ TEST(DifferentialMutations,Zeros){
 		TestClass<DifferentialMutations<>> gen;
 		auto init=make_shared<InitialDistributions>();
 		for(size_t i=0; i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(0,0.001);
+			init<<make_shared<RandomUniform<double>>(0,0.001);
 		gen.Init(10,init,engine);
 		ParamSet P=parZeros(count);
 		gen.MAKE_TEST(P,engine);
@@ -52,7 +52,7 @@ TEST(DifferentialMutations,Upper){
 		TestClass<DifferentialMutations<>> gen;
 		auto init=make_shared<InitialDistributions>();
 		for(size_t i=0; i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(-0.5,0.5);
+			init<<make_shared<RandomUniform<double>>(-0.5,0.5);
 		gen.Init(5,init,engine);
 		for(gen.SetMutationCoefficient(0);
 			gen.MutationCoefficient()<=1;
@@ -87,7 +87,7 @@ TEST(Crossing,No){
 		TestClass<Crossing<>> gen;
 		auto init=make_shared<InitialDistributions>();
 		for(size_t i=0; i<count;i++)
-			init<<make_shared<RandomValueGenerator<double>>(-0.5,0.5);
+			init<<make_shared<DistribUniform>(-0.5,0.5);
 		gen.Init(10,init,engine);
 		gen.SetCrossingProbability(0);
 		ParamSet P=parZeros(count);
@@ -102,7 +102,7 @@ TEST(Crossing,Yes){
 		TestClass<Crossing<>> gen;
 		auto init=make_shared<InitialDistributions>();
 		for(size_t i=0; i<count;i++)
-			init<<make_shared<Distrib>(0.9,1.0);
+			init<<make_shared<DistribUniform>(0.9,1.0);
 		gen.Init(10,init,engine);
 		gen.SetCrossingProbability(1);
 		ParamSet P=parZeros(count);

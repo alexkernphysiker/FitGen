@@ -50,11 +50,12 @@ int main(){
 			return F({P[2]},P)<P[1]*5.0;
 		}
 	);
-	auto initial=make_shared<GenerateByGauss>()
-		<<make_pair(100.,100.)<<make_pair(30.,30.)<<make_pair(-20.,5.)
-		<<make_pair(400.,100.)<<make_pair(5.,1.)<<make_pair(0.,0.5);
+	auto initial=make_shared<InitialDistributions>()
+		<<make_shared<DistribGauss>(100.,100.)<<make_shared<DistribGauss>(30.,30.)
+		<<make_shared<DistribGauss>(-20.,5.)<<make_shared<DistribGauss>(400.,100.)
+		<<make_shared<DistribGauss>(5.,1.)<<make_shared<DistribGauss>(0.,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
-		initial<<make_pair(0.,0.001);
+		initial<<make_shared<DistribGauss>(0.,0.001);
 	fit.Init(TotalFunc::ParamCount*15,initial,random_engine);
 	
 	while(!fit.AbsoluteOptimalityExitCondition(0.0001)){

@@ -195,14 +195,14 @@ TEST(OptimalityForPoints,ChiSquareWithXError){
 typedef Add<Mul<Arg<0>,Par<0>>,Par<1>> Fit_Func;
 typedef Const<1> Fit_Func_err;
 auto Points=make_shared<FitPoints>()<<Point({0},{1,1})<<Point({1},{2,1})<<Point({2},{3,1});
-auto Init=make_shared<GenerateUniform>()<<make_pair(0,2)<<make_pair(0,2);
+auto Init=make_shared<InitialDistributions>()<<make_shared<DistribUniform>(0,2)<<make_shared<DistribUniform>(0,2);
 TEST(Fit,Basetest){
 	Fit<DifferentialMutations<>,SumSquareDiff> fit(Points,make_shared<Fit_Func>());
-	fit.Init(20,Init,engine);
+	fit.Init(30,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate(engine);
 	EXPECT_TRUE(fit.ParamCount()==2);
-	EXPECT_TRUE(fit.PopulationSize()==20);
+	EXPECT_TRUE(fit.PopulationSize()==30);
 	EXPECT_TRUE(fit.Optimality()==0);
 	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
 	EXPECT_EQ(1,fit.Parameters()[0]);
@@ -210,11 +210,11 @@ TEST(Fit,Basetest){
 }
 TEST(FitFunction,Basetest){
 	FitFunction<DifferentialMutations<>,Fit_Func,SumSquareDiff> fit(Points);
-	fit.Init(20,Init,engine);
+	fit.Init(30,Init,engine);
 	while(!fit.ConcentratedInOnePoint())
 		fit.Iterate(engine);
 	EXPECT_TRUE(fit.ParamCount()==2);
-	EXPECT_TRUE(fit.PopulationSize()==20);
+	EXPECT_TRUE(fit.PopulationSize()==30);
 	EXPECT_TRUE(fit.Optimality()==0);
 	EXPECT_TRUE(fit.Optimality(fit.PopulationSize()-1)==0);
 	EXPECT_EQ(1,fit.Parameters()[0]);
