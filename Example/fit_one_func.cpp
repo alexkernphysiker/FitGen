@@ -45,9 +45,8 @@ int main(){
     cout<<"Chi^2 divided by degrees of freedom = "
     <<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
     cout<<endl;
-    fit.SetUncertaintyCalcDeltas({0.01,0.01,0.01});
     cout<<"Fit parameters"<<endl;
-    for(const auto&P:fit.ParametersWithUncertainties())
+    for(const auto&P:fit.Parameters())
 	cout<<P<<endl;
 
     //plotting results

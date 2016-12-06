@@ -4,6 +4,7 @@
 #include <fstream>
 #include <gnuplot_wrap.h>
 #include <Genetic/fit.h>
+#include <Genetic/parabolic.h>
 #include <Genetic/filter.h>
 #include <Genetic/initialconditions.h>
 using namespace std;
@@ -42,7 +43,7 @@ int main(){
 
 	//Fitting
 	RANDOM random_engine;
-	FitFunction<DifferentialMutations<>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
+	FitFunction<DifferentialMutations<Uncertainty>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
 	fit.SetFilter(make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<[](const ParamSet&P){

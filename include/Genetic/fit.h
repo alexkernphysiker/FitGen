@@ -6,7 +6,6 @@
 #include <math_h/tabledata.h>
 #include "abstract.h"
 #include "genetic.h"
-#include "parabolic.h"
 namespace Genetic{
 	class IParamFunc{
 	public:
@@ -89,7 +88,7 @@ namespace Genetic{
 	    class MUTATION_TYPE,
 	    std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)
 	>
-	class Fit:public virtual MUTATION_TYPE,public virtual ParabolicErrorEstimationFromChisq{
+	class Fit:public virtual MUTATION_TYPE{
 	private:
 		std::shared_ptr<IParamFunc> m_func;
 	protected:

@@ -5,11 +5,12 @@
 #include <Genetic/equation2.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/genetic.h>
+#include <Genetic/parabolic.h>
 using namespace std;
 using namespace Genetic;
 int main(){
     //declaring
-    InexactEquationSolver<DifferentialMutations<>> example{
+    InexactEquationSolver<DifferentialMutations<Uncertainty>> example{
 	{.left=[](const ParamSet&X){return X[0]+X[1];},.right={1.98,0.03}},
 	{.left=[](const ParamSet&X){return X[0]-X[1];},.right={0.02,0.02}},
 	{.left=[](const ParamSet&X){return pow(X[0],2)+pow(X[1],2);},.right={2.01,0.01}}

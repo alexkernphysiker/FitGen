@@ -6,7 +6,6 @@
 #include <list>
 #include <math_h/sigma.h>
 #include "abstract.h"
-#include "parabolic.h"
 namespace Genetic{
 	struct InexactEquation{
 	    std::function<MathTemplates::value<double>(const ParamSet&)> left;
@@ -23,8 +22,7 @@ namespace Genetic{
 		std::list<InexactEquation> f_data;
 	};
 	template<class MUTATION_TYPE>
-	class InexactEquationSolver:public virtual MUTATION_TYPE,
-	public virtual ParabolicErrorEstimationFromChisq{
+	class InexactEquationSolver:public virtual MUTATION_TYPE{
 	public:
 	    InexactEquationSolver(const std::initializer_list<InexactEquation>&source)
 	    :AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
@@ -32,7 +30,9 @@ namespace Genetic{
 	    :AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
 	    virtual ~InexactEquationSolver(){}
 	    const std::list<InexactEquation>&equations()const{
-		return std::dynamic_pointer_cast<InexactEquationSystem>(OptimalityCalculator())->equations();
+		return std::dynamic_pointer_cast<InexactEquationSystem>(
+		    AbstractGenetic::OptimalityCalculator()
+		)->equations();
 	    }
 	};
 }

@@ -19,5 +19,6 @@ namespace Genetic{
 		ParamSet m_delta;
 		std::shared_ptr<std::vector<MathTemplates::value<double>>> m_uncertainty_cache;
 	};
+	typedef ParabolicErrorEstimationFromChisq Uncertainty;
 }
 #endif
