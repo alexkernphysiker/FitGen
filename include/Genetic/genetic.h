@@ -14,7 +14,7 @@ namespace Genetic{
 		DifferentialMutations():FITGEN(),M(0.5){}
 		virtual ~DifferentialMutations(){}
 		const double&MutationCoefficient()const {return M;}
-		void SetMutationCoefficient(const double val){
+		void SetMutationCoefficient(const double&val){
 			if(val<0)
 				throw MathTemplates::Exception<DifferentialMutations>("DifferentialMutations: mutation coefficient should be a positive value");
 			M=val;
@@ -37,7 +37,7 @@ namespace Genetic{
 		Crossing():FITGEN(),P(0){}
 		virtual ~Crossing(){}
 		const double&CrossingProbability()const {return P;}
-		void SetCrossingProbability(const double val){
+		void SetCrossingProbability(const double&val){
 			if((val<0)||(val>1))
 				throw MathTemplates::Exception<Crossing>("Crossing: probability value should fit the condition 0<=P<=1");
 			P=val;
@@ -66,7 +66,7 @@ namespace Genetic{
 		AbsoluteMutations():FITGEN(),P(0){}
 		virtual ~AbsoluteMutations(){}
 		const ParamSet&AbsoluteMutationCoefficients()const {return m_mutation;}
-		void SetAbsoluteMutationCoefficients(const ParamSet&&p){
+		void SetAbsoluteMutationCoefficients(const ParamSet&p){
 			m_mutation={};
 			for(double v:p){
 				if(v<0)
@@ -75,7 +75,7 @@ namespace Genetic{
 			}
 		}
 		const double&AbsoluteMutationsProbability()const {return P;}
-		void SetAbsoluteMutationsProbability(const double val){
+		void SetAbsoluteMutationsProbability(const double&val){
 			if((val<0)||(val>1))
 				throw MathTemplates::Exception<AbsoluteMutations>("AbsoluteMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
@@ -100,7 +100,7 @@ namespace Genetic{
 		RelativeMutations():FITGEN(),P(0){}
 		virtual ~RelativeMutations(){}
 		const ParamSet&RelativeMutationCoefficients()const {return m_mutation;}
-		void SetRelativeMutationCoefficients(const ParamSet&&p){
+		void SetRelativeMutationCoefficients(const ParamSet&p){
 			m_mutation={};
 			for(double v:p){
 				if(v<0)
@@ -109,7 +109,7 @@ namespace Genetic{
 			}
 		}
 		const double&RelativeMutationsProbability()const {return P;}
-		void SetRelativeMutationsProbability(const double val){
+		void SetRelativeMutationsProbability(const double& val){
 			if((val<0)||(val>1))
 				throw MathTemplates::Exception<RelativeMutations>("RelativeMutations: probability value should fit the condition 0<=P<=1");
 			P=val;
@@ -132,7 +132,7 @@ namespace Genetic{
 	public:
 		ExactCopying():FITGEN(),P(0){}
 		virtual ~ExactCopying(){}
-		void SetExactCopyingProbability(const double value){
+		void SetExactCopyingProbability(const double& value){
 			if((value<0)||(value>1))
 				throw MathTemplates::Exception<ExactCopying>("ExactCopying: probability value should fit the condition 0<=P<=1");
 			P=value;
