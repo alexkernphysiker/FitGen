@@ -86,7 +86,7 @@ namespace Genetic{
 	std::shared_ptr<OptimalityForPoints> ChiSquareWithXError(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
 	template<
 	    class MUTATION_TYPE,
-	    std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)
+	    std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>) = ChiSquare
 	>
 	class Fit:public virtual MUTATION_TYPE{
 	private:
@@ -110,7 +110,7 @@ namespace Genetic{
 			return std::dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();
 		}
 	};
-	template<class GENETIC,class FUNC,std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)>
+	template<class GENETIC,class FUNC,std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>,const std::shared_ptr<IParamFunc>)=ChiSquare>
 	class FitFunction:public virtual Fit<GENETIC,OptimalityAlgorithm>{
 	public:
 		typedef FUNC functype;

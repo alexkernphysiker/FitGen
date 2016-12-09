@@ -37,26 +37,30 @@ int main(){
 		
 	//Foreground, background and total sum for fitting
 	typedef Mul<Func3<Gaussian,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
-	const int background_polynom_power=4;
+	const int background_polynom_power=5;
 	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 	typedef Add<Foreground,Background> TotalFunc;
 
 	//Fitting
 	RANDOM random_engine;
-	FitFunction<DifferentialMutations<Uncertainty>,TotalFunc,ChiSquareWithXError> fit(points_to_fit);
-	fit.SetFilter(make_shared<And>()
+	FitFunction<DifferentialMutations<Uncertainty>,TotalFunc> fit(points_to_fit);
+	fit.SetFilter(
+	    make_shared<And>()
 		<<(make_shared<Above>()<<0<<0)
 		<<[](const ParamSet&P){
-			static Foreground F;
-			return F({P[2]},P)<P[1]*5.0;
+		    static Foreground F;
+		    return F({P[2]},P)<P[1]*5.0;
 		}
 	);
 	auto initial=make_shared<InitialDistributions>()
-		<<make_shared<DistribGauss>(100.,100.)<<make_shared<DistribGauss>(30.,30.)
-		<<make_shared<FixParam>(-20.)<<make_shared<DistribGauss>(400.,100.)
-		<<make_shared<DistribGauss>(5.,1.)<<make_shared<DistribGauss>(0.,0.5);
+	    <<make_shared<DistribGauss>(100.,100.)
+	    <<make_shared<DistribUniform>(0.,20.)
+	    <<make_shared<FixParam>(-20.)
+	    <<make_shared<DistribGauss>(400.,100.)
+	    <<make_shared<DistribGauss>(5.,2.)
+	    <<make_shared<DistribGauss>(0.,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
-		initial<<make_shared<DistribGauss>(0.,0.001);
+	    initial<<make_shared<DistribGauss>(0.,0.01);
 	fit.Init(TotalFunc::ParamCount*15,initial,random_engine);
 	
 	while(!fit.AbsoluteOptimalityExitCondition(0.0001)){
@@ -76,6 +80,7 @@ int main(){
 	fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(),0.01));
 	for(const auto&P:fit.ParametersWithUncertainties())
 	    cout<<P<<endl;
+	
 	//Plotting total fit and background
 	Plotter::Instance().SetOutput(".","foreground-background-fit");
 	const auto&P=fit.Parameters();

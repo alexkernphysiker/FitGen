@@ -15,26 +15,29 @@ int main(){
     RANDOM random_engine;
 
     //Generating the distribution for fitting
-    //we use class from math_h submodule
     double left=0,right=10,sigma=1.0;size_t count=500;
     Distribution1D<double> distribution(BinsByStep(left,1.0,right));
-    normal_distribution<double> gauss((right+left)/2.0,sigma);
+    normal_distribution<double> generate_gauss((right+left)/2.0,sigma);
     for(size_t i=0;i<count;i++)
-	distribution.Fill(gauss(random_engine));
+	distribution.Fill(generate_gauss(random_engine));
 
     //Fitting generated distribution
-    Fit<DifferentialMutations<>,ChiSquareWithXError> fit(
+    Fit<DifferentialMutations<>> fit(
 	make_shared<FitPoints>(distribution),
 	[](const ParamSet&X,const ParamSet&P){
 	    return Gaussian(X[0],P[0],P[1])*P[2];
 	}
     );
-    fit.SetFilter([](const ParamSet&P){return (P[1]>0)&&(P[2]>0);});
+    fit.SetFilter(
+	[](const ParamSet&P){
+	    return (P[1]>0)&&(P[2]>0);
+	}
+    );
     fit.Init(30,
 	 make_shared<InitialDistributions>()
-	     <<make_shared<DistribGauss>(left,right)
-	     <<make_shared<DistribGauss>(0,right-left)
-	     <<make_shared<DistribGauss>(0,5.0*count),
+	     <<make_shared<DistribUniform>(left,right)
+	     <<make_shared<DistribUniform>(0,right-left)
+	     <<make_shared<DistribUniform>(0,2.0*count),
 	 random_engine
     );
     while(!fit.AbsoluteOptimalityExitCondition(0.000001))
@@ -45,14 +48,15 @@ int main(){
     cout<<"Chi^2 divided by degrees of freedom = "
     <<fit.Optimality()/(fit.Points()->size()-fit.ParamCount())<<endl;
     cout<<endl;
+
     cout<<"Fit parameters"<<endl;
-    for(const auto&P:fit.Parameters())
-	cout<<P<<endl;
+    for(const auto&P:fit.Parameters())cout<<P<<"\t";
+    cout<<endl;
 
     //plotting results
     Plotter::Instance().SetOutput(".","gauss-fit");
-    const auto chain=ChainWithStep(0.0,0.01,10.0);
-    const SortedPoints<double> line([&fit](double x)->double{return fit({x});},chain);
+    const auto breakdown=ChainWithStep(0.0,0.01,10.0);
+    const SortedPoints<double> line([&fit](double x)->double{return fit({x});},breakdown);
     Plot<double>().Hist(distribution).Line(line);
     return 0;
 }
