@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #ifndef ______searchingminimum____H________
 #	define ______searchingminimum____H________
 #include <utility>

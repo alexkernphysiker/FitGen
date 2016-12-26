@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #include <thread>
 #include <math.h>
 #include <math_h/error.h>

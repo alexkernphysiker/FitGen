@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #include <gtest/gtest.h>
 #include <math_h/error.h>
 #include <math_h/hists.h>

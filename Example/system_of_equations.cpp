@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #include <math.h>
 #include <iostream>
 #include <fstream>

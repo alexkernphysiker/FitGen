@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #ifndef ____PARABOLIC_H______
 #	define ____PARABOLIC_H______
 #include "abstract.h"

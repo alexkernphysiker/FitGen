@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #ifndef ____mVYpymgQ
 #define ____mVYpymgQ
 #include <math.h>

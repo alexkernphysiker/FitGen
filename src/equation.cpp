@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #include <math_h/error.h>
 #include <Genetic/equation.h>
 namespace Genetic{

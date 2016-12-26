@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #ifndef ___DnoQpUEN
 #define ___DnoQpUEN
 #include <random>

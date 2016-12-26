@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #ifndef fXBBNXhW
 #define fXBBNXhW
 #include <Genetic/abstract.h>

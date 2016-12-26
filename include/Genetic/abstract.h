@@ -1,5 +1,5 @@
 // this file is distributed under 
-// MIT license
+// LGPL license
 #ifndef ____WrKDhKHP___
 #define ____WrKDhKHP___
 #include <mutex>
