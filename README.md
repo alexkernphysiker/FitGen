@@ -23,14 +23,28 @@ Then commit your changes :)
 Examples
 ========
 
-	Example/exact_equation.cpp
-example of using genetic algorithm for solving equation F(x,y)=G(x,y).
 
-	Example/fit_one_func.cpp 
+Solving systems of equations
+First example
+	Example/system_of_equations.cpp
+is the example of solving system of equations
+	F1(x,y)=G1(x,y)
+	F2(x,y)=G2(x,y)
+
+Second example
+	Example/system_of_equations2.cpp
+is the example of solving system of equations containing uncertainties
+	F1(x,y)=G1+/-dG1
+	F2(x,y)=G2+/-dG2
+	
+Fitting points with functions
+First example
+	Example/fit_one_func.cpp
+is the example of fitting histogram with Gaussian.
+
+Second example
 	Example/fit_foreground_background.cpp
-examples of using genetic algorithm for fitting points with function.
-For plotting the results, the examples require gnuplot installed.
-
+is the example of fitting points with sum of foreground and background.
 
 
 Short developers guide
