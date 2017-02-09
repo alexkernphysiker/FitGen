@@ -34,7 +34,7 @@ int main(){
 	    <<make_shared<DistribGauss>(-10,10),
 	random_engine
     );
-    while(!example.AbsoluteOptimalityExitCondition(0.00000001))
+    while(!example.AbsoluteOptimalityExitCondition(0.0001))
 	example.Iterate(random_engine);
 
     //output the solution
