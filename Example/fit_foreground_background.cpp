@@ -23,8 +23,8 @@ int main(){
 		<<Point({{-37.5,2.5}},{237.3,10.5})
 		<<Point({{-32.5,2.5}},{240.1,10.0})
 		<<Point({{-27.5,2.5}},{268.7,10.0})
-		<<Point({{-22.5,2.5}},{316.3,10.0})
-		<<Point({{-17.5,2.5}},{329.5,11.0})
+		<<Point({{-22.5,2.5}},{310.3,10.0})
+		<<Point({{-17.5,2.5}},{326.5,11.0})
 		<<Point({{-12.5,2.5}},{317.2,10.5})
 		<<Point({{-07.5,2.5}},{360.4,12.0})
 		<<Point({{-02.5,2.5}},{371.7,11.5})
@@ -36,25 +36,20 @@ int main(){
 		<<Point({{ 27.5,2.5}},{511.4,15.0});
 		
 	//Foreground, background and total sum for fitting
-	typedef Mul<Func3<Gaussian,Arg<0>,Par<2>,Par<1>>,Par<0>> Foreground;
-	const int background_polynom_power=5;
+	typedef Mul<Par<0>,Func3<Gaussian,Arg<0>,Par<2>,Par<1>>> Foreground;
+	const int background_polynom_power=6;
 	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 	typedef Add<Foreground,Background> TotalFunc;
 
 	//Fitting
 	RANDOM random_engine;
 	FitFunction<DifferentialMutations<Uncertainty>,TotalFunc> fit(points_to_fit);
-	fit.SetFilter(
-	    make_shared<And>()
-		<<(make_shared<Above>()<<0<<0)
-		<<[](const ParamSet&P){
-		    static Foreground F;
-		    return F({P[2]},P)<P[1]*5.0;
-		}
-	);
+	fit.SetFilter([](const ParamSet&P){
+	    return (P[0]>0)&&(P[1]>0);
+	});
 	auto initial=make_shared<InitialDistributions>()
 	    <<make_shared<DistribGauss>(100.,100.)
-	    <<make_shared<DistribUniform>(0.,20.)
+	    <<make_shared<DistribUniform>(0.,50.)
 	    <<make_shared<FixParam>(-20.)
 	    <<make_shared<DistribGauss>(400.,100.)
 	    <<make_shared<DistribGauss>(5.,2.)
