@@ -37,7 +37,7 @@ int main(){
 		
 	//Foreground, background and total sum for fitting
 	typedef Mul<Par<0>,Func3<Gaussian,Arg<0>,Par<2>,Par<1>>> Foreground;
-	const int background_polynom_power=6;
+	const int background_polynom_power=4;
 	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
 	typedef Add<Foreground,Background> TotalFunc;
 
@@ -50,7 +50,7 @@ int main(){
 	auto initial=make_shared<InitialDistributions>()
 	    <<make_shared<DistribGauss>(100.,100.)
 	    <<make_shared<DistribUniform>(0.,50.)
-	    <<make_shared<FixParam>(-20.)
+	    <<make_shared<DistribGauss>(-20.,1.)
 	    <<make_shared<DistribGauss>(400.,100.)
 	    <<make_shared<DistribGauss>(5.,2.)
 	    <<make_shared<DistribGauss>(0.,0.5);
@@ -58,7 +58,7 @@ int main(){
 	    initial<<make_shared<DistribGauss>(0.,0.01);
 	fit.Init(TotalFunc::ParamCount*15,initial,random_engine);
 	
-	while(!fit.AbsoluteOptimalityExitCondition(0.0001)){
+	while(!fit.AbsoluteOptimalityExitCondition(0.00001)){
 	    fit.Iterate(random_engine);
 	    cout<<fit.iteration_count()<<" iterations; "
 		<<fit.Optimality()<<" < Chi^2 < "
