@@ -180,8 +180,7 @@ void test_optimality1(double v=INFINITY){
 	auto S1=OptimalityAlgorithm(points,F1);
 	EXPECT_NE(nullptr,S1.get());
 	EXPECT_EQ(true,S1->operator()(ParamSet())>0);
-	if(isfinite(v))
-		EXPECT_EQ(v,S1->operator()(ParamSet()));
+	if(isfinite(v)){EXPECT_EQ(v,S1->operator()(ParamSet()));}
 }
 TEST(OptimalityForPoints,SumSquareDiff){
 	test_optimality1<SumSquareDiff>(3);
