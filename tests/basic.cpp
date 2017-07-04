@@ -111,8 +111,7 @@ void test_iterate(size_t threads,size_t population,size_t iterations){
 		EXPECT_CLOSE(gen.Parameters()[0],0);
 		for(size_t i=0;i<population;i++){
 			EXPECT_CLOSE(0,gen.Parameters(i)[0]);
-			if(i>0)
-				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
+			if(i>0){EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));}
 		}
 		EXPECT_EQ(true,gen.AbsoluteOptimalityExitCondition(0.001));
 		size_t c=0;
@@ -213,8 +212,7 @@ TEST(AbstractGenetic,Infinite){
 		gen.Iterate(engine);
 		for(size_t i=0,n=gen.PopulationSize();i<n;i++){
 			EXPECT_TRUE(isfinite(gen.Optimality(i)));
-			if(i>0)
-				EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));
+			if(i>0){EXPECT_TRUE(gen.Optimality(i-1)<=gen.Optimality(i));}
 		}
 	}
 }
