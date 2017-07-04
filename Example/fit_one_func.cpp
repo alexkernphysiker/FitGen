@@ -16,10 +16,10 @@ int main(){
 
     //Generating the distribution for fitting
     double left=0,right=10,sigma=1.0;size_t count=500;
-    Distribution1D<double> distribution(BinsByStep(left,1.0,right));
-    normal_distribution<double> generate_gauss((right+left)/2.0,sigma);
+    Distribution1D<> distribution(BinsByStep(left,1.0,right));
+    DistribGauss Distr((right+left)/2.0,sigma);
     for(size_t i=0;i<count;i++)
-	distribution.Fill(generate_gauss(random_engine));
+	distribution.Fill(Distr(random_engine));
 
     //Fitting generated distribution
     Fit<DifferentialMutations<>> fit(
@@ -55,8 +55,6 @@ int main(){
 
     //plotting results
     Plotter::Instance().SetOutput(".","gauss-fit");
-    const auto breakdown=ChainWithStep(0.0,0.01,10.0);
-    const SortedPoints<double> line([&fit](double x)->double{return fit({x});},breakdown);
-    Plot<double>().Hist(distribution).Line(line);
+    Plot<>().Hist(distribution).Line(SortedPoints<>([&fit](double x){return fit({x});},ChainWithStep(0.0,0.01,10.0)));
     return 0;
 }

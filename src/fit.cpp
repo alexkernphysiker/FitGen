@@ -15,38 +15,38 @@ namespace Genetic{
 	FitPoints::Point::Point(const FitPoints::Point&src):yy(src.yy){
 		for(const auto&x:src.XX)XX.push_back(x);
 	}
-	FitPoints::Point::Point(const vector<value<double>>&x,const value<double>&y_):yy(y_){
+	FitPoints::Point::Point(const vector<value<>>&x,const value<>&y_):yy(y_){
 		for(const auto&p:x)XX.push_back(p);
 		if(XX.size()==0)
 			throw Exception<FitPoints::Point>("Cannot create Point with zero arguments");
 	}
-	const vector<value<double>>&FitPoints::Point::X() const{return XX;}
+	const vector<value<>>&FitPoints::Point::X() const{return XX;}
 	const ParamSet FitPoints::Point::x() const{
 		ParamSet res;
 		for(const auto&x:X())
 			res<<x.val();
 		return res;
 	}
-	const value<double>&FitPoints::Point::y() const{return yy;}
-	value<double>&FitPoints::Point::var_y(){return yy;}
+	const value<>&FitPoints::Point::y() const{return yy;}
+	value<>&FitPoints::Point::var_y(){return yy;}
 	
 	
 	FitPoints::FitPoints(){}
-	FitPoints::FitPoints(const SortedPoints<double>& h){
-		for(const point<double>&p:h)
+	FitPoints::FitPoints(const SortedPoints<>& h){
+		for(const point<>&p:h)
 			operator<<(Point({p.X()},p.Y()));
 	}
-	FitPoints::FitPoints(const BiSortedPoints<double>&d){
-		d.FullCycle([this](const point3d<double>&p){
+	FitPoints::FitPoints(const BiSortedPoints<>&d){
+		d.FullCycle([this](const point3d<>&p){
 			operator<<(Point({p.X(),p.Y()},p.Z()));
 		});
 	}
-	FitPoints::FitPoints(const SortedPoints<value<double>>& h){
-		for(const point<value<double>>&p:h)
+	FitPoints::FitPoints(const SortedPoints<value<>>& h){
+		for(const point<value<>>&p:h)
 			operator<<(Point({p.X()},p.Y()));
 	}
-	FitPoints::FitPoints(const BiSortedPoints<value<double>>&d){
-		d.FullCycle([this](const point3d<value<double>>&p){
+	FitPoints::FitPoints(const BiSortedPoints<value<>>&d){
+		d.FullCycle([this](const point3d<value<>>&p){
 			operator<<(Point({p.X(),p.Y()},p.Z()));
 		});
 	}
@@ -86,28 +86,28 @@ namespace Genetic{
 		m_data.push_back(point);
 		return *this;
 	}
-	const SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index) const{
-		SortedPoints<value<double>> data;
+	const SortedPoints<value<>> FitPoints::Hist1(const size_t parameter_index) const{
+		SortedPoints<value<>> data;
 		for(const Point&P:m_data)
-			data<<point<value<double>>(P.X()[parameter_index],P.y());
+			data<<point<value<>>(P.X()[parameter_index],P.y());
 		return data;
 	}
-	const SortedPoints<value<double>> FitPoints::Hist1(const size_t parameter_index_x,const size_t parameter_index_y) const{
-		SortedPoints<value<double>> data;
+	const SortedPoints<value<>> FitPoints::Hist1(const size_t parameter_index_x,const size_t parameter_index_y) const{
+		SortedPoints<value<>> data;
 		for(const Point&P:m_data)
-			data<<point<value<double>>(P.X()[parameter_index_x],P.X()[parameter_index_y]);
+			data<<point<value<>>(P.X()[parameter_index_x],P.X()[parameter_index_y]);
 		return data;
 	}
-	const SortedPoints<double> FitPoints::Line(const size_t parameter_index)const{
-		SortedPoints<double> data;
+	const SortedPoints<> FitPoints::Line(const size_t parameter_index)const{
+		SortedPoints<> data;
 		for(const Point&P:m_data)
-			data<<point<double>(P.X()[parameter_index].val(),P.y().val());
+			data<<point<>(P.X()[parameter_index].val(),P.y().val());
 		return data;
 	}
-	const SortedPoints<double> FitPoints::Line(const size_t parameter_index_x,const size_t parameter_index_y) const{
-		SortedPoints<double> data;
+	const SortedPoints<> FitPoints::Line(const size_t parameter_index_x,const size_t parameter_index_y) const{
+		SortedPoints<> data;
 		for(const Point&P:m_data)
-			data<<point<double>(P.X()[parameter_index_x].val(),P.X()[parameter_index_y].val());
+			data<<point<>(P.X()[parameter_index_x].val(),P.X()[parameter_index_y].val());
 		return data;
 	}
 	

@@ -26,21 +26,21 @@ namespace Genetic{
 		class Point{
 		public:
 			Point(const Point &src);
-			Point(const std::vector<MathTemplates::value<double>>&x,const MathTemplates::value<double>&y_);
+			Point(const std::vector<MathTemplates::value<>>&x,const MathTemplates::value<>&y_);
 			virtual ~Point();
-			const std::vector<MathTemplates::value<double>>&X()const;
+			const std::vector<MathTemplates::value<>>&X()const;
 			const ParamSet x()const;
-			const MathTemplates::value<double>&y()const;
-			MathTemplates::value<double>&var_y();
+			const MathTemplates::value<>&y()const;
+			MathTemplates::value<>&var_y();
 		private:
-			std::vector<MathTemplates::value<double>> XX;
-			MathTemplates::value<double> yy;
+			std::vector<MathTemplates::value<>> XX;
+			MathTemplates::value<> yy;
 		};
 		FitPoints();
-		FitPoints(const MathTemplates::SortedPoints<double>&h);
-		FitPoints(const MathTemplates::BiSortedPoints<double>&d);
-		FitPoints(const MathTemplates::SortedPoints<MathTemplates::value<double>>&h);
-		FitPoints(const MathTemplates::BiSortedPoints<MathTemplates::value<double>>&d);
+		FitPoints(const MathTemplates::SortedPoints<>&h);
+		FitPoints(const MathTemplates::BiSortedPoints<>&d);
+		FitPoints(const MathTemplates::SortedPoints<MathTemplates::value<>>&h);
+		FitPoints(const MathTemplates::BiSortedPoints<MathTemplates::value<>>&d);
 		virtual ~FitPoints();
 		FitPoints&operator<<(const Point&point);
 		const Point&operator[](const size_t i)const;
@@ -53,10 +53,10 @@ namespace Genetic{
 		typedef std::vector<Point>::const_iterator const_iterator;
 		const_iterator begin()const;
 		const_iterator end()const;
-		const MathTemplates::SortedPoints<MathTemplates::value<double>> Hist1(const size_t parameter_index_x)const;
-		const MathTemplates::SortedPoints<MathTemplates::value<double>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
-		const MathTemplates::SortedPoints<double> Line(const size_t parameter_index_x)const;
-		const MathTemplates::SortedPoints<double> Line(const size_t parameter_index_x,const size_t parameter_index_y)const;
+		const MathTemplates::SortedPoints<MathTemplates::value<>> Hist1(const size_t parameter_index_x)const;
+		const MathTemplates::SortedPoints<MathTemplates::value<>> Hist1(const size_t parameter_index_x,const size_t parameter_index_y)const;
+		const MathTemplates::SortedPoints<> Line(const size_t parameter_index_x)const;
+		const MathTemplates::SortedPoints<> Line(const size_t parameter_index_x,const size_t parameter_index_y)const;
 	private:
 		std::vector<Point> m_data;
 		ParamSet m_min,m_max;
@@ -64,7 +64,7 @@ namespace Genetic{
 	};
 	typedef FitPoints::Point Point;
 	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const Point&p);
-	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const MathTemplates::point<double>&p);
+	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const MathTemplates::point<>&p);
 	std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src,const FitPoints&data);
 	
 	class OptimalityForPoints:public IOptimalityFunction{

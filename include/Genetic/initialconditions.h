@@ -8,9 +8,9 @@
 #include "abstract.h"
 namespace Genetic{
 	typedef MathTemplates::IFunction<double,RANDOM&> Distrib;
-	typedef MathTemplates::RandomValueTableDistr<double,RANDOM&> DistribTable;
-	typedef MathTemplates::RandomGauss<double,RANDOM&> DistribGauss;
-	typedef MathTemplates::RandomUniform<double,RANDOM&> DistribUniform;
+	typedef MathTemplates::RandomValueTableDistr<> DistribTable;
+	typedef MathTemplates::RandomGauss<> DistribGauss;
+	typedef MathTemplates::RandomUniform<> DistribUniform;
 	class FixParam:public Distrib{
 	public:
 	    FixParam(const double&x);

@@ -11,9 +11,10 @@
 #include <math.h>
 #include <math_h/sigma.h>
 #include <math_h/chains.h>
+#include <math_h/randomfunc.h>
 #include "paramset.h"
 namespace Genetic{
-	typedef std::mt19937 RANDOM;
+	typedef MathTemplates::RANDOM RANDOM;
 	class IInitialConditions{
 	public:
 		virtual ~IInitialConditions(){}

@@ -12,8 +12,16 @@ using namespace Genetic;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
 int main(){
-	//points
-	auto points_to_fit=make_shared<FitPoints>()
+	//Foreground, background and total sum for fitting
+	typedef Mul<Par<0>,Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>> Foreground;
+	const int background_polynom_power=4;
+	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
+	typedef Add<Foreground,Background> TotalFunc;
+
+	//Fitting
+	RANDOM random_engine;
+	FitFunction<DifferentialMutations<Uncertainty>,TotalFunc> fit(
+	    make_shared<FitPoints>()
 		<<Point({{-67.5,2.5}},{179.4,12.5})
 		<<Point({{-62.5,2.5}},{213.1,13.0})
 		<<Point({{-57.5,2.5}},{221.6,12.0})
@@ -33,17 +41,8 @@ int main(){
 		<<Point({{ 12.5,2.5}},{455.1,13.0})
 		<<Point({{ 17.5,2.5}},{495.3,14.0})
 		<<Point({{ 22.5,2.5}},{497.3,14.5})
-		<<Point({{ 27.5,2.5}},{511.4,15.0});
-		
-	//Foreground, background and total sum for fitting
-	typedef Mul<Par<0>,Func3<Gaussian,Arg<0>,Par<2>,Par<1>>> Foreground;
-	const int background_polynom_power=4;
-	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
-	typedef Add<Foreground,Background> TotalFunc;
-
-	//Fitting
-	RANDOM random_engine;
-	FitFunction<DifferentialMutations<Uncertainty>,TotalFunc> fit(points_to_fit);
+		<<Point({{ 27.5,2.5}},{511.4,15.0})
+	);
 	fit.SetFilter([](const ParamSet&P){
 	    return (P[0]>0)&&(P[1]>0);
 	});
@@ -80,10 +79,10 @@ int main(){
 	Plotter::Instance().SetOutput(".","foreground-background-fit");
 	const auto&P=fit.Parameters();
 	const auto chain=ChainWithStep(-70.0,0.1,30.0);
-	const SortedPoints<double>
-	    totalfit([&fit](double x)->double{return fit({x});},chain),
-	    background([&P](double x)->double{return Background()({x},P);},chain);
-	Plot<double>().Hist(points_to_fit->Hist1(0),"points").Line(totalfit,"fit")
+	const SortedPoints<>
+	    totalfit([&fit](double x){return fit({x});},chain),
+	    background([&P](double x){return Background()({x},P);},chain);
+	Plot<>().Hist(fit.Points()->Hist1(0),"points").Line(totalfit,"fit")
 	.Line(background,"background")<<"set key on";
 	return 0;
 }

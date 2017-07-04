@@ -23,7 +23,7 @@ public:
 	virtual ~GeneticTest(){}
 };
 auto optimality=make_shared<OptimalityFunction>([](const ParamSet&p){return pow(p[0],2);});
-auto initial=make_shared<InitialDistributions>()<<make_shared<RandomUniform<double>>(0,0.001);
+auto initial=make_shared<InitialDistributions>()<<make_shared<RandomUniform<>>(0,0.001);
 void test_init(size_t threads,size_t population){
 	GeneticTest gen(optimality);
 	EXPECT_EQ(optimality.get(),gen.OptimalityCalculator().get());
