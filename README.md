@@ -9,12 +9,15 @@ Compiling
 =========
 If you have your git repository with cmake project you can add a submodule
 
+	git submodule add https://github.com/alexkernphysiker/math_h.git
 	git submodule add https://github.com/alexkernphysiker/FitGen.git
 	git submodule update --init --recursive
 
 Then add to CMakeLists.txt
 
+	add_subdirectory(math_h)
 	add_subdirectory(FitGen)
+	include_directories(${MATH_H_INC})
 	include_directories(${FITGEN_INC})
 
 Then commit your changes :)
