@@ -7,7 +7,7 @@ The library is distributed under LGPL license
 
 Compiling
 =========
-If you have your git repository with cmake project you can add a submodule
+If you have your git repository with cmake project you can add needed repositories as submodules:
 
 	git submodule add https://github.com/alexkernphysiker/math_h.git
 	git submodule add https://github.com/alexkernphysiker/FitGen.git
@@ -20,7 +20,7 @@ Then add to CMakeLists.txt
 	include_directories(${MATH_H_INC})
 	include_directories(${FITGEN_INC})
 
-Then commit your changes :)
+Then commit your changes
 
 
 Examples
