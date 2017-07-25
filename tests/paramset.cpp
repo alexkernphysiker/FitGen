@@ -99,18 +99,6 @@ TEST(ParamSet, AddToItself){
 		EXPECT_EQ(c+c,P.size());
 	}
 }
-TEST(ParamSet, Removing){
-	ParamSet P{0,1,2,3,4,5};
-	for(int count=5;count>=0;count--){
-		double p;
-		EXPECT_EQ(&P,&(P>>p));
-		EXPECT_EQ(count,p);
-		EXPECT_EQ(count,P.size());
-	}
-	P={};
-	double p;
-	EXPECT_THROW(P>>p,Exception<ParamSet>);
-}
 TEST(ParamSet, Copying){
 	for(int count=0;count<=n;count++){
 		ParamSet source;
