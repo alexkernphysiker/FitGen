@@ -7,7 +7,7 @@
 #include <math_h/randomfunc.h>
 #include "abstract.h"
 namespace Genetic{
-	typedef MathTemplates::IFunction<double,RANDOM&> Distrib;
+	typedef MathTemplates::RandomValueGenerator<double,RANDOM&> Distrib;
 	typedef MathTemplates::RandomValueTableDistr<> DistribTable;
 	typedef MathTemplates::RandomGauss<> DistribGauss;
 	typedef MathTemplates::RandomUniform<> DistribUniform;
@@ -16,7 +16,7 @@ namespace Genetic{
 	    FixParam(const double&x);
 	    FixParam(const FixParam&source);
 	    virtual ~FixParam();
-	    virtual double operator ()(RANDOM&)const override;
+	    virtual const double operator ()(RANDOM&)const override;
 	private:
 	    double value;
 	};

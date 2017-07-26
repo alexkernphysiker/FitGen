@@ -37,6 +37,6 @@ namespace Genetic{
 	FixParam::FixParam(const double&x):value(x){}
 	FixParam::FixParam(const FixParam&source):value(source.value){}
 	FixParam::~FixParam(){}
-	double FixParam::operator()(RANDOM&) const{return value;}
+	const double FixParam::operator()(RANDOM&) const{return value;}
 
 }
