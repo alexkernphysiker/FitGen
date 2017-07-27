@@ -2,12 +2,10 @@
 // LGPL license
 #ifndef ___DnoQpUEN
 #define ___DnoQpUEN
-#include <random>
-#include <functional>
 #include <math_h/randomfunc.h>
 #include "abstract.h"
 namespace Genetic{
-	typedef MathTemplates::RandomValueGenerator<double,RANDOM&> Distrib;
+	typedef MathTemplates::RandomValueGenerator<> Distrib;
 	typedef MathTemplates::RandomValueTableDistr<> DistribTable;
 	typedef MathTemplates::RandomGauss<> DistribGauss;
 	typedef MathTemplates::RandomUniform<> DistribUniform;
