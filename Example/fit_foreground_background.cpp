@@ -11,15 +11,12 @@ using namespace std;
 using namespace Genetic;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
+typedef Mul<Par<0>,Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>> Foreground;
+typedef PolynomFunc<Arg<0>,Foreground::ParamCount,4> Background;
+typedef Add<Foreground,Background> TotalFunc;
 int main(){
-	//Foreground, background and total sum for fitting
-	typedef Mul<Par<0>,Func3<BreitWigner,Arg<0>,Par<2>,Par<1>>> Foreground;
-	const int background_polynom_power=4;
-	typedef PolynomFunc<0,Foreground::ParamCount,background_polynom_power> Background;
-	typedef Add<Foreground,Background> TotalFunc;
-
-	//Fitting
 	RANDOM random_engine;
+	//Fitting
 	FitFunction<DifferentialMutations<Uncertainty>,TotalFunc> fit(
 	    make_shared<FitPoints>()
 		<<Point({{-67.5,2.5}},{179.4,12.5})
@@ -55,7 +52,7 @@ int main(){
 	    <<make_shared<DistribGauss>(0.,0.5);
 	while(initial->Count()<TotalFunc::ParamCount)
 	    initial<<make_shared<DistribGauss>(0.,0.01);
-	fit.Init(TotalFunc::ParamCount*15,initial,random_engine);
+	fit.Init(TotalFunc::ParamCount*10,initial,random_engine);
 	
 	while(!fit.AbsoluteOptimalityExitCondition(0.00001)){
 	    fit.Iterate(random_engine);

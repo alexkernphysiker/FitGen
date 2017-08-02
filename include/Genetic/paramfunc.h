@@ -48,15 +48,15 @@ namespace Genetic{
 		}
 		enum{ParamCount=p_index+1,ArgCount=0};
 	};
-	template<int x_index,int p_index,unsigned int power, Recuring recurring=first>
-	class PolynomFunc:public virtual IParamFunc{
+	template<class FUNC1,int p_index,unsigned int power, Recuring recurring=first>
+	class PolynomFunc:public virtual FUNC1{
 	public:
 		PolynomFunc(){}
 		virtual ~PolynomFunc(){}
 		virtual double operator()(const ParamSet&X,const ParamSet&P)const override{
-			return MathTemplates::Polynom<power,double,ParamSet,p_index>(X[x_index],P);
+			return MathTemplates::Polynom<power,double,ParamSet,p_index>(FUNC1::operator()(X,P),P);
 		}
-		enum{ParamCount=p_index+power+1,ArgCount=x_index+1};
+		enum{ParamCount=max2<FUNC1::ParamCount,p_index+power+1>::val,ArgCount=FUNC1::ArgCount};
 	};
 	template<double (func)(const double&), class FUNC, Recuring recurring=first>
 	class Func:public virtual FUNC{
