@@ -56,7 +56,7 @@ int main()
     cout << endl;
 
     //plotting results
-    Plotter::Instance().SetOutput(".", "gauss-fit");
+    Plotter<>::Instance().SetOutput(".", "gauss-fit");
     Plot<>().Hist(distribution).Line(SortedPoints<>([&fit](double x) {
         return fit({x});
     }, ChainWithStep(0.0, 0.01, 10.0)));

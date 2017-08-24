@@ -17,7 +17,6 @@ if(DEFINED MATH_H_INC)
 	file(GLOB TESTS tests/*.cpp)
 	file(GLOB EXAMPLES Example/*.cpp)
 	add_library(FitGen SHARED ${SOURCES})
-	target_link_libraries(FitGen gpwrap)
 
 	foreach(example ${EXAMPLES})
 		get_filename_component(ex_app ${example} NAME_WE)

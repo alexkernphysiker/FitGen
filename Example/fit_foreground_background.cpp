@@ -74,7 +74,7 @@ int main()
         cout << P << endl;
 
     //Plotting total fit and background
-    Plotter::Instance().SetOutput(".", "foreground-background-fit");
+    Plotter<>::Instance().SetOutput(".", "foreground-background-fit");
     const auto &P = fit.Parameters();
     const auto chain = ChainWithStep(-70.0, 0.1, 30.0);
     const SortedPoints<>
