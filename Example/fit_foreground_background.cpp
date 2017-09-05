@@ -74,7 +74,6 @@ int main()
         cout << P << endl;
 
     //Plotting total fit and background
-    Plotter<>::Instance().SetOutput(".", "foreground-background-fit");
     const auto &P = fit.Parameters();
     const auto chain = ChainWithStep(-70.0, 0.1, 30.0);
     const SortedPoints<>
@@ -84,7 +83,7 @@ int main()
     background([&P](double x) {
         return Background()({x}, P);
     }, chain);
-    Plot<>().Hist(fit.Points()->Hist1(0), "points").Line(totalfit, "fit")
+    Plot<>("FitGen-example2").Hist(fit.Points()->Hist1(0), "points").Line(totalfit, "fit")
     .Line(background, "background") << "set key on";
     return 0;
 }
