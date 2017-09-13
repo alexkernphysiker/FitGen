@@ -35,9 +35,11 @@ void test_init(size_t threads, size_t population)
 {
     GeneticTest gen(optimality);
     EXPECT_EQ(optimality.get(), gen.OptimalityCalculator().get());
+#ifdef using_multithread
     EXPECT_THROW(gen.SetThreadCount(0), Exception<AbstractGenetic>);
     gen.SetThreadCount(threads);
     EXPECT_EQ(threads, gen.ThreadCount());
+#endif
     EXPECT_EQ(0, gen.PopulationSize());
     EXPECT_THROW(gen.Init(0, initial, engine), Exception<AbstractGenetic>);
     EXPECT_THROW(gen.Iterate(engine), Exception<AbstractGenetic>);
@@ -53,6 +55,15 @@ TEST(AbstractGenetic, InitSync)
 {
     test_init(1, 10);
 }
+TEST(AbstractGenetic, InitSync__)
+{
+    test_init(1, 2);
+}
+TEST(AbstractGenetic, InitSync_)
+{
+    test_init(1, 5);
+}
+#ifdef using_multithread
 TEST(AbstractGenetic, InitAsync2)
 {
     test_init(2, 10);
@@ -64,10 +75,6 @@ TEST(AbstractGenetic, InitAsync3)
 TEST(AbstractGenetic, InitAsync4)
 {
     test_init(4, 10);
-}
-TEST(AbstractGenetic, InitSync_)
-{
-    test_init(1, 5);
 }
 TEST(AbstractGenetic, InitAsync2_)
 {
@@ -81,10 +88,6 @@ TEST(AbstractGenetic, InitAsync4_)
 {
     test_init(4, 5);
 }
-TEST(AbstractGenetic, InitSync__)
-{
-    test_init(1, 2);
-}
 TEST(AbstractGenetic, InitAsync2__)
 {
     test_init(2, 2);
@@ -97,6 +100,7 @@ TEST(AbstractGenetic, InitAsync4__)
 {
     test_init(4, 2);
 }
+#endif
 TEST(AbstractGenetic, Throwing)
 {
     GeneticTest gen(optimality);
@@ -135,21 +139,29 @@ TEST(AbstractGenetic, Throwing_without_init)
 void test_iterate(size_t threads, size_t population, size_t iterations)
 {
     GeneticTest gen(optimality);
+#ifdef using_multithread
     gen.SetThreadCount(threads);
+#endif
     gen.Init(population, initial, engine);
+#ifdef using_multithread
     if (threads < population)
         EXPECT_EQ(threads, gen.ThreadCount());
     else
         EXPECT_EQ(population, gen.ThreadCount());
+#endif
     EXPECT_FALSE(gen.ParametersDispersionExitCondition(parOnes(1)));
     EXPECT_FALSE(gen.RelativeParametersDispersionExitCondition(parOnes(1)));
     for (size_t i = 0; i < iterations; i++) {
+#ifdef using_multithread
         gen.SetThreadCount(threads);
+#endif
         gen.Iterate(engine);
+#ifdef using_multithread
         if (threads < population)
             EXPECT_EQ(threads, gen.ThreadCount());
         else
             EXPECT_EQ(population, gen.ThreadCount());
+#endif
         EXPECT_EQ(population, gen.PopulationSize());
         EXPECT_THROW(gen.Parameters(population), Exception<AbstractGenetic>);
         EXPECT_THROW(gen.Parameters(population + 1), Exception<AbstractGenetic>);
@@ -179,6 +191,15 @@ TEST(AbstractGenetic, ItSync)
 {
     test_iterate(1, 10, 100);
 }
+TEST(AbstractGenetic, ItSync_)
+{
+    test_iterate(1, 5, 5);
+}
+TEST(AbstractGenetic, ItSync__)
+{
+    test_iterate(1, 2, 5);
+}
+#ifdef using_multithread
 TEST(AbstractGenetic, ItAsync2)
 {
     test_iterate(2, 10, 100);
@@ -206,10 +227,6 @@ TEST(AbstractGenetic, ItAsync7)
 TEST(AbstractGenetic, ItAsync8)
 {
     test_iterate(8, 10, 100);
-}
-TEST(AbstractGenetic, ItSync_)
-{
-    test_iterate(1, 5, 5);
 }
 TEST(AbstractGenetic, ItAsync2_)
 {
@@ -239,10 +256,6 @@ TEST(AbstractGenetic, ItAsync8_)
 {
     test_iterate(8, 5, 5);
 }
-TEST(AbstractGenetic, ItSync__)
-{
-    test_iterate(1, 2, 5);
-}
 TEST(AbstractGenetic, ItAsync2__)
 {
     test_iterate(2, 2, 5);
@@ -271,6 +284,7 @@ TEST(AbstractGenetic, ItAsync8__)
 {
     test_iterate(8, 2, 5);
 }
+#endif
 class GeneticTestWithMutations: public AbstractGenetic
 {
 private:

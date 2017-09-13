@@ -2,7 +2,9 @@
 // LGPL license
 #ifndef ____WrKDhKHP___
 #define ____WrKDhKHP___
+#ifdef using_multithread
 #include <mutex>
+#endif
 #include <vector>
 #include <memory>
 #include <utility>

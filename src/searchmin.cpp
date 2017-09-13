@@ -1,6 +1,8 @@
 // this file is distributed under
 // LGPL license
+#ifdef using_multithread
 #include <thread>
+#endif
 #include <math.h>
 #include <math_h/error.h>
 #include <math_h/interpolate.h>

@@ -2,9 +2,11 @@
 // LGPL license
 #ifndef PUWJZCZDMORMZODA
 #define PUWJZCZDMORMZODA
+#ifdef using_multithread
+#include <mutex>
+#endif
 #include <list>
 #include <vector>
-#include <mutex>
 #include <iostream>
 namespace Genetic
 {
