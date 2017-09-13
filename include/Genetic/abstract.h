@@ -43,9 +43,10 @@ public:
     AbstractGenetic &SetFilter(const std::shared_ptr<IParamCheck> filter);
     AbstractGenetic &SetFilter(const std::function<bool(const ParamSet &)>);
     AbstractGenetic &RemoveFilter();
+#ifdef using_multithread
     AbstractGenetic &SetThreadCount(const size_t threads_count);
     const size_t ThreadCount()const;
-
+#endif
     AbstractGenetic &Init(const size_t population_size, const std::shared_ptr<IInitialConditions> initial_conditions, RANDOM &random);
     void Iterate(RANDOM &random);
 
@@ -66,13 +67,15 @@ protected:
     virtual void mutations(ParamSet &, RANDOM &)const;
     virtual void HandleIteration();
 private:
-    std::mutex m_mutex;
     std::shared_ptr<IOptimalityFunction> m_optimality;
     std::shared_ptr<IParamCheck> m_filter;
     MathTemplates::SortedChain<std::pair<ParamSet, double>> m_population;
     std::vector<MathTemplates::value<double>> m_stat;
     unsigned long long int m_itercount;
+#ifdef using_multithread
+    std::mutex m_mutex;
     size_t threads;
+#endif
 };
 inline void Find(AbstractGenetic &fit, RANDOM &engine)
 {

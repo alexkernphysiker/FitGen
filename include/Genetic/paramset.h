@@ -36,7 +36,9 @@ public:
     iterator end();
     const_iterator end() const;
 protected:
+#ifdef using_multithread
     std::mutex m_mutex;
+#endif
 private:
     std::vector<double> m_values;
 };

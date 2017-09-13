@@ -9,7 +9,9 @@ namespace Genetic
 {
 using namespace std;
 using namespace MathTemplates;
+#ifdef using_multithread
 typedef lock_guard<mutex> Lock;
+#endif
 typedef pair<ParamSet, double> Point;
 bool operator>(const Point &a, const Point &b)
 {
@@ -30,7 +32,9 @@ inline ParamSet CreateNew(const Create create, const Condition condition)
 }
 AbstractGenetic::AbstractGenetic()
 {
+#ifdef using_multithread
     threads = 1;
+#endif
     m_itercount = 0;
     m_filter = make_shared<Filter>([](const ParamSet &) {
         return true;
@@ -49,25 +53,31 @@ shared_ptr<IOptimalityFunction> AbstractGenetic::OptimalityCalculator()const
 }
 AbstractGenetic &AbstractGenetic::SetFilter(const shared_ptr<IParamCheck> filter)
 {
+#ifdef using_multithread
     Lock lock(m_mutex);
+#endif
     m_filter = filter;
     return *this;
 }
 AbstractGenetic &AbstractGenetic::SetFilter(const function<bool(const ParamSet &)> f)
 {
+#ifdef using_multithread
     Lock lock(m_mutex);
+#endif
     m_filter = make_shared<Filter>(f);
     return *this;
 }
 AbstractGenetic &AbstractGenetic::RemoveFilter()
 {
+#ifdef using_multithread
     Lock lock(m_mutex);
+#endif
     m_filter = make_shared<Filter>([](const ParamSet &) {
         return true;
     });
     return *this;
 }
-
+#ifdef using_multithread
 AbstractGenetic &AbstractGenetic::SetThreadCount(const size_t threads_count)
 {
     Lock lock(m_mutex);
@@ -80,21 +90,25 @@ const size_t AbstractGenetic::ThreadCount()const
 {
     return threads;
 }
-
+#endif
 AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const shared_ptr<IInitialConditions> initial_conditions, RANDOM &random)
 {
     if (m_population.size() > 0)
         throw Exception<AbstractGenetic>("Genetic algorithm cannot be inited twice");
     if (population_size <= 0)
         throw Exception<AbstractGenetic>("Polulation size must be a positive number");
+#ifdef using_multithread
     if (ThreadCount() > population_size)
         SetThreadCount(population_size);
+#endif
     auto add_to_population = [this, initial_conditions, &random](size_t count) {
         for (size_t i = 0; i < count; i++) {
             double s = INFINITY;
             ParamSet new_param = CreateNew(
             [this, initial_conditions, &random]() {
+#ifdef using_multithread
                 Lock lock(m_mutex);
+#endif
                 return initial_conditions->Generate(random);
             },
             [this, &s](const ParamSet & p) {
@@ -105,12 +119,15 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
                                  );
             auto new_point = make_pair(new_param, s);
             {
+#ifdef using_multithread
                 Lock lock(m_mutex);
+#endif
                 m_population << new_point;
             }
         }
     };
     {
+#ifdef using_multithread
         size_t piece_size = population_size / threads;
         size_t rest = population_size % threads;
         vector<shared_ptr<thread>> thread_vector;
@@ -119,9 +136,14 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
         add_to_population(piece_size + rest);
         for (auto thr : thread_vector)
             thr->join();
+#else
+        add_to_population(population_size);
+#endif
     }
     {
+#ifdef using_multithread
         Lock lock(m_mutex);
+#endif
         m_itercount = 0;
     }
     return *this;
@@ -130,15 +152,19 @@ void AbstractGenetic::Iterate(RANDOM &random)
 {
     size_t n = PopulationSize();
     size_t par_cnt = ParamCount();
+#ifdef using_multithread
     //if n==0 we won't get here
     if (ThreadCount() > n)
         SetThreadCount(n);
+#endif
     SortedChain<Point> tmp_population;
     auto process_elements = [this, &tmp_population, &random](size_t from, size_t to) {
         for (size_t i = from; i <= to; i++) {
             Point point;
             {
+#ifdef using_multithread
                 Lock lock(m_mutex);
+#endif
                 point = m_population[i];
             }
             double s = INFINITY;
@@ -156,12 +182,15 @@ void AbstractGenetic::Iterate(RANDOM &random)
                                  );
             auto new_point = make_pair(new_param, s);
             {
+#ifdef using_multithread
                 Lock lock(m_mutex);
+#endif
                 tmp_population << point << new_point;
             }
         }
     };
     {
+#ifdef using_multithread
         size_t piece_size = n / threads;
         vector<shared_ptr<thread>> thread_vector;
         for (size_t i = 1; i < threads; i++)
@@ -169,9 +198,14 @@ void AbstractGenetic::Iterate(RANDOM &random)
         process_elements((threads - 1)*piece_size, n - 1);
         for (auto thr : thread_vector)
             thr->join();
+#else
+        process_elements(0,n - 1);
+#endif
     }
     {
+#ifdef using_multithread
         Lock locker(m_mutex);
+#endif
         m_population = tmp_population.IndexRange(0, n);
         StandardDeviation<double> STAT[par_cnt];
         for (size_t i = 0; i < n; i++)
@@ -183,7 +217,9 @@ void AbstractGenetic::Iterate(RANDOM &random)
         m_itercount++;
     }
     {
+#ifdef using_multithread
         Lock locker(m_mutex);
+#endif
         HandleIteration();
     }
 }

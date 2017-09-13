@@ -6,7 +6,9 @@ namespace Genetic
 {
 using namespace std;
 using namespace MathTemplates;
+#ifdef using_multithread
 typedef lock_guard<mutex> Lock;
+#endif
 ParamSet::ParamSet() {}
 ParamSet::ParamSet(const initializer_list< double > &source)
 {
@@ -38,13 +40,17 @@ double &ParamSet::operator()(const size_t i)
 
 ParamSet &ParamSet::operator<<(const double p)
 {
+#ifdef using_multithread
     Lock lock(m_mutex);
+#endif
     m_values.push_back(p);
     return *this;
 }
 ParamSet &ParamSet::operator<<(const vector<double> &V)
 {
+#ifdef using_multithread
     Lock lock(m_mutex);
+#endif
     for (double p : V)m_values.push_back(p);
     return *this;
 }
@@ -54,14 +60,18 @@ ParamSet &ParamSet::operator<<(const ParamSet &P)
 }
 ParamSet &ParamSet::operator=(const initializer_list<double> &source)
 {
+#ifdef using_multithread
     Lock lock(m_mutex);
+#endif
     m_values.clear();
     for (double p : source)m_values.push_back(p);
     return *this;
 }
 ParamSet &ParamSet::operator=(const vector<double> &V)
 {
+#ifdef using_multithread
     Lock lock(m_mutex);
+#endif
     m_values.clear();
     for (double p : V)m_values.push_back(p);
     return *this;
