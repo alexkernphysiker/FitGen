@@ -66,7 +66,7 @@ int main()
 
     //Output results
     cout << "Chi^2 divided by degrees of freedom = "
-         << fit.Optimality() / (fit.Points()->size() - fit.ParamCount())
+         << fit.Optimality() / (fit.Points().size() - fit.ParamCount())
          << endl;
     cout << "Fit parameters with uncertainties" << endl;
     fit.SetUncertaintyCalcDeltas(parEq(fit.ParamCount(), 0.01));
@@ -83,7 +83,7 @@ int main()
     background([&P](double x) {
         return Background()({x}, P);
     }, chain);
-    Plot<>("FitGen-example2").Hist(fit.Points()->Hist1(0), "points").Line(totalfit, "fit")
+    Plot<>("FitGen-example2").YUncertainties(fit.PointsProjection(0),"points").Line(totalfit, "fit")
     .Line(background, "background") << "set key on";
     return 0;
 }

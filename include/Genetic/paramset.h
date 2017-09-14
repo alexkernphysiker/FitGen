@@ -23,7 +23,7 @@ public:
     ParamSet &operator<<(const std::vector<double> &V);
     ParamSet &operator<<(const ParamSet &P);
 
-    ParamSet &operator=(const std::initializer_list<double> &source);
+    ParamSet &operator=(const std::initializer_list<double> &V);
     ParamSet &operator=(const std::vector<double> &V);
     ParamSet &operator=(const ParamSet &P);
 

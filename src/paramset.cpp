@@ -58,13 +58,13 @@ ParamSet &ParamSet::operator<<(const ParamSet &P)
 {
     return operator<<(P.m_values);
 }
-ParamSet &ParamSet::operator=(const initializer_list<double> &source)
+ParamSet &ParamSet::operator=(const initializer_list<double> &V)
 {
 #ifdef using_multithread
     Lock lock(m_mutex);
 #endif
     m_values.clear();
-    for (double p : source)m_values.push_back(p);
+    for (double p : V)m_values.push_back(p);
     return *this;
 }
 ParamSet &ParamSet::operator=(const vector<double> &V)

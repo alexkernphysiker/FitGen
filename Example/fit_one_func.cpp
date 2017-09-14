@@ -24,12 +24,10 @@ int main()
         distribution.Fill(Distr(random_engine));
 
     //Fitting generated distribution
-    Fit<DifferentialMutations<>> fit(
-                                  make_shared<FitPoints>(distribution),
+    Fit<DifferentialMutations<>> fit(make_shared<FitPoints>() << distribution,
     [](const ParamSet & X, const ParamSet & P) {
         return Gaussian(X[0], P[0], P[1]) * P[2];
-    }
-                              );
+    });
     fit.SetFilter(
     [](const ParamSet & P) {
         return (P[1] > 0) && (P[2] > 0);
@@ -48,7 +46,7 @@ int main()
     //Output results
     cout << "Chi^2 = " << fit.Optimality() << endl;
     cout << "Chi^2 divided by degrees of freedom = "
-         << fit.Optimality() / (fit.Points()->size() - fit.ParamCount()) << endl;
+         << fit.Optimality() / (fit.Points().size() - fit.ParamCount()) << endl;
     cout << endl;
 
     cout << "Fit parameters" << endl;
