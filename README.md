@@ -206,3 +206,6 @@ CMake Options
 
 	tests
 if ON the tests are compiled
+
+	threads
+if ON then the version supperting free threading will be compiled
