@@ -7,7 +7,7 @@ if(DEFINED MATH_H_INC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 	add_definitions(-Dusing_multithread)
     endif()
-    add_definitions(-std=c++11)
+    add_definitions(-std=c++1z)
 	get_directory_property(has_parent PARENT_DIRECTORY)
 	if(has_parent)
 		set(FITGEN_INC 

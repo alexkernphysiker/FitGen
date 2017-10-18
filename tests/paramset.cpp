@@ -55,7 +55,7 @@ TEST(ParamSet, Constructor6)
         EXPECT_EQ(i, p[i - 1]);
 }
 const int n = 10;
-double data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+double test_data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 void TestEq(ParamSet &p1, ParamSet &p2)
 {
     EXPECT_EQ(p1.size(), p2.size());
@@ -66,9 +66,9 @@ TEST(ParamSet, AddNumber)
 {
     ParamSet p;
     for (int i = 0; i < n; i++) {
-        EXPECT_EQ(&p, &(p << data[i]));
+        EXPECT_EQ(&p, &(p << test_data[i]));
         EXPECT_EQ(i + 1, p.size());
-        EXPECT_EQ(data[i], p[p.size() - 1]);
+        EXPECT_EQ(test_data[i], p[p.size() - 1]);
     }
 }
 TEST(ParamSet, AddParamSet)
@@ -77,7 +77,7 @@ TEST(ParamSet, AddParamSet)
         ParamSet P;
         for (int i = 0; i < 5; i++) {
             ParamSet p;
-            for (int i = 0; i < count; i++)p << data[i];
+            for (int i = 0; i < count; i++)p << test_data[i];
             int c = P.size();
             EXPECT_EQ(&P, &(P << p));
             EXPECT_EQ(c + count, P.size());
@@ -92,7 +92,7 @@ TEST(ParamSet, AddList)
         ParamSet P;
         for (int i = 0; i < 5; i++) {
             vector<double> p;
-            for (int i = 0; i < count; i++)p.push_back(data[i]);
+            for (int i = 0; i < count; i++)p.push_back(test_data[i]);
             int c = P.size();
             EXPECT_EQ(&P, &(P << p));
             EXPECT_EQ(c + count, P.size());
@@ -105,7 +105,7 @@ TEST(ParamSet, AddToItself)
 {
     for (int count = 0; count <= n; count++) {
         ParamSet P;
-        for (int i = 0; i < count; i++)P << data[i];
+        for (int i = 0; i < count; i++)P << test_data[i];
         int c = P.size();
         EXPECT_EQ(&P, &(P << P));
         EXPECT_EQ(c + c, P.size());
@@ -115,7 +115,7 @@ TEST(ParamSet, Copying)
 {
     for (int count = 0; count <= n; count++) {
         ParamSet source;
-        for (int i = 0; i < count; i++)source << data[i];
+        for (int i = 0; i < count; i++)source << test_data[i];
         ParamSet copy(source);
         TestEq(source, copy);
         ParamSet copy2;
@@ -130,18 +130,18 @@ TEST(ParamSet, Set)
     for (int count = 0; count <= n; count++) {
         for (int si = 0; si < count; si++) {
             ParamSet source;
-            for (int i = 0; i < count; i++)source << data[i];
+            for (int i = 0; i < count; i++)source << test_data[i];
             source(si) = 0.0;
             EXPECT_EQ(count, source.size());
             for (int i = 0; i < count; i++) {
                 if (i == si)
                     EXPECT_EQ(0.0, source[i]);
                 else
-                    EXPECT_EQ(data[i], source[i]);
+                    EXPECT_EQ(test_data[i], source[i]);
             }
         }
         ParamSet source;
-        for (int i = 0; i < count; i++)source << data[i];
+        for (int i = 0; i < count; i++)source << test_data[i];
         EXPECT_THROW(source(-1) = 0.0, Exception<ParamSet>);
         EXPECT_THROW(source(source.size()) = 0.0, Exception<ParamSet>);
     }

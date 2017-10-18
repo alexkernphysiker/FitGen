@@ -3,6 +3,7 @@
 #ifndef RGCFVQNCAQKWQXFU
 #define RGCFVQNCAQKWQXFU
 #include <random>
+#include <type_traits>
 #include <math_h/error.h>
 #include "abstract.h"
 namespace Genetic
@@ -10,6 +11,7 @@ namespace Genetic
 template<class FITGEN = AbstractGenetic>
 class DifferentialMutations: public virtual FITGEN
 {
+    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double M;
 public:
@@ -40,6 +42,7 @@ protected:
 template<class FITGEN = AbstractGenetic>
 class Crossing: public virtual FITGEN
 {
+    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double P;
 public:
@@ -75,6 +78,7 @@ protected:
 template<class FITGEN = AbstractGenetic>
 class AbsoluteMutations: public virtual FITGEN
 {
+    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"");
 private:
     double P;
     ParamSet m_mutation;
@@ -121,6 +125,7 @@ protected:
 template<class FITGEN = AbstractGenetic>
 class RelativeMutations: public virtual FITGEN
 {
+    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double P;
     ParamSet m_mutation;
@@ -167,6 +172,7 @@ protected:
 template<class FITGEN>
 class ExactCopying: public virtual FITGEN
 {
+    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double P;
 public:
