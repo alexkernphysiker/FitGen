@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// MIT license
 #ifndef ______EQUATIONS_WITH_UNCERTAINTIES____H________
 #	define ______EQUATIONS_WITH_UNCERTAINTIES____H________
 #include <utility>

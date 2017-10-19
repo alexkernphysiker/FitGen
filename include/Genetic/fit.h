@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// MIT license
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
 #include <functional>
