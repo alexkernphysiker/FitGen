@@ -29,8 +29,8 @@ int main()
     example.Init(
         25,
         make_shared<InitialDistributions>()
-        << make_shared<DistribGauss>(-10, 10)
-        << make_shared<DistribGauss>(-10, 10),
+        << make_shared<DistribUniform>(-10, 10)
+        << make_shared<DistribUniform>(-10, 10),
         random_engine
     );
     while (!example.AbsoluteOptimalityExitCondition(0.0001))
