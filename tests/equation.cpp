@@ -16,7 +16,7 @@ TEST(EquationSystem, empty)
 }
 TEST(EquationSystem, empty2)
 {
-    EquationSystem A(list<Equation> {});
+    EquationSystem A(vector<Equation> {});
     EXPECT_EQ(A({}), 0);
 }
 TEST(EquationSystem, simple)
@@ -35,7 +35,7 @@ TEST(EquationSystem, simple)
 }
 TEST(EquationSystem, simple2)
 {
-    EquationSystem A(list<Equation> {
+    EquationSystem A(vector<Equation> {
         {.left = [](const ParamSet &)
             {
                 return 0;
@@ -70,7 +70,7 @@ TEST(EquationSystem, twoparams)
 }
 TEST(EquationSystem, twoparams2)
 {
-    EquationSystem A(list<Equation> {
+    EquationSystem A(vector<Equation> {
         {.left = [](const ParamSet & P)
             {
                 return P[0] + P[1];
@@ -114,7 +114,7 @@ TEST(EquationSystem, two_eq)
 }
 TEST(EquationSystem, two_eq2)
 {
-    EquationSystem A(list<Equation> {
+    EquationSystem A(vector<Equation> {
         {.left = [](const ParamSet & P)
             {
                 return P[0] + P[1];

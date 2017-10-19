@@ -10,7 +10,7 @@ EquationSystem::EquationSystem(const initializer_list<Equation> &source)
 {
     for (const auto &item : source)f_data.push_back(item);
 }
-EquationSystem::EquationSystem(const list<Equation> &source)
+EquationSystem::EquationSystem(const vector<Equation> &source)
 {
     for (const auto &item : source)f_data.push_back(item);
 }
@@ -22,7 +22,7 @@ double EquationSystem::operator()(const ParamSet &P) const
         result += pow(item.left(P) - item.right(P), 2);
     return result;
 }
-const list<Equation> &EquationSystem::equations()const
+const vector<Equation> &EquationSystem::equations()const
 {
     return f_data;
 }

@@ -4,6 +4,7 @@
 #	define ______EQUATIONS_WITH_UNCERTAINTIES____H________
 #include <utility>
 #include <list>
+#include <vector>
 #include <math_h/sigma.h>
 #include "abstract.h"
 namespace Genetic
@@ -16,12 +17,12 @@ class InexactEquationSystem: public virtual IOptimalityFunction
 {
 public:
     InexactEquationSystem(const std::initializer_list<InexactEquation> &source);
-    InexactEquationSystem(const std::list<InexactEquation> &source);
+    InexactEquationSystem(const std::vector<InexactEquation> &source);
     virtual ~InexactEquationSystem();
     virtual double operator()(const ParamSet &P)const override;
-    const std::list<InexactEquation> &equations()const;
+    const std::vector<InexactEquation> &equations()const;
 private:
-    std::list<InexactEquation> f_data;
+    std::vector<InexactEquation> f_data;
 };
 template<class MUTATION_TYPE>
 class InexactEquationSolver: public virtual MUTATION_TYPE
@@ -29,10 +30,10 @@ class InexactEquationSolver: public virtual MUTATION_TYPE
 public:
     InexactEquationSolver(const std::initializer_list<InexactEquation> &source)
         : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)) {}
-    InexactEquationSolver(const std::list<InexactEquation> &source)
+    InexactEquationSolver(const std::vector<InexactEquation> &source)
         : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)) {}
     virtual ~InexactEquationSolver() {}
-    const std::list<InexactEquation> &equations()const
+    const std::vector<InexactEquation> &equations()const
     {
         return std::dynamic_pointer_cast<InexactEquationSystem>(
                    AbstractGenetic::OptimalityCalculator()

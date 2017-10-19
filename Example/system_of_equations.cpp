@@ -30,8 +30,8 @@ int main()
     //output results
     const auto &X = example.Parameters();
     cout << endl << "Solution: x0=" << X[0] << "; x1=" << X[1] << endl;
-    for (const auto &eq : example.equations())
-        cout << eq.left(X) << "==" << eq.right(X) << endl;
+    cout << example.equations()[0].left(X) << "==" << example.equations()[0].right(X) << endl;
+    cout << example.equations()[1].left(X) << "==" << example.equations()[1].right(X) << endl;
     return 0;
 }
 

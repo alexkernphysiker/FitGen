@@ -16,7 +16,7 @@ TEST(InexactEquationSystem, empty)
 }
 TEST(InexactEquationSystem, empty2)
 {
-    InexactEquationSystem A(list<InexactEquation> {});
+    InexactEquationSystem A(vector<InexactEquation> {});
     EXPECT_EQ(A({}), 0);
 }
 TEST(InexactEquationSystem, simple)
@@ -31,7 +31,7 @@ TEST(InexactEquationSystem, simple)
 }
 TEST(InexactEquationSystem, simple2)
 {
-    InexactEquationSystem A(list<InexactEquation> {
+    InexactEquationSystem A(vector<InexactEquation> {
         {.left = [](const ParamSet & P)->double{return P[0];}, .right = {0, 1}}
     });
     EXPECT_EQ(A({0.0}), 0);
@@ -55,7 +55,7 @@ TEST(InexactEquationSystem, twoparams)
 }
 TEST(InexactEquationSystem, twoparams2)
 {
-    InexactEquationSystem A(list<InexactEquation> {
+    InexactEquationSystem A(vector<InexactEquation> {
         {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}}
     });
     EXPECT_EQ(A({0.0, 0.0}), 0);
@@ -84,7 +84,7 @@ TEST(InexactEquationSystem, two_eq)
 }
 TEST(InexactEquationSystem, two_eq2)
 {
-    InexactEquationSystem A(list<InexactEquation> {
+    InexactEquationSystem A(vector<InexactEquation> {
         {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}},
         {.left = [](const ParamSet & P)->double{return P[0] - P[1];}, .right = {0, 1}}
     });

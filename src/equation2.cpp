@@ -10,7 +10,7 @@ InexactEquationSystem::InexactEquationSystem(const initializer_list<InexactEquat
 {
     for (const auto &item : source)f_data.push_back(item);
 }
-InexactEquationSystem::InexactEquationSystem(const list<InexactEquation> &source)
+InexactEquationSystem::InexactEquationSystem(const vector<InexactEquation> &source)
 {
     for (const auto &item : source)f_data.push_back(item);
 }
@@ -22,7 +22,7 @@ double InexactEquationSystem::operator()(const ParamSet &P) const
         result += item.right.NumCompare(item.left(P));
     return result;
 }
-const std::list<InexactEquation> &Genetic::InexactEquationSystem::equations()const
+const std::vector<InexactEquation> &Genetic::InexactEquationSystem::equations()const
 {
     return f_data;
 }
