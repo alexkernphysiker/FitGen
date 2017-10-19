@@ -15,6 +15,8 @@ If you have your git repository with cmake project you can add needed repositori
 
 Then add to CMakeLists.txt
 
+	add_definitions(--std=c++17)
+	#will also work with c++11
 	add_subdirectory(math_h)
 	add_subdirectory(FitGen)
 	include_directories(${MATH_H_INC})
