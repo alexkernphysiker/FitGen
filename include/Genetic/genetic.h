@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// MIT license
 #ifndef RGCFVQNCAQKWQXFU
 #define RGCFVQNCAQKWQXFU
 #include <random>
