@@ -54,8 +54,7 @@ int main()
     cout << endl;
 
     //plotting results
-    Plot<>("FitGen-example1").Hist(distribution).Line(SortedPoints<>([&fit](double x) {
-        return fit({x});
-    }, ChainWithStep(0.0, 0.01, 10.0)));
+    Plot("FitGen-example1").Hist(distribution)
+    .Line(SortedPoints<>([&fit](double x) {return fit({x});}, ChainWithStep(0.0, 0.01, 10.0)));
     return 0;
 }

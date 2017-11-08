@@ -83,7 +83,7 @@ int main()
     background([&P](double x) {
         return Background()({x}, P);
     }, chain);
-    Plot<>("FitGen-example2").YUncertainties(fit.PointsProjection(0),"points").Line(totalfit, "fit")
+    Plot("FitGen-example2").YUncertainties(fit.PointsProjection(0),"points").Line(totalfit, "fit")
     .Line(background, "background") << "set key on";
     return 0;
 }
