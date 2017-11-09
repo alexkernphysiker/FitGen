@@ -9,7 +9,7 @@
 #include <memory>
 #include <utility>
 #include <math.h>
-#include <math_h/chains.h>
+#include <math_h/sigma.h>
 #include <math_h/randomfunc.h>
 #include "paramset.h"
 namespace Genetic
