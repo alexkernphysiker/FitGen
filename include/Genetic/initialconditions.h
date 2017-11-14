@@ -2,6 +2,9 @@
 // LGPL license
 #ifndef ___DnoQpUEN
 #define ___DnoQpUEN
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #include <math_h/randomfunc.h>
 #include "abstract.h"
 namespace Genetic

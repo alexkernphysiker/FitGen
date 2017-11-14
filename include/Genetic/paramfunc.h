@@ -2,6 +2,9 @@
 // MIT license
 #ifndef ____mVYpymgQ
 #define ____mVYpymgQ
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #include <math.h>
 #include <functional>
 #include <math_h/functions.h>

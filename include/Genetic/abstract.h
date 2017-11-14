@@ -2,6 +2,9 @@
 // LGPL license
 #ifndef ____WrKDhKHP___
 #define ____WrKDhKHP___
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #ifdef using_multithread
 #include <mutex>
 #endif

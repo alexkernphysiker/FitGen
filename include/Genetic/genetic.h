@@ -2,6 +2,9 @@
 // MIT license
 #ifndef RGCFVQNCAQKWQXFU
 #define RGCFVQNCAQKWQXFU
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #include <random>
 #include <type_traits>
 #include <math_h/error.h>

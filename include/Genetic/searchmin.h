@@ -2,6 +2,9 @@
 // LGPL license
 #ifndef ______searchingminimum____H________
 #	define ______searchingminimum____H________
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #include <utility>
 #include <list>
 #include "abstract.h"

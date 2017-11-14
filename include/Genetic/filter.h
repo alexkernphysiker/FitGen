@@ -2,6 +2,9 @@
 // LGPL license
 #ifndef CNTMUXAHBUIYZXIG
 #define CNTMUXAHBUIYZXIG
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #include "abstract.h"
 #include "paramfunc.h"
 namespace Genetic

@@ -2,6 +2,9 @@
 // MIT license
 #ifndef ______EQUATIONS_WITHOUT_UNCERTAINTIES____H________
 #	define ______EQUATIONS_WITHOUT_UNCERTAINTIES____H________
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #include <utility>
 #include <vector>
 #include "abstract.h"

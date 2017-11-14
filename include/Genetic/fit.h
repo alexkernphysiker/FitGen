@@ -2,6 +2,9 @@
 // MIT license
 #ifndef ____lrEPWamH___
 #define ____lrEPWamH___
+#if __cplusplus<201100L
+#error c++>=11 is needed for using math_h headers
+#endif
 #include <functional>
 #include <math_h/tabledata.h>
 #include "abstract.h"
