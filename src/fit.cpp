@@ -23,10 +23,6 @@ shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src, const Point &p)
     src->push_back(p);
     return src;
 }
-std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::point<MathTemplates::value<>> &p)
-{
-    return src<<Point({p.X().val()},p.Y());
-}
 shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, const FitPoints &data)
 {
     for (const Point &p : data)src << p;
