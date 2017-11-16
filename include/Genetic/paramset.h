@@ -8,6 +8,7 @@
 #include <list>
 #include <vector>
 #include <iostream>
+#include <math_h/sigma.h>
 namespace Genetic
 {
 class ParamSet
@@ -17,6 +18,8 @@ public:
     ParamSet(const std::initializer_list<double> &source);
     ParamSet(const std::vector<double> &source);
     ParamSet(const ParamSet &source);
+    ParamSet(const double &source);
+    ParamSet(const MathTemplates::value<> &source);
     ~ParamSet();
 
     ParamSet &operator<<(const double p);

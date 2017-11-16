@@ -19,6 +19,9 @@ ParamSet::ParamSet(const vector< double > &source)
     for (auto value : source)m_values.push_back(value);
 }
 ParamSet::ParamSet(const ParamSet &source): ParamSet(source.m_values) {}
+ParamSet::ParamSet(const double &source):ParamSet({source}){}
+ParamSet::ParamSet(const value<>&source):ParamSet({source.val()}){}
+
 ParamSet::~ParamSet() {}
 
 const size_t ParamSet::size()const

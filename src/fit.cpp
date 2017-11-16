@@ -32,16 +32,6 @@ shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, const FitPoints &dat
     for (const Point &p : data)src << p;
     return src;
 }
-std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<> &data)
-{
-    for (const auto&p:data)src << Point({p.X()},p.Y());
-    return src;
-}
-std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<MathTemplates::value<>> &data)
-{
-    for (const auto&p : data)src << p;
-    return src;
-}
 OptimalityForPoints::OptimalityForPoints(
     const std::shared_ptr< FitPoints > p,
     const shared_ptr<IParamFunc> f,

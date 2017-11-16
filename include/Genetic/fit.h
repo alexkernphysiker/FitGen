@@ -32,10 +32,13 @@ typedef MathTemplates::Points<ParamSet,MathTemplates::value<>> FitPoints;
 std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const Point &p);
 std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::point<MathTemplates::value<>> &p);
 std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const FitPoints&data);
-std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<> &h);
-std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<MathTemplates::value<>> &h);
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::SortedPoints<> &h){return src<<h();}
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::SortedPoints<MathTemplates::value<>> &h){return src<<h();}
+template<class X,class Y>
+std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<X,Y> &h){
+    for (const auto&p:h)src << Point(p.X(),p.Y());
+    return src;
+}
+template<class X,class Y>
+inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::SortedPoints<X,Y> &h){return src<<h();}
 
 class OptimalityForPoints: public IOptimalityFunction
 {
