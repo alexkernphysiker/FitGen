@@ -65,14 +65,10 @@ Second example
 is the example of fitting points with sum of foreground and background.
 
 
-Tests
-=====
-
-The directory tests contains cmake project with unit tests.
+Unit tests (require GoogleTest framework)
+=========================================
 
 	tests/*.cpp
-
-The tests require GoogleTest framework to be installed
 
 
 CMake Options
