@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #ifndef PUWJZCZDMORMZODA
 #define PUWJZCZDMORMZODA
 #ifdef using_multithread

@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #include <math_h/error.h>
 #include <Genetic/paramset.h>
 namespace Genetic

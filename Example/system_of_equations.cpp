@@ -1,5 +1,3 @@
-// this file is distributed under
-// LGPL license
 #include <math.h>
 #include <iostream>
 #include <fstream>

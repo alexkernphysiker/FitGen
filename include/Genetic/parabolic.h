@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #ifndef ____PARABOLIC_H______
 #	define ____PARABOLIC_H______
 #if __cplusplus<201100L

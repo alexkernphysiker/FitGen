@@ -1,5 +1,5 @@
 // this file is distributed under
-// MIT license
+// LGPLv3 license
 #ifndef ____mVYpymgQ
 #define ____mVYpymgQ
 #if __cplusplus<201100L

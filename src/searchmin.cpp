@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #ifdef using_multithread
 #include <thread>
 #endif

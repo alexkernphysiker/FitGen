@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #ifndef ______searchingminimum____H________
 #	define ______searchingminimum____H________
 #if __cplusplus<201100L

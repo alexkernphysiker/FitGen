@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #ifndef ____WrKDhKHP___
 #define ____WrKDhKHP___
 #if __cplusplus<201100L

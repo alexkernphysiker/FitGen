@@ -1,5 +1,3 @@
-// this file is distributed under
-// LGPL license
 #include <iostream>
 #include <fstream>
 #include <random>

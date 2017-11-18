@@ -1,5 +1,5 @@
 // this file is distributed under
-// MIT license
+// LGPLv3 license
 #ifndef ______EQUATIONS_WITH_UNCERTAINTIES____H________
 #	define ______EQUATIONS_WITH_UNCERTAINTIES____H________
 #if __cplusplus<201100L

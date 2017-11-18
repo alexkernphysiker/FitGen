@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #ifndef ___DnoQpUEN
 #define ___DnoQpUEN
 #if __cplusplus<201100L

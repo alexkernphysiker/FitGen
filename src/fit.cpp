@@ -1,5 +1,5 @@
 // this file is distributed under
-// LGPL license
+// LGPLv3 license
 #include <math.h>
 #include <climits>
 #include <math_h/error.h>
