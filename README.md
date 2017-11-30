@@ -2,10 +2,14 @@ Genetic algorithm for fitting and solving equations (C++11)
 ===========================================================
 
 The library is distributed under LGPL v.3 license.
+Don't be afraid, you still can use headers containing templates in your proprietary software if you don't modify them.
 
-    Question of how LGPL v.3 deals with c++ templates is explained here:
+Question of how LGPL v.3 deals with c++ templates is explained here:
+
     http://eigen.tuxfamily.org/index.php?title=Licensing_FAQ&oldid=1117
-    That's a page of C++ library that also contains templates
+
+That's a page of C++ library that consists of template headers
+
 
 
 Compiling
@@ -19,13 +23,15 @@ If you have your git repository with cmake project you can add needed repositori
 Then add to CMakeLists.txt
 
 	add_definitions(--std=c++17)
-	#will also work with c++11
 	add_subdirectory(math_h)
 	add_subdirectory(FitGen)
 	include_directories(${MATH_H_INC})
 	include_directories(${FITGEN_INC})
 
 Then commit your changes
+
+This library still can be compiled with c++11 or c++14 compiler but some features will be less optimized and work slower.
+
 
 
 Examples
