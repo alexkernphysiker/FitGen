@@ -1,4 +1,4 @@
-Genetic algorithm for fitting and solving equations (C++11)
+Genetic algorithm for fitting and solving equations (C++17)
 ===========================================================
 
 The library is distributed under LGPL v.3 license.
