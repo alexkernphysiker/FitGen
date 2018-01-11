@@ -43,7 +43,7 @@ shared_ptr<InitialDistributions> operator<<(
 FixParam::FixParam(const double &x): value(x) {}
 FixParam::FixParam(const FixParam &source): value(source.value) {}
 FixParam::~FixParam() {}
-const double FixParam::operator()(RANDOM &) const
+double FixParam::operator()(RANDOM &) const
 {
     return value;
 }

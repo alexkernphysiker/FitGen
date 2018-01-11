@@ -19,7 +19,7 @@ public:
     FixParam(const double &x);
     FixParam(const FixParam &source);
     virtual ~FixParam();
-    virtual const double operator()(RANDOM &)const override;
+    virtual double operator()(RANDOM &)const override;
 private:
     double value;
 };
