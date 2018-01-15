@@ -76,7 +76,7 @@ public:
     virtual ~PolynomFunc() {}
     virtual double operator()(const ParamSet &X, const ParamSet &P)const override
     {
-        return MathTemplates::Polynom<power, double, ParamSet, p_index>(FUNC1::operator()(X, P), P);
+        return MathTemplates::Polynom<power, p_index, double, ParamSet>(FUNC1::operator()(X, P), P);
     }
     enum {ParamCount = max2 < FUNC1::ParamCount, p_index + power + 1 >::val, ArgCount = FUNC1::ArgCount};
 };
