@@ -14,6 +14,7 @@
 #include <math.h>
 #include <math_h/sigma.h>
 #include <math_h/randomfunc.h>
+#include <math_h/tabledata.h>
 #include "paramset.h"
 namespace Genetic
 {
