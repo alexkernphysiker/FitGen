@@ -14,15 +14,6 @@ using namespace MathTemplates;
 #ifdef using_multithread
 typedef lock_guard<mutex> Lock;
 #endif
-typedef pair<ParamSet, double> Point;
-bool operator>(const Point &a, const Point &b)
-{
-    return a.second > b.second;
-}
-bool operator<(const Point &a, const Point &b)
-{
-    return a.second < b.second;
-}
 template<class Create, class Condition>
 inline ParamSet CreateNew(const Create create, const Condition condition)
 {
@@ -119,7 +110,7 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
                 return isfinite(s) != 0;
             }
                                  );
-            auto new_point = make_pair(new_param, s);
+            auto new_point = make_point(s,new_param);
             {
 #ifdef using_multithread
                 Lock lock(m_mutex);
@@ -159,10 +150,10 @@ void AbstractGenetic::Iterate(RANDOM &random)
     if (ThreadCount() > n)
         SetThreadCount(n);
 #endif
-    SortedChain<Point> tmp_population;
+    SortedPoints<double,ParamSet> tmp_population;
     auto process_elements = [this, &tmp_population, &random](size_t from, size_t to) {
         for (size_t i = from; i <= to; i++) {
-            Point point;
+            point<double,ParamSet> point(0,{});
             {
 #ifdef using_multithread
                 Lock lock(m_mutex);
@@ -171,23 +162,22 @@ void AbstractGenetic::Iterate(RANDOM &random)
             }
             double s = INFINITY;
             ParamSet new_param = CreateNew(
-            [this, &point, &random]() {
-                ParamSet p = point.first;
-                mutations(p, random);
-                return p;
-            },
-            [this, &s](const ParamSet & p) {
-                if (!(m_filter->operator()(p)))return false;
-                s = m_optimality->operator()(p);
-                return isfinite(s) != 0;
-            }
-                                 );
-            auto new_point = make_pair(new_param, s);
+		[this, &point, &random]() {
+		    ParamSet p = point.Y();
+		    mutations(p, random);
+		    return p;
+		},
+		[this, &s](const ParamSet & p) {
+		    if (!(m_filter->operator()(p)))return false;
+		    s = m_optimality->operator()(p);
+		    return isfinite(s) != 0;
+		}
+	    );
             {
 #ifdef using_multithread
                 Lock lock(m_mutex);
 #endif
-                tmp_population << point << new_point;
+                tmp_population << point << make_point(s,new_param);
             }
         }
     };
@@ -212,7 +202,7 @@ void AbstractGenetic::Iterate(RANDOM &random)
         StandardDeviation<double> STAT[par_cnt];
         for (size_t i = 0; i < n; i++)
             for (size_t j = 0; j < par_cnt; j++)
-                STAT[j] << tmp_population[i].first[j];
+                STAT[j] << tmp_population[i].Y()[j];
         m_stat.clear();
         for (size_t j = 0; j < par_cnt; j++)
             m_stat.push_back(STAT[j]());
@@ -237,7 +227,7 @@ const size_t AbstractGenetic::ParamCount()const
 {
     if (m_population.size() == 0)
         throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
-    return m_population[0].first.size();
+    return m_population[0].Y().size();
 }
 const double &AbstractGenetic::Optimality(const size_t point_index)const
 {
@@ -245,7 +235,7 @@ const double &AbstractGenetic::Optimality(const size_t point_index)const
         throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
     if (point_index >= m_population.size())
         throw Exception<AbstractGenetic>("Range check error when accessing an element in the population");
-    return m_population[point_index].second;
+    return m_population[point_index].X();
 }
 const ParamSet &AbstractGenetic::Parameters(const size_t point_index)const
 {
@@ -253,7 +243,7 @@ const ParamSet &AbstractGenetic::Parameters(const size_t point_index)const
         throw Exception<AbstractGenetic>("Cannot obtain any parameters when population size is zero");
     if (point_index >= m_population.size())
         throw Exception<AbstractGenetic>("Range check error when accessing an element in the population");
-    return m_population[point_index].first;
+    return m_population[point_index].Y();
 }
 const vector< value< double > > &AbstractGenetic::ParametersStatistics() const
 {

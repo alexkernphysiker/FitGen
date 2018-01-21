@@ -74,7 +74,7 @@ protected:
 private:
     std::shared_ptr<IOptimalityFunction> m_optimality;
     std::shared_ptr<IParamCheck> m_filter;
-    MathTemplates::SortedChain<std::pair<ParamSet, double>> m_population;
+    MathTemplates::SortedPoints<double,ParamSet> m_population;
     std::vector<MathTemplates::value<double>> m_stat;
     unsigned long long int m_itercount;
 #ifdef using_multithread
