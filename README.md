@@ -1,15 +1,19 @@
 Genetic algorithm for fitting and solving equations (C++17)
 ===========================================================
 
-The library is distributed under LGPL v.3 license.
-Don't be afraid, you still can use headers containing templates in your proprietary software if you don't modify them.
+This library is distributed under LGPL v.3 license.
+Don't be afraid, you can use headers with template classes/functions in your proprietary software if you don't modify them.
 
-Question of how LGPL v.3 deals with c++ templates is explained here:
+What features does this library provide
+=======================================
 
-    http://eigen.tuxfamily.org/index.php?title=Licensing_FAQ&oldid=1117
+- Solving system of equations (containing any functions)
 
-That's a page of C++ library that consists of template headers
+- Systems of equations containing magnitudes with uncertainties as well
 
+- Fitting points with parametric functions
+
+- You can code you own application of genetic algorithm
 
 
 Compiling
