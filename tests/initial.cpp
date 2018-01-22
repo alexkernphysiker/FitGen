@@ -9,7 +9,6 @@ using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
 const int n = 5;
-RANDOM engine;
 shared_ptr<Distrib> Distrs[] = {
     make_shared<DistribGauss>(0, 1), make_shared<DistribGauss>(1, 1),
     make_shared<DistribGauss>(2, 1), make_shared<DistribGauss>(3, 1),
@@ -29,8 +28,8 @@ TEST(InitialDistributions, Add)
         EXPECT_EQ(count, I.Count());
         for (int i = 0; i < count; i++)
             EXPECT_EQ(Distrs[i].get(), &I[i]);
-        EXPECT_THROW(I[count](engine), Exception<InitialDistributions>);
-        EXPECT_THROW(I[-1](engine), Exception<InitialDistributions>);
+        EXPECT_THROW(I[count](), Exception<InitialDistributions>);
+        EXPECT_THROW(I[-1](), Exception<InitialDistributions>);
     }
     for (int count = 1; count < n; count++) {
         auto I = make_shared<InitialDistributions>();
@@ -46,7 +45,7 @@ TEST(InitialDistributions, Generate)
     for (int count = 1; count < 5; count++) {
         InitialDistributions I;
         for (int i = 0; i < count; i++)I << make_shared<DistribUniform>(0, 1);
-        ParamSet P = I.Generate(engine);
+        ParamSet P = I.Generate();
         EXPECT_EQ(count, P.size());
         for (int i = 0; i < count; i++)
             EXPECT_EQ(true, (P[i] >= 0) && (P[i] <= 1));

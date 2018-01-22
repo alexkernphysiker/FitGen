@@ -32,12 +32,12 @@ public:
         return *this;
     }
 protected:
-    virtual void mutations(ParamSet &C, RANDOM &R)const override
+    virtual void mutations(ParamSet &C)const override
     {
-        FITGEN::mutations(C, R);
+        FITGEN::mutations(C);
         std::uniform_int_distribution<int> randomelement(0, AbstractGenetic::PopulationSize() - 1);
-        auto A = AbstractGenetic::Parameters(randomelement(R));
-        auto B = AbstractGenetic::Parameters(randomelement(R));
+        auto A = AbstractGenetic::Parameters(randomelement(MathTemplates::RandomEngine<>::Instance()));
+        auto B = AbstractGenetic::Parameters(randomelement(MathTemplates::RandomEngine<>::Instance()));
         for (size_t i = 0; i < C.size(); i++)
             C(i) += M * (A[i] - B[i]);
     }
@@ -63,16 +63,16 @@ public:
         return *this;
     }
 protected:
-    virtual void mutations(ParamSet &C, RANDOM &R)const override
+    virtual void mutations(ParamSet &C)const override
     {
-        FITGEN::mutations(C, R);
-        std::uniform_real_distribution<double> Prob(0, 1);
-        if (Prob(R) < P) {
+        FITGEN::mutations(C);
+        MathTemplates::RandomUniform<> Prob(0, 1);
+        if (Prob() < P) {
             std::uniform_int_distribution<int> randomelement(0, AbstractGenetic::PopulationSize() - 1);
-            auto X = AbstractGenetic::Parameters(randomelement(R));
-            FITGEN::mutations(X, R);
+            auto X = AbstractGenetic::Parameters(randomelement(MathTemplates::RandomEngine<>::Instance()));
+            FITGEN::mutations(X);
             for (size_t i = 0; i < C.size(); i++) {
-                if (Prob(R) < 0.5)
+                if (Prob() < 0.5)
                     C(i) = X[i];
             }
         }
@@ -114,14 +114,14 @@ public:
         return *this;
     }
 protected:
-    virtual void mutations(ParamSet &C, RANDOM &R)const override
+    virtual void mutations(ParamSet &C)const override
     {
-        FITGEN::mutations(C, R);
-        std::uniform_real_distribution<double> Prob(0, 1);
-        if (Prob(R) < P)
+        FITGEN::mutations(C);
+        MathTemplates::RandomUniform<> Prob(0, 1);
+        if (Prob() < P)
             for (size_t i = 0; i < AbstractGenetic::ParamCount(); i++) {
-                std::normal_distribution<double>distr(0, m_mutation[i]);
-                C(i) += distr(R);
+                MathTemplates::RandomGauss<> distr(0, m_mutation[i]);
+                C(i) += distr();
             }
     }
 };
@@ -161,14 +161,14 @@ public:
         return *this;
     }
 protected:
-    virtual void mutations(ParamSet &C, RANDOM &R)const override
+    virtual void mutations(ParamSet &C)const override
     {
-        FITGEN::mutations(C, R);
-        std::uniform_real_distribution<double> Prob(0, 1);
-        if (Prob(R) < P)
+        FITGEN::mutations(C);
+        MathTemplates::RandomUniform<> Prob(0, 1);
+        if (Prob() < P)
             for (size_t i = 0; i < AbstractGenetic::ParamCount(); i++) {
-                std::normal_distribution<double> distr(0, m_mutation[i]);
-                C(i) *= (1 + distr(R));
+                MathTemplates::RandomGauss<> distr(0, m_mutation[i]);
+                C(i) *= (1 + distr());
             }
     }
 };
@@ -193,11 +193,11 @@ public:
         return P;
     }
 protected:
-    virtual void mutations(ParamSet &C, RANDOM &R)const override
+    virtual void mutations(ParamSet &C)const override
     {
-        std::uniform_real_distribution<double> Prob(0, 1);
-        if (Prob(R) > P)
-            FITGEN::mutations(C, R);
+        MathTemplates::RandomUniform<> Prob(0, 1);
+        if (Prob() > P)
+            FITGEN::mutations(C);
     }
 };
 }

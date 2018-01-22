@@ -18,12 +18,11 @@
 #include "paramset.h"
 namespace Genetic
 {
-typedef MathTemplates::RANDOM RANDOM;
 class IInitialConditions
 {
 public:
     virtual ~IInitialConditions() {}
-    virtual ParamSet Generate(RANDOM &)const = 0;
+    virtual ParamSet Generate()const = 0;
 };
 class IParamCheck
 {
@@ -53,8 +52,8 @@ public:
     AbstractGenetic &SetThreadCount(const size_t threads_count);
     const size_t ThreadCount()const;
 #endif
-    AbstractGenetic &Init(const size_t population_size, const std::shared_ptr<IInitialConditions> initial_conditions, RANDOM &random);
-    void Iterate(RANDOM &random);
+    AbstractGenetic &Init(const size_t population_size, const std::shared_ptr<IInitialConditions> initial_conditions);
+    void Iterate();
 
     const unsigned long long int &iteration_count()const;
     const size_t PopulationSize()const;
@@ -70,7 +69,7 @@ public:
     const bool RelativeParametersDispersionExitCondition(const ParamSet &max_disp)const;
 protected:
     //contains empty implementation for templates from genetic.h could work correctly
-    virtual void mutations(ParamSet &, RANDOM &)const;
+    virtual void mutations(ParamSet &)const;
     virtual void HandleIteration();
 private:
     std::shared_ptr<IOptimalityFunction> m_optimality;
@@ -83,10 +82,10 @@ private:
     size_t threads;
 #endif
 };
-inline void Find(AbstractGenetic &fit, RANDOM &engine)
+inline void Find(AbstractGenetic &fit)
 {
     while (!fit.ConcentratedInOnePoint())
-        fit.Iterate(engine);
+        fit.Iterate();
 }
 
 class Filter: public IParamCheck

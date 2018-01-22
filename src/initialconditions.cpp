@@ -24,11 +24,11 @@ const Distrib &InitialDistributions::operator[](const size_t i)const
         throw Exception<InitialDistributions>("Range check error when accessing InitialDistributions' element");
     return *ParamDistr[i];
 }
-ParamSet InitialDistributions::Generate(RANDOM &R)const
+ParamSet InitialDistributions::Generate()const
 {
     ParamSet res;
     for (size_t i = 0; i < Count(); i++)
-        res << operator[](i)(R);
+        res << operator[](i)();
     return res;
 }
 shared_ptr<InitialDistributions> operator<<(
@@ -43,7 +43,7 @@ shared_ptr<InitialDistributions> operator<<(
 FixParam::FixParam(const double &x): value(x) {}
 FixParam::FixParam(const FixParam &source): value(source.value) {}
 FixParam::~FixParam() {}
-double FixParam::operator()(RANDOM &) const
+double FixParam::operator()() const
 {
     return value;
 }

@@ -23,16 +23,14 @@ int main()
     };
 
     //searching the optimal parameter values
-    RANDOM random_engine;
     example.Init(
         25,
         make_shared<InitialDistributions>()
         << make_shared<DistribUniform>(-10, 10)
-        << make_shared<DistribUniform>(-10, 10),
-        random_engine
+        << make_shared<DistribUniform>(-10, 10)
     );
     while (!example.AbsoluteOptimalityExitCondition(0.0001))
-        example.Iterate(random_engine);
+        example.Iterate();
 
     //output the solution
     example.SetUncertaintyCalcDeltas({0.001, 0.001});

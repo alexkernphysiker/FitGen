@@ -6,7 +6,6 @@
 #include <Genetic/searchmin.h>
 #include <Genetic/genetic.h>
 #include <Genetic/initialconditions.h>
-#include "engine.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
@@ -19,9 +18,9 @@ public:
         return 0;
     })), GENETIC() {}
     virtual ~TestClass() {}
-    void MAKE_TEST(ParamSet &P, RANDOM &R)
+    void MAKE_TEST(ParamSet &P)
     {
-        GENETIC::mutations(P, R);
+        GENETIC::mutations(P);
     }
 };
 TEST(DifferentialMutations, Throws)
@@ -46,9 +45,9 @@ TEST(DifferentialMutations, Zeros)
         auto init = make_shared<InitialDistributions>();
         for (size_t i = 0; i < count; i++)
             init << make_shared<RandomUniform<double>>(0, 0.001);
-        gen.Init(10, init, engine);
+        gen.Init(10, init);
         ParamSet P = parZeros(count);
-        gen.MAKE_TEST(P, engine);
+        gen.MAKE_TEST(P);
         EXPECT_TRUE(P.size() == count);
         for (double p : P)
             EXPECT_TRUE(pow(p, 2) < 0.0001);
@@ -61,13 +60,13 @@ TEST(DifferentialMutations, Upper)
         auto init = make_shared<InitialDistributions>();
         for (size_t i = 0; i < count; i++)
             init << make_shared<RandomUniform<double>>(-0.5, 0.5);
-        gen.Init(5, init, engine);
+        gen.Init(5, init);
         for (gen.SetMutationCoefficient(0);
                 gen.MutationCoefficient() <= 1;
                 gen.SetMutationCoefficient(gen.MutationCoefficient() + 0.1)
             )for (size_t i = 0; i < 50; i++) {
                 ParamSet P = parZeros(count);
-                gen.MAKE_TEST(P, engine);
+                gen.MAKE_TEST(P);
                 EXPECT_TRUE(P.size() == count);
                 for (double p : P) {
                     EXPECT_TRUE(p <= gen.MutationCoefficient());
@@ -98,10 +97,10 @@ TEST(Crossing, No)
         auto init = make_shared<InitialDistributions>();
         for (size_t i = 0; i < count; i++)
             init << make_shared<DistribUniform>(-0.5, 0.5);
-        gen.Init(10, init, engine);
+        gen.Init(10, init);
         gen.SetCrossingProbability(0);
         ParamSet P = parZeros(count);
-        gen.MAKE_TEST(P, engine);
+        gen.MAKE_TEST(P);
         EXPECT_TRUE(P.size() == count);
         for (double p : P)
             EXPECT_TRUE(p == 0);
@@ -114,10 +113,10 @@ TEST(Crossing, Yes)
         auto init = make_shared<InitialDistributions>();
         for (size_t i = 0; i < count; i++)
             init << make_shared<DistribUniform>(0.9, 1.0);
-        gen.Init(10, init, engine);
+        gen.Init(10, init);
         gen.SetCrossingProbability(1);
         ParamSet P = parZeros(count);
-        gen.MAKE_TEST(P, engine);
+        gen.MAKE_TEST(P);
         EXPECT_TRUE(P.size() == count);
         for (double p : P)
             EXPECT_TRUE((p == 0) || ((p >= 0.89) && (p <= 1.01)));
@@ -153,7 +152,7 @@ TEST(AbsoluteMutations, Size)
     for (size_t count = 0; count < 10; count++) {
         TestClass<Crossing<>> gen;
         ParamSet P = parZeros(count);
-        gen.MAKE_TEST(P, engine);
+        gen.MAKE_TEST(P);
         EXPECT_TRUE(P.size() == count);
     }
 }
@@ -187,7 +186,7 @@ TEST(RelativeMutations, Size)
     for (size_t count = 0; count < 10; count++) {
         TestClass<Crossing<>> gen;
         ParamSet P = parZeros(count);
-        gen.MAKE_TEST(P, engine);
+        gen.MAKE_TEST(P);
         EXPECT_TRUE(P.size() == count);
     }
 }
@@ -197,7 +196,7 @@ public:
     TestMutations(): AbstractGenetic() {}
     virtual ~TestMutations() {}
 protected:
-    virtual void mutations(ParamSet &C, RANDOM &)const override
+    virtual void mutations(ParamSet &C)const override
     {
         C = parOnes(C.size());
     }
@@ -222,7 +221,7 @@ TEST(ExactCopying, Size)
     for (size_t count = 0; count < 10; count++) {
         TestClass<ExactCopying<TestMutations>> gen;
         ParamSet P = parZeros(count);
-        gen.MAKE_TEST(P, engine);
+        gen.MAKE_TEST(P);
         EXPECT_TRUE(P.size() == count);
     }
 }
@@ -236,7 +235,7 @@ TEST(ExactCopying, Check)
         Distribution1D<double> D(BinsByCount(2, -0.5, 1.5));
         for (int i = 0; i < 1000; i++) {
             ParamSet P {0};
-            gen.MAKE_TEST(P, engine);
+            gen.MAKE_TEST(P);
             D.Fill(P[0]);
         }
         double P_exp = D[0].Y().val() / (D[0].Y().val() + D[1].Y().val());

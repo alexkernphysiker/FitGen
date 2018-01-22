@@ -9,7 +9,7 @@ using namespace Genetic;
 int main()
 {
     //declaring
-    EquationSolver<DifferentialMutations<>> example {
+    EquationSolver<DifferentialMutations<>> solution {
         {
             .left = [](const ParamSet & X){return pow(X[0], 2) + 1.0;},
             .right = [](const ParamSet & X){return pow(X[1], 2);}
@@ -19,17 +19,15 @@ int main()
         }
     };
     //searching the solution
-    RANDOM random_engine;
-    example.Init(20, make_shared<InitialDistributions>()
+    solution.Init(20, make_shared<InitialDistributions>()
                  << make_shared<DistribUniform>(0, 3)
-                 << make_shared<DistribUniform>(0, 3)
-                 , random_engine);
-    Find(example, random_engine);
+                 << make_shared<DistribUniform>(0, 3));
+    Find(solution);
     //output results
-    const auto &X = example.Parameters();
+    const auto &X = solution.Parameters();
     cout << endl << "Solution: x0=" << X[0] << "; x1=" << X[1] << endl;
-    cout << example.equations()[0].left(X) << "==" << example.equations()[0].right(X) << endl;
-    cout << example.equations()[1].left(X) << "==" << example.equations()[1].right(X) << endl;
+    cout << solution.equations()[0].left(X) << "==" << solution.equations()[0].right(X) << endl;
+    cout << solution.equations()[1].left(X) << "==" << solution.equations()[1].right(X) << endl;
     return 0;
 }
 

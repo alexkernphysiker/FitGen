@@ -5,7 +5,6 @@
 #include <Genetic/equation.h>
 #include <Genetic/genetic.h>
 #include <Genetic/initialconditions.h>
-#include "engine.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
@@ -157,8 +156,8 @@ TEST(EquationSolver, Integrationtest)
     };
     test.Init(100, make_shared<InitialDistributions>()
               << make_shared<DistribGauss>(-20, 20) << make_shared<DistribGauss>(-20, 20)
-              , engine);
-    Find(test, engine);
+    );
+    Find(test);
     EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);
     EXPECT_TRUE(pow(test.Parameters()[1], 2) < 0.0000001);
     const auto &X = test.Parameters();

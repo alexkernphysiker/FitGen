@@ -19,7 +19,7 @@ public:
     FixParam(const double &x);
     FixParam(const FixParam &source);
     virtual ~FixParam();
-    virtual double operator()(RANDOM &)const override;
+    virtual double operator()()const override;
 private:
     double value;
 };
@@ -28,7 +28,7 @@ class InitialDistributions: public IInitialConditions
 public:
     InitialDistributions();
     virtual ~InitialDistributions();
-    virtual ParamSet Generate(RANDOM &R)const override;
+    virtual ParamSet Generate()const override;
     InitialDistributions &operator<<(const std::shared_ptr<Distrib> distr);
     const size_t Count()const ;
     const Distrib &operator[](const size_t i)const ;

@@ -84,7 +84,7 @@ const size_t AbstractGenetic::ThreadCount()const
     return threads;
 }
 #endif
-AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const shared_ptr<IInitialConditions> initial_conditions, RANDOM &random)
+AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const shared_ptr<IInitialConditions> initial_conditions)
 {
     if (m_population.size() > 0)
         throw Exception<AbstractGenetic>("Genetic algorithm cannot be inited twice");
@@ -94,15 +94,15 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
     if (ThreadCount() > population_size)
         SetThreadCount(population_size);
 #endif
-    auto add_to_population = [this, initial_conditions, &random](size_t count) {
+    auto add_to_population = [this, initial_conditions](size_t count) {
         for (size_t i = 0; i < count; i++) {
             double s = INFINITY;
             ParamSet new_param = CreateNew(
-            [this, initial_conditions, &random]() {
+            [this, initial_conditions]() {
 #ifdef using_multithread
                 Lock lock(m_mutex);
 #endif
-                return initial_conditions->Generate(random);
+                return initial_conditions->Generate();
             },
             [this, &s](const ParamSet & p) {
                 if (!(m_filter->operator()(p)))return false;
@@ -141,7 +141,7 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
     }
     return *this;
 }
-void AbstractGenetic::Iterate(RANDOM &random)
+void AbstractGenetic::Iterate()
 {
     size_t n = PopulationSize();
     size_t par_cnt = ParamCount();
@@ -151,7 +151,7 @@ void AbstractGenetic::Iterate(RANDOM &random)
         SetThreadCount(n);
 #endif
     SortedPoints<double,ParamSet> tmp_population;
-    auto process_elements = [this, &tmp_population, &random](size_t from, size_t to) {
+    auto process_elements = [this, &tmp_population](size_t from, size_t to) {
         for (size_t i = from; i <= to; i++) {
             point<double,ParamSet> point(0,{});
             {
@@ -162,9 +162,9 @@ void AbstractGenetic::Iterate(RANDOM &random)
             }
             double s = INFINITY;
             ParamSet new_param = CreateNew(
-		[this, &point, &random]() {
+		[this, &point]() {
 		    ParamSet p = point.Y();
-		    mutations(p, random);
+		    mutations(p);
 		    return p;
 		},
 		[this, &s](const ParamSet & p) {
@@ -325,7 +325,7 @@ const bool AbstractGenetic::RelativeParametersDispersionExitCondition(const Para
     }
     return true;
 }
-void AbstractGenetic::mutations(ParamSet &, RANDOM &)const {}
+void AbstractGenetic::mutations(ParamSet &)const {}
 void AbstractGenetic::HandleIteration() {}
 
 Filter::Filter(function<bool(const ParamSet &)> c)

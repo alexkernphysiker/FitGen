@@ -6,7 +6,6 @@
 #include <Genetic/fit.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/paramfunc.h>
-#include "engine.h"
 using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
@@ -108,9 +107,9 @@ auto Init = make_shared<InitialDistributions>() << make_shared<DistribUniform>(0
 TEST(Fit, Basetest)
 {
     Fit<DifferentialMutations<>, SumSquareDiff> fit(TestPoints, make_shared<Fit_Func>());
-    fit.Init(30, Init, engine);
+    fit.Init(30, Init);
     while (!fit.ConcentratedInOnePoint())
-        fit.Iterate(engine);
+        fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
     EXPECT_TRUE(fit.Optimality() == 0);
@@ -121,9 +120,9 @@ TEST(Fit, Basetest)
 TEST(FitFunction, Basetest)
 {
     FitFunction<DifferentialMutations<>, Fit_Func, SumSquareDiff> fit(TestPoints);
-    fit.Init(30, Init, engine);
+    fit.Init(30, Init);
     while (!fit.ConcentratedInOnePoint())
-        fit.Iterate(engine);
+        fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
     EXPECT_TRUE(fit.Optimality() == 0);

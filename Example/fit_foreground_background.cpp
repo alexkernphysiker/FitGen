@@ -14,7 +14,6 @@ typedef PolynomFunc<Arg<0>, Foreground::ParamCount, 4> Background;
 typedef Add<Foreground, Background> TotalFunc;
 int main()
 {
-    RANDOM random_engine;
     //Fitting
     FitFunction<DifferentialMutations<Uncertainty>, TotalFunc> fit(
         make_shared<FitPoints>()
@@ -51,10 +50,10 @@ int main()
                    << make_shared<DistribGauss>(0., 0.5);
     while (initial->Count() < TotalFunc::ParamCount)
         initial << make_shared<DistribGauss>(0., 0.01);
-    fit.Init(TotalFunc::ParamCount * 10, initial, random_engine);
+    fit.Init(TotalFunc::ParamCount * 10, initial);
 
     while (!fit.AbsoluteOptimalityExitCondition(0.00001)) {
-        fit.Iterate(random_engine);
+        fit.Iterate();
         cout << fit.iteration_count() << " iterations; "
              << fit.Optimality() << " < Chi^2 < "
              << fit.Optimality(fit.PopulationSize() - 1)
