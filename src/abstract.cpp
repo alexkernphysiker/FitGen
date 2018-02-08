@@ -205,7 +205,7 @@ void AbstractGenetic::Iterate()
                 STAT[j] << tmp_population[i].Y()[j];
         m_stat.clear();
         for (size_t j = 0; j < par_cnt; j++)
-            m_stat.push_back(STAT[j]());
+            m_stat.push_back(STAT[j]);
         m_itercount++;
     }
     {
