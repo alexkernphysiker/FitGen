@@ -66,7 +66,7 @@ TEST(ParamSet, AddNumber)
 {
     ParamSet p;
     for (int i = 0; i < n; i++) {
-        EXPECT_EQ(&p, &(p << test_data[i]));
+        EXPECT_EQ(&p, &(p.push_back(test_data[i])));
         EXPECT_EQ(i + 1, p.size());
         EXPECT_EQ(test_data[i], p[p.size() - 1]);
     }
@@ -77,9 +77,9 @@ TEST(ParamSet, AddParamSet)
         ParamSet P;
         for (int i = 0; i < 5; i++) {
             ParamSet p;
-            for (int i = 0; i < count; i++)p << test_data[i];
+            for (int i = 0; i < count; i++)p.push_back(test_data[i]);
             int c = P.size();
-            EXPECT_EQ(&P, &(P << p));
+            EXPECT_EQ(&P, &(P.push_back(p)));
             EXPECT_EQ(c + count, P.size());
             for (int i = 0; i < count; i++)
                 EXPECT_EQ(P[P.size() - 1 - i], p[p.size() - 1 - i]);
@@ -94,7 +94,7 @@ TEST(ParamSet, AddList)
             vector<double> p;
             for (int i = 0; i < count; i++)p.push_back(test_data[i]);
             int c = P.size();
-            EXPECT_EQ(&P, &(P << p));
+            EXPECT_EQ(&P, &(P .push_back(p)));
             EXPECT_EQ(c + count, P.size());
             for (int i = 0; i < count; i++)
                 EXPECT_EQ(P[P.size() - 1 - i], p[p.size() - 1 - i]);
@@ -105,9 +105,9 @@ TEST(ParamSet, AddToItself)
 {
     for (int count = 0; count <= n; count++) {
         ParamSet P;
-        for (int i = 0; i < count; i++)P << test_data[i];
+        for (int i = 0; i < count; i++)P.push_back(test_data[i]);
         int c = P.size();
-        EXPECT_EQ(&P, &(P << P));
+        EXPECT_EQ(&P, &(P.push_back(P)));
         EXPECT_EQ(c + c, P.size());
     }
 }
@@ -115,7 +115,7 @@ TEST(ParamSet, Copying)
 {
     for (int count = 0; count <= n; count++) {
         ParamSet source;
-        for (int i = 0; i < count; i++)source << test_data[i];
+        for (int i = 0; i < count; i++)source.push_back(test_data[i]);
         ParamSet copy(source);
         TestEq(source, copy);
         ParamSet copy2;
@@ -130,7 +130,7 @@ TEST(ParamSet, Set)
     for (int count = 0; count <= n; count++) {
         for (int si = 0; si < count; si++) {
             ParamSet source;
-            for (int i = 0; i < count; i++)source << test_data[i];
+            for (int i = 0; i < count; i++)source.push_back(test_data[i]);
             source(si) = 0.0;
             EXPECT_EQ(count, source.size());
             for (int i = 0; i < count; i++) {
@@ -141,7 +141,7 @@ TEST(ParamSet, Set)
             }
         }
         ParamSet source;
-        for (int i = 0; i < count; i++)source << test_data[i];
+        for (int i = 0; i < count; i++)source.push_back(test_data[i]);
         EXPECT_THROW(source(-1) = 0.0, Exception<ParamSet>);
         EXPECT_THROW(source(source.size()) = 0.0, Exception<ParamSet>);
     }

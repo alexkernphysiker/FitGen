@@ -28,7 +28,7 @@ ParamSet InitialDistributions::Generate()const
 {
     ParamSet res;
     for (size_t i = 0; i < Count(); i++)
-        res << operator[](i)();
+        res.push_back(operator[](i)());
     return res;
 }
 shared_ptr<InitialDistributions> operator<<(

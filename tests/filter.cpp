@@ -49,7 +49,7 @@ TEST(Above, BasicTest)
             ParamSet tester;
             double c = 1;
             for (int i = 0; i < count; i++) {
-                EXPECT_EQ(&tester, &(tester << c));
+                EXPECT_EQ(&tester, &(tester.push_back(c)));
                 Above Tester(static_cast < const ParamSet && >(tester));
                 EXPECT_EQ(false, Tester(static_cast<const ParamSet &>(Check)));
                 c = -c;
@@ -88,7 +88,7 @@ TEST(Below, BasicTest)
             ParamSet tester;
             double c = -1;
             for (int i = 0; i < count; i++) {
-                EXPECT_EQ(&tester, &(tester << c));
+                EXPECT_EQ(&tester, &(tester.push_back(c)));
                 Below Tester(static_cast < const ParamSet && >(tester));
                 EXPECT_EQ(false, Tester(static_cast<const ParamSet &>(Check)));
                 c = -c;

@@ -22,9 +22,9 @@ public:
     ParamSet(const MathTemplates::value<> &source);
     ~ParamSet();
 
-    ParamSet &operator<<(const double p);
-    ParamSet &operator<<(const std::vector<double> &V);
-    ParamSet &operator<<(const ParamSet &P);
+    ParamSet &push_back(const double p);
+    ParamSet &push_back(const std::vector<double> &V);
+    ParamSet &push_back(const ParamSet &P);
 
     ParamSet &operator=(const std::initializer_list<double> &V);
     ParamSet &operator=(const std::vector<double> &V);

@@ -41,7 +41,7 @@ double &ParamSet::operator()(const size_t i)
     return m_values[i];
 }
 
-ParamSet &ParamSet::operator<<(const double p)
+ParamSet &ParamSet::push_back(const double p)
 {
 #ifdef using_multithread
     Lock lock(m_mutex);
@@ -49,7 +49,7 @@ ParamSet &ParamSet::operator<<(const double p)
     m_values.push_back(p);
     return *this;
 }
-ParamSet &ParamSet::operator<<(const vector<double> &V)
+ParamSet &ParamSet::push_back(const vector<double> &V)
 {
 #ifdef using_multithread
     Lock lock(m_mutex);
@@ -57,9 +57,9 @@ ParamSet &ParamSet::operator<<(const vector<double> &V)
     for (double p : V)m_values.push_back(p);
     return *this;
 }
-ParamSet &ParamSet::operator<<(const ParamSet &P)
+ParamSet &ParamSet::push_back(const ParamSet &P)
 {
-    return operator<<(P.m_values);
+    return push_back(P.m_values);
 }
 ParamSet &ParamSet::operator=(const initializer_list<double> &V)
 {
@@ -109,7 +109,7 @@ ostream &operator<<(ostream &str, const ParamSet &P)
 istream &operator>>(istream &str, ParamSet &P)
 {
     double x;
-    while (str >> x)P << x;
+    while (str >> x)P.push_back(x);
     return str;
 }
 
@@ -117,7 +117,7 @@ ParamSet parEq(const size_t cnt, const double val)
 {
     ParamSet res;
     for (size_t i = 0; i < cnt; i++)
-        res << val;
+        res.push_back(val);
     return res;
 }
 }

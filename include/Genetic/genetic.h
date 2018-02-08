@@ -98,7 +98,7 @@ public:
         for (double v : p) {
             if (v < 0)
                 throw MathTemplates::Exception<AbsoluteMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
-            m_mutation << v;
+            m_mutation.push_back(v);
         }
         return *this;
     }
@@ -145,7 +145,7 @@ public:
         for (double v : p) {
             if (v < 0)
                 throw MathTemplates::Exception<RelativeMutations>("AbsoluteMutations: mutation coefficient cannot be negative");
-            m_mutation << v;
+            m_mutation.push_back(v);
         }
         return *this;
     }

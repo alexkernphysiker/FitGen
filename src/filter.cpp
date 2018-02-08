@@ -21,7 +21,7 @@ bool Above::operator()(const ParamSet &P)const
 }
 Above &Above::operator<<(const double &value)
 {
-    m_data << value;
+    m_data.push_back(value);
     return *this;
 }
 
@@ -40,7 +40,7 @@ bool Below::operator()(const ParamSet &P)const
 }
 Below &Below::operator<<(const double &value)
 {
-    m_data << value;
+    m_data.push_back(value);
     return *this;
 }
 
