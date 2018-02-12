@@ -19,8 +19,6 @@ ParamSet::ParamSet(const vector< double > &source)
     for (auto value : source)m_values.push_back(value);
 }
 ParamSet::ParamSet(const ParamSet &source): ParamSet(source.m_values) {}
-ParamSet::ParamSet(const double &source):ParamSet({source}){}
-ParamSet::ParamSet(const value<>&source):ParamSet({source.val()}){}
 
 ParamSet::~ParamSet() {}
 
@@ -41,7 +39,7 @@ double &ParamSet::operator()(const size_t i)
     return m_values[i];
 }
 
-ParamSet &ParamSet::push_back(const double p)
+ParamSet &ParamSet::push_back(const double&p)
 {
 #ifdef using_multithread
     Lock lock(m_mutex);
@@ -49,39 +47,15 @@ ParamSet &ParamSet::push_back(const double p)
     m_values.push_back(p);
     return *this;
 }
-ParamSet &ParamSet::push_back(const vector<double> &V)
-{
-#ifdef using_multithread
-    Lock lock(m_mutex);
-#endif
-    for (double p : V)m_values.push_back(p);
-    return *this;
-}
-ParamSet &ParamSet::push_back(const ParamSet &P)
-{
-    return push_back(P.m_values);
-}
-ParamSet &ParamSet::operator=(const initializer_list<double> &V)
-{
-#ifdef using_multithread
-    Lock lock(m_mutex);
-#endif
-    m_values.clear();
-    for (double p : V)m_values.push_back(p);
-    return *this;
-}
-ParamSet &ParamSet::operator=(const vector<double> &V)
-{
-#ifdef using_multithread
-    Lock lock(m_mutex);
-#endif
-    m_values.clear();
-    for (double p : V)m_values.push_back(p);
-    return *this;
-}
+
 ParamSet &ParamSet::operator=(const ParamSet &P)
 {
-    return operator=(P.m_values);
+#ifdef using_multithread
+    Lock lock(m_mutex);
+#endif
+    m_values.clear();
+    for (double p : P)m_values.push_back(p);
+    return *this;
 }
 
 ParamSet::iterator ParamSet::begin()

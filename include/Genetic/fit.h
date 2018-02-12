@@ -31,18 +31,18 @@ typedef MathTemplates::point<ParamSet,MathTemplates::value<>> Point;
 typedef MathTemplates::Points<ParamSet,MathTemplates::value<>> FitPoints;
 std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const Point &p);
 std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const FitPoints&data);
-template<class X,class Y>
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::point<X,Y> &p){
-    src << Point(p.X(),p.Y());
+template<class Y>
+inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::point<double,Y> &p){
+    src << Point(ParamSet().push_back(p.X()),p.Y());
     return src;
 }
-template<class X,class Y>
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<X,Y> &h){
+template<class Y>
+inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<double,Y> &h){
     for (const auto&p:h)src << p;
     return src;
 }
-template<class X,class Y>
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::SortedPoints<X,Y> &h){
+template<class Y>
+inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::SortedPoints<double,Y> &h){
     for (const auto&p:h)src << p;
     return src;
 }

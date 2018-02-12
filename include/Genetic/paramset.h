@@ -18,16 +18,9 @@ public:
     ParamSet(const std::initializer_list<double> &source);
     ParamSet(const std::vector<double> &source);
     ParamSet(const ParamSet &source);
-    ParamSet(const double &source);
-    ParamSet(const MathTemplates::value<> &source);
     ~ParamSet();
 
-    ParamSet &push_back(const double p);
-    ParamSet &push_back(const std::vector<double> &V);
-    ParamSet &push_back(const ParamSet &P);
-
-    ParamSet &operator=(const std::initializer_list<double> &V);
-    ParamSet &operator=(const std::vector<double> &V);
+    ParamSet &push_back(const double&p);
     ParamSet &operator=(const ParamSet &P);
 
     const size_t size()const;

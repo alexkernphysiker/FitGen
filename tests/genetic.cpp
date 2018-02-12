@@ -2,7 +2,7 @@
 // LGPLv3 license
 #include <gtest/gtest.h>
 #include <math_h/error.h>
-#include <math_h/hists.h>
+#include <math_h/tabledata.h>
 #include <Genetic/searchmin.h>
 #include <Genetic/genetic.h>
 #include <Genetic/initialconditions.h>

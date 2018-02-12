@@ -71,46 +71,6 @@ TEST(ParamSet, AddNumber)
         EXPECT_EQ(test_data[i], p[p.size() - 1]);
     }
 }
-TEST(ParamSet, AddParamSet)
-{
-    for (int count = 0; count <= n; count++) {
-        ParamSet P;
-        for (int i = 0; i < 5; i++) {
-            ParamSet p;
-            for (int i = 0; i < count; i++)p.push_back(test_data[i]);
-            int c = P.size();
-            EXPECT_EQ(&P, &(P.push_back(p)));
-            EXPECT_EQ(c + count, P.size());
-            for (int i = 0; i < count; i++)
-                EXPECT_EQ(P[P.size() - 1 - i], p[p.size() - 1 - i]);
-        }
-    }
-}
-TEST(ParamSet, AddList)
-{
-    for (int count = 0; count <= n; count++) {
-        ParamSet P;
-        for (int i = 0; i < 5; i++) {
-            vector<double> p;
-            for (int i = 0; i < count; i++)p.push_back(test_data[i]);
-            int c = P.size();
-            EXPECT_EQ(&P, &(P .push_back(p)));
-            EXPECT_EQ(c + count, P.size());
-            for (int i = 0; i < count; i++)
-                EXPECT_EQ(P[P.size() - 1 - i], p[p.size() - 1 - i]);
-        }
-    }
-}
-TEST(ParamSet, AddToItself)
-{
-    for (int count = 0; count <= n; count++) {
-        ParamSet P;
-        for (int i = 0; i < count; i++)P.push_back(test_data[i]);
-        int c = P.size();
-        EXPECT_EQ(&P, &(P.push_back(P)));
-        EXPECT_EQ(c + c, P.size());
-    }
-}
 TEST(ParamSet, Copying)
 {
     for (int count = 0; count <= n; count++) {
