@@ -37,7 +37,7 @@ int main()
 	{ 27.5, {511.4, 15.0}}
     };
     //Fitting
-    FitFunction<DifferentialMutations<Uncertainty>, TotalFunc> fit(make_shared<FitPoints>()<<data);
+    FitFunction<DifferentialMutations<Uncertainty>, TotalFunc> fit(data);
     fit.SetFilter([](const ParamSet & P) {
         return (P[0] > 0) && (P[1] > 0);
     });

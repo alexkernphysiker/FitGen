@@ -38,7 +38,7 @@ TEST(point, Base)
 }
 TEST(OptimalityForPoints, Base)
 {
-    auto points = make_shared<FitPoints>();
+    FitPoints points;
     int func_calls = 0;
     auto f = [&func_calls](const ParamSet &, const ParamSet &) {
         func_calls++;
@@ -54,28 +54,24 @@ TEST(OptimalityForPoints, Base)
         coef_calls++;
         return 1.0;
     };
-    OptimalityForPoints S(points, make_shared<ParameterFunction>(f), c, s);
-    EXPECT_EQ(0, S(ParamSet()));
-    EXPECT_EQ(S.Points(), points);
-    EXPECT_EQ(0, func_calls);
-    EXPECT_EQ(points->size(), summand_calls);
-    EXPECT_EQ(1, coef_calls);
     for (int count = 1; count < 5; count++) {
         func_calls = summand_calls = coef_calls = 0;
-        points << Point({0}, 0);
+        points.push_back(make_point(ParamSet{0}, 0));
+	OptimalityForPoints S(points, make_shared<ParameterFunction>(f), c, s);
         EXPECT_EQ(count, S(ParamSet()));
         EXPECT_EQ(0, func_calls);
-        EXPECT_EQ(points->size(), summand_calls);
+        EXPECT_EQ(points.size(), summand_calls);
         EXPECT_EQ(1, coef_calls);
     }
 }
-template<shared_ptr<OptimalityForPoints> OptimalityAlgorithm(shared_ptr<FitPoints>, shared_ptr<IParamFunc>)>
+template<shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, shared_ptr<IParamFunc>)>
 void test_optimality1(double v = INFINITY)
 {
-    auto points = make_shared<FitPoints>()
-    << Point({0}, {0, 1})
-    << Point({1}, {0, 1})
-    << Point({2}, {0, 1});
+    FitPoints points{
+	Point({0}, {0, 1}),
+	Point({1}, {0, 1}),
+	Point({2}, {0, 1})
+    };
     auto F = make_shared<ParameterFunction>([](const ParamSet &, const ParamSet &) {
         return 0;
     });
@@ -94,15 +90,15 @@ void test_optimality1(double v = INFINITY)
 }
 TEST(OptimalityForPoints, SumSquareDiff)
 {
-    test_optimality1<SumSquareDiff>(3);
+    test_optimality1<SumSquareDiff>(3.);
 }
 TEST(OptimalityForPoints, ChiSquare)
 {
-    test_optimality1<ChiSquare>(3);
+    test_optimality1<ChiSquare>(3.);
 }
 typedef Add<Mul<Arg<0>, Par<0>>, Par<1>> Fit_Func;
 typedef Const<1> Fit_Func_err;
-auto TestPoints = make_shared<FitPoints>() << Point({0}, {1, 1}) << Point({1}, {2, 1}) << Point({2}, {3, 1});
+FitPoints TestPoints{Point({0}, {1, 1}),Point({1}, {2, 1}),Point({2}, {3, 1})};
 auto Init = make_shared<InitialDistributions>() << make_shared<DistribUniform>(0, 2) << make_shared<DistribUniform>(0, 2);
 TEST(Fit, Basetest)
 {

@@ -29,44 +29,31 @@ private:
 };
 typedef MathTemplates::point<ParamSet,MathTemplates::value<>> Point;
 typedef MathTemplates::Points<ParamSet,MathTemplates::value<>> FitPoints;
-std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const Point &p);
-std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const FitPoints&data);
-template<class Y>
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::point<double,Y> &p){
-    src << Point(ParamSet().push_back(p.X()),p.Y());
-    return src;
-}
-template<class Y>
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::Points<double,Y> &h){
-    for (const auto&p:h)src << p;
-    return src;
-}
-template<class Y>
-inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::SortedPoints<double,Y> &h){
-    for (const auto&p:h)src << p;
-    return src;
-}
-
+typedef MathTemplates::point<double,MathTemplates::value<>> Point1D;
+typedef MathTemplates::Points<double,MathTemplates::value<>> FitPoints1D;
+typedef MathTemplates::SortedPoints<double,MathTemplates::value<>> FitPoints1DSorted;
 class OptimalityForPoints: public IOptimalityFunction
 {
 public:
     typedef std::function<double(const ParamSet &, const IParamFunc &)> Coefficient;
     typedef std::function<double(const Point &, const ParamSet &, const IParamFunc &)> Summand;
-    OptimalityForPoints(const std::shared_ptr<FitPoints> p, const  std::shared_ptr<IParamFunc> f, const Coefficient c, const Summand s);
+    OptimalityForPoints(const FitPoints&p, const  std::shared_ptr<IParamFunc> f, const Coefficient c, const Summand s);
     virtual ~OptimalityForPoints();
     virtual double operator()(const ParamSet &P)const override;
-    std::shared_ptr<FitPoints> Points()const;
+    const FitPoints&Points()const;
 protected:
-    std::shared_ptr<FitPoints> points;
-    std::shared_ptr<IParamFunc> func;
+    FitPoints points;
     Coefficient C;
     Summand S;
+    std::shared_ptr<IParamFunc> func;
 };
-std::shared_ptr<OptimalityForPoints> SumSquareDiff(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
-std::shared_ptr<OptimalityForPoints> ChiSquare(const std::shared_ptr<FitPoints> points, const std::shared_ptr<IParamFunc> f);
+std::shared_ptr<OptimalityForPoints> SumSquareDiff(const FitPoints&points, const std::shared_ptr<IParamFunc> f);
+std::shared_ptr<OptimalityForPoints> ChiSquare(const FitPoints&points, const std::shared_ptr<IParamFunc> f);
+FitPoints ConvertPoints(const FitPoints1D&source);
+FitPoints ConvertPoints(const FitPoints1DSorted&source);
 template <
     class MUTATION_TYPE,
-    std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>, const std::shared_ptr<IParamFunc>) = ChiSquare
+    std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare
     >
 class Fit: public virtual MUTATION_TYPE
 {
@@ -78,14 +65,15 @@ protected:
         m_func = f;
     }
 public:
-    Fit(
-        const std::shared_ptr<FitPoints> points,
-        const std::shared_ptr<IParamFunc> f
-    ): AbstractGenetic(OptimalityAlgorithm(points, f))
+    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f): AbstractGenetic(OptimalityAlgorithm(points, f))
     {
         m_func = f;
     }
-    Fit(const std::shared_ptr<FitPoints> points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
+    Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
+    template<class Source>
+    Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
+    template<class Source>
+    Fit(const Source&points,const paramFunc f):Fit(ConvertPoints(points),f){}
     virtual ~Fit() {}
     double operator()(const ParamSet &X)const
     {
@@ -97,7 +85,7 @@ public:
     }
     const FitPoints& Points()const
     {
-        return *std::dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();
+        return std::dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();
     }
     const MathTemplates::Points<double,MathTemplates::value<>> PointsProjection(const size_t index)
     {
@@ -107,14 +95,16 @@ public:
 	return res;
     }
 };
-template<class GENETIC, class FUNC, std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const std::shared_ptr<FitPoints>, const std::shared_ptr<IParamFunc>) = ChiSquare>
+template<class GENETIC, class FUNC, std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare>
 class FitFunction: public virtual Fit<GENETIC, OptimalityAlgorithm>
 {
 public:
     typedef FUNC functype;
-    FitFunction(const std::shared_ptr<FitPoints> points):
+    FitFunction(const FitPoints& points):
         AbstractGenetic(OptimalityAlgorithm(points, std::make_shared<FUNC>())),
         Fit<GENETIC, OptimalityAlgorithm>(std::make_shared<FUNC>()) {}
+    template<class Source>
+    FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
     virtual ~FitFunction() {}
 };
 }

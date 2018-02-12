@@ -17,42 +17,35 @@ double ParameterFunction::operator()(const ParamSet &X, const ParamSet &P)const
 {
     return func(X, P);
 }
-
-shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints>src, const Point &p)
-{
-    src->push_back(p);
-    return src;
+FitPoints ConvertPoints(const FitPoints1D&source){
+    FitPoints dest;
+    for(const auto&p:source)dest.push_back(make_point(ParamSet{p.X()},p.Y()));
+    return dest;
 }
-shared_ptr<FitPoints> operator<<(shared_ptr<FitPoints> src, const FitPoints &data)
-{
-    for (const Point &p : data)src << p;
-    return src;
+FitPoints ConvertPoints(const FitPoints1DSorted&source){
+    FitPoints dest;
+    for(const auto&p:source)dest.push_back(make_point(ParamSet{p.X()},p.Y()));
+    return dest;
 }
-OptimalityForPoints::OptimalityForPoints(
-    const std::shared_ptr< FitPoints > p,
-    const shared_ptr<IParamFunc> f,
-    const OptimalityForPoints::Coefficient c,
-    const OptimalityForPoints::Summand s
-)
+OptimalityForPoints::OptimalityForPoints(const FitPoints &p, const std::shared_ptr< Genetic::IParamFunc > f, const OptimalityForPoints::Coefficient c, const OptimalityForPoints::Summand s):points(p)
 {
-    points = p;
     func = f;
     C = c;
     S = s;
 }
 OptimalityForPoints::~OptimalityForPoints() {}
-shared_ptr<FitPoints> OptimalityForPoints::Points()const
+const FitPoints&OptimalityForPoints::Points()const
 {
     return points;
 }
 double OptimalityForPoints::operator()(const ParamSet &P)const
 {
     double res = 0;
-    for (const auto&p : *points)
+    for (const auto&p : points)
         res += S(p, P, *func);
     return res * C(P, *func);
 }
-shared_ptr<OptimalityForPoints> SumSquareDiff(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f)
+shared_ptr<OptimalityForPoints> SumSquareDiff(const FitPoints&points, const shared_ptr<IParamFunc> f)
 {
     OptimalityForPoints::Coefficient c = [](const ParamSet &, const IParamFunc &) {
         return 1.0;
@@ -63,7 +56,7 @@ shared_ptr<OptimalityForPoints> SumSquareDiff(const shared_ptr<FitPoints> points
     return make_shared<OptimalityForPoints>(points, f, c, s);
 }
 
-shared_ptr<OptimalityForPoints> ChiSquare(const shared_ptr<FitPoints> points, const shared_ptr<IParamFunc> f)
+shared_ptr< OptimalityForPoints > ChiSquare(const FitPoints &points, const shared_ptr<IParamFunc > f)
 {
     OptimalityForPoints::Coefficient c = [points](const ParamSet &, const IParamFunc &) {
         return 1.0;
@@ -73,4 +66,5 @@ shared_ptr<OptimalityForPoints> ChiSquare(const shared_ptr<FitPoints> points, co
     };
     return make_shared<OptimalityForPoints>(points, f, c, s);
 }
+
 }

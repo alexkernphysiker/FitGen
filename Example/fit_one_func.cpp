@@ -23,15 +23,15 @@ int main()
 #ifdef ____middle_version_of_math_h_____
     //in c++14+ version you can convert histogram to proper type
     Fit<DifferentialMutations<>> fit(
-	make_shared<FitPoints>() << distribution.removeXerorbars(),
+	distribution.removeXerorbars(),
 	[](const ParamSet & X, const ParamSet & P) {
 	    return Gaussian(X[0], P[0], P[1]) * P[2];
 	}
     );
 #else
     //in c++11 version you have to convert histogram points one-by-one
-    auto points=make_shared<FitPoints>();
-    for(const auto&P:distribution)points<<make_point(P.X().val(),P.Y());
+    FitPoints points;
+    for(const auto&P:distribution)points.push_back(make_point(ParamSet{P.X().val()},P.Y()));
     Fit<DifferentialMutations<>> fit(
 	points,
 	[](const ParamSet & X, const ParamSet & P) {
