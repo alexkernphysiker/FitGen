@@ -43,7 +43,8 @@ inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, con
 }
 template<class X,class Y>
 inline std::shared_ptr<FitPoints> operator<<(std::shared_ptr<FitPoints> src, const MathTemplates::SortedPoints<X,Y> &h){
-    return src<<h();
+    for (const auto&p:h)src << p;
+    return src;
 }
 
 class OptimalityForPoints: public IOptimalityFunction
