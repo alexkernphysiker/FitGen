@@ -3,7 +3,7 @@
 #include <math.h>
 #include <climits>
 #include <math_h/error.h>
-#include <Genetic/parabolic.h>
+#include <Genetic/uncertainties.h>
 namespace Genetic
 {
 using namespace std;

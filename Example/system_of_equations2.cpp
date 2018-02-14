@@ -3,7 +3,7 @@
 #include <Genetic/equation2.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/genetic.h>
-#include <Genetic/parabolic.h>
+#include <Genetic/uncertainties.h>
 using namespace std;
 using namespace Genetic;
 int main()

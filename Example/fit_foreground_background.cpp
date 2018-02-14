@@ -2,7 +2,7 @@
 #include <fstream>
 #include <gnuplot_wrap.h>
 #include <Genetic/fit.h>
-#include <Genetic/parabolic.h>
+#include <Genetic/uncertainties.h>
 #include <Genetic/filter.h>
 #include <Genetic/initialconditions.h>
 using namespace std;
