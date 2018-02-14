@@ -5,6 +5,7 @@
 #if __cplusplus<201100L
 #error c++>=11 is needed for using math_h headers
 #endif
+#include <math_h/sigma2.h>
 #include "abstract.h"
 #include "genetic.h"
 namespace Genetic
@@ -16,13 +17,13 @@ protected:
 public:
     virtual ~ParabolicErrorEstimationFromChisq();
     ParabolicErrorEstimationFromChisq &SetUncertaintyCalcDeltas(const ParamSet &P);
-    const std::vector<MathTemplates::value<double>> &ParametersWithUncertainties()const;
+    const std::vector<MathTemplates::value_numeric_distr<>> &ParametersWithUncertainties()const;
 protected:
     virtual void HandleIteration()override;
 private:
     double GetParamParabolicError(const double &delta, const size_t i)const;
     ParamSet m_delta;
-    std::shared_ptr<std::vector<MathTemplates::value<double>>> m_uncertainty_cache;
+    std::shared_ptr<std::vector<MathTemplates::value_numeric_distr<>>> m_uncertainty_cache;
 };
 typedef ParabolicErrorEstimationFromChisq Uncertainty;
 }

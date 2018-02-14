@@ -28,7 +28,7 @@ TEST(ParabolicErrorEstimationFromChisq, Base)
     .Init(1, make_shared<InitialDistributions>()
           << make_shared<DistribUniform>(-0.0001, 0.0001)
     );
-    EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[0].uncertainty() - 1.0, 2) < 0.0001);
+    EXPECT_TRUE(abs(gen.ParametersWithUncertainties()[0].uncertainty() - 1.0) < 0.1);
 }
 TEST(ParabolicErrorEstimationFromChisq, NegDelta)
 {
@@ -58,8 +58,8 @@ TEST(ParabolicErrorEstimationFromChisq, BaseTest)
         gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init);
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
-            EXPECT_EQ(gen.Parameters()[i], gen.ParametersWithUncertainties()[i].val());
-            EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[i].uncertainty() - 1.0, 2) < 0.0001);
+            EXPECT_TRUE(gen.ParametersWithUncertainties()[i].Contains(gen.Parameters()[i]));
+            EXPECT_TRUE(abs(gen.ParametersWithUncertainties()[i].uncertainty() - 1.0) < 0.1);
         }
     }
 }
@@ -73,8 +73,8 @@ TEST(ParabolicErrorEstimationFromChisq, MoreInteresting)
         gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
-            EXPECT_EQ(gen.Parameters()[i], gen.ParametersWithUncertainties()[i].val());
-            EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[i].uncertainty() - sqrt(0.5), 2) < 0.0001);
+            EXPECT_TRUE(gen.ParametersWithUncertainties()[i].Contains(gen.Parameters()[i]));
+            EXPECT_TRUE(abs(gen.ParametersWithUncertainties()[i].uncertainty() - sqrt(0.5)) < 0.1);
         }
     }
     for (int count = 1; count < 10; count++) {
@@ -85,8 +85,8 @@ TEST(ParabolicErrorEstimationFromChisq, MoreInteresting)
         gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
-            EXPECT_EQ(gen.Parameters()[i], gen.ParametersWithUncertainties()[i].val());
-            EXPECT_TRUE(pow(gen.ParametersWithUncertainties()[i].uncertainty() - sqrt(2.0), 2) < 0.0001);
+            EXPECT_TRUE(gen.ParametersWithUncertainties()[i].Contains(gen.Parameters()[i]));
+            EXPECT_TRUE(abs(gen.ParametersWithUncertainties()[i].uncertainty() - sqrt(2.0)) < 0.2);
         }
     }
 }
@@ -100,7 +100,7 @@ TEST(ParabolicErrorEstimationFromChisq, Infinite)
         gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
-            EXPECT_EQ(gen.Parameters()[i], gen.ParametersWithUncertainties()[i].val());
+            EXPECT_FALSE(isfinite(gen.ParametersWithUncertainties()[i].val()));
             EXPECT_FALSE(isfinite(gen.ParametersWithUncertainties()[i].uncertainty()));
         }
     }
@@ -112,7 +112,7 @@ TEST(ParabolicErrorEstimationFromChisq, Infinite)
         gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
-            EXPECT_EQ(gen.Parameters()[i], gen.ParametersWithUncertainties()[i].val());
+            EXPECT_FALSE(isfinite(gen.ParametersWithUncertainties()[i].val()));
             EXPECT_FALSE(isfinite(gen.ParametersWithUncertainties()[i].uncertainty()));
         }
     }

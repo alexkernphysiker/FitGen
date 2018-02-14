@@ -10,7 +10,7 @@ using namespace std;
 using namespace MathTemplates;
 ParabolicErrorEstimationFromChisq::ParabolicErrorEstimationFromChisq()
 {
-    m_uncertainty_cache = make_shared<vector<value<double>>>();
+    m_uncertainty_cache = make_shared<vector<value_numeric_distr<>>>();
 }
 ParabolicErrorEstimationFromChisq::~ParabolicErrorEstimationFromChisq() {}
 double ParabolicErrorEstimationFromChisq::GetParamParabolicError(const double &delta, const size_t i)const
@@ -42,11 +42,11 @@ ParabolicErrorEstimationFromChisq &ParabolicErrorEstimationFromChisq::SetUncerta
     return *this;
 }
 
-const vector<value<double>> &ParabolicErrorEstimationFromChisq::ParametersWithUncertainties()const
+const vector<value_numeric_distr<double>> &ParabolicErrorEstimationFromChisq::ParametersWithUncertainties()const
 {
     if (m_uncertainty_cache->size() == 0) {
         for (size_t i = 0; (i < ParamCount()) && (i < m_delta.size()); i++) {
-            m_uncertainty_cache->push_back(value<double>(Parameters()[i], GetParamParabolicError(m_delta[i], i)));
+            m_uncertainty_cache->push_back(value_numeric_distr<>(Parameters()[i], GetParamParabolicError(m_delta[i], i)));
         }
     }
     return *m_uncertainty_cache;
