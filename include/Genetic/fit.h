@@ -60,15 +60,9 @@ class Fit: public virtual MUTATION_TYPE
 private:
     std::shared_ptr<IParamFunc> m_func;
 protected:
-    Fit(std::shared_ptr<IParamFunc> f)
-    {
-        m_func = f;
-    }
+    Fit(std::shared_ptr<IParamFunc> f){m_func = f;}
 public:
-    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f): AbstractGenetic(OptimalityAlgorithm(points, f))
-    {
-        m_func = f;
-    }
+    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f): AbstractGenetic(OptimalityAlgorithm(points, f)){m_func = f;}
     Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
@@ -79,10 +73,7 @@ public:
     {
         return m_func->operator()(X, AbstractGenetic::Parameters());
     }
-    std::shared_ptr<IParamFunc> Func()const
-    {
-        return m_func;
-    }
+    std::shared_ptr<IParamFunc> Func()const{return m_func;}
     const FitPoints& Points()const
     {
         return std::dynamic_pointer_cast<OptimalityForPoints>(AbstractGenetic::OptimalityCalculator())->Points();
