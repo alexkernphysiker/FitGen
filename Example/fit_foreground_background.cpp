@@ -37,7 +37,7 @@ int main()
 	{ 27.5, {511.4, 15.0}}
     };
     //Fitting
-    FitFunction<DifferentialMutations<Uncertainty>, TotalFunc> fit(data);
+    FitFunction<DifferentialMutations<>, TotalFunc> fit(data);
     fit.SetFilter([](const ParamSet & P) {
         return (P[0] > 0) && (P[1] > 0);
     });
@@ -72,7 +72,7 @@ int main()
 
     //Plotting total fit and background
     const auto &P = fit.Parameters();
-    const auto chain = ChainWithStep(-70.0, 0.1, 30.0);
+    const auto chain = ChainWithStep(-70.0, 1.0, 30.0);
     const SortedPoints<>
     totalfit([&fit](double x) {
         return fit({x});
@@ -80,7 +80,7 @@ int main()
     background([&P](double x) {
         return Background()({x}, P);
     }, chain);
-    Plot("FitGen-example2").YUncertainties(fit.PointsProjection(0),"points").Line(totalfit, "fit")
-    .Line(background, "background") << "set key on";
+    Plot("FitGen-example2").YUncertainties(fit.PointsProjection(0),"points")
+    .Line(totalfit, "fit").Line(background, "background") << "set key on";
     return 0;
 }

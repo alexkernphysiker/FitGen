@@ -112,6 +112,10 @@ TEST(Fit, Basetest)
     EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
     EXPECT_EQ(1, fit.Parameters()[0]);
     EXPECT_EQ(1, fit.Parameters()[1]);
+    fit.SetUncertaintyCalcDeltas({0.01,0.01});
+    for(double x=0;x<2;x+=0.1){
+	EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
+    }
 }
 TEST(FitFunction, Basetest)
 {
@@ -125,4 +129,8 @@ TEST(FitFunction, Basetest)
     EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
     EXPECT_EQ(1, fit.Parameters()[0]);
     EXPECT_EQ(1, fit.Parameters()[1]);
+    fit.SetUncertaintyCalcDeltas({0.01,0.01});
+    for(double x=0;x<2;x+=0.1){
+	EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
+    }
 }

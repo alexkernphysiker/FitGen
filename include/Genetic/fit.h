@@ -9,6 +9,7 @@
 #include <math_h/tabledata.h>
 #include "abstract.h"
 #include "genetic.h"
+#include "uncertainties.h"
 namespace Genetic
 {
 class IParamFunc
@@ -55,14 +56,16 @@ template <
     class MUTATION_TYPE,
     std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare
     >
-class Fit: public virtual MUTATION_TYPE
+class Fit: public virtual MUTATION_TYPE,public virtual ParabolicErrorEstimationFromChisq
 {
 private:
     std::shared_ptr<IParamFunc> m_func;
 protected:
     Fit(std::shared_ptr<IParamFunc> f){m_func = f;}
 public:
-    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f): AbstractGenetic(OptimalityAlgorithm(points, f)){m_func = f;}
+    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):
+	AbstractGenetic(OptimalityAlgorithm(points, f)),
+	ParabolicErrorEstimationFromChisq(){m_func = f;}
     Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
@@ -72,6 +75,13 @@ public:
     double operator()(const ParamSet &X)const
     {
         return m_func->operator()(X, AbstractGenetic::Parameters());
+    }
+    MathTemplates::value<> FuncWithUncertainties(const ParamSet &X)const
+    {
+        const std::function<double(const std::vector<double>&)> F=[&X,this](const std::vector<double>&P){
+	    return m_func->operator()(X,ParamSet{P});
+	};
+	return MathTemplates::FUNC(F,ParabolicErrorEstimationFromChisq::ParametersWithUncertainties());
     }
     std::shared_ptr<IParamFunc> Func()const{return m_func;}
     const FitPoints& Points()const
