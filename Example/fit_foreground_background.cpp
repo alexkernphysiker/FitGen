@@ -10,7 +10,7 @@ using namespace Genetic;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
 typedef Mul<Par<0>, Func3<BreitWigner, Arg<0>, Par<2>, Par<1>>> Foreground;
-typedef PolynomFunc<Arg<0>, Foreground::ParamCount, 3> Background;
+typedef PolynomFunc<Arg<0>, Foreground::ParamCount, 4> Background;
 typedef Add<Foreground, Background> TotalFunc;
 int main()
 {
@@ -84,9 +84,9 @@ int main()
         return fit.FuncWithUncertainties({x});
     }, chain);
     Plot("FitGen-example2")
+    .YUncertainties(fit.PointsProjection(0),"points")
     .Line(totalfit, "fit").Line(background, "background")
     .YUncertainties(fit_u(),"fit uncertainty")
-    .YUncertainties(fit.PointsProjection(0),"points")
     << "set key on";
     return 0;
 }
