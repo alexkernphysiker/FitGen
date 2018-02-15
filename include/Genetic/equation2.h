@@ -10,6 +10,7 @@
 #include <vector>
 #include <math_h/sigma.h>
 #include "abstract.h"
+#include "uncertainties.h"
 namespace Genetic
 {
 struct InexactEquation {
@@ -28,13 +29,15 @@ private:
     std::vector<InexactEquation> f_data;
 };
 template<class MUTATION_TYPE>
-class InexactEquationSolver: public virtual MUTATION_TYPE
+class InexactEquationSolver: public virtual MUTATION_TYPE,public virtual ParabolicErrorEstimationFromChisq
 {
 public:
     InexactEquationSolver(const std::initializer_list<InexactEquation> &source)
-        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)) {}
+        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)),
+	    ParabolicErrorEstimationFromChisq(){}
     InexactEquationSolver(const std::vector<InexactEquation> &source)
-        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)) {}
+        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)),
+	    ParabolicErrorEstimationFromChisq(){}
     virtual ~InexactEquationSolver() {}
     const std::vector<InexactEquation> &equations()const
     {

@@ -3,13 +3,12 @@
 #include <Genetic/equation2.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/genetic.h>
-#include <Genetic/uncertainties.h>
 using namespace std;
 using namespace Genetic;
 int main()
 {
     //declaring
-    InexactEquationSolver<DifferentialMutations<Uncertainty>> example {
+    InexactEquationSolver<DifferentialMutations<>> example {
         {
             .left = [](const ParamSet & X){return X[0] + X[1];},
             .right = {1.98, 0.03}
