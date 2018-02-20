@@ -112,6 +112,19 @@ TEST(Fit, Basetest)
     EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
     EXPECT_EQ(1, fit.Parameters()[0]);
     EXPECT_EQ(1, fit.Parameters()[1]);
+}
+TEST(Fit2, Basetest)
+{
+    Fit2<DifferentialMutations<>> fit(TestPoints, make_shared<Fit_Func>());
+    fit.Init(30, Init);
+    while (!fit.ConcentratedInOnePoint())
+        fit.Iterate();
+    EXPECT_TRUE(fit.ParamCount() == 2);
+    EXPECT_TRUE(fit.PopulationSize() == 30);
+    EXPECT_TRUE(fit.Optimality() == 0);
+    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit.Parameters()[0]);
+    EXPECT_EQ(1, fit.Parameters()[1]);
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
     for(double x=0;x<2;x+=0.1){
 	EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
@@ -120,6 +133,19 @@ TEST(Fit, Basetest)
 TEST(FitFunction, Basetest)
 {
     FitFunction<DifferentialMutations<>, Fit_Func, SumSquareDiff> fit(TestPoints);
+    fit.Init(30, Init);
+    while (!fit.ConcentratedInOnePoint())
+        fit.Iterate();
+    EXPECT_TRUE(fit.ParamCount() == 2);
+    EXPECT_TRUE(fit.PopulationSize() == 30);
+    EXPECT_TRUE(fit.Optimality() == 0);
+    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit.Parameters()[0]);
+    EXPECT_EQ(1, fit.Parameters()[1]);
+}
+TEST(FitFunction2, Basetest)
+{
+    FitFunction2<DifferentialMutations<>, Fit_Func> fit(TestPoints);
     fit.Init(30, Init);
     while (!fit.ConcentratedInOnePoint())
         fit.Iterate();

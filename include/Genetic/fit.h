@@ -56,16 +56,14 @@ template <
     class MUTATION_TYPE,
     std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare
     >
-class Fit: public virtual MUTATION_TYPE,public virtual ParabolicErrorEstimationFromChisq
+class Fit: public virtual MUTATION_TYPE
 {
 private:
     std::shared_ptr<IParamFunc> m_func;
 protected:
     Fit(std::shared_ptr<IParamFunc> f){m_func = f;}
 public:
-    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):
-	AbstractGenetic(OptimalityAlgorithm(points, f)),
-	ParabolicErrorEstimationFromChisq(){m_func = f;}
+    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(OptimalityAlgorithm(points, f)){m_func = f;}
     Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
@@ -75,13 +73,6 @@ public:
     double operator()(const ParamSet &X)const
     {
         return m_func->operator()(X, AbstractGenetic::Parameters());
-    }
-    MathTemplates::value<> FuncWithUncertainties(const ParamSet &X)const
-    {
-        const std::function<double(const std::vector<double>&)> F=[&X,this](const std::vector<double>&P){
-	    return m_func->operator()(X,ParamSet{P});
-	};
-	return MathTemplates::FUNC(F,ParabolicErrorEstimationFromChisq::ParametersWithUncertainties());
     }
     std::shared_ptr<IParamFunc> Func()const{return m_func;}
     const FitPoints& Points()const
@@ -96,6 +87,26 @@ public:
 	return res;
     }
 };
+template<class MUTATION_TYPE>
+class Fit2: public virtual Fit<MUTATION_TYPE,ChiSquare>,public virtual ParabolicErrorEstimationFromChisq
+{
+public:
+    Fit2(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(ChiSquare(points, f))
+	,Fit<MUTATION_TYPE,ChiSquare>(f),ParabolicErrorEstimationFromChisq(){}
+    Fit2(const FitPoints&points, const paramFunc f): Fit2(points, std::make_shared<ParameterFunction>(f)) {}
+    template<class Source>
+    Fit2(const Source&points,const std::shared_ptr<IParamFunc> f):Fit2(ConvertPoints(points),f){}
+    template<class Source>
+    Fit2(const Source&points,const paramFunc f):Fit2(ConvertPoints(points),f){}
+    virtual ~Fit2() {}
+    MathTemplates::value<> FuncWithUncertainties(const ParamSet &X)const
+    {
+        const std::function<double(const std::vector<double>&)> F=[&X,this](const std::vector<double>&P){
+	    return Fit<MUTATION_TYPE,ChiSquare>::Func()->operator()(X,ParamSet{P});
+	};
+	return MathTemplates::FUNC(F,ParabolicErrorEstimationFromChisq::ParametersWithUncertainties());
+    }
+};
 template<class GENETIC, class FUNC, std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare>
 class FitFunction: public virtual Fit<GENETIC, OptimalityAlgorithm>
 {
@@ -103,10 +114,24 @@ public:
     typedef FUNC functype;
     FitFunction(const FitPoints& points):
         AbstractGenetic(OptimalityAlgorithm(points, std::make_shared<FUNC>())),
-        Fit<GENETIC, OptimalityAlgorithm>(std::make_shared<FUNC>()) {}
+        Fit<GENETIC, OptimalityAlgorithm>(std::make_shared<FUNC>()){}
     template<class Source>
     FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
     virtual ~FitFunction() {}
+};
+
+template<class GENETIC, class FUNC>
+class FitFunction2: public virtual Fit2<GENETIC>
+{
+public:
+    typedef FUNC functype;
+    FitFunction2(const FitPoints& points):
+	AbstractGenetic(ChiSquare(points, std::make_shared<FUNC>())),
+	Fit<GENETIC,ChiSquare>(points,std::make_shared<FUNC>()),
+	Fit2<GENETIC>(points,std::make_shared<FUNC>()){}
+    template<class Source>
+    FitFunction2(const Source&points):FitFunction2(ConvertPoints(points)){}
+    virtual ~FitFunction2() {}
 };
 }
 #endif
