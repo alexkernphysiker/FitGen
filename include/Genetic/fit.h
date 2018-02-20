@@ -87,6 +87,19 @@ public:
 	return res;
     }
 };
+template<class GENETIC, class FUNC, std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare>
+class FitFunction: public virtual Fit<GENETIC, OptimalityAlgorithm>
+{
+public:
+    typedef FUNC functype;
+    FitFunction(const FitPoints& points):
+        AbstractGenetic(OptimalityAlgorithm(points, std::make_shared<FUNC>())),
+        Fit<GENETIC, OptimalityAlgorithm>(std::make_shared<FUNC>()){}
+    template<class Source>
+    FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
+    virtual ~FitFunction() {}
+};
+
 template<class MUTATION_TYPE>
 class Fit2: public virtual Fit<MUTATION_TYPE,ChiSquare>,public virtual ParabolicErrorEstimationFromChisq
 {
@@ -107,19 +120,6 @@ public:
 	return MathTemplates::FUNC(F,ParabolicErrorEstimationFromChisq::ParametersWithUncertainties());
     }
 };
-template<class GENETIC, class FUNC, std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare>
-class FitFunction: public virtual Fit<GENETIC, OptimalityAlgorithm>
-{
-public:
-    typedef FUNC functype;
-    FitFunction(const FitPoints& points):
-        AbstractGenetic(OptimalityAlgorithm(points, std::make_shared<FUNC>())),
-        Fit<GENETIC, OptimalityAlgorithm>(std::make_shared<FUNC>()){}
-    template<class Source>
-    FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
-    virtual ~FitFunction() {}
-};
-
 template<class GENETIC, class FUNC>
 class FitFunction2: public virtual Fit2<GENETIC>
 {

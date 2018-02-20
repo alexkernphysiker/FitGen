@@ -9,7 +9,7 @@ using namespace std;
 using namespace Genetic;
 using namespace MathTemplates;
 using namespace GnuplotWrap;
-typedef Mul<Par<0>, Func3<BreitWigner, Arg<0>, Par<2>, Par<1>>> Foreground;
+typedef Mul<Par<0>, Func3<Gaussian, Arg<0>, Par<2>, Par<1>>> Foreground;
 typedef PolynomFunc<Arg<0>, Foreground::ParamCount, 4> Background;
 typedef Add<Foreground, Background> TotalFunc;
 int main()
