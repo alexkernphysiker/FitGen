@@ -74,12 +74,8 @@ int main()
     const auto &P = fit.Parameters();
     const auto chain = ChainWithStep(-70.0, 1.0, 30.0);
     const SortedPoints<>
-    totalfit([&fit](double x) {
-        return fit({x});
-    }, chain),
-    background([&P](double x) {
-        return Background()({x}, P);
-    }, chain);
+	totalfit([&fit](double x) {return fit({x});}, chain),
+	background([&P](double x) {return Background()({x}, P);}, chain);
     const SortedPoints<double,value<>> fit_u([&fit](double x) {
         return fit.FuncWithUncertainties({x});
     }, chain);
