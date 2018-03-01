@@ -369,6 +369,6 @@ TEST(SearchMin, Integrationtest)
         return X[0] * X[0];
     });
     test.Init(20, make_shared<InitialDistributions>() << make_shared<DistribUniform>(-10, 10));
-    Find(test);
+    while(!test.ConcentratedInOnePoint())test.Iterate();
     EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);
 }

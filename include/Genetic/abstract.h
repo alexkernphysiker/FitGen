@@ -82,11 +82,6 @@ private:
     size_t threads;
 #endif
 };
-inline void Find(AbstractGenetic &fit)
-{
-    while (!fit.ConcentratedInOnePoint())
-        fit.Iterate();
-}
 
 class Filter: public IParamCheck
 {

@@ -105,7 +105,7 @@ TEST(InexactEquationSolver, Integrationtest)
     test.Init(100, make_shared<InitialDistributions>()
               << make_shared<DistribUniform>(-20, 20) << make_shared<DistribUniform>(-20, 20)
     );
-    Find(test);
+    while(!test.ConcentratedInOnePoint())test.Iterate();
     EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);
     EXPECT_TRUE(pow(test.Parameters()[1], 2) < 0.0000001);
     for (const auto &eq : test.equations()) {

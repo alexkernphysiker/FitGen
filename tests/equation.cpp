@@ -157,7 +157,7 @@ TEST(EquationSolver, Integrationtest)
     test.Init(100, make_shared<InitialDistributions>()
               << make_shared<DistribGauss>(-20, 20) << make_shared<DistribGauss>(-20, 20)
     );
-    Find(test);
+    while(!test.ConcentratedInOnePoint())test.Iterate();
     EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);
     EXPECT_TRUE(pow(test.Parameters()[1], 2) < 0.0000001);
     const auto &X = test.Parameters();

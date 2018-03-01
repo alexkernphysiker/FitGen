@@ -22,12 +22,10 @@ int main()
     solution.Init(20, make_shared<InitialDistributions>()
                  << make_shared<DistribUniform>(0, 3)
                  << make_shared<DistribUniform>(0, 3));
-    Find(solution);
+    while (!solution.AbsoluteOptimalityExitCondition(0.00000000000000001))solution.Iterate();
     //output results
     const auto &X = solution.Parameters();
     cout << endl << "Solution: x0=" << X[0] << "; x1=" << X[1] << endl;
-    cout << solution.equations()[0].left(X) << "==" << solution.equations()[0].right(X) << endl;
-    cout << solution.equations()[1].left(X) << "==" << solution.equations()[1].right(X) << endl;
     return 0;
 }
 
