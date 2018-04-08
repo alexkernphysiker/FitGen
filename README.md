@@ -79,21 +79,3 @@ Second example
 	
 is the example of fitting points with sum of foreground and background.
 
-
-Unit tests (require GoogleTest framework)
-=========================================
-
-	tests/*.cpp
-
-
-CMake Options
-=============
-
-if ON the tests are compiled
-
-	tests
-
-
-if ON then the version supporting free threading will be compiled
-
-	threads
