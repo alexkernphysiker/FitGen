@@ -68,8 +68,7 @@ public:
     const bool ParametersDispersionExitCondition(const ParamSet &max_disp)const;
     const bool RelativeParametersDispersionExitCondition(const ParamSet &max_disp)const;
 protected:
-    //contains empty implementation for templates from genetic.h could work correctly
-    virtual void mutations(ParamSet &)const;
+    virtual void mutations(ParamSet &)const;//contains empty implementation for templates from genetic.h could work correctly
     virtual void HandleIteration();
 private:
     std::shared_ptr<IOptimalityFunction> m_optimality;

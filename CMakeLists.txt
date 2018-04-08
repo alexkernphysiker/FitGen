@@ -1,9 +1,5 @@
 project(FitGen)
 if(DEFINED MATH_H_INC)
-    if(DEFINED THREADS)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-	add_definitions(-Dusing_multithread)
-    endif()
 	get_directory_property(has_parent PARENT_DIRECTORY)
 	if(has_parent)
 		set(FITGEN_INC 

@@ -28,7 +28,10 @@ Then add to CMakeLists.txt
 
 	add_definitions(--std=c++17) #the most recommended compiler mode
 	set(GTEST ON) #for compiling unit-tests. Requires gtest
-	#set(THREADS ON) #this option is not recomended because of some bug with multithreading
+	
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread") #option needed for multithreading
+	add_definitions(-Dusing_multithread) #option needed for multithreading
+	
 	add_subdirectory(math_h)
 	add_subdirectory(FitGen)
 	include_directories(${MATH_H_INC})

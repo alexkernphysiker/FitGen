@@ -14,15 +14,7 @@ using namespace MathTemplates;
 #ifdef using_multithread
 typedef lock_guard<mutex> Lock;
 #endif
-template<class Create, class Condition>
-inline ParamSet CreateNew(const Create create, const Condition condition)
-{
-    //if the condition cannot return true this will hang up
-    while (true) {
-        ParamSet res = create();
-        if (condition(res))return res;
-    }
-}
+
 AbstractGenetic::AbstractGenetic()
 {
 #ifdef using_multithread
@@ -97,19 +89,13 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
     auto add_to_population = [this, initial_conditions](size_t count) {
         for (size_t i = 0; i < count; i++) {
             double s = INFINITY;
-            ParamSet new_param = CreateNew(
-            [this, initial_conditions]() {
-#ifdef using_multithread
-                Lock lock(m_mutex);
-#endif
-                return initial_conditions->Generate();
-            },
-            [this, &s](const ParamSet & p) {
-                if (!(m_filter->operator()(p)))return false;
-                s = m_optimality->operator()(p);
-                return isfinite(s) != 0;
-            }
-                                 );
+	    ParamSet new_param;
+	    while (true) {
+		new_param = initial_conditions->Generate();
+                if (!(m_filter->operator()(new_param)))continue;
+                s = m_optimality->operator()(new_param);
+                if(isfinite(s))break;
+	    }
             auto new_point = make_point(s,new_param);
             {
 #ifdef using_multithread
@@ -146,38 +132,27 @@ void AbstractGenetic::Iterate()
     size_t n = PopulationSize();
     size_t par_cnt = ParamCount();
 #ifdef using_multithread
-    //if n==0 we won't get here
     if (ThreadCount() > n)
         SetThreadCount(n);
 #endif
     SortedPoints<double,ParamSet> tmp_population;
     auto process_elements = [this, &tmp_population](size_t from, size_t to) {
         for (size_t i = from; i <= to; i++) {
-            point<double,ParamSet> point(0,{});
-            {
-#ifdef using_multithread
-                Lock lock(m_mutex);
-#endif
-                point = m_population[i];
-            }
+	    ParamSet new_param;
             double s = INFINITY;
-            ParamSet new_param = CreateNew(
-		[this, &point]() {
-		    ParamSet p = point.Y();
-		    mutations(p);
-		    return p;
-		},
-		[this, &s](const ParamSet & p) {
-		    if (!(m_filter->operator()(p)))return false;
-		    s = m_optimality->operator()(p);
-		    return isfinite(s) != 0;
-		}
-	    );
+	    while (true) {
+		new_param = m_population[i].Y();
+		mutations(new_param);
+		if (!(m_filter->operator()(new_param)))continue;
+		s = m_optimality->operator()(new_param);
+		if(isfinite(s))break;
+	    }
+            auto new_point = make_point(s,new_param);
             {
 #ifdef using_multithread
                 Lock lock(m_mutex);
 #endif
-                tmp_population << point << make_point(s,new_param);
+                tmp_population << m_population[i] << new_point;
             }
         }
     };

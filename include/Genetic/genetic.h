@@ -36,8 +36,8 @@ protected:
     {
         FITGEN::mutations(C);
         std::uniform_int_distribution<int> randomelement(0, AbstractGenetic::PopulationSize() - 1);
-        auto A = AbstractGenetic::Parameters(randomelement(MathTemplates::RandomEngine<>::Instance()));
-        auto B = AbstractGenetic::Parameters(randomelement(MathTemplates::RandomEngine<>::Instance()));
+        const auto&A = AbstractGenetic::Parameters(randomelement(MathTemplates::RandomEngine<>::Instance()));
+        const auto&B = AbstractGenetic::Parameters(randomelement(MathTemplates::RandomEngine<>::Instance()));
         for (size_t i = 0; i < C.size(); i++)
             C(i) += M * (A[i] - B[i]);
     }

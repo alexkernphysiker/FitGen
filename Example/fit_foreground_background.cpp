@@ -41,6 +41,10 @@ int main()
     fit.SetFilter([](const ParamSet & P) {
         return (P[0] > 0) && (P[1] > 0);
     });
+#ifdef using_multithread
+    cout<<"Setting four threads"<<endl;
+    fit.SetThreadCount(4);
+#endif
     auto initial = make_shared<InitialDistributions>()
                    << make_shared<DistribGauss>(100., 100.)
                    << make_shared<DistribUniform>(0., 50.)
