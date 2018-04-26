@@ -18,7 +18,7 @@ int main()
     };
     //searching the solution
     solution.Init(7, make_shared<InitialDistributions>()<< make_shared<DistribUniform>(-2,2));
-    while (!solution.AbsoluteOptimalityExitCondition(0.000000001))solution.Iterate();
+    while (!solution.AbsoluteOptimalityExitCondition(0.000000000001))solution.Iterate();
     //output results
     cout << endl << "Solution: x=" << solution.Parameters()[0]<< endl;
     cout << endl << "Sigma: " << solution.ParametersStatistics()[0].uncertainty()<< endl;
