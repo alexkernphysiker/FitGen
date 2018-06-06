@@ -27,11 +27,8 @@ If you have your git repository with cmake project you can add needed repositori
 Then add to CMakeLists.txt
 
 	add_compile_options(--std=c++17) #the most recommended compiler mode
-	set(GTEST ON) #for compiling unit-tests. Requires gtest
-	
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread") #option needed for multithreading
 	add_definitions(-Dusing_multithread) #option needed for multithreading
-	
 	add_subdirectory(math_h)
 	add_subdirectory(FitGen)
 	include_directories(${MATH_H_INC})
@@ -62,7 +59,7 @@ Then add these lines to your project that uses the library
 	add_definitions(-std=c++17)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 	add_definitions(-Dusing_multithread)
-	find_library(FitGen_LIBRARY "FitGen" "/usr/lib" "/usr/local/lib")
+	find_library(FitGen_LIBRARY "FitGen")
 
 And when you link your binary with the library use
 
