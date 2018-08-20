@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 #include <math_h/error.h>
 #include <Genetic/fit.h>
+#include <Genetic/uncertainties.h>
 #include <Genetic/initialconditions.h>
 #include <Genetic/paramfunc.h>
 using namespace std;
@@ -120,7 +121,7 @@ TEST(Fit, Basetest)
     EXPECT_EQ(1, fit_copy.Parameters()[0]);
     EXPECT_EQ(1, fit_copy.Parameters()[1]);
 }
-TEST(Fit2, Basetest)
+TEST(Fit, Basetest2)
 {
     Fit<DifferentialMutations<>,ChiSquare,UncertaintiesEstimation> fit(TestPoints, make_shared<Fit_Func>());
     fit.Init(30, Init);
@@ -165,7 +166,7 @@ TEST(FitFunction, Basetest)
     EXPECT_EQ(1, fit_copy.Parameters()[0]);
     EXPECT_EQ(1, fit_copy.Parameters()[1]);
 }
-TEST(FitFunction2, Basetest)
+TEST(FitFunction, Basetest2)
 {
     FitFunction<DifferentialMutations<>, Fit_Func,ChiSquare,UncertaintiesEstimation> fit(TestPoints);
     fit.Init(30, Init);
@@ -189,4 +190,31 @@ TEST(FitFunction2, Basetest)
     EXPECT_EQ(1, fit_copy.Parameters()[1]);
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
+}
+TEST(FitFunction, Basetest3)
+{
+    FitFunction<DifferentialMutations<>, Fit_Func,ChiSquare,FunctionUncertaintiesEstimation> fit(TestPoints);
+    fit.Init(30, Init);
+    while (!fit.ConcentratedInOnePoint())
+        fit.Iterate();
+    EXPECT_TRUE(fit.ParamCount() == 2);
+    EXPECT_TRUE(fit.PopulationSize() == 30);
+    EXPECT_TRUE(fit.Optimality() == 0);
+    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit.Parameters()[0]);
+    EXPECT_EQ(1, fit.Parameters()[1]);
+    fit.SetUncertaintyCalcDeltas({0.01,0.01});
+    EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
+    EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
+    for(double x=0;x<=2;x+=0.1)EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
+    const auto fit_copy=fit;
+    EXPECT_TRUE(fit_copy.ParamCount() == 2);
+    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
+    EXPECT_TRUE(fit_copy.Optimality() == 0);
+    EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit_copy.Parameters()[0]);
+    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
+    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
+    for(double x=0;x<=2;x+=0.1)EXPECT_TRUE(fit_copy.FuncWithUncertainties({x}).Contains(fit_copy({x})));
 }

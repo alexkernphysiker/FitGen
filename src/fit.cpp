@@ -67,4 +67,11 @@ shared_ptr< OptimalityForPoints > ChiSquare(const FitPoints &points, const share
     return make_shared<OptimalityForPoints>(points, f, c, s);
 }
 
+
+FunctionContainer::FunctionContainer(shared_ptr<IParamFunc> f):m_func(f){}
+FunctionContainer::FunctionContainer(const FunctionContainer&source):m_func(source.m_func){}
+FunctionContainer::~FunctionContainer(){}
+shared_ptr<IParamFunc> FunctionContainer::Func()const{return m_func;}
+double FunctionContainer::func(const ParamSet&X,const ParamSet&P)const{return m_func->operator()(X,P);}
+
 }

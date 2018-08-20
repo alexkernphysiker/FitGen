@@ -58,4 +58,21 @@ const vector<value_numeric_distr<double>> &UncertaintiesEstimation::ParametersWi
     return *m_uncertainty_cache;
 }
 
+FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation():UncertaintiesEstimation(),FunctionContainer(nullptr){}
+FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation(const FunctionUncertaintiesEstimation&source):UncertaintiesEstimation(source),FunctionContainer(source){}
+FunctionUncertaintiesEstimation::~FunctionUncertaintiesEstimation(){}
+value<> FunctionUncertaintiesEstimation::FuncWithUncertainties(const ParamSet&X)const{
+    const double val=FunctionContainer::func(X,AbstractGenetic::Parameters());
+    double unc_sqr=0;
+    const auto&PU=UncertaintiesEstimation::ParametersWithUncertainties();
+    for(size_t i=0;i<AbstractGenetic::ParamCount();i++){
+	ParamSet P=AbstractGenetic::Parameters();
+	P(i)=PU[i].max();
+	const double valu=FunctionContainer::func(X,P);
+	P(i)=PU[i].min();
+	const double vald=FunctionContainer::func(X,P);
+	unc_sqr+=pow((valu-vald)/2.0,2);
+    }
+    return value<>(val,sqrt(unc_sqr));
+}
 }

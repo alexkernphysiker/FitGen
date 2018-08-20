@@ -7,7 +7,7 @@
 #endif
 #include <math_h/sigma2.h>
 #include "abstract.h"
-#include "genetic.h"
+#include "fit.h"
 namespace Genetic
 {
 class UncertaintiesEstimation: public virtual AbstractGenetic
@@ -25,6 +25,14 @@ private:
     double GetParamParabolicError(const double &delta, const size_t i)const;
     ParamSet m_delta;
     std::shared_ptr<std::vector<MathTemplates::value_numeric_distr<>>> m_uncertainty_cache;
+};
+class FunctionUncertaintiesEstimation:public UncertaintiesEstimation,public virtual FunctionContainer{
+protected:
+    FunctionUncertaintiesEstimation();
+    FunctionUncertaintiesEstimation(const FunctionUncertaintiesEstimation&source);
+public:
+    virtual ~FunctionUncertaintiesEstimation();
+    MathTemplates::value<> FuncWithUncertainties(const ParamSet&X)const;
 };
 }
 #endif

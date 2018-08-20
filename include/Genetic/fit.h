@@ -9,7 +9,6 @@
 #include <math_h/tabledata.h>
 #include "abstract.h"
 #include "genetic.h"
-#include "uncertainties.h"
 namespace Genetic
 {
 class IParamFunc
@@ -52,32 +51,37 @@ std::shared_ptr<OptimalityForPoints> SumSquareDiff(const FitPoints&points, const
 std::shared_ptr<OptimalityForPoints> ChiSquare(const FitPoints&points, const std::shared_ptr<IParamFunc> f);
 FitPoints ConvertPoints(const FitPoints1D&source);
 FitPoints ConvertPoints(const FitPoints1DSorted&source);
+class FunctionContainer{
+protected:
+    FunctionContainer(std::shared_ptr<IParamFunc> f);
+public:
+    FunctionContainer(const FunctionContainer&source);
+    virtual ~FunctionContainer();
+    std::shared_ptr<IParamFunc> Func()const;
+    double func(const ParamSet&X,const ParamSet&P)const;
+    double operator()(const ParamSet &X)const;
+private:
+    std::shared_ptr<IParamFunc> m_func;
+};
 template <
     class MUTATION_TYPE,
     std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare,
     class... Parrents
 >
-class Fit: public virtual MUTATION_TYPE,public virtual Parrents...
+class Fit: public virtual FunctionContainer,public virtual MUTATION_TYPE,public virtual Parrents...
 {
     static_assert(std::is_base_of<EmptyMutation,MUTATION_TYPE>::value,"Mutation algorithm must be a class derived from EmptyMutation");
-private:
-    std::shared_ptr<IParamFunc> m_func;
-protected:
-    Fit(std::shared_ptr<IParamFunc> f){m_func = f;}
 public:
-    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(OptimalityAlgorithm(points, f)){m_func = f;}
-    Fit(const Fit&source):AbstractGenetic(source),MUTATION_TYPE(source),m_func(source.m_func),Parrents(source)...{}
+    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(OptimalityAlgorithm(points, f)),FunctionContainer(f){}
+    Fit(const Fit&source):FunctionContainer(source),AbstractGenetic(source),MUTATION_TYPE(source),Parrents(source)...{}
     inline Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     inline Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
     template<class Source>
     inline Fit(const Source&points,const paramFunc f):Fit(ConvertPoints(points),f){}
     virtual ~Fit() {}
-    inline std::shared_ptr<IParamFunc> Func()const{return m_func;}
-    inline double func(const ParamSet&X,const ParamSet&P)const{return m_func->operator()(X,P);}
-    inline double operator()(const ParamSet &X)const
-    {
-        return func(X, AbstractGenetic::Parameters());
+    double operator()(const ParamSet &X)const{
+	return FunctionContainer::func(X, AbstractGenetic::Parameters());
     }
     inline const FitPoints& Points()const
     {
@@ -98,13 +102,14 @@ class FitFunction: public Fit<GENETIC, OptimalityAlgorithm,Parrents...>
 public:
     typedef FUNC functype;
     FitFunction(const FitPoints& points):
-        AbstractGenetic(OptimalityAlgorithm(points, std::make_shared<FUNC>())),
-        Fit<GENETIC, OptimalityAlgorithm,Parrents...>(std::make_shared<FUNC>()){}
-    FitFunction(const FitFunction&source):AbstractGenetic(source),Fit<GENETIC, OptimalityAlgorithm,Parrents...>(source),Parrents(source)...{}
+	FunctionContainer(std::make_shared<FUNC>()),
+        AbstractGenetic(OptimalityAlgorithm(points,FunctionContainer::Func())),
+        Fit<GENETIC, OptimalityAlgorithm,Parrents...>(points,FunctionContainer::Func()){}
+    FitFunction(const FitFunction&source):FunctionContainer(source),AbstractGenetic(source),Fit<GENETIC, OptimalityAlgorithm,Parrents...>(source),Parrents(source)...{}
     template<class Source>
     inline FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
-    virtual ~FitFunction() {}
+    virtual ~FitFunction(){}
 };
 
-}
+};
 #endif
