@@ -10,7 +10,7 @@
 #include <vector>
 #include <math_h/sigma.h>
 #include "abstract.h"
-#include "uncertainties.h"
+#include "genetic.h"
 namespace Genetic
 {
 struct InexactEquation {
@@ -28,18 +28,17 @@ public:
 private:
     std::vector<InexactEquation> f_data;
 };
-template<class MUTATION_TYPE>
-class InexactEquationSolver: public virtual MUTATION_TYPE,public virtual ParabolicErrorEstimationFromChisq
+template<class MUTATION_TYPE,class...Parrents>
+class InexactEquationSolver: public virtual MUTATION_TYPE,public virtual Parrents...
 {
+    static_assert(std::is_base_of<EmptyMutation,MUTATION_TYPE>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 public:
     InexactEquationSolver(const std::initializer_list<InexactEquation> &source)
-        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)),
-	    ParabolicErrorEstimationFromChisq(){}
+        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
     InexactEquationSolver(const std::vector<InexactEquation> &source)
-        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)),
-	    ParabolicErrorEstimationFromChisq(){}
+        : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
     InexactEquationSolver(const InexactEquationSolver &source)
-        : AbstractGenetic(source),ParabolicErrorEstimationFromChisq(source),MUTATION_TYPE(source){}
+        : AbstractGenetic(source),MUTATION_TYPE(source),Parrents(source)...{}
     virtual ~InexactEquationSolver() {}
     const std::vector<InexactEquation> &equations()const
     {

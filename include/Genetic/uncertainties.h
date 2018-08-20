@@ -10,14 +10,14 @@
 #include "genetic.h"
 namespace Genetic
 {
-class ParabolicErrorEstimationFromChisq: public virtual AbstractGenetic
+class UncertaintiesEstimation: public virtual AbstractGenetic
 {
 protected:
-    ParabolicErrorEstimationFromChisq();
-    ParabolicErrorEstimationFromChisq(const ParabolicErrorEstimationFromChisq&source);
+    UncertaintiesEstimation();
+    UncertaintiesEstimation(const UncertaintiesEstimation&source);
 public:
-    virtual ~ParabolicErrorEstimationFromChisq();
-    ParabolicErrorEstimationFromChisq &SetUncertaintyCalcDeltas(const ParamSet &P);
+    virtual ~UncertaintiesEstimation();
+    UncertaintiesEstimation &SetUncertaintyCalcDeltas(const ParamSet &P);
     const std::vector<MathTemplates::value_numeric_distr<>> &ParametersWithUncertainties()const;
 protected:
     virtual void HandleIteration()override;
@@ -26,6 +26,5 @@ private:
     ParamSet m_delta;
     std::shared_ptr<std::vector<MathTemplates::value_numeric_distr<>>> m_uncertainty_cache;
 };
-typedef ParabolicErrorEstimationFromChisq Uncertainty;
 }
 #endif

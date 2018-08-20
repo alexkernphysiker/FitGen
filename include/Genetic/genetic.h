@@ -20,7 +20,7 @@ public:
 template<class FITGEN = EmptyMutation>
 class DifferentialMutations: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 private:
     double M;
 public:
@@ -52,7 +52,7 @@ protected:
 template<class FITGEN = EmptyMutation>
 class Crossing: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 private:
     double P;
 public:
@@ -89,7 +89,7 @@ protected:
 template<class FITGEN = EmptyMutation>
 class AbsoluteMutations: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 private:
     double P;
     ParamSet m_mutation;
@@ -137,7 +137,7 @@ protected:
 template<class FITGEN = EmptyMutation>
 class RelativeMutations: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 private:
     double P;
     ParamSet m_mutation;
@@ -185,7 +185,7 @@ protected:
 template<class FITGEN>
 class ExactCopying: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 private:
     double P;
 public:

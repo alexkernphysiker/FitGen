@@ -54,17 +54,19 @@ FitPoints ConvertPoints(const FitPoints1D&source);
 FitPoints ConvertPoints(const FitPoints1DSorted&source);
 template <
     class MUTATION_TYPE,
-    std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare
-    >
-class Fit: public virtual MUTATION_TYPE
+    std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare,
+    class... Parrents
+>
+class Fit: public virtual MUTATION_TYPE,public virtual Parrents...
 {
+    static_assert(std::is_base_of<EmptyMutation,MUTATION_TYPE>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 private:
     std::shared_ptr<IParamFunc> m_func;
 protected:
     Fit(std::shared_ptr<IParamFunc> f){m_func = f;}
 public:
     Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(OptimalityAlgorithm(points, f)){m_func = f;}
-    Fit(const Fit&source):AbstractGenetic(source),MUTATION_TYPE(source),m_func(source.m_func){}
+    Fit(const Fit&source):AbstractGenetic(source),MUTATION_TYPE(source),m_func(source.m_func),Parrents(source)...{}
     inline Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     inline Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
@@ -89,54 +91,20 @@ public:
 	return res;
     }
 };
-template<class GENETIC, class FUNC, std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare>
-class FitFunction: public virtual Fit<GENETIC, OptimalityAlgorithm>
+template<class GENETIC, class FUNC, std::shared_ptr<OptimalityForPoints> OptimalityAlgorithm(const FitPoints&, const std::shared_ptr<IParamFunc>) = ChiSquare,class...Parrents>
+class FitFunction: public Fit<GENETIC, OptimalityAlgorithm,Parrents...>
 {
+    static_assert(std::is_base_of<EmptyMutation,GENETIC>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 public:
     typedef FUNC functype;
     FitFunction(const FitPoints& points):
         AbstractGenetic(OptimalityAlgorithm(points, std::make_shared<FUNC>())),
-        Fit<GENETIC, OptimalityAlgorithm>(std::make_shared<FUNC>()){}
-    FitFunction(const FitFunction&source):AbstractGenetic(source),Fit<GENETIC, OptimalityAlgorithm>(source){}
+        Fit<GENETIC, OptimalityAlgorithm,Parrents...>(std::make_shared<FUNC>()){}
+    FitFunction(const FitFunction&source):AbstractGenetic(source),Fit<GENETIC, OptimalityAlgorithm,Parrents...>(source),Parrents(source)...{}
     template<class Source>
     inline FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
     virtual ~FitFunction() {}
 };
 
-template<class MUTATION_TYPE>
-class Fit2: public virtual Fit<MUTATION_TYPE,ChiSquare>,public virtual ParabolicErrorEstimationFromChisq
-{
-public:
-    Fit2(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(ChiSquare(points, f))
-	,Fit<MUTATION_TYPE,ChiSquare>(f),ParabolicErrorEstimationFromChisq(){}
-    inline Fit2(const FitPoints&points, const paramFunc f): Fit2(points, std::make_shared<ParameterFunction>(f)) {}
-    template<class Source>
-    inline Fit2(const Source&points,const std::shared_ptr<IParamFunc> f):Fit2(ConvertPoints(points),f){}
-    template<class Source>
-    inline Fit2(const Source&points,const paramFunc f):Fit2(ConvertPoints(points),f){}
-    Fit2(const Fit2&source):AbstractGenetic(source),Fit<MUTATION_TYPE,ChiSquare>(source),ParabolicErrorEstimationFromChisq(source){}
-    virtual ~Fit2() {}
-    MathTemplates::value<> FuncWithUncertainties(const ParamSet &X)const
-    {
-        const std::function<double(const std::vector<double>&)> F=[&X,this](const std::vector<double>&P){
-	    return Fit<MUTATION_TYPE,ChiSquare>::Func()->operator()(X,ParamSet{P});
-	};
-	return MathTemplates::FUNC(F,ParabolicErrorEstimationFromChisq::ParametersWithUncertainties());
-    }
-};
-template<class GENETIC, class FUNC>
-class FitFunction2: public virtual Fit2<GENETIC>
-{
-public:
-    typedef FUNC functype;
-    FitFunction2(const FitPoints& points):
-	AbstractGenetic(ChiSquare(points, std::make_shared<FUNC>())),
-	Fit<GENETIC,ChiSquare>(points,std::make_shared<FUNC>()),
-	Fit2<GENETIC>(points,std::make_shared<FUNC>()){}
-    template<class Source>
-    inline FitFunction2(const Source&points):FitFunction2(ConvertPoints(points)){}
-    FitFunction2(const FitFunction2&source):AbstractGenetic(source),Fit<GENETIC,ChiSquare>(source),ParabolicErrorEstimationFromChisq(source),Fit2<GENETIC>(source){}
-    virtual ~FitFunction2(){}
-};
 }
 #endif

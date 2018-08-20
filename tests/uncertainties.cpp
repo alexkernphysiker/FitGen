@@ -10,7 +10,7 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
-class ParabolicTest: public virtual ParabolicErrorEstimationFromChisq
+class ParabolicTest: public virtual UncertaintiesEstimation
 {
 public:
     ParabolicTest(const double test_param = 1): AbstractGenetic(make_shared<OptimalityFunction>([test_param](const ParamSet &P)
@@ -18,10 +18,10 @@ public:
         double res = 0;
         for (int i = 0, n = P.size(); i < n; i++)res += pow(P[i], 2);
         return res * test_param;
-    })), ParabolicErrorEstimationFromChisq() {}
+    })), UncertaintiesEstimation() {}
     virtual ~ParabolicTest() {}
 };
-TEST(ParabolicErrorEstimationFromChisq, Base)
+TEST(UncertaintiesEstimation, Base)
 {
     ParabolicTest gen;
     gen.SetUncertaintyCalcDeltas({0.01})
@@ -30,25 +30,25 @@ TEST(ParabolicErrorEstimationFromChisq, Base)
     );
     EXPECT_TRUE(abs(gen.ParametersWithUncertainties()[0].uncertainty() - 1.0) < 0.1);
 }
-TEST(ParabolicErrorEstimationFromChisq, NegDelta)
+TEST(UncertaintiesEstimation, NegDelta)
 {
     ParabolicTest gen;
     gen.SetUncertaintyCalcDeltas({ -0.01})
     .Init(1, make_shared<InitialDistributions>()
           << make_shared<DistribUniform>(-0.0001, 0.0001)
     );
-    EXPECT_THROW(gen.ParametersWithUncertainties()[0], Exception<ParabolicErrorEstimationFromChisq>);
+    EXPECT_THROW(gen.ParametersWithUncertainties()[0], Exception<UncertaintiesEstimation>);
 }
-TEST(ParabolicErrorEstimationFromChisq, NegZero)
+TEST(UncertaintiesEstimation, NegZero)
 {
     ParabolicTest gen;
     gen.SetUncertaintyCalcDeltas({0})
     .Init(1, make_shared<InitialDistributions>()
           << make_shared<DistribUniform>(-0.0001, 0.0001)
     );
-    EXPECT_THROW(gen.ParametersWithUncertainties()[0], Exception<ParabolicErrorEstimationFromChisq>);
+    EXPECT_THROW(gen.ParametersWithUncertainties()[0], Exception<UncertaintiesEstimation>);
 }
-TEST(ParabolicErrorEstimationFromChisq, BaseTest)
+TEST(UncertaintiesEstimation, BaseTest)
 {
     for (int count = 1; count < 10; count++) {
         ParabolicTest gen;
@@ -63,7 +63,7 @@ TEST(ParabolicErrorEstimationFromChisq, BaseTest)
         }
     }
 }
-TEST(ParabolicErrorEstimationFromChisq, MoreInteresting)
+TEST(UncertaintiesEstimation, MoreInteresting)
 {
     for (int count = 1; count < 10; count++) {
         ParabolicTest gen(2);
@@ -90,7 +90,7 @@ TEST(ParabolicErrorEstimationFromChisq, MoreInteresting)
         }
     }
 }
-TEST(ParabolicErrorEstimationFromChisq, Infinite)
+TEST(UncertaintiesEstimation, Infinite)
 {
     for (int count = 1; count < 10; count++) {
         ParabolicTest gen(0.);

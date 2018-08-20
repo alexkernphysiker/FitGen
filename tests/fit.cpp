@@ -122,7 +122,7 @@ TEST(Fit, Basetest)
 }
 TEST(Fit2, Basetest)
 {
-    Fit2<DifferentialMutations<>> fit(TestPoints, make_shared<Fit_Func>());
+    Fit<DifferentialMutations<>,ChiSquare,UncertaintiesEstimation> fit(TestPoints, make_shared<Fit_Func>());
     fit.Init(30, Init);
     while (!fit.ConcentratedInOnePoint())
         fit.Iterate();
@@ -133,9 +133,8 @@ TEST(Fit2, Basetest)
     EXPECT_EQ(1, fit.Parameters()[0]);
     EXPECT_EQ(1, fit.Parameters()[1]);
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
-    for(double x=0;x<2;x+=0.1){
-	EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
-    }
+    EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
+    EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
     const auto fit_copy=fit;
     EXPECT_TRUE(fit_copy.ParamCount() == 2);
     EXPECT_TRUE(fit_copy.PopulationSize() == 30);
@@ -143,9 +142,8 @@ TEST(Fit2, Basetest)
     EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
     EXPECT_EQ(1, fit_copy.Parameters()[0]);
     EXPECT_EQ(1, fit_copy.Parameters()[1]);
-    for(double x=0;x<2;x+=0.1){
-	EXPECT_TRUE(fit_copy.FuncWithUncertainties({x}).Contains(fit_copy({x})));
-    }
+    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
+    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
 }
 TEST(FitFunction, Basetest)
 {
@@ -169,7 +167,7 @@ TEST(FitFunction, Basetest)
 }
 TEST(FitFunction2, Basetest)
 {
-    FitFunction2<DifferentialMutations<>, Fit_Func> fit(TestPoints);
+    FitFunction<DifferentialMutations<>, Fit_Func,ChiSquare,UncertaintiesEstimation> fit(TestPoints);
     fit.Init(30, Init);
     while (!fit.ConcentratedInOnePoint())
         fit.Iterate();
@@ -180,9 +178,8 @@ TEST(FitFunction2, Basetest)
     EXPECT_EQ(1, fit.Parameters()[0]);
     EXPECT_EQ(1, fit.Parameters()[1]);
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
-    for(double x=0;x<2;x+=0.1){
-	EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
-    }
+    EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
+    EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
     const auto fit_copy=fit;
     EXPECT_TRUE(fit_copy.ParamCount() == 2);
     EXPECT_TRUE(fit_copy.PopulationSize() == 30);
@@ -190,7 +187,6 @@ TEST(FitFunction2, Basetest)
     EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
     EXPECT_EQ(1, fit_copy.Parameters()[0]);
     EXPECT_EQ(1, fit_copy.Parameters()[1]);
-    for(double x=0;x<2;x+=0.1){
-	EXPECT_TRUE(fit_copy.FuncWithUncertainties({x}).Contains(fit_copy({x})));
-    }
+    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
+    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
 }

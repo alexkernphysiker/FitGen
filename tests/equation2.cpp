@@ -4,6 +4,7 @@
 #include <math_h/error.h>
 #include <Genetic/equation2.h>
 #include <Genetic/genetic.h>
+#include <Genetic/uncertainties.h>
 #include <Genetic/initialconditions.h>
 using namespace std;
 using namespace MathTemplates;
@@ -96,7 +97,7 @@ TEST(InexactEquationSystem, two_eq2)
     EXPECT_EQ(A({0.0, 1.0}), 2);
     EXPECT_EQ(A({0.0, 2.0}), 8);
 }
-TEST(InexactEquationSolver, Integrationtest)
+TEST(InexactEquationSolver, Integrationtest1)
 {
     InexactEquationSolver<DifferentialMutations<>> test {
         {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}},
@@ -112,5 +113,44 @@ TEST(InexactEquationSolver, Integrationtest)
         EXPECT_EQ(0, eq.right.val());
         EXPECT_EQ(1, eq.right.uncertainty());
         EXPECT_TRUE(pow(eq.left(test.Parameters()).val(), 2) < 0.0000001);
+    }
+    const auto test_copy=test;
+    EXPECT_TRUE(pow(test_copy.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test_copy.Parameters()[1], 2) < 0.0000001);
+    for (const auto &eq : test_copy.equations()) {
+        EXPECT_EQ(0, eq.right.val());
+        EXPECT_EQ(1, eq.right.uncertainty());
+        EXPECT_TRUE(pow(eq.left(test_copy.Parameters()).val(), 2) < 0.0000001);
+    }
+}
+TEST(InexactEquationSolver, Integrationtest2)
+{
+    InexactEquationSolver<DifferentialMutations<>,UncertaintiesEstimation> test {
+        {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}},
+        {.left = [](const ParamSet & P)->double{return P[0] - P[1];}, .right = {0, 1}}
+    };
+    test.Init(100, make_shared<InitialDistributions>()
+              << make_shared<DistribUniform>(-20, 20) << make_shared<DistribUniform>(-20, 20)
+    );
+    while(!test.ConcentratedInOnePoint())test.Iterate();
+    EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test.Parameters()[1], 2) < 0.0000001);
+    test.SetUncertaintyCalcDeltas({0.01,0.01});
+    EXPECT_TRUE(test.ParametersWithUncertainties()[0].Contains(test.Parameters()[0]));
+    EXPECT_TRUE(test.ParametersWithUncertainties()[1].Contains(test.Parameters()[1]));
+    for (const auto &eq : test.equations()) {
+        EXPECT_EQ(0, eq.right.val());
+        EXPECT_EQ(1, eq.right.uncertainty());
+        EXPECT_TRUE(pow(eq.left(test.Parameters()).val(), 2) < 0.0000001);
+    }
+    const auto test_copy=test;
+    EXPECT_TRUE(pow(test_copy.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test_copy.Parameters()[1], 2) < 0.0000001);
+    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[0].Contains(test.Parameters()[0]));
+    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[1].Contains(test.Parameters()[1]));
+    for (const auto &eq : test_copy.equations()) {
+        EXPECT_EQ(0, eq.right.val());
+        EXPECT_EQ(1, eq.right.uncertainty());
+        EXPECT_TRUE(pow(eq.left(test_copy.Parameters()).val(), 2) < 0.0000001);
     }
 }

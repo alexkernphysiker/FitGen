@@ -37,7 +37,7 @@ int main()
 	{ 27.5, {511.4, 15.0}}
     };
     //Fitting. Variant with suffix 2 contains uncertainty estimation facilities
-    FitFunction2<DifferentialMutations<>, TotalFunc> fit(data);
+    FitFunction<DifferentialMutations<>, TotalFunc,ChiSquare,UncertaintiesEstimation> fit(data);
     fit.SetFilter([](const ParamSet & P) {
         return (P[0] > 0) && (P[1] > 0);
     });
@@ -80,13 +80,9 @@ int main()
     const SortedPoints<>
 	totalfit([&fit](double x) {return fit({x});}, chain),
 	background([&P](double x) {return Background()({x}, P);}, chain);
-    const SortedPoints<double,value<>> fit_u([&fit](double x) {
-        return fit.FuncWithUncertainties({x});
-    }, chain);
     Plot("FitGen-example2")
     .YUncertainties(fit.PointsProjection(0),"points")
     .Line(totalfit, "fit").Line(background, "background")
-    .YUncertainties(fit_u(),"fit uncertainty")
     << "set key on";
     return 0;
 }

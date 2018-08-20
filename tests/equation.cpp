@@ -4,6 +4,7 @@
 #include <math_h/error.h>
 #include <Genetic/equation.h>
 #include <Genetic/genetic.h>
+#include <Genetic/uncertainties.h>
 #include <Genetic/initialconditions.h>
 using namespace std;
 using namespace MathTemplates;
@@ -171,4 +172,41 @@ TEST(EquationSolver, Integrationtest)
     for (const auto &eq : test_copy.equations()) {
         EXPECT_TRUE(pow(eq.left(X2) - eq.right(X2), 2) < 0.0000001);
     }
+}
+TEST(EquationSolver, Integrationtest2)
+{
+    EquationSolver<DifferentialMutations<>,UncertaintiesEstimation> test {
+        {.left = [](const ParamSet & P){return P[0] + P[1];}, .right = [](const ParamSet &)
+            {
+                return 0;
+            }
+        },
+        {.left = [](const ParamSet & P){return P[0];}, .right = [](const ParamSet & P)
+            {
+                return P[1];
+            }
+        }
+    };
+    test.Init(100, make_shared<InitialDistributions>()
+              << make_shared<DistribGauss>(-20, 20) << make_shared<DistribGauss>(-20, 20)
+    );
+    while(!test.ConcentratedInOnePoint())test.Iterate();
+    EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test.Parameters()[1], 2) < 0.0000001);
+    const auto &X = test.Parameters();
+    for (const auto &eq : test.equations()) {
+        EXPECT_TRUE(pow(eq.left(X) - eq.right(X), 2) < 0.0000001);
+    }
+    test.SetUncertaintyCalcDeltas({0.01,0.01});
+    EXPECT_TRUE(test.ParametersWithUncertainties()[0].Contains(test.Parameters()[0]));
+    EXPECT_TRUE(test.ParametersWithUncertainties()[1].Contains(test.Parameters()[1]));
+    const auto test_copy=test;
+    EXPECT_TRUE(pow(test_copy.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test_copy.Parameters()[1], 2) < 0.0000001);
+    const auto &X2 = test_copy.Parameters();
+    for (const auto &eq : test_copy.equations()) {
+        EXPECT_TRUE(pow(eq.left(X2) - eq.right(X2), 2) < 0.0000001);
+    }
+    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[0].Contains(test.Parameters()[0]));
+    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[1].Contains(test.Parameters()[1]));
 }
