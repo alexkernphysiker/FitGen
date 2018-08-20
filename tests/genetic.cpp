@@ -190,7 +190,7 @@ TEST(RelativeMutations, Size)
         EXPECT_TRUE(P.size() == count);
     }
 }
-class TestMutations: public virtual AbstractGenetic
+class TestMutations: public EmptyMutation
 {
 public:
     TestMutations(): AbstractGenetic() {}

@@ -164,4 +164,11 @@ TEST(EquationSolver, Integrationtest)
     for (const auto &eq : test.equations()) {
         EXPECT_TRUE(pow(eq.left(X) - eq.right(X), 2) < 0.0000001);
     }
+    const auto test_copy=test;
+    EXPECT_TRUE(pow(test_copy.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test_copy.Parameters()[1], 2) < 0.0000001);
+    const auto &X2 = test_copy.Parameters();
+    for (const auto &eq : test_copy.equations()) {
+        EXPECT_TRUE(pow(eq.left(X2) - eq.right(X2), 2) < 0.0000001);
+    }
 }

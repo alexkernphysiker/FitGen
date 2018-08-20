@@ -11,14 +11,21 @@
 #include "abstract.h"
 namespace Genetic
 {
-template<class FITGEN = AbstractGenetic>
-class DifferentialMutations: public virtual FITGEN
+class EmptyMutation:public virtual AbstractGenetic{
+public:
+    EmptyMutation(){}
+    EmptyMutation(const EmptyMutation&source):AbstractGenetic(source){}
+    virtual ~EmptyMutation(){}
+};
+template<class FITGEN = EmptyMutation>
+class DifferentialMutations: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double M;
 public:
     DifferentialMutations(): FITGEN(), M(0.5) {}
+    DifferentialMutations(const DifferentialMutations&source): FITGEN(source), M(source.M),AbstractGenetic(source) {}
     virtual ~DifferentialMutations() {}
     const double &MutationCoefficient()const
     {
@@ -42,14 +49,15 @@ protected:
             C(i) += M * (A[i] - B[i]);
     }
 };
-template<class FITGEN = AbstractGenetic>
-class Crossing: public virtual FITGEN
+template<class FITGEN = EmptyMutation>
+class Crossing: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double P;
 public:
     Crossing(): FITGEN(), P(0) {}
+    Crossing(const Crossing&source): FITGEN(source), P(source.P),AbstractGenetic(source) {}
     virtual ~Crossing() {}
     const double &CrossingProbability()const
     {
@@ -78,15 +86,16 @@ protected:
         }
     }
 };
-template<class FITGEN = AbstractGenetic>
-class AbsoluteMutations: public virtual FITGEN
+template<class FITGEN = EmptyMutation>
+class AbsoluteMutations: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"");
 private:
     double P;
     ParamSet m_mutation;
 public:
     AbsoluteMutations(): FITGEN(), P(0) {}
+    AbsoluteMutations(const AbsoluteMutations&source): FITGEN(source), P(source.P),m_mutation(source.m_mutation),AbstractGenetic(source) {}
     virtual ~AbsoluteMutations() {}
     const ParamSet &AbsoluteMutationCoefficients()const
     {
@@ -125,15 +134,16 @@ protected:
             }
     }
 };
-template<class FITGEN = AbstractGenetic>
-class RelativeMutations: public virtual FITGEN
+template<class FITGEN = EmptyMutation>
+class RelativeMutations: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double P;
     ParamSet m_mutation;
 public:
     RelativeMutations(): FITGEN(), P(0) {}
+    RelativeMutations(const RelativeMutations&source): FITGEN(source), P(source.P),m_mutation(source.m_mutation),AbstractGenetic(source) {}
     virtual ~RelativeMutations() {}
     const ParamSet &RelativeMutationCoefficients()const
     {
@@ -173,13 +183,14 @@ protected:
     }
 };
 template<class FITGEN>
-class ExactCopying: public virtual FITGEN
+class ExactCopying: public FITGEN,public virtual AbstractGenetic
 {
-    static_assert(std::is_base_of<AbstractGenetic,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
+    static_assert(std::is_base_of<EmptyMutation,FITGEN>::value,"Mutation algorithm must be a class derived from AbstractGenetic");
 private:
     double P;
 public:
     ExactCopying(): FITGEN(), P(0) {}
+    ExactCopying(const ExactCopying&source): FITGEN(source), P(source.P),AbstractGenetic(source) {}
     virtual ~ExactCopying() {}
     ExactCopying &SetExactCopyingProbability(const double &value)
     {

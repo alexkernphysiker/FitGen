@@ -25,6 +25,17 @@ AbstractGenetic::AbstractGenetic()
         return true;
     });
 }
+AbstractGenetic::AbstractGenetic(const AbstractGenetic&source)
+{
+#ifdef using_multithread
+    threads = source.threads;
+#endif
+    m_itercount = source.m_itercount;
+    m_filter = source.m_filter;
+    m_population=source.m_population;
+    for(const auto&v:source.m_stat)m_stat.push_back(v);
+    m_optimality=source.m_optimality;
+}
 AbstractGenetic::AbstractGenetic(
     const shared_ptr<IOptimalityFunction> optimality
 ): AbstractGenetic()

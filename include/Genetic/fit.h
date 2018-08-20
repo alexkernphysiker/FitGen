@@ -64,6 +64,7 @@ protected:
     Fit(std::shared_ptr<IParamFunc> f){m_func = f;}
 public:
     Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(OptimalityAlgorithm(points, f)){m_func = f;}
+    Fit(const Fit&source):AbstractGenetic(source),MUTATION_TYPE(source),m_func(source.m_func){}
     inline Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     inline Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
@@ -96,6 +97,7 @@ public:
     FitFunction(const FitPoints& points):
         AbstractGenetic(OptimalityAlgorithm(points, std::make_shared<FUNC>())),
         Fit<GENETIC, OptimalityAlgorithm>(std::make_shared<FUNC>()){}
+    FitFunction(const FitFunction&source):AbstractGenetic(source),Fit<GENETIC, OptimalityAlgorithm>(source){}
     template<class Source>
     inline FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
     virtual ~FitFunction() {}
@@ -112,6 +114,7 @@ public:
     inline Fit2(const Source&points,const std::shared_ptr<IParamFunc> f):Fit2(ConvertPoints(points),f){}
     template<class Source>
     inline Fit2(const Source&points,const paramFunc f):Fit2(ConvertPoints(points),f){}
+    Fit2(const Fit2&source):AbstractGenetic(source),Fit<MUTATION_TYPE,ChiSquare>(source),ParabolicErrorEstimationFromChisq(source){}
     virtual ~Fit2() {}
     MathTemplates::value<> FuncWithUncertainties(const ParamSet &X)const
     {
@@ -132,7 +135,8 @@ public:
 	Fit2<GENETIC>(points,std::make_shared<FUNC>()){}
     template<class Source>
     inline FitFunction2(const Source&points):FitFunction2(ConvertPoints(points)){}
-    virtual ~FitFunction2() {}
+    FitFunction2(const FitFunction2&source):AbstractGenetic(source),Fit<GENETIC,ChiSquare>(source),ParabolicErrorEstimationFromChisq(source),Fit2<GENETIC>(source){}
+    virtual ~FitFunction2(){}
 };
 }
 #endif

@@ -38,6 +38,8 @@ public:
     InexactEquationSolver(const std::vector<InexactEquation> &source)
         : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)),
 	    ParabolicErrorEstimationFromChisq(){}
+    InexactEquationSolver(const InexactEquationSolver &source)
+        : AbstractGenetic(source),ParabolicErrorEstimationFromChisq(source),MUTATION_TYPE(source){}
     virtual ~InexactEquationSolver() {}
     const std::vector<InexactEquation> &equations()const
     {

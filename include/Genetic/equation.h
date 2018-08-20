@@ -32,6 +32,7 @@ public:
         : AbstractGenetic(std::make_shared<EquationSystem>(source)) {}
     EquationSolver(const std::vector<Equation> &source)
         : AbstractGenetic(std::make_shared<EquationSystem>(source)) {}
+    EquationSolver(const EquationSolver&source):AbstractGenetic(source),MUTATION_TYPE(source){}
     virtual ~EquationSolver() {}
     const std::vector<Equation> &equations()const
     {

@@ -14,6 +14,7 @@ class ParabolicErrorEstimationFromChisq: public virtual AbstractGenetic
 {
 protected:
     ParabolicErrorEstimationFromChisq();
+    ParabolicErrorEstimationFromChisq(const ParabolicErrorEstimationFromChisq&source);
 public:
     virtual ~ParabolicErrorEstimationFromChisq();
     ParabolicErrorEstimationFromChisq &SetUncertaintyCalcDeltas(const ParamSet &P);

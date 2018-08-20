@@ -12,6 +12,12 @@ ParabolicErrorEstimationFromChisq::ParabolicErrorEstimationFromChisq()
 {
     m_uncertainty_cache = make_shared<vector<value_numeric_distr<>>>();
 }
+ParabolicErrorEstimationFromChisq::ParabolicErrorEstimationFromChisq(const ParabolicErrorEstimationFromChisq&source)
+    :AbstractGenetic(source)
+{
+    m_delta=source.m_delta;
+    m_uncertainty_cache=source.m_uncertainty_cache;
+}
 ParabolicErrorEstimationFromChisq::~ParabolicErrorEstimationFromChisq() {}
 double ParabolicErrorEstimationFromChisq::GetParamParabolicError(const double &delta, const size_t i)const
 {

@@ -25,6 +25,7 @@ class SearchMin: public virtual MUTATION_TYPE
 public:
     SearchMin(const std::function<double(const ParamSet &)> f)
         : AbstractGenetic(std::make_shared<OptimalityFunction>(f)) {}
+    SearchMin(const SearchMin&source):MUTATION_TYPE(source){}
     virtual ~SearchMin() {}
 };
 }

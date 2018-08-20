@@ -112,6 +112,13 @@ TEST(Fit, Basetest)
     EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
     EXPECT_EQ(1, fit.Parameters()[0]);
     EXPECT_EQ(1, fit.Parameters()[1]);
+    const auto fit_copy=fit;
+    EXPECT_TRUE(fit_copy.ParamCount() == 2);
+    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
+    EXPECT_TRUE(fit_copy.Optimality() == 0);
+    EXPECT_TRUE(fit_copy.Optimality(fit_copy.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit_copy.Parameters()[0]);
+    EXPECT_EQ(1, fit_copy.Parameters()[1]);
 }
 TEST(Fit2, Basetest)
 {
@@ -129,6 +136,16 @@ TEST(Fit2, Basetest)
     for(double x=0;x<2;x+=0.1){
 	EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
     }
+    const auto fit_copy=fit;
+    EXPECT_TRUE(fit_copy.ParamCount() == 2);
+    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
+    EXPECT_TRUE(fit_copy.Optimality() == 0);
+    EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit_copy.Parameters()[0]);
+    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    for(double x=0;x<2;x+=0.1){
+	EXPECT_TRUE(fit_copy.FuncWithUncertainties({x}).Contains(fit_copy({x})));
+    }
 }
 TEST(FitFunction, Basetest)
 {
@@ -142,6 +159,13 @@ TEST(FitFunction, Basetest)
     EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
     EXPECT_EQ(1, fit.Parameters()[0]);
     EXPECT_EQ(1, fit.Parameters()[1]);
+    const auto fit_copy=fit;
+    EXPECT_TRUE(fit_copy.ParamCount() == 2);
+    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
+    EXPECT_TRUE(fit_copy.Optimality() == 0);
+    EXPECT_TRUE(fit_copy.Optimality(fit_copy.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit_copy.Parameters()[0]);
+    EXPECT_EQ(1, fit_copy.Parameters()[1]);
 }
 TEST(FitFunction2, Basetest)
 {
@@ -158,5 +182,15 @@ TEST(FitFunction2, Basetest)
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
     for(double x=0;x<2;x+=0.1){
 	EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
+    }
+    const auto fit_copy=fit;
+    EXPECT_TRUE(fit_copy.ParamCount() == 2);
+    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
+    EXPECT_TRUE(fit_copy.Optimality() == 0);
+    EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
+    EXPECT_EQ(1, fit_copy.Parameters()[0]);
+    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    for(double x=0;x<2;x+=0.1){
+	EXPECT_TRUE(fit_copy.FuncWithUncertainties({x}).Contains(fit_copy({x})));
     }
 }
