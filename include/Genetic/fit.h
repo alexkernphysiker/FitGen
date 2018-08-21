@@ -72,9 +72,9 @@ class Fit: public virtual FunctionContainer,public virtual MUTATION_TYPE,public 
 {
     static_assert(std::is_base_of<EmptyMutation,MUTATION_TYPE>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 public:
-    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):AbstractGenetic(OptimalityAlgorithm(points, f)),FunctionContainer(f){}
+    Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):FunctionContainer(f),AbstractGenetic(OptimalityAlgorithm(points, f)){}
     Fit(const Fit&source):FunctionContainer(source),AbstractGenetic(source),MUTATION_TYPE(source),Parrents(source)...{}
-    inline Fit(const FitPoints&points, const paramFunc f): Fit(points, std::make_shared<ParameterFunction>(f)) {}
+    inline Fit(const FitPoints&points, const paramFunc f):Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     inline Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
     template<class Source>
