@@ -58,7 +58,7 @@ const vector<value_numeric_distr<double>> &UncertaintiesEstimation::ParametersWi
     return *m_uncertainty_cache;
 }
 
-FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation():UncertaintiesEstimation(),FunctionContainer(nullptr){}
+FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation():FunctionContainer(nullptr),UncertaintiesEstimation(){}
 FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation(const FunctionUncertaintiesEstimation&source):UncertaintiesEstimation(source),FunctionContainer(source){}
 FunctionUncertaintiesEstimation::~FunctionUncertaintiesEstimation(){}
 value<> FunctionUncertaintiesEstimation::FuncWithUncertainties(const ParamSet&X)const{
