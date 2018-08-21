@@ -10,6 +10,7 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
+#define ALMOST_EQ(a,b) EXPECT_TRUE(pow(a-b,2)<0.000001)
 TEST(ParameterFunction, Basic)
 {
     int c = 0;
@@ -105,44 +106,44 @@ TEST(Fit, Basetest)
 {
     Fit<DifferentialMutations<>, SumSquareDiff> fit(TestPoints, make_shared<Fit_Func>());
     fit.Init(30, Init);
-    while (!fit.ConcentratedInOnePoint())
+    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
-    EXPECT_TRUE(fit.Optimality() == 0);
-    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit.Parameters()[0]);
-    EXPECT_EQ(1, fit.Parameters()[1]);
+    ALMOST_EQ(fit.Optimality(),0.0);
+    ALMOST_EQ(fit.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit.Parameters()[0]);
+    ALMOST_EQ(1.0, fit.Parameters()[1]);
     const auto fit_copy=fit;
     EXPECT_TRUE(fit_copy.ParamCount() == 2);
     EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    EXPECT_TRUE(fit_copy.Optimality() == 0);
-    EXPECT_TRUE(fit_copy.Optimality(fit_copy.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit_copy.Parameters()[0]);
-    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    ALMOST_EQ(fit_copy.Optimality(),0.0);
+    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
 }
 TEST(Fit, Basetest2)
 {
     Fit<DifferentialMutations<>,ChiSquare,UncertaintiesEstimation> fit(TestPoints, make_shared<Fit_Func>());
     fit.Init(30, Init);
-    while (!fit.ConcentratedInOnePoint())
+    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
-    EXPECT_TRUE(fit.Optimality() == 0);
-    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit.Parameters()[0]);
-    EXPECT_EQ(1, fit.Parameters()[1]);
+    ALMOST_EQ(fit.Optimality(),0.0);
+    ALMOST_EQ(fit.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit.Parameters()[0]);
+    ALMOST_EQ(1.0, fit.Parameters()[1]);
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
     EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
     const auto fit_copy=fit;
     EXPECT_TRUE(fit_copy.ParamCount() == 2);
     EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    EXPECT_TRUE(fit_copy.Optimality() == 0);
-    EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit_copy.Parameters()[0]);
-    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    ALMOST_EQ(fit_copy.Optimality(),0.0);
+    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
 }
@@ -150,44 +151,44 @@ TEST(FitFunction, Basetest)
 {
     FitFunction<DifferentialMutations<>, Fit_Func, SumSquareDiff> fit(TestPoints);
     fit.Init(30, Init);
-    while (!fit.ConcentratedInOnePoint())
+    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
-    EXPECT_TRUE(fit.Optimality() == 0);
-    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit.Parameters()[0]);
-    EXPECT_EQ(1, fit.Parameters()[1]);
+    ALMOST_EQ(fit.Optimality(),0.0);
+    ALMOST_EQ(fit.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit.Parameters()[0]);
+    ALMOST_EQ(1.0, fit.Parameters()[1]);
     const auto fit_copy=fit;
     EXPECT_TRUE(fit_copy.ParamCount() == 2);
     EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    EXPECT_TRUE(fit_copy.Optimality() == 0);
-    EXPECT_TRUE(fit_copy.Optimality(fit_copy.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit_copy.Parameters()[0]);
-    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    ALMOST_EQ(fit_copy.Optimality(),0.0);
+    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
 }
 TEST(FitFunction, Basetest2)
 {
     FitFunction<DifferentialMutations<>, Fit_Func,ChiSquare,UncertaintiesEstimation> fit(TestPoints);
     fit.Init(30, Init);
-    while (!fit.ConcentratedInOnePoint())
+    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
-    EXPECT_TRUE(fit.Optimality() == 0);
-    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit.Parameters()[0]);
-    EXPECT_EQ(1, fit.Parameters()[1]);
+    ALMOST_EQ(fit.Optimality(),0.0);
+    ALMOST_EQ(fit.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit.Parameters()[0]);
+    ALMOST_EQ(1.0, fit.Parameters()[1]);
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
     EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
     const auto fit_copy=fit;
     EXPECT_TRUE(fit_copy.ParamCount() == 2);
     EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    EXPECT_TRUE(fit_copy.Optimality() == 0);
-    EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit_copy.Parameters()[0]);
-    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    ALMOST_EQ(fit_copy.Optimality(),0.0);
+    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
 }
@@ -195,14 +196,14 @@ TEST(FitFunction, Basetest3)
 {
     FitFunction<DifferentialMutations<>, Fit_Func,ChiSquare,FunctionUncertaintiesEstimation> fit(TestPoints);
     fit.Init(30, Init);
-    while (!fit.ConcentratedInOnePoint())
+    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
-    EXPECT_TRUE(fit.Optimality() == 0);
-    EXPECT_TRUE(fit.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit.Parameters()[0]);
-    EXPECT_EQ(1, fit.Parameters()[1]);
+    ALMOST_EQ(fit.Optimality(),0.0);
+    ALMOST_EQ(fit.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit.Parameters()[0]);
+    ALMOST_EQ(1.0, fit.Parameters()[1]);
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
     EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
@@ -210,10 +211,10 @@ TEST(FitFunction, Basetest3)
     const auto fit_copy=fit;
     EXPECT_TRUE(fit_copy.ParamCount() == 2);
     EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    EXPECT_TRUE(fit_copy.Optimality() == 0);
-    EXPECT_TRUE(fit_copy.Optimality(fit.PopulationSize() - 1) == 0);
-    EXPECT_EQ(1, fit_copy.Parameters()[0]);
-    EXPECT_EQ(1, fit_copy.Parameters()[1]);
+    ALMOST_EQ(fit_copy.Optimality(),0.0);
+    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
     for(double x=0;x<=2;x+=0.1)EXPECT_TRUE(fit_copy.FuncWithUncertainties({x}).Contains(fit_copy({x})));
