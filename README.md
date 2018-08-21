@@ -38,34 +38,6 @@ Then commit your changes
 
 This library still can be compiled with c++11 or c++14 compiler but some features will be less optimized and work slower.
 
-
-You can also install the library in your system
-===============================================
-
-	git clone https://github.com/alexkernphysiker/math_h.git
-	cd math_h
-	cmake -DINSTALL=ON .
-	make
-	sudo make install
-	git clone https://github.com/alexkernphysiker/FitGen.git
-	cd FitGen
-	cmake -DINSTALL=ON .
-	make
-	sudo make install
-
-
-Then add these lines to your project that uses the library
-
-	add_definitions(-std=c++17)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-	add_definitions(-Dusing_multithread)
-	find_library(FitGen_LIBRARY "FitGen")
-
-And when you link your binary with the library use
-
-	target_link_libraries(my_application ${FitGen_LIBRARY})
-
-
 Examples
 ========
 
@@ -101,4 +73,32 @@ Second example
 	Example/fit_foreground_background.cpp
 	
 is the example of fitting points with sum of foreground and background.
+
+
+
+You can also install the library in your system
+===============================================
+
+	git clone https://github.com/alexkernphysiker/math_h.git
+	cd math_h
+	cmake -DINSTALL=ON .
+	make
+	sudo make install
+	git clone https://github.com/alexkernphysiker/FitGen.git
+	cd FitGen
+	cmake -DINSTALL=ON .
+	make
+	sudo make install
+
+
+Then add these lines to your project that uses the library
+
+	add_definitions(-std=c++17)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+	add_definitions(-Dusing_multithread)
+	find_library(FitGen_LIBRARY "FitGen")
+
+And when you link your binary with the library use
+
+	target_link_libraries(my_application ${FitGen_LIBRARY})
 
