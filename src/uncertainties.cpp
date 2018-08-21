@@ -59,7 +59,7 @@ const vector<value_numeric_distr<double>> &UncertaintiesEstimation::ParametersWi
 }
 
 FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation():FunctionContainer(nullptr),UncertaintiesEstimation(){}
-FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation(const FunctionUncertaintiesEstimation&source):UncertaintiesEstimation(source),FunctionContainer(source){}
+FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation(const FunctionUncertaintiesEstimation&source):FunctionContainer(source),UncertaintiesEstimation(source){}
 FunctionUncertaintiesEstimation::~FunctionUncertaintiesEstimation(){}
 value<> FunctionUncertaintiesEstimation::FuncWithUncertainties(const ParamSet&X)const{
     const double val=FunctionContainer::func(X,AbstractGenetic::Parameters());
