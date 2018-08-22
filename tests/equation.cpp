@@ -191,3 +191,24 @@ TEST(EquationSolver, Integrationtest2)
     EXPECT_TRUE(test_copy.ParametersWithUncertainties()[0].Contains(test.Parameters()[0]));
     EXPECT_TRUE(test_copy.ParametersWithUncertainties()[1].Contains(test.Parameters()[1]));
 }
+TEST(EquationSolver, Integrationtest3)
+{
+    EquationSolver<DifferentialMutations<>,UncertaintiesEstimation> test {
+        {
+	    .left = [](const ParamSet & P){return P[0] + P[1];}, 
+	    .right = [](const ParamSet &){return 1;}
+        },
+        {
+	    .left = [](const ParamSet & P){return P[0];}, 
+	    .right = [](const ParamSet & P){return P[1];}
+        }
+    };
+    test.Init(100, make_shared<InitialDistributions>()
+	<< make_shared<DistribGauss>(-20, 20) << make_shared<DistribGauss>(-20, 20)
+    );
+    while(!test.ConcentratedInOnePoint())test.Iterate();
+    test.SetUncertaintyCalcDeltas({0.01,0.01});
+    const auto test_copy=test;
+    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[0].Contains(test_copy.Parameters()[0]));
+    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[1].Contains(test_copy.Parameters()[1]));
+}
