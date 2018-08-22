@@ -53,10 +53,9 @@ TEST(EquationSystem, simple2)
 TEST(EquationSystem, twoparams)
 {
     EquationSystem A {
-        {.left = [](const ParamSet & P){return P[0] + P[1];}, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] + P[1];}, 
+	    .right = [](const ParamSet &){return 0;}
         }
     };
     EXPECT_EQ(A({0.0, 0.0}), 0);
@@ -71,13 +70,9 @@ TEST(EquationSystem, twoparams)
 TEST(EquationSystem, twoparams2)
 {
     EquationSystem A(vector<Equation> {
-        {.left = [](const ParamSet & P)
-            {
-                return P[0] + P[1];
-            }, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] + P[1];},
+	    .right = [](const ParamSet &){return 0;}
         }
     });
     EXPECT_EQ(A({0.0, 0.0}), 0);
@@ -92,15 +87,13 @@ TEST(EquationSystem, twoparams2)
 TEST(EquationSystem, two_eq)
 {
     EquationSystem A {
-        {.left = [](const ParamSet & P){return P[0] + P[1];}, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] + P[1];}, 
+	    .right = [](const ParamSet &){return 0;}
         },
-        {.left = [](const ParamSet & P){return P[0] - P[1];}, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] - P[1];}, 
+	    .right = [](const ParamSet &){return 0;}
         }
     };
     EXPECT_EQ(A({0.0, 0.0}), 0);
@@ -115,21 +108,13 @@ TEST(EquationSystem, two_eq)
 TEST(EquationSystem, two_eq2)
 {
     EquationSystem A(vector<Equation> {
-        {.left = [](const ParamSet & P)
-            {
-                return P[0] + P[1];
-            }, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] + P[1];}, 
+	    .right = [](const ParamSet &){return 0;}
         },
-        {.left = [](const ParamSet & P)
-            {
-                return P[0] - P[1];
-            }, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] - P[1];}, 
+	    .right = [](const ParamSet &){return 0;}
         }
     });
     EXPECT_EQ(A({0.0, 0.0}), 0);
@@ -144,15 +129,13 @@ TEST(EquationSystem, two_eq2)
 TEST(EquationSolver, Integrationtest)
 {
     EquationSolver<DifferentialMutations<>> test {
-        {.left = [](const ParamSet & P){return P[0] + P[1];}, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] + P[1];}, 
+	    .right = [](const ParamSet &){return 0;}
         },
-        {.left = [](const ParamSet & P){return P[0];}, .right = [](const ParamSet & P)
-            {
-                return P[1];
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0];}, 
+	    .right = [](const ParamSet & P){return P[1];}
         }
     };
     test.Init(100, make_shared<InitialDistributions>()
@@ -176,19 +159,17 @@ TEST(EquationSolver, Integrationtest)
 TEST(EquationSolver, Integrationtest2)
 {
     EquationSolver<DifferentialMutations<>,UncertaintiesEstimation> test {
-        {.left = [](const ParamSet & P){return P[0] + P[1];}, .right = [](const ParamSet &)
-            {
-                return 0;
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0] + P[1];}, 
+	    .right = [](const ParamSet &){return 0;}
         },
-        {.left = [](const ParamSet & P){return P[0];}, .right = [](const ParamSet & P)
-            {
-                return P[1];
-            }
+        {
+	    .left = [](const ParamSet & P){return P[0];}, 
+	    .right = [](const ParamSet & P){return P[1];}
         }
     };
     test.Init(100, make_shared<InitialDistributions>()
-              << make_shared<DistribGauss>(-20, 20) << make_shared<DistribGauss>(-20, 20)
+	<< make_shared<DistribGauss>(-20, 20) << make_shared<DistribGauss>(-20, 20)
     );
     while(!test.ConcentratedInOnePoint())test.Iterate();
     EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);

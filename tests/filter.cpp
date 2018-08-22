@@ -98,26 +98,11 @@ TEST(Below, BasicTest)
 }
 const int n = 5;
 shared_ptr<Filter> filters[] = {
-    make_shared<Filter>([](const ParamSet &)
-    {
-        return true;
-    }),
-    make_shared<Filter>([](const ParamSet &)
-    {
-        return true;
-    }),
-    make_shared<Filter>([](const ParamSet &)
-    {
-        return true;
-    }),
-    make_shared<Filter>([](const ParamSet &)
-    {
-        return true;
-    }),
-    make_shared<Filter>([](const ParamSet &)
-    {
-        return true;
-    })
+    make_shared<Filter>([](const ParamSet &){ return true;}),
+    make_shared<Filter>([](const ParamSet &){ return true;}),
+    make_shared<Filter>([](const ParamSet &){ return true;}),
+    make_shared<Filter>([](const ParamSet &){ return true;}),
+    make_shared<Filter>([](const ParamSet &){ return true;})
 };
 template<class FilterMulti>void test_multi()
 {

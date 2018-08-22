@@ -10,7 +10,8 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
-#define ALMOST_EQ(a,b) EXPECT_TRUE(pow(a-b,2)<0.000001)
+const double epsilon=0.000001;
+#define ALMOST_EQ(a,b) EXPECT_TRUE(pow(a-b,2)<epsilon)
 TEST(ParameterFunction, Basic)
 {
     int c = 0;
@@ -106,7 +107,7 @@ TEST(Fit, Basetest)
 {
     Fit<DifferentialMutations<>, SumSquareDiff> fit(TestPoints, make_shared<Fit_Func>());
     fit.Init(30, Init);
-    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
+    while (!fit.AbsoluteOptimalityExitCondition(epsilon))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
@@ -126,7 +127,7 @@ TEST(Fit, Basetest2)
 {
     Fit<DifferentialMutations<>,ChiSquare,UncertaintiesEstimation> fit(TestPoints, make_shared<Fit_Func>());
     fit.Init(30, Init);
-    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
+    while (!fit.AbsoluteOptimalityExitCondition(epsilon))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
@@ -151,7 +152,7 @@ TEST(FitFunction, Basetest)
 {
     FitFunction<DifferentialMutations<>, Fit_Func, SumSquareDiff> fit(TestPoints);
     fit.Init(30, Init);
-    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
+    while (!fit.AbsoluteOptimalityExitCondition(epsilon))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
@@ -171,7 +172,7 @@ TEST(FitFunction, Basetest2)
 {
     FitFunction<DifferentialMutations<>, Fit_Func,ChiSquare,UncertaintiesEstimation> fit(TestPoints);
     fit.Init(30, Init);
-    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
+    while (!fit.AbsoluteOptimalityExitCondition(epsilon))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);
@@ -196,7 +197,7 @@ TEST(FitFunction, Basetest3)
 {
     FitFunction<DifferentialMutations<>, Fit_Func,ChiSquare,FunctionUncertaintiesEstimation> fit(TestPoints);
     fit.Init(30, Init);
-    while (!fit.AbsoluteOptimalityExitCondition(0.000001))
+    while (!fit.AbsoluteOptimalityExitCondition(epsilon))
         fit.Iterate();
     EXPECT_TRUE(fit.ParamCount() == 2);
     EXPECT_TRUE(fit.PopulationSize() == 30);

@@ -22,7 +22,10 @@ TEST(InexactEquationSystem, empty2)
 TEST(InexactEquationSystem, simple)
 {
     InexactEquationSystem A {
-        {.left = [](const ParamSet & P)->double{return P[0];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0];}, 
+	    .right = {0, 1}
+	}
     };
     EXPECT_EQ(A({0.0}), 0);
     EXPECT_EQ(A({0.5}), 0.25);
@@ -32,7 +35,10 @@ TEST(InexactEquationSystem, simple)
 TEST(InexactEquationSystem, simple2)
 {
     InexactEquationSystem A(vector<InexactEquation> {
-        {.left = [](const ParamSet & P)->double{return P[0];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0];}, 
+	    .right = {0, 1}
+	}
     });
     EXPECT_EQ(A({0.0}), 0);
     EXPECT_EQ(A({0.5}), 0.25);
@@ -42,7 +48,10 @@ TEST(InexactEquationSystem, simple2)
 TEST(InexactEquationSystem, twoparams)
 {
     InexactEquationSystem A {
-        {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0] + P[1];}, 
+	    .right = {0, 1}
+	}
     };
     EXPECT_EQ(A({0.0, 0.0}), 0);
     EXPECT_EQ(A({0.5, 0.0}), 0.25);
@@ -56,7 +65,10 @@ TEST(InexactEquationSystem, twoparams)
 TEST(InexactEquationSystem, twoparams2)
 {
     InexactEquationSystem A(vector<InexactEquation> {
-        {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0] + P[1];}, 
+	    .right = {0, 1}
+	}
     });
     EXPECT_EQ(A({0.0, 0.0}), 0);
     EXPECT_EQ(A({0.5, 0.0}), 0.25);
@@ -70,8 +82,13 @@ TEST(InexactEquationSystem, twoparams2)
 TEST(InexactEquationSystem, two_eq)
 {
     InexactEquationSystem A {
-        {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}},
-        {.left = [](const ParamSet & P)->double{return P[0] - P[1];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0] + P[1];}, 
+	    .right = {0, 1}
+	},{
+	    .left = [](const ParamSet & P)->double{return P[0] - P[1];}, 
+	    .right = {0, 1}
+	}
     };
     EXPECT_EQ(A({0.0, 0.0}), 0);
     EXPECT_EQ(A({0.5, 0.0}), 0.5);
@@ -85,8 +102,13 @@ TEST(InexactEquationSystem, two_eq)
 TEST(InexactEquationSystem, two_eq2)
 {
     InexactEquationSystem A(vector<InexactEquation> {
-        {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}},
-        {.left = [](const ParamSet & P)->double{return P[0] - P[1];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0] + P[1];}, 
+	    .right = {0, 1}
+	},{
+	    .left = [](const ParamSet & P)->double{return P[0] - P[1];}, 
+	    .right = {0, 1}
+	}
     });
     EXPECT_EQ(A({0.0, 0.0}), 0);
     EXPECT_EQ(A({0.5, 0.0}), 0.5);
@@ -100,8 +122,13 @@ TEST(InexactEquationSystem, two_eq2)
 TEST(InexactEquationSolver, Integrationtest1)
 {
     InexactEquationSolver<DifferentialMutations<>> test {
-        {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}},
-        {.left = [](const ParamSet & P)->double{return P[0] - P[1];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0] + P[1];}, 
+	    .right = {0, 1}
+	},{
+	    .left = [](const ParamSet & P)->double{return P[0] - P[1];}, 
+	    .right = {0, 1}
+	}
     };
     test.Init(100, make_shared<InitialDistributions>()
               << make_shared<DistribUniform>(-20, 20) << make_shared<DistribUniform>(-20, 20)
@@ -126,8 +153,13 @@ TEST(InexactEquationSolver, Integrationtest1)
 TEST(InexactEquationSolver, Integrationtest2)
 {
     InexactEquationSolver<DifferentialMutations<>,UncertaintiesEstimation> test {
-        {.left = [](const ParamSet & P)->double{return P[0] + P[1];}, .right = {0, 1}},
-        {.left = [](const ParamSet & P)->double{return P[0] - P[1];}, .right = {0, 1}}
+        {
+	    .left = [](const ParamSet & P)->double{return P[0] + P[1];}, 
+	    .right = {0, 1}
+	},{
+	    .left = [](const ParamSet & P)->double{return P[0] - P[1];}, 
+	    .right = {0, 1}
+	}
     };
     test.Init(100, make_shared<InitialDistributions>()
               << make_shared<DistribUniform>(-20, 20) << make_shared<DistribUniform>(-20, 20)
