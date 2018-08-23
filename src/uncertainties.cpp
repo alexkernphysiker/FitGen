@@ -15,9 +15,8 @@ UncertaintiesEstimation::UncertaintiesEstimation()
 UncertaintiesEstimation::UncertaintiesEstimation(const UncertaintiesEstimation&source)
     :AbstractGenetic(source)
 {
-    m_uncertainty_cache = make_shared<vector<value_numeric_distr<>>>();
+    m_uncertainty_cache = source.m_uncertainty_cache;
     m_delta=source.m_delta;
-    HandleIteration();
 }
 UncertaintiesEstimation::~UncertaintiesEstimation() {}
 double UncertaintiesEstimation::GetParamParabolicError(const double &delta, const size_t i)const
