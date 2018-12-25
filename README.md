@@ -26,7 +26,7 @@ If you have your git repository with cmake project you can add needed repositori
 
 Then add to CMakeLists.txt
 
-	add_compile_options(--std=c++17) #the most recommended compiler mode
+	add_compile_options(--std=c++17)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread") #option needed for multithreading
 	add_definitions(-Dusing_multithread) #option needed for multithreading
 	add_subdirectory(math_h)
@@ -36,7 +36,6 @@ Then add to CMakeLists.txt
 
 Then commit your changes
 
-This library still can be compiled with c++11 or c++14 compiler but some features will be less optimized and work slower.
 
 Examples
 ========
