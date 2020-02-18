@@ -141,13 +141,13 @@ TEST(InexactEquationSolver, Integrationtest1)
         EXPECT_EQ(1, eq.right.uncertainty());
         EXPECT_TRUE(pow(eq.left(test.Parameters()).val(), 2) < 0.0000001);
     }
-    const auto test_copy=test;
-    EXPECT_TRUE(pow(test_copy.Parameters()[0], 2) < 0.0000001);
-    EXPECT_TRUE(pow(test_copy.Parameters()[1], 2) < 0.0000001);
-    for (const auto &eq : test_copy.equations()) {
+    const auto test_moved=std::move(test);
+    EXPECT_TRUE(pow(test_moved.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test_moved.Parameters()[1], 2) < 0.0000001);
+    for (const auto &eq : test_moved.equations()) {
         EXPECT_EQ(0, eq.right.val());
         EXPECT_EQ(1, eq.right.uncertainty());
-        EXPECT_TRUE(pow(eq.left(test_copy.Parameters()).val(), 2) < 0.0000001);
+        EXPECT_TRUE(pow(eq.left(test_moved.Parameters()).val(), 2) < 0.0000001);
     }
 }
 TEST(InexactEquationSolver, Integrationtest2)
@@ -175,14 +175,14 @@ TEST(InexactEquationSolver, Integrationtest2)
         EXPECT_EQ(1, eq.right.uncertainty());
         EXPECT_TRUE(pow(eq.left(test.Parameters()).val(), 2) < 0.0000001);
     }
-    const auto test_copy=test;
-    EXPECT_TRUE(pow(test_copy.Parameters()[0], 2) < 0.0000001);
-    EXPECT_TRUE(pow(test_copy.Parameters()[1], 2) < 0.0000001);
-    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[0].Contains(test.Parameters()[0]));
-    EXPECT_TRUE(test_copy.ParametersWithUncertainties()[1].Contains(test.Parameters()[1]));
-    for (const auto &eq : test_copy.equations()) {
+    const auto test_moved=std::move(test);
+    EXPECT_TRUE(pow(test_moved.Parameters()[0], 2) < 0.0000001);
+    EXPECT_TRUE(pow(test_moved.Parameters()[1], 2) < 0.0000001);
+    EXPECT_TRUE(test_moved.ParametersWithUncertainties()[0].Contains(test_moved.Parameters()[0]));
+    EXPECT_TRUE(test_moved.ParametersWithUncertainties()[1].Contains(test_moved.Parameters()[1]));
+    for (const auto &eq : test_moved.equations()) {
         EXPECT_EQ(0, eq.right.val());
         EXPECT_EQ(1, eq.right.uncertainty());
-        EXPECT_TRUE(pow(eq.left(test_copy.Parameters()).val(), 2) < 0.0000001);
+        EXPECT_TRUE(pow(eq.left(test_moved.Parameters()).val(), 2) < 0.0000001);
     }
 }

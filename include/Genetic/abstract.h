@@ -40,7 +40,7 @@ class AbstractGenetic
 {
 protected:
     AbstractGenetic();
-    AbstractGenetic(const AbstractGenetic&source);
+    AbstractGenetic(AbstractGenetic&&source);
     AbstractGenetic(const std::shared_ptr<IOptimalityFunction> optimality);
 public:
     virtual ~AbstractGenetic();

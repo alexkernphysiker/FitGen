@@ -14,7 +14,7 @@ class UncertaintiesEstimation: public virtual AbstractGenetic
 {
 protected:
     UncertaintiesEstimation();
-    UncertaintiesEstimation(const UncertaintiesEstimation&source);
+    UncertaintiesEstimation(UncertaintiesEstimation&&source);
 public:
     virtual ~UncertaintiesEstimation();
     UncertaintiesEstimation &SetUncertaintyCalcDeltas(const ParamSet &P);
@@ -29,7 +29,7 @@ private:
 class FunctionUncertaintiesEstimation:public UncertaintiesEstimation,public virtual FunctionContainer{
 protected:
     FunctionUncertaintiesEstimation();
-    FunctionUncertaintiesEstimation(const FunctionUncertaintiesEstimation&source);
+    FunctionUncertaintiesEstimation(FunctionUncertaintiesEstimation&&source);
 public:
     virtual ~FunctionUncertaintiesEstimation();
     MathTemplates::value<> FuncWithUncertainties(const ParamSet&X)const;

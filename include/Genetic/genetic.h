@@ -14,7 +14,7 @@ namespace Genetic
 class EmptyMutation:public virtual AbstractGenetic{
 public:
     EmptyMutation(){}
-    EmptyMutation(const EmptyMutation&source):AbstractGenetic(source){}
+    EmptyMutation(EmptyMutation&&source):AbstractGenetic(std::move(source)){}
     virtual ~EmptyMutation(){}
 };
 template<class FITGEN = EmptyMutation>
@@ -25,7 +25,7 @@ private:
     double M;
 public:
     DifferentialMutations(): FITGEN(), M(0.5) {}
-    DifferentialMutations(const DifferentialMutations&source): FITGEN(source), M(source.M),AbstractGenetic(source) {}
+    DifferentialMutations(DifferentialMutations&&source): FITGEN(std::move(source)), M(std::move(source.M)),AbstractGenetic(std::move(source)) {}
     virtual ~DifferentialMutations() {}
     const double &MutationCoefficient()const
     {
@@ -57,7 +57,7 @@ private:
     double P;
 public:
     Crossing(): FITGEN(), P(0) {}
-    Crossing(const Crossing&source): FITGEN(source), P(source.P),AbstractGenetic(source) {}
+    Crossing(Crossing&&source): FITGEN(std::move(source)), P(std::move(source.P)),AbstractGenetic(std::move(source)) {}
     virtual ~Crossing() {}
     const double &CrossingProbability()const
     {
@@ -95,7 +95,10 @@ private:
     ParamSet m_mutation;
 public:
     AbsoluteMutations(): FITGEN(), P(0) {}
-    AbsoluteMutations(const AbsoluteMutations&source): FITGEN(source), P(source.P),m_mutation(source.m_mutation),AbstractGenetic(source) {}
+    AbsoluteMutations(AbsoluteMutations&&source): 
+        FITGEN(std::move(source)), P(std::move(source.P)),
+        m_mutation(std::move(source.m_mutation)),
+        AbstractGenetic(std::move(source)) {}
     virtual ~AbsoluteMutations() {}
     const ParamSet &AbsoluteMutationCoefficients()const
     {
@@ -143,7 +146,9 @@ private:
     ParamSet m_mutation;
 public:
     RelativeMutations(): FITGEN(), P(0) {}
-    RelativeMutations(const RelativeMutations&source): FITGEN(source), P(source.P),m_mutation(source.m_mutation),AbstractGenetic(source) {}
+    RelativeMutations(RelativeMutations&&source): 
+        FITGEN(std::move(source)), P(std::move(source.P)),
+        m_mutation(std::move(source.m_mutation)),AbstractGenetic(std::move(source)) {}
     virtual ~RelativeMutations() {}
     const ParamSet &RelativeMutationCoefficients()const
     {

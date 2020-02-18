@@ -115,13 +115,13 @@ TEST(Fit, Basetest)
     ALMOST_EQ(fit.Optimality(fit.PopulationSize() - 1),0.0);
     ALMOST_EQ(1.0, fit.Parameters()[0]);
     ALMOST_EQ(1.0, fit.Parameters()[1]);
-    const auto fit_copy=fit;
-    EXPECT_TRUE(fit_copy.ParamCount() == 2);
-    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    ALMOST_EQ(fit_copy.Optimality(),0.0);
-    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
+    const auto fit_moved=std::move(fit);
+    EXPECT_TRUE(fit_moved.ParamCount() == 2);
+    EXPECT_TRUE(fit_moved.PopulationSize() == 30);
+    ALMOST_EQ(fit_moved.Optimality(),0.0);
+    ALMOST_EQ(fit_moved.Optimality(fit_moved.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[1]);
 }
 TEST(Fit, Basetest2)
 {
@@ -138,15 +138,15 @@ TEST(Fit, Basetest2)
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
     EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
-    const auto fit_copy=fit;
-    EXPECT_TRUE(fit_copy.ParamCount() == 2);
-    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    ALMOST_EQ(fit_copy.Optimality(),0.0);
-    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
-    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
-    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
+    const auto fit_moved=std::move(fit);
+    EXPECT_TRUE(fit_moved.ParamCount() == 2);
+    EXPECT_TRUE(fit_moved.PopulationSize() == 30);
+    ALMOST_EQ(fit_moved.Optimality(),0.0);
+    ALMOST_EQ(fit_moved.Optimality(fit_moved.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[1]);
+    EXPECT_TRUE(fit_moved.ParametersWithUncertainties()[0].Contains(fit_moved.Parameters()[0]));
+    EXPECT_TRUE(fit_moved.ParametersWithUncertainties()[1].Contains(fit_moved.Parameters()[1]));
 }
 TEST(FitFunction, Basetest)
 {
@@ -160,13 +160,13 @@ TEST(FitFunction, Basetest)
     ALMOST_EQ(fit.Optimality(fit.PopulationSize() - 1),0.0);
     ALMOST_EQ(1.0, fit.Parameters()[0]);
     ALMOST_EQ(1.0, fit.Parameters()[1]);
-    const auto fit_copy=fit;
-    EXPECT_TRUE(fit_copy.ParamCount() == 2);
-    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    ALMOST_EQ(fit_copy.Optimality(),0.0);
-    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
+    const auto fit_moved=std::move(fit);
+    EXPECT_TRUE(fit_moved.ParamCount() == 2);
+    EXPECT_TRUE(fit_moved.PopulationSize() == 30);
+    ALMOST_EQ(fit_moved.Optimality(),0.0);
+    ALMOST_EQ(fit_moved.Optimality(fit_moved.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[1]);
 }
 TEST(FitFunction, Basetest2)
 {
@@ -183,15 +183,15 @@ TEST(FitFunction, Basetest2)
     fit.SetUncertaintyCalcDeltas({0.01,0.01});
     EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
-    const auto fit_copy=fit;
-    EXPECT_TRUE(fit_copy.ParamCount() == 2);
-    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    ALMOST_EQ(fit_copy.Optimality(),0.0);
-    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
-    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
-    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
+    const auto fit_moved=std::move(fit);
+    EXPECT_TRUE(fit_moved.ParamCount() == 2);
+    EXPECT_TRUE(fit_moved.PopulationSize() == 30);
+    ALMOST_EQ(fit_moved.Optimality(),0.0);
+    ALMOST_EQ(fit_moved.Optimality(fit_moved.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[1]);
+    EXPECT_TRUE(fit_moved.ParametersWithUncertainties()[0].Contains(fit_moved.Parameters()[0]));
+    EXPECT_TRUE(fit_moved.ParametersWithUncertainties()[1].Contains(fit_moved.Parameters()[1]));
 }
 TEST(FitFunction, Basetest3)
 {
@@ -209,14 +209,14 @@ TEST(FitFunction, Basetest3)
     EXPECT_TRUE(fit.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
     EXPECT_TRUE(fit.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
     for(double x=0;x<=2;x+=0.1)EXPECT_TRUE(fit.FuncWithUncertainties({x}).Contains(fit({x})));
-    const auto fit_copy=fit;
-    EXPECT_TRUE(fit_copy.ParamCount() == 2);
-    EXPECT_TRUE(fit_copy.PopulationSize() == 30);
-    ALMOST_EQ(fit_copy.Optimality(),0.0);
-    ALMOST_EQ(fit_copy.Optimality(fit.PopulationSize() - 1),0.0);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[0]);
-    ALMOST_EQ(1.0, fit_copy.Parameters()[1]);
-    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[0].Contains(fit.Parameters()[0]));
-    EXPECT_TRUE(fit_copy.ParametersWithUncertainties()[1].Contains(fit.Parameters()[1]));
-    for(double x=0;x<=2;x+=0.1)EXPECT_TRUE(fit_copy.FuncWithUncertainties({x}).Contains(fit_copy({x})));
+    const auto fit_moved=std::move(fit);
+    EXPECT_TRUE(fit_moved.ParamCount() == 2);
+    EXPECT_TRUE(fit_moved.PopulationSize() == 30);
+    ALMOST_EQ(fit_moved.Optimality(),0.0);
+    ALMOST_EQ(fit_moved.Optimality(fit_moved.PopulationSize() - 1),0.0);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[0]);
+    ALMOST_EQ(1.0, fit_moved.Parameters()[1]);
+    EXPECT_TRUE(fit_moved.ParametersWithUncertainties()[0].Contains(fit_moved.Parameters()[0]));
+    EXPECT_TRUE(fit_moved.ParametersWithUncertainties()[1].Contains(fit_moved.Parameters()[1]));
+    for(double x=0;x<=2;x+=0.1)EXPECT_TRUE(fit_moved.FuncWithUncertainties({x}).Contains(fit_moved({x})));
 }

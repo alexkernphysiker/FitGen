@@ -73,7 +73,7 @@ class Fit: public virtual FunctionContainer,public virtual MUTATION_TYPE,public 
     static_assert(std::is_base_of<EmptyMutation,MUTATION_TYPE>::value,"Mutation algorithm must be a class derived from EmptyMutation");
 public:
     Fit(const FitPoints&points,const std::shared_ptr<IParamFunc> f):FunctionContainer(f),AbstractGenetic(OptimalityAlgorithm(points, f)){}
-    Fit(const Fit&source):FunctionContainer(source),AbstractGenetic(source),MUTATION_TYPE(source),Parrents(source)...{}
+    Fit(Fit&&source):FunctionContainer(std::move(source)),AbstractGenetic(std::move(source)),MUTATION_TYPE(std::move(source)),Parrents(std::move(source))...{}
     inline Fit(const FitPoints&points, const paramFunc f):Fit(points, std::make_shared<ParameterFunction>(f)) {}
     template<class Source>
     inline Fit(const Source&points,const std::shared_ptr<IParamFunc> f):Fit(ConvertPoints(points),f){}
@@ -105,7 +105,10 @@ public:
 	FunctionContainer(std::make_shared<FUNC>()),
         AbstractGenetic(OptimalityAlgorithm(points,FunctionContainer::Func())),
         Fit<GENETIC, OptimalityAlgorithm,Parrents...>(points,FunctionContainer::Func()){}
-    FitFunction(const FitFunction&source):FunctionContainer(source),AbstractGenetic(source),Fit<GENETIC, OptimalityAlgorithm,Parrents...>(source),Parrents(source)...{}
+    FitFunction(FitFunction&&source):
+        FunctionContainer(std::move(source)),
+        AbstractGenetic(std::move(source)),
+        Fit<GENETIC, OptimalityAlgorithm,Parrents...>(std::move(source)),Parrents(std::move(source))...{}
     template<class Source>
     inline FitFunction(const Source&points):FitFunction(ConvertPoints(points)){}
     virtual ~FitFunction(){}

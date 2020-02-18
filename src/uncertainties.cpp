@@ -12,8 +12,8 @@ UncertaintiesEstimation::UncertaintiesEstimation()
 {
     m_uncertainty_cache = make_shared<vector<value_numeric_distr<>>>();
 }
-UncertaintiesEstimation::UncertaintiesEstimation(const UncertaintiesEstimation&source)
-    :AbstractGenetic(source)
+UncertaintiesEstimation::UncertaintiesEstimation(UncertaintiesEstimation&&source)
+    :AbstractGenetic(std::move(source))
 {
     m_uncertainty_cache = source.m_uncertainty_cache;
     m_delta=source.m_delta;
@@ -59,7 +59,7 @@ const vector<value_numeric_distr<double>> &UncertaintiesEstimation::ParametersWi
 }
 
 FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation():FunctionContainer(nullptr),UncertaintiesEstimation(){}
-FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation(const FunctionUncertaintiesEstimation&source):FunctionContainer(source),UncertaintiesEstimation(source){}
+FunctionUncertaintiesEstimation::FunctionUncertaintiesEstimation(FunctionUncertaintiesEstimation&&source):FunctionContainer(source),UncertaintiesEstimation(std::move(source)){}
 FunctionUncertaintiesEstimation::~FunctionUncertaintiesEstimation(){}
 value<> FunctionUncertaintiesEstimation::FuncWithUncertainties(const ParamSet&X)const{
     const double val=FunctionContainer::func(X,AbstractGenetic::Parameters());

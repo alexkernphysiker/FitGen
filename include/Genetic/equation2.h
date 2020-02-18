@@ -37,8 +37,8 @@ public:
         : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
     InexactEquationSolver(const std::vector<InexactEquation> &source)
         : AbstractGenetic(std::make_shared<InexactEquationSystem>(source)){}
-    InexactEquationSolver(const InexactEquationSolver &source)
-        : AbstractGenetic(source),MUTATION_TYPE(source),Parrents(source)...{}
+    InexactEquationSolver(InexactEquationSolver &&source)
+        : AbstractGenetic(std::move(source)),MUTATION_TYPE(std::move(source)),Parrents(std::move(source))...{}
     virtual ~InexactEquationSolver() {}
     const std::vector<InexactEquation> &equations()const
     {
