@@ -11,11 +11,11 @@ int main()
     //declaring
     EquationSolver<DifferentialMutations<>> solution {
         {
-            .left = [](const ParamSet & X){return pow(X[0], 2) + 1.0;},
-            .right = [](const ParamSet & X){return pow(X[1], 2);}
+            .left = [](const ParamSet& X){return pow(X[0], 2) + 1.0;},
+            .right = [](const ParamSet& X){return pow(X[1], 2);}
         }, {
-            .left = [](const ParamSet & X){return X[0] + X[1];},
-            .right = [](const ParamSet &){return 2;}
+            .left = [](const ParamSet& X){return X[0] + X[1];},
+            .right = [](const ParamSet&){return 2;}
         }
     };
     //searching the solution

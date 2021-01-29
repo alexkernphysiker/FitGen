@@ -11,13 +11,13 @@ int main()
     //declaring
     InexactEquationSolver<DifferentialMutations<>,UncertaintiesEstimation> example {
         {
-            .left = [](const ParamSet & X){return X[0] + X[1];},
+            .left = [](const ParamSet& X){return X[0] + X[1];},
             .right = {1.98, 0.03}
         }, {
-            .left = [](const ParamSet & X){return X[0] - X[1];},
+            .left = [](const ParamSet& X){return X[0] - X[1];},
             .right = {0.02, 0.02}
         }, {
-            .left = [](const ParamSet & X){return pow(X[0], 2) + pow(X[1], 2);},
+            .left = [](const ParamSet& X){return pow(X[0], 2) + pow(X[1], 2);},
             .right = {2.01, 0.01}
         }
     };

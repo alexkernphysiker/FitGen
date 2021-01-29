@@ -11,8 +11,8 @@ int main()
     //declaring
     EquationSolver<DifferentialMutations<>> solution {
         {
-            .left = [](const ParamSet & X){return sin(X[0]/2.0);},
-            .right = [](const ParamSet & X){return exp(-X[0]);}
+            .left = [](const ParamSet& X){return sin(X[0]/2.0);},
+            .right = [](const ParamSet& X){return exp(-X[0]);}
         }
     };
     //searching the solution
