@@ -14,8 +14,8 @@
 namespace Genetic
 {
 struct InexactEquation {
-    std::function<MathTemplates::value<double>(const ParamSet &)> left;
-    MathTemplates::value<double> right;
+    const std::function<MathTemplates::value<double>(const ParamSet &)> left;
+    const MathTemplates::value<double> right;
 };
 class InexactEquationSystem: public virtual IOptimalityFunction
 {

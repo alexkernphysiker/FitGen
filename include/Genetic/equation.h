@@ -12,7 +12,8 @@
 namespace Genetic
 {
 struct Equation {
-    std::function<double(const ParamSet &)> left, right;
+    const std::function<double(const ParamSet &)> left;
+    const std::function<double(const ParamSet &)> right;
 };
 class EquationSystem: public virtual IOptimalityFunction
 {
