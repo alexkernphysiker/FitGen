@@ -23,18 +23,20 @@ double UncertaintiesEstimation::GetParamParabolicError(const double &delta, cons
 {
     if (delta <= 0)
         throw Exception<UncertaintiesEstimation>("Exception in parabolic error calculation: delta cannot be zero or negative");
+
     double s = Optimality();
-    ParamSet ab = Parameters();
-    ParamSet be = ab;
-    ab(i) += delta;
-    be(i) -= delta;
-    double sa = OptimalityCalculator()->operator()(ab);
-    double sb = OptimalityCalculator()->operator()(be);
-    double dd = (sa - 2.0 * s + sb) / pow(delta, 2);
-    if (dd <= 0)
+    const auto& P = Parameters();
+    const auto  S = [this](const ParamSet&p) { return OptimalityCalculator()->operator()(p); };
+    ParamSet Pminus = P;
+    ParamSet Pplus = P;
+    Pplus(i) += delta;
+    Pminus(i) -= delta;
+    double second_deriv = ( S(Pminus) - 2.0 * S(P) + S(Pplus) ) / pow(delta, 2);
+    if (second_deriv <= 0) {
         return INFINITY;
-    else
-        return sqrt(2.0 / dd);
+    } else {
+        return sqrt( 2.0 / second_deriv );
+    }
 }
 void UncertaintiesEstimation::HandleIteration()
 {
@@ -66,12 +68,12 @@ value<> FunctionUncertaintiesEstimation::FuncWithUncertainties(const ParamSet&X)
     double unc_sqr=0;
     const auto&PU=UncertaintiesEstimation::ParametersWithUncertainties();
     for(size_t i=0;i<AbstractGenetic::ParamCount();i++){
-	ParamSet P=AbstractGenetic::Parameters();
-	P(i)=PU[i].max();
-	const double valu=FunctionContainer::func(X,P);
-	P(i)=PU[i].min();
-	const double vald=FunctionContainer::func(X,P);
-	unc_sqr+=pow((valu-vald)/2.0,2);
+        ParamSet P=AbstractGenetic::Parameters();
+        P(i)=PU[i].max();
+        const double valu=FunctionContainer::func(X,P);
+        P(i)=PU[i].min();
+        const double vald=FunctionContainer::func(X,P);
+        unc_sqr+=pow((valu-vald)/2.0,2);
     }
     return value<>(val,sqrt(unc_sqr));
 }
