@@ -92,22 +92,24 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
 {
     if (m_population.size() > 0)
         throw Exception<AbstractGenetic>("Genetic algorithm cannot be inited twice");
+
     if (population_size <= 0)
         throw Exception<AbstractGenetic>("Polulation size must be a positive number");
+
 #ifdef using_multithread
     if (ThreadCount() > population_size)
         SetThreadCount(population_size);
+
 #endif
     auto add_to_population = [this, initial_conditions](size_t count) {
         for (size_t i = 0; i < count; i++) {
+            ParamSet new_param;
             double s = INFINITY;
-        ParamSet new_param;
-        while (true) {
-            new_param = initial_conditions->Generate();
-            if (!(m_filter->operator()(new_param)))continue;
-            s = m_optimality->operator()(new_param);
-            if(isfinite(s))break;
-        }
+            while (!isfinite(s)) {
+                new_param = initial_conditions->Generate();
+                if (!(m_filter->operator()(new_param)))continue;
+                s = m_optimality->operator()(new_param);
+            }
             auto new_point = make_point(s,new_param);
             {
 #ifdef using_multithread
@@ -124,9 +126,11 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
         vector<shared_ptr<thread>> thread_vector;
         for (size_t i = 1; i < threads; i++)
             thread_vector.push_back(make_shared<thread>(add_to_population, piece_size));
+
         add_to_population(piece_size + rest);
         for (auto thr : thread_vector)
             thr->join();
+
 #else
         add_to_population(population_size);
 #endif
@@ -152,12 +156,11 @@ void AbstractGenetic::Iterate()
         for (size_t i = from; i <= to; i++) {
             ParamSet new_param;
             double s = INFINITY;
-            while (true) {
+            while (!isfinite(s)) {
                 new_param = m_population[i].Y();
                 mutations(new_param);
                 if (!(m_filter->operator()(new_param)))continue;
                 s = m_optimality->operator()(new_param);
-                if(isfinite(s))break;
             }
             auto new_point = make_point(s,new_param);
             {
@@ -174,9 +177,11 @@ void AbstractGenetic::Iterate()
         vector<shared_ptr<thread>> thread_vector;
         for (size_t i = 1; i < threads; i++)
             thread_vector.push_back(make_shared<thread>(process_elements, (i - 1)*piece_size, (i * piece_size) - 1));
+
         process_elements((threads - 1)*piece_size, n - 1);
         for (auto thr : thread_vector)
             thr->join();
+
 #else
         process_elements(0,n - 1);
 #endif
@@ -190,9 +195,11 @@ void AbstractGenetic::Iterate()
         for (size_t i = 0; i < n; i++)
             for (size_t j = 0; j < par_cnt; j++)
                 STAT[j] << tmp_population[i].Y()[j];
+
         m_stat.clear();
         for (size_t j = 0; j < par_cnt; j++)
             m_stat.push_back(STAT[j]);
+
         m_itercount++;
     }
     {
