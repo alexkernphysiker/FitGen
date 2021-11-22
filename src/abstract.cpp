@@ -101,13 +101,13 @@ AbstractGenetic &AbstractGenetic::Init(const size_t population_size, const share
     auto add_to_population = [this, initial_conditions](size_t count) {
         for (size_t i = 0; i < count; i++) {
             double s = INFINITY;
-	    ParamSet new_param;
-	    while (true) {
-		new_param = initial_conditions->Generate();
-                if (!(m_filter->operator()(new_param)))continue;
-                s = m_optimality->operator()(new_param);
-                if(isfinite(s))break;
-	    }
+        ParamSet new_param;
+        while (true) {
+            new_param = initial_conditions->Generate();
+            if (!(m_filter->operator()(new_param)))continue;
+            s = m_optimality->operator()(new_param);
+            if(isfinite(s))break;
+        }
             auto new_point = make_point(s,new_param);
             {
 #ifdef using_multithread
