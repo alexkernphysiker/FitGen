@@ -150,15 +150,15 @@ void AbstractGenetic::Iterate()
     SortedPoints<double,ParamSet> tmp_population;
     auto process_elements = [this, &tmp_population](size_t from, size_t to) {
         for (size_t i = from; i <= to; i++) {
-	    ParamSet new_param;
+            ParamSet new_param;
             double s = INFINITY;
-	    while (true) {
-		new_param = m_population[i].Y();
-		mutations(new_param);
-		if (!(m_filter->operator()(new_param)))continue;
-		s = m_optimality->operator()(new_param);
-		if(isfinite(s))break;
-	    }
+            while (true) {
+                new_param = m_population[i].Y();
+                mutations(new_param);
+                if (!(m_filter->operator()(new_param)))continue;
+                s = m_optimality->operator()(new_param);
+                if(isfinite(s))break;
+            }
             auto new_point = make_point(s,new_param);
             {
 #ifdef using_multithread
