@@ -36,7 +36,6 @@ int main()
 	{ 22.5, {497.3, 14.5}},
 	{ 27.5, {511.4, 15.0}}
     };
-    //Fitting. Variant with suffix 2 contains uncertainty estimation facilities
     FitFunction<DifferentialMutations<>, TotalFunc,ChiSquare,UncertaintiesEstimation> fit(data);
     fit.SetFilter([](const ParamSet & P) {
         return (P[0] > 0) && (P[1] > 0);
