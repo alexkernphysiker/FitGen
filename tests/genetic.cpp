@@ -10,18 +10,19 @@ using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
 template<class GENETIC>
-class TestClass: public virtual GENETIC
+class TestClass : public virtual GENETIC
 {
 public:
-    TestClass(): AbstractGenetic(make_shared<OptimalityFunction>([](const ParamSet &)
-    {
-        return 0;
-    })), GENETIC() {}
-    virtual ~TestClass() {}
-    void MAKE_TEST(ParamSet &P)
-    {
-        GENETIC::mutations(P);
+    TestClass() : AbstractGenetic(make_shared<OptimalityFunction>([](const ParamSet&)
+        {
+            return 0;
+        })), GENETIC() {
     }
+        virtual ~TestClass() {}
+        void MAKE_TEST(ParamSet& P)
+        {
+            GENETIC::mutations(P);
+        }
 };
 TEST(DifferentialMutations, Throws)
 {
@@ -62,17 +63,17 @@ TEST(DifferentialMutations, Upper)
             init << make_shared<RandomUniform<double>>(-0.5, 0.5);
         gen.Init(5, init);
         for (gen.SetMutationCoefficient(0);
-                gen.MutationCoefficient() <= 1;
-                gen.SetMutationCoefficient(gen.MutationCoefficient() + 0.1)
+            gen.MutationCoefficient() <= 1;
+            gen.SetMutationCoefficient(gen.MutationCoefficient() + 0.1)
             )for (size_t i = 0; i < 50; i++) {
-                ParamSet P = parZeros(count);
-                gen.MAKE_TEST(P);
-                EXPECT_TRUE(P.size() == count);
-                for (double p : P) {
-                    EXPECT_TRUE(p <= gen.MutationCoefficient());
-                    EXPECT_TRUE((-p) <= gen.MutationCoefficient());
-                }
+            ParamSet P = parZeros(count);
+            gen.MAKE_TEST(P);
+            EXPECT_TRUE(P.size() == count);
+            for (double p : P) {
+                EXPECT_TRUE(p <= gen.MutationCoefficient());
+                EXPECT_TRUE((-p) <= gen.MutationCoefficient());
             }
+        }
     }
 }
 TEST(Crossing, Throws)
@@ -137,14 +138,14 @@ TEST(AbsoluteMutations, Throws)
     EXPECT_THROW(gen.SetAbsoluteMutationsProbability(2), Exception<AbsoluteMutations<>>);
     EXPECT_EQ(1, gen.AbsoluteMutationsProbability());
     EXPECT_EQ(0, gen.AbsoluteMutationCoefficients().size());
-    EXPECT_THROW(gen.SetAbsoluteMutationCoefficients({ -1}), Exception<AbsoluteMutations<>>);
-    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({0}));
+    EXPECT_THROW(gen.SetAbsoluteMutationCoefficients({ -1 }), Exception<AbsoluteMutations<>>);
+    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({ 0 }));
     EXPECT_EQ(0, gen.AbsoluteMutationCoefficients()[0]);
-    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({0.5}));
+    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({ 0.5 }));
     EXPECT_EQ(0.5, gen.AbsoluteMutationCoefficients()[0]);
-    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({1}));
+    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({ 1 }));
     EXPECT_EQ(1, gen.AbsoluteMutationCoefficients()[0]);
-    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({2}));
+    EXPECT_NO_THROW(gen.SetAbsoluteMutationCoefficients({ 2 }));
     EXPECT_EQ(2, gen.AbsoluteMutationCoefficients()[0]);
 }
 TEST(AbsoluteMutations, Size)
@@ -171,14 +172,14 @@ TEST(RelativeMutations, Throws)
     EXPECT_THROW(gen.SetRelativeMutationsProbability(2), Exception<RelativeMutations<>>);
     EXPECT_EQ(1, gen.RelativeMutationsProbability());
     EXPECT_EQ(0, gen.RelativeMutationCoefficients().size());
-    EXPECT_THROW(gen.SetRelativeMutationCoefficients({ -1}), Exception<RelativeMutations<>>);
-    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({0}));
+    EXPECT_THROW(gen.SetRelativeMutationCoefficients({ -1 }), Exception<RelativeMutations<>>);
+    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({ 0 }));
     EXPECT_EQ(0, gen.RelativeMutationCoefficients()[0]);
-    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({0.5}));
+    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({ 0.5 }));
     EXPECT_EQ(0.5, gen.RelativeMutationCoefficients()[0]);
-    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({1}));
+    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({ 1 }));
     EXPECT_EQ(1, gen.RelativeMutationCoefficients()[0]);
-    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({2}));
+    EXPECT_NO_THROW(gen.SetRelativeMutationCoefficients({ 2 }));
     EXPECT_EQ(2, gen.RelativeMutationCoefficients()[0]);
 }
 TEST(RelativeMutations, Size)
@@ -190,13 +191,13 @@ TEST(RelativeMutations, Size)
         EXPECT_TRUE(P.size() == count);
     }
 }
-class TestMutations: public EmptyMutation
+class TestMutations : public EmptyMutation
 {
 public:
-    TestMutations(): AbstractGenetic() {}
+    TestMutations() : AbstractGenetic() {}
     virtual ~TestMutations() {}
 protected:
-    virtual void mutations(ParamSet &C)const override
+    virtual void mutations(ParamSet& C)const override
     {
         C = parOnes(C.size());
     }
@@ -234,7 +235,7 @@ TEST(ExactCopying, Check)
         gen.SetExactCopyingProbability(P);
         Distribution1D<double> D(BinsByCount(2, -0.5, 1.5));
         for (int i = 0; i < 1000; i++) {
-            ParamSet P {0};
+            ParamSet P{ 0 };
             gen.MAKE_TEST(P);
             D.Fill(P[0]);
         }

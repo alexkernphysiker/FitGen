@@ -10,42 +10,43 @@
 using namespace std;
 using namespace MathTemplates;
 using namespace Genetic;
-class ParabolicTest: public virtual UncertaintiesEstimation
+class ParabolicTest : public virtual UncertaintiesEstimation
 {
 public:
-    ParabolicTest(const double test_param = 1): AbstractGenetic(make_shared<OptimalityFunction>([test_param](const ParamSet &P)
-    {
-        double res = 0;
-        for (int i = 0, n = P.size(); i < n; i++)res += pow(P[i], 2);
-        return res * test_param;
-    })), UncertaintiesEstimation() {}
-    virtual ~ParabolicTest() {}
+    ParabolicTest(const double test_param = 1) : AbstractGenetic(make_shared<OptimalityFunction>([test_param](const ParamSet& P)
+        {
+            double res = 0;
+            for (int i = 0, n = P.size(); i < n; i++)res += pow(P[i], 2);
+            return res * test_param;
+        })), UncertaintiesEstimation() {
+    }
+        virtual ~ParabolicTest() {}
 };
 TEST(UncertaintiesEstimation, Base)
 {
     ParabolicTest gen;
-    gen.SetUncertaintyCalcDeltas({0.01})
-    .Init(1, make_shared<InitialDistributions>()
-          << make_shared<DistribUniform>(-0.0001, 0.0001)
-    );
+    gen.SetUncertaintyCalcDeltas({ 0.01 })
+        .Init(1, make_shared<InitialDistributions>()
+            << make_shared<DistribUniform>(-0.0001, 0.0001)
+        );
     EXPECT_TRUE(abs(gen.ParametersWithUncertainties()[0].uncertainty() - 1.0) < 0.1);
 }
 TEST(UncertaintiesEstimation, NegDelta)
 {
     ParabolicTest gen;
-    gen.SetUncertaintyCalcDeltas({ -0.01})
-    .Init(1, make_shared<InitialDistributions>()
-          << make_shared<DistribUniform>(-0.0001, 0.0001)
-    );
+    gen.SetUncertaintyCalcDeltas({ -0.01 })
+        .Init(1, make_shared<InitialDistributions>()
+            << make_shared<DistribUniform>(-0.0001, 0.0001)
+        );
     EXPECT_THROW(gen.ParametersWithUncertainties()[0], Exception<UncertaintiesEstimation>);
 }
 TEST(UncertaintiesEstimation, NegZero)
 {
     ParabolicTest gen;
-    gen.SetUncertaintyCalcDeltas({0})
-    .Init(1, make_shared<InitialDistributions>()
-          << make_shared<DistribUniform>(-0.0001, 0.0001)
-    );
+    gen.SetUncertaintyCalcDeltas({ 0 })
+        .Init(1, make_shared<InitialDistributions>()
+            << make_shared<DistribUniform>(-0.0001, 0.0001)
+        );
     EXPECT_THROW(gen.ParametersWithUncertainties()[0], Exception<UncertaintiesEstimation>);
 }
 TEST(UncertaintiesEstimation, BaseTest)
@@ -70,7 +71,7 @@ TEST(UncertaintiesEstimation, MoreInteresting)
         auto init = make_shared<InitialDistributions>();
         for (int i = 0; i < count; i++)
             init << make_shared<DistribUniform>(-0.001, 0.001);
-        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
+        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init);
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
             EXPECT_TRUE(gen.ParametersWithUncertainties()[i].Contains(gen.Parameters()[i]));
@@ -82,7 +83,7 @@ TEST(UncertaintiesEstimation, MoreInteresting)
         auto init = make_shared<InitialDistributions>();
         for (int i = 0; i < count; i++)
             init << make_shared<DistribUniform>(-0.001, 0.001);
-        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
+        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init);
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
             EXPECT_TRUE(gen.ParametersWithUncertainties()[i].Contains(gen.Parameters()[i]));
@@ -97,7 +98,7 @@ TEST(UncertaintiesEstimation, Infinite)
         auto init = make_shared<InitialDistributions>();
         for (int i = 0; i < count; i++)
             init << make_shared<DistribUniform>(-0.001, 0.001);
-        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
+        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init);
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
             EXPECT_FALSE(isfinite(gen.ParametersWithUncertainties()[i].val()));
@@ -109,7 +110,7 @@ TEST(UncertaintiesEstimation, Infinite)
         auto init = make_shared<InitialDistributions>();
         for (int i = 0; i < count; i++)
             init << make_shared<DistribUniform>(-0.001, 0.001);
-        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init );
+        gen.SetUncertaintyCalcDeltas(parEq(count, 0.01)).Init(1, init);
         ASSERT_EQ(count, gen.ParametersWithUncertainties().size());
         for (size_t i = 0; i < gen.ParamCount(); i++) {
             EXPECT_FALSE(isfinite(gen.ParametersWithUncertainties()[i].val()));

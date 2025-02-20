@@ -11,24 +11,24 @@ using namespace MathTemplates;
 using namespace Genetic;
 TEST(OptimalityFunction, BaseTest)
 {
-    auto f = [](const ParamSet & p) {
+    auto f = [](const ParamSet& p) {
         return pow(p[0], 2);
-    };
+        };
     OptimalityFunction F(f);
     for (double x = -1; x <= 1; x += 0.1) {
-        EXPECT_EQ(f({x}), F({x}));
+        EXPECT_EQ(f({ x }), F({ x }));
     }
 }
-class GeneticTest: public Genetic::AbstractGenetic
+class GeneticTest : public Genetic::AbstractGenetic
 {
 public:
-    GeneticTest(std::shared_ptr<Genetic::IOptimalityFunction> optimality): AbstractGenetic(optimality) {}
+    GeneticTest(std::shared_ptr<Genetic::IOptimalityFunction> optimality) : AbstractGenetic(optimality) {}
     virtual ~GeneticTest() {}
 };
-auto optimality = make_shared<OptimalityFunction>([](const ParamSet &p)
-{
-    return pow(p[0], 2);
-});
+auto optimality = make_shared<OptimalityFunction>([](const ParamSet& p)
+    {
+        return pow(p[0], 2);
+    });
 auto initial = make_shared<InitialDistributions>() << make_shared<RandomUniform<>>(0, 0.001);
 void test_init(size_t threads, size_t population)
 {
@@ -108,8 +108,8 @@ TEST(AbstractGenetic, Throwing)
     EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(1), Exception<AbstractGenetic>);
     EXPECT_THROW(gen.RelativeOptimalityExitCondition(1), Exception<AbstractGenetic>);
     EXPECT_THROW(gen.Iterate(), Exception<AbstractGenetic>);
-    EXPECT_THROW(gen.ParametersDispersionExitCondition({0}), Exception<AbstractGenetic>);
-    EXPECT_THROW(gen.RelativeParametersDispersionExitCondition({0}), Exception<AbstractGenetic>);
+    EXPECT_THROW(gen.ParametersDispersionExitCondition({ 0 }), Exception<AbstractGenetic>);
+    EXPECT_THROW(gen.RelativeParametersDispersionExitCondition({ 0 }), Exception<AbstractGenetic>);
     EXPECT_THROW(gen.Optimality(0), Exception<AbstractGenetic>);
     EXPECT_NO_THROW(gen.Init(2, initial));
     EXPECT_THROW(gen.AbsoluteOptimalityExitCondition(-1), Exception<AbstractGenetic>);
@@ -284,15 +284,15 @@ TEST(AbstractGenetic, ItAsync8__)
     test_iterate(8, 2, 5);
 }
 #endif
-class GeneticTestWithMutations: public AbstractGenetic
+class GeneticTestWithMutations : public AbstractGenetic
 {
 private:
     RandomUniform<double> G;
 public:
-    GeneticTestWithMutations(shared_ptr<IOptimalityFunction> optimality): AbstractGenetic(optimality), G(-1, 1) {}
+    GeneticTestWithMutations(shared_ptr<IOptimalityFunction> optimality) : AbstractGenetic(optimality), G(-1, 1) {}
     virtual ~GeneticTestWithMutations() {}
 protected:
-    virtual void mutations(ParamSet &P)const override
+    virtual void mutations(ParamSet& P)const override
     {
         P(0) = G();
     }
@@ -300,9 +300,9 @@ protected:
 TEST(AbstractGenetic, FilterSettingFunc)
 {
     auto initial_uniform = make_shared<InitialDistributions>() << make_shared<RandomUniform<double>>(0, 1);
-    auto filter = [](const ParamSet & P) {
+    auto filter = [](const ParamSet& P) {
         return P[0] > 0.5;
-    };
+        };
     GeneticTestWithMutations gen(optimality);
     gen.SetFilter(filter);
     gen.Init(100, initial_uniform);
@@ -321,9 +321,9 @@ TEST(AbstractGenetic, FilterSettingFunc)
 TEST(AbstractGenetic, FilterSetting)
 {
     auto initial_uniform = make_shared<InitialDistributions>() << make_shared<RandomUniform<double>>(-1, 1);
-    auto filter = [](const ParamSet & P) {
+    auto filter = [](const ParamSet& P) {
         return P[0] > 0.5;
-    };
+        };
     GeneticTestWithMutations gen(optimality);
     gen.SetFilter(make_shared<Filter>(filter));
     gen.Init(100, initial_uniform);
@@ -342,15 +342,15 @@ TEST(AbstractGenetic, FilterSetting)
 TEST(AbstractGenetic, Infinite)
 {
     auto initial_uniform = make_shared<InitialDistributions>() << make_shared<RandomUniform<double>>(0, 1);
-    auto opt = make_shared<OptimalityFunction>([](const ParamSet & P) {
+    auto opt = make_shared<OptimalityFunction>([](const ParamSet& P) {
         double res = P[0];
         res *= res;
         if (res < 0.00001)return double(INFINITY);
         return res;
-    });
+        });
     GeneticTest gen(opt);
     gen.Init(100, initial_uniform);
-    EXPECT_FALSE(gen.ParametersDispersionExitCondition({0}));
+    EXPECT_FALSE(gen.ParametersDispersionExitCondition({ 0 }));
     for (size_t i = 0, n = gen.PopulationSize(); i < n; i++)
         EXPECT_TRUE(isfinite(gen.Parameters(i)[0]));
     for (size_t j = 0; j < 30; j++) {
@@ -365,10 +365,10 @@ TEST(AbstractGenetic, Infinite)
 }
 TEST(SearchMin, Integrationtest)
 {
-    SearchMin<DifferentialMutations<>> test([](const ParamSet & X) {
+    SearchMin<DifferentialMutations<>> test([](const ParamSet& X) {
         return X[0] * X[0];
-    });
+        });
     test.Init(20, make_shared<InitialDistributions>() << make_shared<DistribUniform>(-10, 10));
-    while(!test.ConcentratedInOnePoint())test.Iterate();
+    while (!test.ConcentratedInOnePoint())test.Iterate();
     EXPECT_TRUE(pow(test.Parameters()[0], 2) < 0.0000001);
 }

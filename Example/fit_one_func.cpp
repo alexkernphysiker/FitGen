@@ -21,36 +21,36 @@ int main()
 
     Fit<DifferentialMutations<>> fit(
         distribution.removeXerorbars(),
-        [](const ParamSet & X, const ParamSet & P) {
+        [](const ParamSet& X, const ParamSet& P) {
             return Gaussian(X[0], P[0], P[1]) * P[2];
         }
     );
     fit.SetFilter(
-    [](const ParamSet & P) {
-        return (P[1] > 0) && (P[2] > 0);
-    }
+        [](const ParamSet& P) {
+            return (P[1] > 0) && (P[2] > 0);
+        }
     );
     fit.Init(30,
-             make_shared<InitialDistributions>()
-             << make_shared<DistribUniform>(left, right)
-             << make_shared<DistribUniform>(0, right - left)
-             << make_shared<DistribUniform>(0, 2.0 * count)
-            );
+        make_shared<InitialDistributions>()
+        << make_shared<DistribUniform>(left, right)
+        << make_shared<DistribUniform>(0, right - left)
+        << make_shared<DistribUniform>(0, 2.0 * count)
+    );
     while (!fit.AbsoluteOptimalityExitCondition(0.000001))
         fit.Iterate();
 
     //Output results
     cout << "Chi^2 = " << fit.Optimality() << endl;
     cout << "Chi^2 divided by degrees of freedom = "
-         << fit.Optimality() / (fit.Points().size() - fit.ParamCount()) << endl;
+        << fit.Optimality() / (fit.Points().size() - fit.ParamCount()) << endl;
     cout << endl;
 
     cout << "Fit parameters" << endl;
-    for (const auto &P : fit.Parameters())cout << P << "\t";
+    for (const auto& P : fit.Parameters())cout << P << "\t";
     cout << endl;
 
     //plotting results
     Plot("FitGen-example1").Hist(distribution)
-    .Line(SortedPoints<>([&fit](double x) {return fit({x});}, ChainWithStep(0.0, 0.01, 10.0)));
+        .Line(SortedPoints<>([&fit](double x) {return fit({ x });}, ChainWithStep(0.0, 0.01, 10.0)));
     return 0;
 }

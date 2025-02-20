@@ -9,15 +9,15 @@
 #include <Genetic/searchmin.h>
 namespace Genetic
 {
-using namespace std;
-using namespace MathTemplates;
-OptimalityFunction::OptimalityFunction(const function<double(const ParamSet &)> f)
-{
-    func = f;
-}
-OptimalityFunction::~OptimalityFunction() {}
-double OptimalityFunction::operator()(const ParamSet &P)const
-{
-    return func(P);
-}
+    using namespace std;
+    using namespace MathTemplates;
+    OptimalityFunction::OptimalityFunction(const function<double(const ParamSet&)> f)
+    {
+        func = f;
+    }
+    OptimalityFunction::~OptimalityFunction() {}
+    double OptimalityFunction::operator()(const ParamSet& P)const
+    {
+        return func(P);
+    }
 };

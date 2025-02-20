@@ -14,49 +14,49 @@ TEST(ParamSet, Constructor0)
 }
 TEST(ParamSet, Constructor1)
 {
-    ParamSet p {1};
+    ParamSet p{ 1 };
     EXPECT_EQ(1, p.size());
     for (int i = 1; i <= 1; i++)
         EXPECT_EQ(i, p[i - 1]);
 }
 TEST(ParamSet, Constructor2)
 {
-    ParamSet p {1, 2};
+    ParamSet p{ 1, 2 };
     EXPECT_EQ(2, p.size());
     for (int i = 1; i <= 2; i++)
         EXPECT_EQ(i, p[i - 1]);
 }
 TEST(ParamSet, Constructor3)
 {
-    ParamSet p {1, 2, 3};
+    ParamSet p{ 1, 2, 3 };
     EXPECT_EQ(3, p.size());
     for (int i = 1; i <= 3; i++)
         EXPECT_EQ(i, p[i - 1]);
 }
 TEST(ParamSet, Constructor4)
 {
-    ParamSet p {1, 2, 3, 4};
+    ParamSet p{ 1, 2, 3, 4 };
     EXPECT_EQ(4, p.size());
     for (int i = 1; i <= 4; i++)
         EXPECT_EQ(i, p[i - 1]);
 }
 TEST(ParamSet, Constructor5)
 {
-    ParamSet p {1, 2, 3, 4, 5};
+    ParamSet p{ 1, 2, 3, 4, 5 };
     EXPECT_EQ(5, p.size());
     for (int i = 1; i <= 5; i++)
         EXPECT_EQ(i, p[i - 1]);
 }
 TEST(ParamSet, Constructor6)
 {
-    ParamSet p {1, 2, 3, 4, 5, 6};
+    ParamSet p{ 1, 2, 3, 4, 5, 6 };
     EXPECT_EQ(6, p.size());
     for (int i = 1; i <= 6; i++)
         EXPECT_EQ(i, p[i - 1]);
 }
 const int n = 10;
-double test_data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-void TestEq(ParamSet &p1, ParamSet &p2)
+double test_data[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+void TestEq(ParamSet& p1, ParamSet& p2)
 {
     EXPECT_EQ(p1.size(), p2.size());
     for (int i = 0, n = p1.size(); i < n; i++)
